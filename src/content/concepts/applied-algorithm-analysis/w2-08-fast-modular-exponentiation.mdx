@@ -1,0 +1,128 @@
+---
+course: applied-algorithm-analysis
+section: w2-algorithms
+order: 270
+title: Fast Modular Exponentiation
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week2.html?hash=true#/24
+    caption: >-
+      Slides 26–28 of 42 — why the naïve method fails, repeated squaring, and the cost
+      worked out. Press down inside the deck for the answer slide.
+notation:
+  - symbol: "xʸ mod N"
+    reads: x to the y, mod N
+    means: >-
+      Raise `x` to the power `y`, then take the remainder. In practice `xʸ` is never
+      computed — avoiding it is the whole point.
+  - symbol: "x¹⁶ = (((x²)²)²)²"
+    reads: x to the sixteen equals x squared, squared, squared, squared
+    means: >-
+      Four squarings reach the 16th power, because each squaring **doubles** the exponent:
+      2, 4, 8, 16.
+  - symbol: "max(x, y, N)"
+    reads: max of x, y and N
+    means: >-
+      The largest of the three, used to fix one `n` for the whole analysis — `n` is its bit
+      length.
+questions:
+  - ask: >-
+      `modexp` is `O(n³)`. Which two quantities multiply to give that?
+    choices:
+      - text: "`O(n)` calls, each one modular multiplication at `O(n²)`"
+        correct: true
+        explains: >-
+          An odd step drops `y` by 1 and the next step halves it, so `y` at least halves every
+          two calls — at most `2n` calls, which is `O(n)`. Each call does one modular
+          multiplication, priced at `O(n²)` on the previous page.
+      - text: "`n` calls, each one modular addition at `O(n)`"
+        explains: >-
+          The work per call is a multiplication — squaring, or multiplying by `x`. Additions
+          do not appear.
+      - text: "`n²` calls, each at `O(n)`"
+        explains: >-
+          The call count comes from halving an `n`-bit exponent, which gives `O(n)` calls,
+          not `n²`.
+      - text: "`y` calls, each at `O(n²)`"
+        explains: >-
+          `y` calls is the *naïve* method — and since `y` can be about `2ⁿ`, that is precisely
+          what repeated squaring exists to avoid.
+  - ask: Why does the analysis say `2n` calls rather than `n`?
+    choices:
+      - text: >-
+          An odd exponent costs a call that only subtracts 1, so halving happens every *two*
+          calls in the worst case
+        correct: true
+        explains: >-
+          The odd branch does not halve — it peels off one factor of `x` to make the exponent
+          even. So a halving may take two calls, and an `n`-bit `y` can be halved `n` times,
+          giving at most `2n` calls. Inside `O` the 2 disappears anyway.
+      - text: Because both `x` and `y` have to be reduced each round
+        explains: >-
+          Reducing is part of the cost *per call*, not the number of calls.
+      - text: Because the recursion descends and then returns
+        explains: >-
+          The return trip does the arithmetic but adds no new calls — each call returns once.
+      - text: It is a safety margin with no particular meaning
+        explains: >-
+          It has a precise cause: the odd branch spends a call without halving.
+---
+
+Compute `xʸ mod N` for enormous `x`, `y` and `N`. This is the operation at the heart of RSA
+and Diffie–Hellman, so it has to be genuinely fast.
+
+## Why the obvious method fails
+
+The previous page fixed the *size* problem: reduce after every step and nothing exceeds `N`.
+So multiply `x` by itself, reducing each time. Every value stays small. Where is the catch?
+
+**The number of operations.** That does `y − 1` multiplications, and `y` has hundreds of
+digits — something like `2⁵⁰⁰` of them. The values are under control; the **count** is not.
+Fixing counts is what algorithms are for.
+
+## Halve the exponent instead of decrementing it
+
+Squaring **doubles** an exponent, so halving is the way back down:
+
+```
+x¹⁶ = (((x²)²)²)²
+```
+
+Four squarings, not fifteen multiplications: 2 → 4 → 8 → 16.
+
+```
+function modexp(x, y, N)
+  if y = 0: return 1
+  if y is even:
+    z = modexp(x, y/2, N)
+    return z·z mod N
+  else:
+    z = modexp(x, y−1, N)
+    return x·z mod N
+```
+
+Even `y`: compute the half power, square it. Odd `y`: take one factor of `x` out, leaving an
+even exponent. Reduce mod `N` after every step, so nothing ever exceeds `N`.
+
+> This is the same shape as `multiply` from the multiplication section, with *double*
+> replaced by *square* and *add `x`* by *multiply by `x`*. Multiplication is repeated
+> addition; exponentiation is repeated multiplication; the halving trick works for both.
+
+## The cost
+
+Let `n` be the bit length of `max(x, y, N)`.
+
+**How many calls?** An odd step drops `y` by 1, and the step right after it halves. So `y` at
+least halves every two calls, and an `n`-bit `y` halves at most `n` times — **at most `2n`
+calls**, which is `O(n)`.
+
+**How much per call?** One modular multiplication of numbers below `N`: `O(n²)`.
+
+> `O(n)` calls × `O(n²)` per call = **`O(n³)`**
+
+Set that against the naïve count of `y − 1 ≈ 2ⁿ` multiplications. Repeated squaring turns an
+**exponential** count into a **cubic** one, and that single change is what makes public-key
+cryptography possible. On 500-bit numbers, `O(n³)` is around 10⁸ word operations — fast,
+while `2⁵⁰⁰` is not a number of operations anything will ever perform.
+
+> Practice: [372 · Super Pow](https://leetcode.com/problems/super-pow).

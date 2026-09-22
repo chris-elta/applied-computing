@@ -1,0 +1,121 @@
+---
+course: applied-algorithm-analysis
+section: w2-arithmetic
+order: 250
+title: Congruence and the Substitution Rule
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week2.html?hash=true#/19
+    caption: >-
+      Slides 21–22 of 42 — congruence read two ways, and the rule that lets you swap
+      numbers mid-calculation.
+notation:
+  - symbol: "≡"
+    reads: is congruent to
+    means: >-
+      Three lines rather than two: not "equal", but "the same as far as this modulus is
+      concerned". `17 ≡ 5 (mod 12)` — different numbers, same place on the clock.
+  - symbol: "(mod N)"
+    reads: mod N
+    means: >-
+      In a congruence this is not an operation — it only names which modulus `≡` is using,
+      and it applies to the whole statement, not the nearest number.
+  - symbol: "divides"
+    reads: divides
+    means: >-
+      "`N` divides `x − y`" means `x − y` is a whole number of `N`s, with nothing left over.
+questions:
+  - ask: Is `−3 ≡ 9 (mod 12)`?
+    choices:
+      - text: Yes — they differ by a multiple of 12, and both reduce to 9
+        correct: true
+        explains: >-
+          `−3 − 9 = −12`, a multiple of 12. And `−3 mod 12 = 9`, matching `9 mod 12 = 9`.
+          Both readings of congruence agree, as they always must.
+      - text: No, because `−3 mod 12` is `−3`
+        explains: >-
+          Reduction lands in `0…11`, so `−3 mod 12 = 9`. This is the same trap as `−7 mod 3`,
+          and it is where people trip most often.
+      - text: No — congruence is only defined for non-negative integers
+        explains: >-
+          Congruence is defined on all integers, and allowing negatives is much of the point:
+          it is what folds the whole number line into `N` classes.
+      - text: Only if 12 is prime
+        explains: >-
+          Primality matters later, for inverses and division. Congruence itself works for any
+          modulus.
+  - ask: >-
+      `a mod N` and `x ≡ y (mod N)` both contain the word "mod". What is the difference?
+    choices:
+      - text: >-
+          The first is an **operation** returning a number in `0…N−1`; the second is a
+          **statement** that is true or false
+        correct: true
+        explains: >-
+          One word, two jobs. `13 mod 5` evaluates to 3. `13 ≡ 3 (mod 5)` asserts something,
+          and there the `(mod 5)` merely names the modulus that `≡` is using — it computes
+          nothing.
+      - text: They are the same; the second is just longer
+        explains: >-
+          They are different kinds of thing entirely — a value versus a claim. You can put
+          `a mod N` on the right of an equals sign; you cannot do that with a congruence.
+      - text: The first works on integers, the second on equivalence classes
+        explains: >-
+          Both are about integers. The difference is operation versus assertion, not what
+          they range over.
+      - text: The second requires `x` and `y` to be reduced already
+        explains: >-
+          It does not — that is the whole convenience. `17 ≡ 5 (mod 12)` is a perfectly good
+          statement with neither side reduced.
+---
+
+Two numbers are **congruent** mod `N` when the modulus cannot tell them apart:
+
+```
+x ≡ y (mod N)   ⟺   N divides (x − y)
+```
+
+The three-bar `≡` deliberately is not `=`. 17 and 5 are not equal, but mod 12 they land in
+the same place on the clock.
+
+There are two equivalent readings, and you should be able to move between them freely:
+
+- they leave the **same remainder** when divided by `N`; or
+- their **difference is a multiple** of `N`.
+
+| claim | difference a multiple of 12? | same remainder? |
+| --- | --- | --- |
+| `17 ≡ 5 (mod 12)` | `17 − 5 = 12` ✓ | both 5 ✓ |
+| `−3 ≡ 9 (mod 12)` | `−3 − 9 = −12` ✓ | both 9 ✓ |
+| `14 ≡ 5 (mod 12)` | `14 − 5 = 9` ✗ | 2 vs 5 ✗ |
+
+The middle row is where people trip, for the reason from the last page: `−3 mod 12` is 9.
+
+## One word, two jobs
+
+Worth separating carefully, because the notation reuses "mod" for two different things:
+
+- **`a mod N` is an operation.** It evaluates to a number in `0…N−1`. `13 mod 5` is 3.
+- **`x ≡ y (mod N)` is a statement.** It is true or false, and the `(mod N)` computes
+  nothing — it only names which modulus `≡` is working with, and it governs the whole line.
+
+## The substitution rule
+
+> If `x ≡ x′ (mod N)` and `y ≡ y′ (mod N)`, then `x + y ≡ x′ + y′` and `xy ≡ x′y′`.
+
+In plain terms: **you may swap any number for any other number in its pile, at any point in
+the calculation, without changing the answer.** Addition and multiplication do not care which
+representative you use, and associativity, commutativity and distributivity all survive
+intact — so ordinary algebra still works.
+
+Watch what that licence buys:
+
+```
+2³⁴⁵ ≡ (2⁵)⁶⁹ ≡ 32⁶⁹ ≡ 1⁶⁹ ≡ 1 (mod 31)
+```
+
+`2³⁴⁵` is a 104-digit number that we never wrote down. We noticed `32 ≡ 1 (mod 31)`, swapped
+it for 1, and the problem collapsed to nothing.
+
+That is not a party trick. It is the reason modular arithmetic is computable at all, and the
+next page turns it into a general technique.

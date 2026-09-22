@@ -1,0 +1,94 @@
+---
+course: applied-algorithm-analysis
+section: w2-size
+order: 200
+title: Input Size Is Bits, Not Value
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week2.html?hash=true#/3
+    caption: >-
+      Slides 4–7 of 42 — where the simplification breaks, how long a number is, and the
+      figure showing a counting loop as exponential.
+notation:
+  - symbol: "N vs n"
+    reads: big N versus little n
+    means: >-
+      The distinction the whole week turns on. `N` is a number's **value**; `n` is how many
+      **bits** it takes to write down. `N = 1000` has `n = 10`.
+  - symbol: "⌈x⌉"
+    reads: the ceiling of x
+    means: >-
+      Round up to the next whole number. `⌈3.2⌉ = 4`. You cannot have 6.9 digits, so digit
+      counts always round up.
+  - symbol: "log_b N"
+    reads: log base b of N
+    means: >-
+      "How many times must I multiply `b` by itself to reach `N`?" With `b = 2` it also
+      answers "how many bits does `N` need?"
+questions:
+  - ask: >-
+      A loop counts from 1 up to `N`, doing constant work each time. Is that a linear-time
+      algorithm?
+    choices:
+      - text: No — it is exponential in the input size
+        correct: true
+        explains: >-
+          The input is the *digits* of `N`, so the input size is `n ≈ log₂ N`. The loop runs
+          `N ≈ 2ⁿ` times. Add one bit to the input and the work doubles — which is the
+          definition of exponential, not linear.
+      - text: Yes — it does `N` steps for an input of `N`
+        explains: >-
+          This is the trap the whole section exists to remove. The input is not of size `N`;
+          `N` is the value written on it. You were handed about `log₂ N` characters.
+      - text: Yes, provided each step really is constant time
+        explains: >-
+          Constant work per step is granted. The problem is the *number* of steps measured
+          against the *length* of the input, and those are exponentially apart.
+      - text: It depends on the base the number is written in
+        explains: >-
+          Changing base moves the digit count by only a constant factor, which `Θ` discards.
+          The gap between `2ⁿ` and `n` survives any base.
+---
+
+Every cost so far has assumed that basic arithmetic takes one step. Adding two numbers: one
+step. That has been harmless, because the numbers were small.
+
+This is the lecture where it stops. Cryptography routinely uses numbers with hundreds of
+digits, and there one addition is emphatically not one step. To price arithmetic honestly, we
+first have to agree what "the size of the input" even means.
+
+## How long is a number?
+
+Take `N = 1000`. The same number, written three ways:
+
+| base | written | length |
+| --- | --- | --- |
+| 10 | `1000` | 4 digits |
+| 2 | `1111101000` | 10 bits |
+| 16 | `3E8` | 3 digits |
+
+In general, writing `N` in base `b` takes `⌈log_b(N+1)⌉` digits — `log_b N` counts the digit
+positions you need, and `⌈ ⌉` rounds up, since there is no such thing as 6.9 digits.
+
+Does the base matter? Only by a constant: `log_b N = log₂ N / log₂ b`. Constant factors are
+exactly what `Θ` discards, so up to `Θ` the answer is unambiguous:
+
+> **`n` = the number of bits ≈ `log₂ N`.**
+
+## Why that changes everything
+
+An algorithm handed `N` is handed a **row of digits**, not a quantity. It receives an input
+of length `log N`, not of length `N`.
+
+Turn that around and it bites. Take a loop that counts from 1 up to `N`:
+
+- `N = 1000` is 10 bits of input, and the loop runs 1000 times — that is `2¹⁰`.
+- Add **one bit** to the input and it becomes 11 bits, `N = 2000`, and the loop runs twice as
+  long.
+
+One extra character of input, twice the work. That is exponential growth in `n`, dressed up
+to look linear in `N`. The animated figure on slide 7 is worth running twice: watch the input
+row grow by a single cell while the work bar doubles.
+
+> **Input size is bits, not value.** Every cost in this week is measured in the digits of the
+> numbers involved — never in how big they are.

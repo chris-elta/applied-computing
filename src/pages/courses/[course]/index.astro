@@ -2,6 +2,7 @@
 import Base from '../../../layouts/Base.astro';
 import CourseProgress from '../../../components/CourseProgress';
 import { getCourses, getSteps, groupIntoSections, conceptPath, type Step, type Course } from '../../../lib/course';
+import { splitInline } from '../../../lib/inline-code';
 
 export async function getStaticPaths() {
   const courses = await getCourses();
@@ -58,7 +59,16 @@ const highlighted = steps.filter((s) => s.concept.data.highlight).length;
         {section.title && (
           <header class="section__head">
             <h2 class="section__title">{section.title}</h2>
-            {section.summary && <p class="section__summary">{section.summary}</p>}
+            {section.summary && (
+              <p class="section__summary">
+                {splitInline(section.summary).map((part) =>
+                  part.kind === 'code' ? <code>{part.text}</code>
+                  : part.kind === 'strong' ? <strong>{part.text}</strong>
+                  : part.kind === 'em' ? <em>{part.text}</em>
+                  : part.text,
+                )}
+              </p>
+            )}
           </header>
         )}
 
@@ -118,6 +128,13 @@ const highlighted = steps.filter((s) => s.concept.data.highlight).length;
   .section__head { margin-bottom: 0.6rem; }
   .section__title { font-size: 1.05rem; margin: 0 0 0.2rem; }
   .section__summary { margin: 0; color: var(--ink-faint); font-size: 0.88rem; max-width: 38rem; }
+  .section__summary code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    background: var(--bg-sunken);
+    padding: 0.1em 0.3em;
+    border-radius: 3px;
+  }
 
   .toc { list-style: none; margin: 0; padding: 0; }
   .toc__item { border-top: 1px solid var(--line); }

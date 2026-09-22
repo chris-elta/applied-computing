@@ -1,0 +1,110 @@
+---
+course: applied-algorithm-analysis
+section: w2-algorithms
+order: 290
+title: Reading the Trace
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week2.html?hash=true#/27
+    caption: >-
+      Slides 30–31 of 42 — the recursion descending and returning, then the same trace as a
+      table.
+notation:
+  - symbol: "3¹³ mod 7"
+    reads: three to the thirteen, mod seven
+    means: >-
+      The worked example. `3¹³` is 1,594,323; the algorithm never computes it, and never
+      holds a number above 36.
+  - symbol: "base case"
+    reads: base case
+    means: >-
+      The call that stops the recursion — here `y = 0`, which returns 1. It is where the
+      descent turns around.
+questions:
+  - ask: Why does the trace for exponent 13 need only six rows?
+    choices:
+      - text: Because each even step halves the exponent, so the descent is short
+        correct: true
+        explains: >-
+          The descent is `13 → 12 → 6 → 3 → 2 → 1 → 0`. Odd steps subtract 1, even steps
+          halve, so the exponent collapses in about `log₂ 13` halvings rather than 13 steps.
+      - text: Because only six powers of 3 are distinct mod 7
+        explains: >-
+          There are only six non-zero residues mod 7, which is true and unrelated — the row
+          count comes from the descent, not from the modulus.
+      - text: Because the table skips rows that reduce to 1
+        explains: >-
+          Nothing is skipped. `3⁶` and `3¹²` both reduce to 1 and both appear.
+      - text: Because 13 is prime
+        explains: >-
+          Primality plays no part. The same short descent happens for 12 or 14.
+  - ask: >-
+      In the trace, the largest number that ever appears is 36, while `3¹³` is 1,594,323.
+      What keeps it small?
+    choices:
+      - text: Reducing mod 7 after every step, so nothing ever exceeds 6²
+        correct: true
+        explains: >-
+          Every intermediate is dragged back below 7, so the biggest value the algorithm ever
+          holds is a product of two such numbers — at most 36. That is the "reduce as you go"
+          payoff made visible.
+      - text: The recursion never multiplies, only squares
+        explains: >-
+          It does both — squaring on even steps, multiplying by `x` on odd ones. Either way
+          the result is reduced immediately.
+      - text: 3 and 7 happen to be small
+        explains: >-
+          The bound is structural, not luck: intermediates stay below `N²` for any `N`, which
+          is what keeps every operation on `n`-bit numbers.
+      - text: The table only shows the reduced column
+        explains: >-
+          The middle column shows the unreduced arithmetic too — `36` is visible there, and
+          it is the largest thing that appears.
+---
+
+The algorithm is two journeys in one: the recursion goes **down**, shrinking the exponent
+until it hits zero, then comes back **up**, doing the arithmetic.
+
+The animated figure on slide 30 separates those two halves, and it is worth running once
+before reading the table.
+
+## Down: shrink the exponent
+
+```
+y = 13  odd  → y − 1
+y = 12  even → halve
+y = 6   even → halve
+y = 3   odd  → y − 1
+y = 2   even → halve
+y = 1   odd  → y − 1
+y = 0   base case, turn around
+```
+
+Seven calls to get from 13 to 0. Nothing has been computed yet — the descent only works out
+*which* powers will be needed.
+
+## Up: compute, reducing every time
+
+| value | how | mod 7 |
+| --- | --- | --- |
+| `3¹` | `3 · 3⁰ = 3` | 3 |
+| `3²` | `(3¹)² = 9` | 2 |
+| `3³` | `3 · 3² = 6` | 6 |
+| `3⁶` | `(3³)² = 36` | 1 |
+| `3¹²` | `(3⁶)² = 1` | 1 |
+| `3¹³` | `3 · 3¹² = 3` | **3** |
+
+Six rows, and every one is either a squaring or a multiplication by `x`, followed immediately
+by a reduction.
+
+## The thing to notice
+
+**The largest number that appears anywhere is 36.** Computed directly, `3¹³ = 1,594,323`.
+
+That gap is the whole argument of this section made concrete. The algorithm never holds the
+answer to the original problem — it holds only remainders below 7 and their pairwise
+products, which cannot exceed `6² = 36`. Scale the modulus up to a 500-bit `N` and the same
+bound applies: nothing the algorithm stores is longer than `2n` bits, ever.
+
+The descent controls **how many** operations you do. Reducing as you go controls **how big**
+the numbers are. Both are needed, and they are independent.

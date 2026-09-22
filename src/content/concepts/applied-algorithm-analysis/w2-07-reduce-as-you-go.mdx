@@ -1,0 +1,109 @@
+---
+course: applied-algorithm-analysis
+section: w2-arithmetic
+order: 260
+title: Reduce As You Go, and What It Costs
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week2.html?hash=true#/21
+    caption: >-
+      Slides 23–25 of 42 — why reducing early is safe, the price of a modular operation, and
+      where that leaves us.
+notation:
+  - symbol: "2N"
+    reads: two N
+    means: >-
+      Twice the modulus. Two numbers below `N` sum to less than `2N`, which is why one
+      subtraction is enough to bring the sum back.
+  - symbol: "N²"
+    reads: N squared
+    means: >-
+      `N × N`. A product of two numbers below `N` is below `N²` — up to twice as many digits,
+      which is why a product needs real division.
+  - symbol: "reducing"
+    reads: reducing
+    means: >-
+      Bringing a result back below `N` after an ordinary operation. The second half of every
+      modular operation.
+questions:
+  - ask: >-
+      Why is one subtraction enough to reduce a modular **sum**, but not a modular
+      **product**?
+    choices:
+      - text: >-
+          A sum overshoots by at most one `N`; a product can overshoot by nearly a factor of
+          `N`
+        correct: true
+        explains: >-
+          Both inputs are below `N`, so `a + b < 2N` — one copy of `N` too big at worst, and
+          a single conditional subtraction fixes it. But `a · b` can be close to `N²`, which
+          would need nearly `N` subtractions, so it takes a full long division instead.
+      - text: Because multiplication does not preserve congruence
+        explains: >-
+          It does — that is exactly the substitution rule. The issue is the size of the
+          intermediate value, not its correctness.
+      - text: Because products can be negative
+        explains: >-
+          With both inputs in `0…N−1` the product is non-negative. Size is the problem, not
+          sign.
+      - text: >-
+          Because division is `O(n²)` and subtraction is `O(n)`, so division is the safer
+          choice
+        explains: >-
+          That is the cost *consequence*, not the reason. The reason is how far past `N` the
+          result can land.
+---
+
+Modular arithmetic would be worthless if you had to compute the answer first and reduce it
+afterwards. Two numbers make the point:
+
+- `2³⁴⁵` has **104 decimal digits**. Large, but writable.
+- In cryptography the *exponent* has hundreds of digits, so `xʸ` would have more digits than
+  there are atoms in the observable universe.
+
+So the naive route is not slow. It is impossible.
+
+## The escape
+
+Take `mod N` **after every single step**, never at the end. The substitution rule guarantees
+this changes nothing — swapping a number for its remainder is always allowed, so doing it
+early is as valid as doing it late.
+
+```
+13 × 17 mod 10
+
+the long way:   13 × 17 = 221,  then 221 mod 10 = 1
+the short way:  (13 mod 10)(17 mod 10) = 3 × 7 = 21,  then 21 mod 10 = 1
+```
+
+Same answer, smaller numbers at every stage.
+
+And the payoff compounds. Because every intermediate value is dragged back below `N`
+immediately, **every operation in the whole computation works on `n`-bit numbers**, however
+long it runs. The cost per step stays flat; the only thing that grows is how many steps you
+do.
+
+## But doesn't the reduction cost something?
+
+The obvious worry is that you have only moved the expense. You have not — a modular operation
+costs the same *order* as the ordinary one, and the asymmetry between the two cases is worth
+understanding rather than memorising.
+
+**Addition.** Both inputs are below `N`, so `a + b < 2N`. It has overshot by at most **one**
+copy of `N`. Reducing means checking whether it reached `N` and, if so, subtracting once.
+
+> add `O(n)` + one subtraction `O(n)` = **`O(n)`**
+
+**Multiplication.** Both inputs are below `N`, so `a · b < N²` — up to `2n` bits, twice the
+length. It may have overshot by nearly a *factor* of `N`, so subtraction is hopeless; you
+need one full **long division** by `N`.
+
+> multiply `O(n²)` + one division `O(n²)` = **`O(n²)`**
+
+## The two prices everything else is built from
+
+> - One modular **addition** is `O(n)`.
+> - One modular **multiplication** is `O(n²)`.
+
+Those are the only unit costs the rest of the week uses. The next two algorithms each take
+one of them and multiply by a round count — and that is their entire analysis.

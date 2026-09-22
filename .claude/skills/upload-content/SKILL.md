@@ -178,9 +178,9 @@ is a parse error. Quote the whole value, or use a `>-` block.
 **Numeric answers.** `text: 10` parses as a number. The schema coerces it, but quote it
 anyway: `text: "10"`.
 
-**Frontmatter is data, not MDX.** In `questions` and `notation`, only `` `code` ``,
-`**strong**` and `*em*` are rendered (by `src/lib/inline-code.ts`). Links, tables and
-headings will appear as literal punctuation.
+**Frontmatter is data, not MDX.** In `questions`, `notation` and a course's section
+`summary`, only `` `code` ``, `**strong**` and `*em*` are rendered (by
+`src/lib/inline-code.ts`). Links, tables and headings will appear as literal punctuation.
 
 **MDX bodies treat `{` as an expression.** Wrap anything containing braces — `{0, 1, …, N−1}`,
 `max{f, g}` — in backticks or a code block.

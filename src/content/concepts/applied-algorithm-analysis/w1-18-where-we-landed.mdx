@@ -7,28 +7,18 @@ visuals:
   - type: html
     src: /slides/applied-algorithm-analysis/week1.html?hash=true#/53
     caption: >-
-      Slides 63–65 of 65 — the summary table, the self-check, and the reading.
+      Slides 63–65 of 65 — the Part 1 summary and self-check.
 notation:
   - symbol: "O · Ω · Θ · o"
     reads: big-oh, big-omega, big-theta, little-oh
     means: >-
       The four relations between functions: `≤`, `≥`, `=` and a strict `<`. Each needs
       witnesses — a constant `c` and a threshold `n₀` — before it counts as proved.
-  - symbol: "n ≈ log₂ N"
-    reads: n is approximately log base two of N
+  - symbol: "witness"
+    reads: witness
     means: >-
-      The bridge between the two halves of the week. `N` is a number's **value**, `n` is its
-      **length in bits**, and input size always means the second.
-  - symbol: "mod"
-    reads: mod, or modulo
-    means: >-
-      Remainder after division. Keeps every intermediate value below `N`, which is what
-      makes arithmetic on huge numbers possible at all.
-  - symbol: "rounds × cost per round"
-    reads: rounds times cost per round
-    means: >-
-      Not really notation — the accounting pattern used to price fast exponentiation and
-      Euclid, and the most reusable tool from this week.
+      The specific `c` and `n₀` that back a bound. Naming them is what turns an assertion
+      into a proof.
 questions:
   - ask: >-
       `fib3` makes the same recursive calls as `fib1`. Why is it linear anyway?
@@ -73,31 +63,9 @@ questions:
         explains: >-
           They are complementary, not contradictory. Holding simultaneously is exactly the
           definition of `Θ`.
-  - ask: >-
-      Euclid's algorithm is run on two 100-digit numbers. Is the input size 100, 200, about
-      664, or 10¹⁰⁰?
-    choices:
-      - text: About 664
-        correct: true
-        explains: >-
-          200 decimal digits in total, at `log₂ 10 ≈ 3.32` bits each, is about 664 bits.
-          Input size is the length of the input, and the whole second half of the lecture
-          turns on not confusing it with the value.
-      - text: "10¹⁰⁰"
-        explains: >-
-          That is the value, and using it as the size would make Euclid look impossibly
-          slow. This is the misconception the module is built to remove.
-      - text: "100"
-        explains: >-
-          That is the digit count of one number of the two, and in decimal digits rather
-          than bits.
-      - text: "200"
-        explains: >-
-          The right number of digits, but the conventional unit is bits — multiply by
-          `log₂ 10`.
 ---
 
-Three things to carry forward, and one habit.
+Three things to carry forward from Part 1, and one habit.
 
 ## 1 · The algorithm decides what is computable, not the machine
 
@@ -123,37 +91,25 @@ Two things to keep straight: a claim needs **witnesses** (an actual `c` and `n�
 proved rather than asserted; and bound-tightness is a *separate axis* from which case you
 mean.
 
-## 3 · For numbers, input size is bits
+## 3 · A proof is a fence, a starting line, and a showing
 
-`N` is a value; `n ≈ log₂ N` is its length. Forgetting that is what makes an innocent loop
-over `1…N` secretly exponential. Once you count bits, arithmetic stops being free:
+`T(n)` is only a name for the wait. The claim is about its **shape**, and proving it means
+building a fence the growth never breaks through: `c` says how steep, `n₀` says from when,
+and after that it must hold forever. Upper bounds **inflate** smaller terms up to the leading
+one; lower bounds **discard** them.
 
-| on `n`-bit numbers | cost |
-| --- | --- |
-| addition | `O(n)` |
-| multiplication | `O(n²)` |
-| division and mod | `O(n²)` |
-| modular exponentiation | `O(n³)` |
-| gcd, by Euclid | `O(n³)` |
+## The habit: name your witnesses
 
-## The habit: rounds × cost per round
-
-The last two rows were derived the same way, with nothing clever:
-
-- **Fast exponentiation** — exponent halves each call → `n` rounds; each is one modular
-  multiplication at `O(n²)`.
-- **Euclid** — larger value halves every two rounds → `2n` rounds; each is one division at
-  `O(n²)`.
-
-Find the round count, find the per-round cost, multiply. That is the most reusable thing in
-this week's material, and what next week's recurrences generalise.
+Every bound you assert should come with the specific `c` and `n₀` that back it. "Obviously
+it is `O(n²)`" is not a proof; `c = 12, n₀ = 1` is.
 
 ## Next
 
-Divide and conquer: recurrences and the master theorem.
+**Week 2 — algorithms with numbers.** Everything so far quietly assumed one addition is one
+step. That assumption is about to break, and the whole of next week is what happens when you
+price arithmetic by the *digits* of the numbers rather than their value.
 
 ## Reading
 
-- Dasgupta, Papadimitriou & Vazirani, *Algorithms* — ch. 0 for `fib1`/`fib2` and Big-O, ch. 1
-  for arithmetic, modular arithmetic and Euclid.
-- Roughgarden, *Algorithms Illuminated, Part 1* — ch. 2 for asymptotic notation.
+- Dasgupta, Papadimitriou & Vazirani, *Algorithms* — chapter 0 for `fib1`/`fib2` and Big-O.
+- Roughgarden, *Algorithms Illuminated, Part 1* — chapter 2 for asymptotic notation.

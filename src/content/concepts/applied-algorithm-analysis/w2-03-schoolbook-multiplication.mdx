@@ -1,0 +1,89 @@
+---
+course: applied-algorithm-analysis
+section: w2-arithmetic
+order: 220
+title: Schoolbook Multiplication
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week2.html?hash=true#/12
+    caption: Slide 13 of 42 — long multiplication in binary, and what it costs.
+notation:
+  - symbol: "partial product"
+    reads: partial product
+    means: >-
+      One row of a long multiplication — the top number times a single digit of the bottom
+      one, shifted into position.
+  - symbol: "1101₂"
+    reads: one one zero one, base two
+    means: >-
+      The small `2` says which base the digits are in. Without it, `1101` reads as one
+      thousand one hundred and one.
+questions:
+  - ask: In binary long multiplication, why is each partial product cheap to produce?
+    choices:
+      - text: >-
+          Each digit of `y` is 0 or 1, so every row is either zero or a shifted copy of `x`
+        correct: true
+        explains: >-
+          No digit-by-digit multiplication is needed at all, and shifting is free — you
+          append a zero. The entire cost lives in *adding* the rows together, not in making
+          them.
+      - text: Binary numbers are shorter than decimal ones
+        explains: >-
+          They are longer, by a factor of about 3.32. The saving comes from the digits being
+          only 0 or 1, not from how many there are.
+      - text: Carries never occur in binary
+        explains: >-
+          Carries occur constantly in binary addition. What is avoided is a multiplication
+          table, not the carrying.
+      - text: The rows can be added in any order
+        explains: >-
+          True but irrelevant to the cost — reordering still leaves `n` additions to perform.
+---
+
+Addition came out at `Θ(n)` and optimal. Multiplication is where the price starts to hurt.
+
+The long multiplication you learned in decimal works in any base, and binary makes it
+unusually simple:
+
+```
+    1 1 0 1     (13)
+  × 1 0 1 1     (11)
+  ───────────
+    1 1 0 1     13 × 1
+  1 1 0 1 ·     13 × 1, shifted once
+0 0 0 0 · ·     13 × 0, shifted twice
+1 1 0 1 · · ·   13 × 1, shifted three times
+───────────────
+1 0 0 0 1 1 1 1 (143)
+```
+
+Each row is a **partial product**: the top number times one digit of the bottom number,
+shifted into place. In decimal that needs a real multiplication per row. In binary the digit
+is 0 or 1, so every row is either **nothing** or **a copy of `x`** — and shifting is free, you
+just append a zero.
+
+(Check the third row is all zeros, because bit 2 of `11 = 1011₂` is 0.)
+
+## So what does it cost?
+
+The multiplications are free. The **additions** are not.
+
+There are `n` partial products, each up to `2n` bits long, and they have to be added
+together — `n` additions, each at the `Θ(n)` price established on the previous page.
+
+> `n` rows × `O(n)` per row = **`O(n²)`**
+
+Changing base does not help. Adding the rows in a different order does not help — there are
+still `n` of them.
+
+## The first non-linear operation
+
+This is worth marking. Addition was linear in the digits and provably optimal. Multiplication
+is **quadratic**, and that is the first time a basic arithmetic operation has cost more than
+a single pass over its input.
+
+Whether `O(n²)` is the *best possible* for multiplication is a genuinely different question,
+and a much harder one. The next two pages show two methods that look nothing like this one
+and cost exactly the same — which is a hint that beating it needs a new idea rather than a
+rearrangement.

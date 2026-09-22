@@ -1,0 +1,99 @@
+---
+course: applied-algorithm-analysis
+section: w2-size
+order: 210
+title: Addition, One Column at a Time
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week2.html?hash=true#/7
+    caption: >-
+      Slides 8–10 of 42 — column addition and the Fact behind it, the carry travelling left,
+      and where that leaves us.
+notation:
+  - symbol: "Ω(n)"
+    reads: big-omega of n
+    means: >-
+      A lower bound — the cost is *at least* this. Used here about the **problem**, not about
+      one algorithm: no possible method can beat it.
+  - symbol: "Θ(n)"
+    reads: big-theta of n
+    means: >-
+      Upper and lower bounds meeting on the same rate. When that happens the question is
+      closed — there is nothing left to improve.
+  - symbol: "carry"
+    reads: carry
+    means: >-
+      The bit that spills into the next column when a column's sum needs two digits. In any
+      base it is at most 1.
+questions:
+  - ask: >-
+      Addition of two `n`-bit numbers is `Θ(n)`. The `Ω(n)` half of that is a claim about
+      what, exactly?
+    choices:
+      - text: Every possible addition algorithm, not just column addition
+        correct: true
+        explains: >-
+          That is the distinction worth taking away. The `O(n)` describes *this* method; the
+          `Ω(n)` says no method whatsoever can do better, because producing a correct sum
+          requires reading the input, and the input is `n` bits long. Only together do they
+          give `Θ(n)`.
+      - text: Column addition specifically
+        explains: >-
+          That would make the pair of bounds far less interesting — `O` and `Ω` on the same
+          algorithm just means you measured it twice. The force here is that `Ω` quantifies
+          over *all* algorithms.
+      - text: The best case for column addition
+        explains: >-
+          Best/average/worst is a different axis from `O`/`Ω`/`Θ`. This `Ω` is about which
+          algorithms are possible, not about which inputs are lucky.
+      - text: The carry propagation, which cannot be parallelised
+        explains: >-
+          Carry propagation is a property of this method, and hardware does circumvent it.
+          The floor here comes from having to read the input at all.
+---
+
+Now that `n` means digits, addition can be priced honestly.
+
+```
+  1 1 1 1    carries
+    1 1 0 1  (13)
+  + 1 0 1 1  (11)
+  ───────────
+  1 1 0 0 0  (24)
+```
+
+## Why column addition works at all
+
+One small fact, true in **any** base `b ≥ 2`:
+
+> The sum of any three single-digit numbers is at most two digits.
+
+Three is the right number to check — the two digits being added, plus an incoming carry. And
+because the result is at most two digits, the carry going *out* is at most 1. That is what
+lets the method work column by column without anything piling up.
+
+So each column takes three bits in and puts two bits out — one digit of the answer, one
+carry — and that work never grows. Only the number of columns grows.
+
+> `n` columns × constant work each = **`O(n)`**
+
+The animated figure on slide 9 walks the carry leftward one column at a time; running it once
+makes the "constant work per column" claim concrete.
+
+## And nothing can do better
+
+That gives a ceiling. There is also a floor, and it is the more interesting half.
+
+To produce a correct sum you must at least **read** both numbers, and that alone is `n`
+operations. So every conceivable addition algorithm costs at least `Ω(n)`.
+
+Notice what that `Ω` quantifies over. The `O(n)` was a statement about *this* method. The
+`Ω(n)` is a statement about **every method there could ever be** — the first time in this
+course that a lower bound describes a *problem* rather than an implementation.
+
+Upper and lower bound meet, so addition is `Θ(n)`, and the question is closed. Column
+addition is not merely good; it is optimal, and no cleverness will improve it.
+
+> Practice: [67 · Add Binary](https://leetcode.com/problems/add-binary),
+> [66 · Plus One](https://leetcode.com/problems/plus-one),
+> [2 · Add Two Numbers](https://leetcode.com/problems/add-two-numbers).

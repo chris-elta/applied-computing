@@ -1,0 +1,135 @@
+---
+course: applied-algorithm-analysis
+section: w2-review
+order: 320
+title: Where We Landed
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week2.html?hash=true#/36
+    caption: Slides 40–42 of 42 — the cost table, the self-check, and the reading.
+notation:
+  - symbol: "n ≈ log₂ N"
+    reads: n is approximately log base two of N
+    means: >-
+      The sentence the whole week rests on. `N` is a number's **value**, `n` is its **length
+      in bits**, and input size always means the second.
+  - symbol: "rounds × cost per round"
+    reads: rounds times cost per round
+    means: >-
+      Not notation — the accounting pattern used to price multiplication, fast exponentiation
+      and Euclid. The most reusable thing here.
+questions:
+  - ask: >-
+      `fib3` makes the same pattern of recursive calls as `fib1`. Why is it linear anyway?
+    choices:
+      - text: Each memo entry is computed once; every repeated call returns in `O(1)`
+        correct: true
+        explains: >-
+          There are only `n` distinct subproblems. The first visit to each does the work and
+          every later visit is a lookup, so the subtrees under an already-computed value
+          never run.
+      - text: The memo makes the recursion depth logarithmic
+        explains: >-
+          The depth is still `n`, which is why `fib3` can overflow the stack where `fib2`
+          cannot. Depth is not what changed.
+      - text: It makes strictly fewer calls than `fib1`
+        explains: >-
+          It makes the same calls — that is the premise. What changed is how much work each
+          one does.
+      - text: Because addition is `O(1)`
+        explains: >-
+          Both versions assume that, and `fib1` is exponential regardless. This week has in
+          any case shown that assumption to be false for large numbers.
+  - ask: >-
+      An algorithm is both `O(n)` and `Ω(n)`. What is the one-symbol conclusion — and what
+      does that symbol still not tell you?
+    choices:
+      - text: "`Θ(n)`; it says nothing about best vs worst case, or about constants"
+        correct: true
+        explains: >-
+          Matching bounds give `Θ`. But bound-tightness and case are independent axes, so
+          `Θ(n)` alone does not say which case was analysed — and the constants it suppresses
+          may still decide which implementation you ship.
+      - text: "`Θ(n)`, so the running time is fully determined"
+        explains: >-
+          `Θ` pins the growth *order* only. Two `Θ(n)` algorithms can differ by a factor of
+          100 in practice.
+      - text: "`O(n)`, since the upper bound is what matters"
+        explains: >-
+          When both bounds hold, `Θ` is the stronger and more honest statement. Reporting
+          only `O` discards what you proved.
+      - text: Nothing — the two bounds contradict each other
+        explains: >-
+          They are complementary. Holding simultaneously is exactly the definition of `Θ`.
+  - ask: >-
+      Euclid's algorithm runs on two 100-digit numbers. Taking `n` as the bit length of the
+      larger one, is `n` about 100, 200, 332, or 10¹⁰⁰?
+    choices:
+      - text: About 332
+        correct: true
+        explains: >-
+          One 100-digit number is `100 × log₂ 10 ≈ 332` bits. `n` is set by the **larger
+          number alone**, not by the two of them added together.
+      - text: About 664
+        explains: >-
+          This is the trap: it adds both numbers' digits together. `n` is the bit length of
+          the larger input, so 332 — doubling it would double every cost in the table for no
+          reason.
+      - text: "100"
+        explains: >-
+          That is the decimal digit count of one number. Converting to bits multiplies by
+          `log₂ 10 ≈ 3.32`.
+      - text: "10¹⁰⁰"
+        explains: >-
+          That is roughly the *value*, and using it as the size is exactly the mistake this
+          week exists to remove — it would make Euclid look impossibly slow.
+---
+
+One sentence, one table, one habit.
+
+## The sentence
+
+> **For algorithms on numbers the input size is the number of bits, `n ≈ log N` — never the
+> value `N`.**
+
+Everything else this week follows from it. An algorithm handed `N` is handed a row of about
+`log₂ N` digits, which is why a loop counting up to `N` is exponential rather than linear,
+and why arithmetic that looked free turns out to have a price.
+
+## The table
+
+| on `n`-bit numbers | cost |
+| --- | --- |
+| addition | `O(n)` |
+| multiplication | `O(n²)` |
+| division and mod | `O(n²)` |
+| modular exponentiation | `O(n³)` |
+| gcd, by Euclid | `O(n³)` |
+
+Two lines are worth pausing on. **Addition is `Θ(n)` and provably optimal** — upper and lower
+bounds meet, so no future cleverness will improve it. **Multiplication is the first operation
+that is not linear in the digits**, and whether `O(n²)` is the best possible remains open at
+this point in the course.
+
+## The habit: rounds × cost per round
+
+The last two rows were derived identically, and neither needed anything clever:
+
+- **Fast exponentiation** — the exponent at least halves every two calls, so `O(n)` rounds;
+  each is one modular multiplication at `O(n²)`.
+- **Euclid** — the larger value halves every two rounds, so `2n` rounds; each is one division
+  at `O(n²)`.
+
+Find the round count, find the per-round cost, multiply. That accounting is the most reusable
+thing in this week's material, and next week's recurrences are its general form.
+
+## Next
+
+**Divide and conquer:** recurrences and the master theorem.
+
+## Reading
+
+- Dasgupta, Papadimitriou & Vazirani, *Algorithms* — chapter 1 for arithmetic, modular
+  arithmetic and Euclid.
+- Week 1 for Big-O, `Ω`, `Θ` and little-o.
+- Practice: LeetCode 67, 66, 2, 372, 1979.

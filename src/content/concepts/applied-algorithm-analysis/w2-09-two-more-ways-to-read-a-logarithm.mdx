@@ -1,0 +1,83 @@
+---
+course: applied-algorithm-analysis
+section: w2-algorithms
+order: 280
+title: Two More Ways to Read a Logarithm
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week2.html?hash=true#/26
+    caption: Slide 29 of 42 — height and halvings, after digits.
+notation:
+  - symbol: "log₂ N"
+    reads: log base two of N
+    means: >-
+      "How many times must I multiply 2 by itself to reach `N`?" One number that answers
+      three quite different questions.
+  - symbol: "base"
+    reads: base
+    means: >-
+      The number being multiplied repeatedly — the subscript in `log_b`. Inside `O` it makes
+      no difference.
+questions:
+  - ask: >-
+      Which reading of a logarithm is doing the work in both fast exponentiation and Euclid?
+    choices:
+      - text: Halvings — how many times you can halve before reaching 1
+        correct: true
+        explains: >-
+          Both shrink their quantity by a constant factor each round, so the round count is a
+          halving count. Binary search is the third member of the same family.
+      - text: Digits — how many digits the number takes to write
+        explains: >-
+          That reading gives the *input size*, which is what each round costs. It is the
+          other half of the analysis, not the round count.
+      - text: Height — the depth of a binary tree with `N` leaves
+        explains: >-
+          That is the divide-and-conquer reading, and it arrives next week with recurrences.
+          Neither algorithm builds a branching tree.
+      - text: All three, since they are the same number
+        explains: >-
+          Same number, different mechanisms. Knowing *which* one is in play is what tells you
+          whether an analysis generalises.
+---
+
+A logarithm answers one question — *how many times must I multiply `b` by itself to reach
+`N`?* — but that question shows up in three quite different costumes. Week 1 met the first.
+Fast exponentiation has just used the third, and Euclid is about to use it again.
+
+## 1 · Digits — already met
+
+`log_b N` is how many digits `N` needs in base `b`, because each extra digit position
+multiplies the range you can express by `b`. This is the reading behind **input size is
+bits**, and it is what makes `n ≈ log₂ N`.
+
+## 2 · Height — the depth of divide and conquer
+
+`log₂ N` is the height of a complete binary tree with `N` leaves: each level down doubles the
+number of nodes, so reaching `N` of them takes `log₂ N` doublings.
+
+Any algorithm that splits its problem in half, then splits those halves, recurses this deep.
+That is next week's reading, when recurrences and the master theorem arrive.
+
+## 3 · Halvings — how many rounds until you are done
+
+`log₂ N` is how many times you can halve `N` before reaching 1 — halving being simply the
+reverse of doubling.
+
+This is the reading in play right now. Fast exponentiation halves its exponent each round;
+Euclid halves its larger value every two rounds; binary search halves its search space. All
+three land on `log₂` for the same reason, and it is not the same reason as readings 1 or 2.
+
+| reading | the question it answers | shows up in |
+| --- | --- | --- |
+| digits | how long is this number to write? | input size, bit complexity |
+| height | how deep does the splitting go? | divide and conquer, recurrences |
+| halvings | how many rounds until this is 1? | fast exponentiation, Euclid, binary search |
+
+## Why the base never appears
+
+`log_b N` and `log₂ N` differ by the fixed factor `1 / log₂ b`, and fixed factors are exactly
+what asymptotic notation discards. So `O(log n)` needs no base, and writing one adds nothing.
+
+That licenses being casual about the base — **not** about the reading. When a cost turns out
+logarithmic, knowing which of the three mechanisms produced it is what tells you why.

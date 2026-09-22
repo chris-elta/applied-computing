@@ -1,0 +1,125 @@
+---
+course: applied-algorithm-analysis
+section: w2-algorithms
+order: 300
+title: Euclid's Algorithm for the GCD
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week2.html?hash=true#/30
+    caption: >-
+      Slides 33–36 of 42 — the definition, Euclid's rule and its proof, and the two-line
+      algorithm. Press down on the rule for the proof.
+notation:
+  - symbol: "gcd(a, b)"
+    reads: g-c-d of a and b
+    means: >-
+      The greatest common divisor — the largest whole number dividing both `a` and `b` with
+      nothing left over.
+  - symbol: "d divides a"
+    reads: d divides a
+    means: >-
+      `a` is a whole number of `d`s, no remainder. 3 divides 12; 5 does not.
+  - symbol: "a = qb + r"
+    reads: a equals q b plus r
+    means: >-
+      Division written without a division sign: `a` holds `q` whole copies of `b`, with `r`
+      left over. The same shape as the definition of `mod`.
+questions:
+  - ask: >-
+      The proof of Euclid's rule shows the two pairs have the same **set** of common
+      divisors, rather than reasoning about the greatest one directly. Why is that easier?
+    choices:
+      - text: >-
+          Sets can be compared by checking both directions, and equal sets must have equal
+          largest members
+        correct: true
+        explains: >-
+          Each direction is one line of ordinary divisibility: if `d` divides `a` and `b` it
+          divides `a − qb = r`, and conversely. Reasoning about a maximum directly would need
+          you to handle "greatest" throughout; this way it appears only in the last sentence.
+      - text: Because the greatest common divisor is hard to compute
+        explains: >-
+          Computing it is what the algorithm does. The proof is about why the *rule* is
+          valid, which is a separate question from how to compute anything.
+      - text: Because the two pairs have the same greatest element by definition
+        explains: >-
+          That is the conclusion, not an assumption — it is exactly what the two directions
+          establish.
+      - text: Because sets of divisors are always finite
+        explains: >-
+          True, and not the point. The argument would work the same way regardless.
+  - ask: Why does `Euclid(a, b)` terminate?
+    choices:
+      - text: "`b` strictly decreases each call and can never go below 0"
+        correct: true
+        explains: >-
+          The second argument becomes `a mod b`, which is strictly smaller than `b` and
+          non-negative. A strictly decreasing sequence of non-negative integers must reach 0.
+      - text: Because `a mod b` eventually equals `a`
+        explains: >-
+          It never does — the remainder is always strictly below `b`, which is at most `a`.
+      - text: Because the gcd is reached after `log b` steps
+        explains: >-
+          That is a statement about *speed*, and it needs the halving lemma on the next page.
+          Termination follows from decrease alone.
+      - text: Because both arguments shrink every round
+        explains: >-
+          Only the second is guaranteed to shrink; `a` takes the old value of `b`. That is
+          enough.
+---
+
+The **greatest common divisor** of two integers is the largest whole number that divides both
+exactly. ("`d` divides `a`" means `a` is a whole number of `d`s — 3 divides 12, 5 does not.)
+
+For 12 and 18 you can just list them:
+
+```
+divisors of 12:  1, 2, 3, 4, 6, 12
+divisors of 18:  1, 2, 3, 6, 9, 18
+in common:       1, 2, 3, 6      →  gcd = 6
+```
+
+Now try that on two 100-digit numbers. You cannot — you would have to factorise them both,
+and nobody knows how to do that quickly. A completely different idea is needed.
+
+## Euclid's rule
+
+> For integers `a ≥ b > 0`:  `gcd(a, b) = gcd(b, a mod b)`
+
+Try one step: `gcd(1035, 759)`. Since `1035 mod 759 = 276`, that equals `gcd(759, 276)`. The
+numbers got smaller and the answer did not change. Repeat until something hits zero.
+
+## Why it holds — a technique worth stealing
+
+The proof does something clever. Instead of reasoning about the *greatest* common divisor, it
+shows the two pairs have **exactly the same set** of common divisors. Equal sets must have
+equal largest members, so the greatest one is preserved.
+
+Write `a = qb + r`, where `r = a mod b`. Take any number `d`:
+
+- **If `d` divides `a` and `b`** — it divides `qb`, so it divides `a − qb = r`. So `d` is a
+  common divisor of `b` and `r`.
+- **If `d` divides `b` and `r`** — it divides `qb + r = a`. So `d` is a common divisor of `a`
+  and `b`.
+
+Every common divisor of one pair is a common divisor of the other. Same set, same greatest
+member. ∎
+
+> Notice the proof never mentions "greatest" until the final sentence. Turning a question
+> about a maximum into a question about a whole set is a move worth remembering.
+
+## The algorithm
+
+```
+function Euclid(a, b)
+  Input:  Two integers a and b with a ≥ b ≥ 0
+  Output: gcd(a, b)
+
+  if b = 0: return a
+  return Euclid(b, a mod b)
+```
+
+Two lines. It stops because `b` strictly decreases every call and stays non-negative, so it
+must reach 0.
+
+That proves it *finishes*. It says nothing about how **soon** — and that is the next page.

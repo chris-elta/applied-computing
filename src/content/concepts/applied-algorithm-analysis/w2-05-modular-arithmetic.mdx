@@ -1,0 +1,118 @@
+---
+course: applied-algorithm-analysis
+section: w2-arithmetic
+order: 240
+title: Modular Arithmetic
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week2.html?hash=true#/16
+    caption: >-
+      Slides 17–20 of 42 — the clock, the definition and its precedence rule, and the
+      integers folded into classes.
+notation:
+  - symbol: "x mod N"
+    reads: x mod N, or x modulo N
+    means: >-
+      The remainder when `x` is divided by `N`. `75 mod 24 = 3`. Always lands in `0 … N−1`,
+      never negative.
+  - symbol: "N"
+    reads: N
+    means: The **modulus** — the number you divide by, the size of the clock face.
+  - symbol: "precedence"
+    reads: precedence
+    means: >-
+      `mod` binds **loosest** — looser than `×` and `+`. So `a · b mod N` means
+      `(a · b) mod N`, never `a · (b mod N)`. Every formula this week is written that way.
+  - symbol: "q and r"
+    reads: q and r
+    means: >-
+      Quotient and remainder — how many whole times `N` went in, and what was left over.
+questions:
+  - ask: What is `−7 mod 3`?
+    choices:
+      - text: "2"
+        correct: true
+        explains: >-
+          The definition insists on `0 ≤ r < N`. Writing `−7 = (−3)(3) + 2` gives remainder
+          2, which is in range. Negative inputs are where this convention earns its keep, and
+          where most bugs in modular code come from.
+      - text: "−1"
+        explains: >-
+          `−7 = (−2)(3) + (−1)` is arithmetically fine but violates `0 ≤ r`. Several
+          programming languages return this; mathematics does not.
+      - text: "1"
+        explains: >-
+          Check it: `−7 − 1 = −8`, which is not a multiple of 3. The remainder must differ
+          from `−7` by a multiple of 3.
+      - text: >-
+          `−7`, since it is already smaller than 3
+        explains: >-
+          The condition is `0 ≤ r`, not merely `r < N`. Negative values are reduced upwards
+          into range.
+  - ask: What does `3 · 13 mod 5` mean?
+    choices:
+      - text: "`(3 · 13) mod 5`, which is 4"
+        correct: true
+        explains: >-
+          `mod` binds looser than `×`, so the multiplication happens first: `39 mod 5 = 4`.
+          Getting this backwards changes the answer — `3 · (13 mod 5) = 9` — though the two
+          are congruent mod 5, which is what the substitution rule will explain.
+      - text: "`3 · (13 mod 5)`, which is 9"
+        explains: >-
+          This reads `mod` as binding tighter than `×`. It does not. The two results are
+          congruent mod 5, but they are different integers, and only one is a remainder.
+      - text: Either — they are equal
+        explains: >-
+          They are congruent, not equal: 4 and 9 differ by 5. Only 4 lies in `0…4`, so only
+          it is the remainder.
+      - text: It is ambiguous and needs brackets
+        explains: >-
+          There is a standing convention: `mod` binds loosest. The brackets are optional, and
+          this deck omits them throughout.
+---
+
+You start a 25-episode season at midnight, three hours an episode. What time do you finish?
+
+`25 × 3 = 75` hours — and you did not count 75 hours forward. You divided by 24 and kept the
+remainder: **3 a.m.**, three days later. That instinct is the entire subject.
+
+Days of the week work the same way mod 7, and so do wrapping array indices, hash tables, and
+every cryptosystem in the second half of this course.
+
+## The definition
+
+`x mod N` is the remainder when `x` is divided by `N`. Formally, there is a quotient `q` and
+a remainder `r` with
+
+```
+x = qN + r,   with 0 ≤ r < N
+```
+
+and `N` is the **modulus** — the size of the clock face.
+
+That `0 ≤ r < N` is not housekeeping. It is what makes `−7 mod 3 = 2` rather than `−1`, and
+it is the single most common source of off-by-a-modulus bugs.
+
+## Reading the notation
+
+One rule that saves a lot of grief: **`mod` binds loosest** — looser than `×` and `+`.
+
+```
+a · b mod N   means   (a · b) mod N        not   a · (b mod N)
+```
+
+These are genuinely different integers: `3 · (13 mod 5) = 9`, while `(3 · 13) mod 5 = 4`.
+They *are* congruent mod 5, which is why the distinction feels slippery — but only one of
+them is a remainder. Every formula in this week's material uses the loose-binding reading.
+
+## Two ways to picture it
+
+**Restriction.** The numbers are confined to the set `{0, 1, …, N−1}`, wrapping like an hour
+hand once they reach the end.
+
+**Folding.** All the integers are kept, but grouped into `N` piles by their remainder. Mod 5,
+the pile labelled 2 holds `…, −8, −3, 2, 7, 12, 17, …` — every number differing from 2 by a
+multiple of 5. Each pile is an **equivalence class**.
+
+The second picture is the more useful one, and it is what makes the next page's substitution
+rule obvious rather than surprising.

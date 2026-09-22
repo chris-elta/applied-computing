@@ -1,0 +1,126 @@
+---
+course: applied-algorithm-analysis
+section: w2-arithmetic
+order: 230
+title: Al-Khwarizmi's Method, and the Recursion
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week2.html?hash=true#/13
+    caption: >-
+      Slides 14–16 of 42 — the doubling-and-halving table, the figure lining its rows up
+      against the bits of 13, and the same method as a recursion.
+notation:
+  - symbol: "⌊y/2⌋"
+    reads: the floor of y over two
+    means: >-
+      `y` halved and rounded **down**: `⌊7/2⌋ = 3`. Feet pointing down means round down; its
+      partner `⌈ ⌉` rounds up.
+  - symbol: "·"
+    reads: times
+    means: A multiplication dot, used to keep expressions uncluttered.
+questions:
+  - ask: >-
+      In Al-Khwarizmi's table, why are the rows with an **odd** right-hand value exactly the
+      ones to keep?
+    choices:
+      - text: >-
+          Halving `y` repeatedly reads off its binary digits, and a row is odd exactly when
+          that bit is 1
+        correct: true
+        explains: >-
+          Halving and testing for odd *is* reading the bits of `y` from the right; doubling
+          `x` is the shift. So the kept rows are the 1-bits of `y`, and the method is binary
+          shift-and-add written a thousand years before binary.
+      - text: Odd numbers cannot be halved cleanly, so their rows are kept as a remainder
+        explains: >-
+          The halving does discard a remainder, but that is not what makes the row count.
+          The row is kept because the corresponding bit of `y` is 1.
+      - text: It is a convention; keeping the even rows and negating would work too
+        explains: >-
+          It is not a convention — it is forced. Keeping the even rows would sum the wrong
+          subset and give the wrong answer.
+      - text: Because the left column is always even after the first row
+        explains: >-
+          The left column's parity is irrelevant. The test is on the right column, and it is
+          reading `y` in binary.
+  - ask: What do schoolbook multiplication, Al-Khwarizmi's table and the recursion have in common?
+    choices:
+      - text: They are one algorithm in three costumes, all costing `O(n²)`
+        correct: true
+        explains: >-
+          Each does `n` rounds of shift-and-add, and each round adds `n`-bit numbers at
+          `O(n)`. The presentations differ completely; the work does not.
+      - text: They are three genuinely different algorithms that happen to agree in cost
+        explains: >-
+          They agree because they *are* the same computation — the recursion's descent is the
+          table's right column, and its doubling is the left.
+      - text: They differ in cost, and the recursion is fastest
+        explains: >-
+          The recursion makes the structure clearest, but it performs the same `n` rounds of
+          the same work.
+      - text: All three beat `O(n²)` in binary because shifting is free
+        explains: >-
+          Free shifting is what makes each *row* cheap. The `n` additions of `n`-bit numbers
+          remain, and they are the whole cost.
+---
+
+Double the left column, halve the right (rounding down), stop when the right reaches 0, then
+add up the left-hand values whose right-hand partner was **odd**.
+
+| `x` — double | `y` — halve | odd? | keep |
+| --- | --- | --- | --- |
+| 11 | 13 | yes | + 11 |
+| 22 | 6 | no | — |
+| 44 | 3 | yes | + 44 |
+| 88 | 1 | yes | + 88 |
+| — | 0 | stop | **= 143** |
+
+`11 × 13 = 143`. That last row is not a fifth kept value — it is the three kept values added
+together: `11 + 44 + 88`.
+
+## Why it works
+
+The rows kept are exactly the 1-bits of `13 = 1101₂`.
+
+That is not a coincidence, and it is the whole trick: **halving `y` and testing for odd is
+reading the bits of `y` from the right**, while doubling `x` is the shift. So this is binary
+shift-and-add, written about a thousand years before binary notation existed. The figure on
+slide 15 lines the rows up against the bits — worth running once.
+
+## The same thing, as a recursion
+
+```
+function multiply(x, y)
+  if y = 0: return 0
+  z = multiply(x, ⌊y/2⌋)
+  if y is even: return 2z
+  else: return x + 2z
+```
+
+Trace it and the table reappears:
+
+```
+multiply(11, 13)   y odd  → 11 + 2·multiply(11, 6)
+multiply(11, 6)    y even →      2·multiply(11, 3)
+multiply(11, 3)    y odd  → 11 + 2·multiply(11, 1)
+multiply(11, 1)    y odd  → 11 + 2·multiply(11, 0)
+multiply(11, 0)          → 0
+back up:  0 → 11 → 33 → 66 → 143
+```
+
+`143 = 11 + 4·11 + 8·11 = 11 + 44 + 88` — the three rows the table kept. The `44` and `88`
+are the single `x` added deep in the recursion, doubled once per level on the way back out.
+
+## Three costumes, one algorithm
+
+Halving `y` is the table's right column. Doubling is its left column. Adding `x` when `y` is
+odd is keeping the row.
+
+So this is not a third method. There are `n` rounds because `y` halves each time, and each
+round adds two `n`-bit numbers at `O(n)`:
+
+> `n` rounds × `O(n)` per round = **`O(n²)`** — the same as schoolbook.
+
+Three presentations that look nothing alike, one cost. Beating `O(n²)` needs a genuinely
+different **idea**, not a rearranged ritual — divide and conquer, as Karatsuba's algorithm,
+in a later week.

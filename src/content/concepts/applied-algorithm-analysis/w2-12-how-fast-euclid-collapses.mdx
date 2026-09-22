@@ -1,0 +1,117 @@
+---
+course: applied-algorithm-analysis
+section: w2-algorithms
+order: 310
+title: How Fast Euclid Collapses
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week2.html?hash=true#/33
+    caption: >-
+      Slides 37–38 of 42 — the numbers drawn to scale for a typical pair and the worst case,
+      then the stepper and the cost. Try 1035/759, then 610/377.
+notation:
+  - symbol: "a/2"
+    reads: a over two
+    means: >-
+      Half of `a`. The lemma says a remainder always lands below this, which is what turns
+      "it finishes" into "it finishes fast".
+  - symbol: "lemma"
+    reads: lemma
+    means: >-
+      A small result proved on the way to a bigger one. This one does all the work in the
+      cost analysis.
+questions:
+  - ask: >-
+      The lemma says `a mod b < a/2` whenever `a ≥ b`. Why does that give at most `2n`
+      rounds?
+    choices:
+      - text: >-
+          The larger value halves every two rounds, and an `n`-bit number can only halve `n`
+          times
+        correct: true
+        explains: >-
+          Each round moves `b` into `a`'s place and the remainder into `b`'s, so after two
+          rounds the value sitting in `a` is below half what it was. `n` halvings exhaust an
+          `n`-bit number, hence at most `2n` rounds.
+      - text: Because `b` decreases by at least 1 each round
+        explains: >-
+          True, and far too weak — that bounds the rounds by the *value* of `b`, which is
+          exponential in the input size.
+      - text: Because the remainder is always smaller than `b`
+        explains: >-
+          Also true and also too weak on its own: it proves termination but gives no rate.
+          The lemma is what supplies the rate.
+      - text: Because `gcd(a, b)` divides both, so the values halve
+        explains: >-
+          The size of the gcd has nothing to do with the round count — it can be 1 while the
+          algorithm runs its full length.
+  - ask: Why are consecutive Fibonacci numbers the worst case for Euclid?
+    choices:
+      - text: >-
+          Each remainder is a single subtraction, so the values shrink as slowly as the
+          lemma permits
+        correct: true
+        explains: >-
+          With `gcd(610, 377)`, `b` is just over half of `a` every time, so `a mod b = a − b`
+          and the pair creeps down the Fibonacci sequence one term per round. It is the
+          slowest descent the lemma still allows — and even then, every value is under half
+          the one two rows above.
+      - text: Because Fibonacci numbers are coprime, so the gcd is 1
+        explains: >-
+          They are coprime, but a gcd of 1 does not make the algorithm slow — plenty of
+          coprime pairs finish in two rounds.
+      - text: Because Fibonacci numbers are large
+        explains: >-
+          Size sets `n`; it does not set the number of rounds *per bit*. The worst case is
+          about the ratio between the two numbers, not their magnitude.
+      - text: Because the recursion depth matches the Fibonacci index
+        explains: >-
+          That is a restatement of the observation rather than its cause. The cause is that
+          each remainder is a bare subtraction.
+---
+
+Termination was easy. A **rate** needs one more result.
+
+## The lemma
+
+> If `a ≥ b` then `a mod b < a/2`.
+
+Two cases, and between them they cover everything:
+
+- **If `b ≤ a/2`** — the remainder is always smaller than `b`, and `b` is already at most
+  `a/2`. Done.
+- **If `b > a/2`** — then `b` goes into `a` exactly once, so `a mod b = a − b`. And since `b`
+  is more than half of `a`, what is left is less than half of `a`. Done.
+
+Either way the larger value **halves every two rounds**. An `n`-bit number can only be halved
+`n` times, so there are at most `2n` rounds.
+
+## Seeing it
+
+The figure on slide 37 draws the larger number at each step to scale, for two pairs:
+
+- **`gcd(1035, 759)`** — a typical pair. `1035 → 759 → 276 → 207 → 69 → 0`. Four steps, and
+  the bars fall away sharply.
+- **`gcd(610, 377)`** — consecutive Fibonacci numbers, the slowest Euclid ever runs. Thirteen
+  steps, each remainder a single subtraction: `610 → 377 → 233 → 144 → 89 → 55 → …`
+
+Even in that worst case, every bar is still under half the bar two rows above. The lemma
+holds, and the Fibonacci pair is exactly the sequence that hugs it as tightly as possible.
+
+> Fibonacci turning up as Euclid's worst case is not a coincidence. Numbers whose ratio is
+> closest to `φ` are the ones that resist division hardest — which is a pleasing place to end
+> a course that opened with `fib1`.
+
+## The cost
+
+Same accounting as fast exponentiation — rounds × cost per round:
+
+**Rounds:** at most `2n`, by the lemma.
+**Per round:** one division, `a mod b`, priced at `O(n²)`.
+
+> `2n` rounds × `O(n²)` per round = **`O(n³)`**
+
+Use the stepper on slide 38 to run both pairs yourself; watching 610/377 grind out one step
+per Fibonacci term makes the worst case concrete in a way the bound does not.
+
+> Practice: [1979 · Find Greatest Common Divisor of Array](https://leetcode.com/problems/find-greatest-common-divisor-of-array).
