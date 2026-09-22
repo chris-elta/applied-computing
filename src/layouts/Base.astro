@@ -1,0 +1,119 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = 'Slides, explained and animated.' } = Astro.props;
+const site = 'Applied Computing';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <title>{title === site ? site : `${title} · ${site}`}</title>
+    <meta name="description" content={description} />
+    <ClientRouter />
+    <script is:inline>
+      // Applied before first paint so a chosen theme never flashes the other one.
+      const stored = (() => {
+        try { return localStorage.getItem('theme'); } catch { return null; }
+      })();
+      if (stored === 'light' || stored === 'dark') {
+        document.documentElement.dataset.theme = stored;
+      }
+    </script>
+  </head>
+  <body>
+    <header class="masthead">
+      <div class="shell masthead__inner">
+        <a class="masthead__brand" href="/">{site}</a>
+        <button class="masthead__theme" type="button" data-theme-toggle aria-label="Switch colour theme">
+          <span aria-hidden="true">◐</span>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="footer">
+      <div class="shell">
+        <p>Built with Astro. Slides are content; the explanations are the point.</p>
+      </div>
+    </footer>
+
+    <script>
+      // Delegated + re-bound on every view transition, since the header persists
+      // but listeners on replaced nodes do not.
+      const bind = () => {
+        const btn = document.querySelector<HTMLElement>('[data-theme-toggle]');
+        if (!btn || btn.dataset.bound) return;
+        btn.dataset.bound = 'true';
+        btn.addEventListener('click', () => {
+          const root = document.documentElement;
+          const isDark = root.dataset.theme
+            ? root.dataset.theme === 'dark'
+            : matchMedia('(prefers-color-scheme: dark)').matches;
+          const next = isDark ? 'light' : 'dark';
+          root.dataset.theme = next;
+          try { localStorage.setItem('theme', next); } catch { /* private mode */ }
+        });
+      };
+      bind();
+      document.addEventListener('astro:page-load', bind);
+    </script>
+
+    <style>
+      .masthead {
+        border-bottom: 1px solid var(--line);
+        background: color-mix(in srgb, var(--bg) 85%, transparent);
+        backdrop-filter: blur(8px);
+        position: sticky;
+        top: 0;
+        z-index: 20;
+      }
+      .masthead__inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        height: 3.5rem;
+      }
+      .masthead__brand {
+        font-weight: 650;
+        letter-spacing: -0.01em;
+        color: var(--ink);
+        text-decoration: none;
+      }
+      .masthead__theme {
+        border: 1px solid var(--line);
+        background: var(--bg-raised);
+        color: var(--ink-soft);
+        border-radius: var(--radius);
+        width: 2.1rem;
+        height: 2.1rem;
+        font-size: 1rem;
+        cursor: pointer;
+        line-height: 1;
+      }
+      .masthead__theme:hover { border-color: var(--accent); color: var(--accent); }
+      main { min-height: calc(100vh - 8rem); }
+      .footer {
+        border-top: 1px solid var(--line);
+        margin-top: 4rem;
+        padding: 1.5rem 0;
+        color: var(--ink-faint);
+        font-size: 0.85rem;
+      }
+      .footer p { margin: 0; }
+    </style>
+  </body>
+</html>

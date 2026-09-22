@@ -1,0 +1,92 @@
+---
+course: applied-algorithm-analysis
+section: w1-bigo
+order: 90
+title: Three Things Big-O Does Not Say
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week1.html?hash=true#/25
+    caption: >-
+      Slide 31 of 65 — the three standard misreadings.
+notation:
+  - symbol: "worst case"
+    reads: worst case
+    means: >-
+      The slowest input of that size — the unluckiest arrangement the algorithm could be
+      handed. Distinct from *average* (typical input) and *best* (luckiest).
+  - symbol: "O vs Θ"
+    reads: big-oh versus big-theta
+    means: >-
+      `O` promises "no worse than"; `Θ` claims "exactly this rate". Every `Θ(n²)` algorithm
+      is truthfully `O(n⁵)` — a true statement carrying almost no information.
+questions:
+  - ask: >-
+      "Quicksort is `O(n²)` in the worst case and `Θ(n log n)` on average." Is that one
+      consistent sentence?
+    choices:
+      - text: Yes — bound type and case are independent axes
+        correct: true
+        explains: >-
+          `O`/`Ω`/`Θ` say how tight the bound is; worst/average/best say which input you
+          are bounding. You need one choice from each axis for the statement to mean
+          anything, and this sentence makes two perfectly compatible ones.
+      - text: No — an algorithm cannot be both `O(n²)` and `Θ(n log n)`
+        explains: >-
+          It can, because the two clauses are about different cases. Even for a single
+          case, `Θ(n log n)` implies `O(n²)` — a tight bound always implies looser upper
+          bounds.
+      - text: No — `Θ` is only for average case and `O` only for worst case
+        explains: >-
+          There is no such rule. You can give a `Θ` bound on the worst case, or an `O`
+          bound on the average case; the two axes do not constrain each other.
+      - text: Only if the pivot is chosen at random
+        explains: >-
+          Pivot choice changes which inputs are bad and how likely they are — it does not
+          change whether the sentence is grammatically coherent.
+---
+
+Three mistakes get made with these definitions, and they are worth more attention than the
+definitions themselves — you will meet all three in code review.
+
+## 1. `O` is an upper bound, not "the" complexity
+
+An algorithm that genuinely runs in `Θ(n²)` is also, truthfully, `O(n⁵)`. Check it: is `n²`
+eventually below some constant times `n⁵`? Easily. The statement is correct — and useless.
+
+`O` only rules out things being *worse*. `Θ` is what pins the rate. Since designers want
+guarantees, and a guarantee is naturally an upper bound, `O` is what you read everywhere.
+
+> **Say `Θ` when you mean `Θ`.**
+
+## 2. `O`/`Ω`/`Θ` and best/average/worst are different axes
+
+Usually confused via a belief that `O` means worst case and `Ω` means best case. It does
+not. Two unrelated questions:
+
+- **How tight is the bound?** `O` (ceiling), `Ω` (floor), `Θ` (both).
+- **Which input?** Best, average, or worst case.
+
+A statement needs one from *each*. So:
+
+> "Quicksort is `O(n²)` in the worst case and `Θ(n log n)` on average."
+
+is one consistent sentence making two independent claims. Nothing contradicts anything.
+
+## 3. Constants vanish only in the limit
+
+Asymptotics discard constants *because* they stop mattering as `n` grows — the catch being
+"as `n` grows". Insertion sort is `O(n²)` and mergesort `O(n log n)`, so mergesort wins,
+eventually. Below a few dozen elements insertion sort is genuinely faster, and real sorting
+libraries switch to it below a threshold.
+
+> **Asymptotics pick the algorithm, not the implementation.**
+
+## The habit
+
+When you read an asymptotic claim, ask which of the three it leans on:
+
+1. Is an upper bound being passed off as the exact rate?
+2. Which case is meant — and did anyone say?
+3. Is `n` actually large enough for the constants to have stopped mattering?
+
+Most arguments about performance turn out to be arguments about the case, not the bound.

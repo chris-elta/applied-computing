@@ -1,0 +1,92 @@
+---
+course: applied-algorithm-analysis
+section: w1-numbers
+order: 120
+title: Three Ways to Read a Logarithm
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week1.html?hash=true#/32
+    caption: >-
+      Slide 40 of 65 — digits, height, and halvings.
+notation:
+  - symbol: "log"
+    reads: log
+    means: >-
+      Short for logarithm. `log_b N` is the answer to "how many times do I multiply `b` by
+      itself to reach `N`?" Everything on this page is one question in three costumes.
+  - symbol: "base"
+    reads: base
+    means: >-
+      The number being multiplied repeatedly — the small subscript in `log_b`. Base 2 for
+      halving and bits, base 10 for decimal digits.
+  - symbol: "1 / log₂ b"
+    reads: one over log base two of b
+    means: >-
+      The fixed factor between logarithms of different bases. Because it is fixed, `Θ` and
+      `O` cannot tell the bases apart, which is why `O(log n)` is written without one.
+questions:
+  - ask: >-
+      Which reading of `log` is the one doing the work in Euclid's algorithm and in fast
+      exponentiation?
+    choices:
+      - text: Halvings — how many times you can halve before reaching 1
+        correct: true
+        explains: >-
+          Both algorithms shrink their quantity by a constant factor each round, so the
+          round count is a halving count. Binary search is the third member of the same
+          family.
+      - text: Digits — how many digits the number takes to write
+        explains: >-
+          That reading tells you the *input size*, which is what each round costs. It is
+          the other half of the analysis, not the round count.
+      - text: Height — the depth of a binary tree with `N` leaves
+        explains: >-
+          That is the divide-and-conquer reading, and it will matter next week for
+          recurrences. Neither Euclid nor fast exponentiation builds a branching tree.
+      - text: All three describe the same algorithmic mechanism
+        explains: >-
+          They are the same *number*, but they are different mechanisms. Recognising which
+          one is in play is how you spot where a logarithm will appear.
+---
+
+A logarithm answers exactly one question:
+
+> **How many times must I multiply `b` by itself to reach `N`?**
+
+`log₂ 8 = 3` because `2 × 2 × 2 = 8`. The small `b` is the **base** — the thing being
+multiplied.
+
+What makes logarithms feel slippery is that this one question appears in three very
+different costumes. Recognising which one you are looking at is how you learn to predict
+where a logarithm will show up.
+
+## 1 · Digits — the space it takes to write down
+
+Each extra digit position multiplies the range you can express by `b`. So "how many digit
+positions?" *is* "how many multiplications by `b`?" This is the reading behind **input size
+is bits**.
+
+## 2 · Height — the depth of divide and conquer
+
+`log₂ N` is the height of a binary tree with `N` leaves: each level down doubles the nodes,
+so reaching `N` takes `log₂ N` doublings. Any algorithm splitting its problem in half, then
+halving those, recurses this deep. This is next week's reading.
+
+## 3 · Halvings — how many rounds until you are done
+
+`log₂ N` is how many times you can halve `N` before reaching 1 — halving being the reverse
+of doubling. This is the reading behind binary search, fast exponentiation and Euclid.
+
+| reading | the question | shows up in |
+| --- | --- | --- |
+| digits | how long is this number to write? | input size, bit complexity |
+| height | how deep does the splitting go? | divide and conquer, recurrences |
+| halvings | how many rounds until this is 1? | binary search, Euclid, fast exponentiation |
+
+## Why nobody writes the base
+
+`log_b N` and `log₂ N` differ by the fixed factor `1 / log₂ b`, and fixed factors are what
+asymptotic notation throws away. So `O(log n)` needs no base.
+
+That licenses being casual about the base — **not** about the reading. When something turns
+out logarithmic, knowing which mechanism produced it is what tells you why.

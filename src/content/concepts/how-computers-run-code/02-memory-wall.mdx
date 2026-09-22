@@ -1,0 +1,56 @@
+---
+course: how-computers-run-code
+order: 20
+section: memory
+title: Memory Is the Real Bottleneck
+visuals:
+  type: html
+  src: /slides/how-computers-run-code/02.html
+  caption: An imported HTML slide, rendered in an isolated frame.
+questions:
+  - ask: >-
+      A loop does 50 arithmetic operations on each element, and reads every element
+      from main memory. Where does the time actually go?
+    choices:
+      - text: Mostly waiting for memory
+        correct: true
+        explains: >-
+          At roughly one operation per cycle on a 3 GHz core, 50 operations is about
+          17 ns. The memory read alone is around 80 ns. Even with a fairly arithmetic-heavy
+          loop, the wait dominates — which is why the access pattern usually matters more
+          than the operation count.
+      - text: Mostly the arithmetic — 50 operations per element is a lot
+        explains: >-
+          It sounds like a lot, but 50 operations is roughly 17 ns of work against an
+          80 ns memory read. Arithmetic is cheap enough that it rarely dominates.
+      - text: Split roughly evenly
+        explains: >-
+          Close to even would need several hundred operations per element. At 50, memory
+          still costs several times more than the compute.
+      - text: Impossible to say without knowing the clock speed
+        explains: >-
+          Clock speed changes the arithmetic side but barely moves memory latency — that
+          is exactly the gap that has been widening for thirty years. Faster clocks make
+          the imbalance worse, not better.
+---
+
+Here is the uncomfortable number. A modern CPU executes an instruction in well under a
+nanosecond. Fetching a value from main memory takes somewhere around eighty. The
+processor can run *hundreds* of instructions in the time it takes one value to arrive.
+
+This gap has a name — the **memory wall** — and it has been widening for thirty years.
+Processors got dramatically faster; DRAM latency barely moved. Everything interesting
+about modern performance engineering is a response to that one fact.
+
+## What follows from it
+
+Once you accept the gap, a lot of otherwise-strange design decisions snap into focus:
+
+- **Caches** exist to avoid the trip entirely, by keeping recently used data close by.
+- **Prefetching** exists to start the trip early, before you ask.
+- **Out-of-order execution** exists to find other work to do while you wait.
+
+All three are the same idea wearing different hats: the processor is not trying to go
+faster, it is trying to *not be idle*. Which means the question that decides your
+program's speed is rarely "how many operations does it do" — it's "how often does it
+have to wait".

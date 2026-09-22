@@ -1,0 +1,318 @@
+---
+course: applied-algorithm-analysis
+section: w1-bigo
+order: 100
+title: "Proving a Bound: Worked Examples"
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week1.html?hash=true#/26
+    caption: >-
+      Slides 32–35 of 65 — the exercise and the two-phase theorem. Down arrow for the
+      worked answers.
+notation:
+  - symbol: "witness"
+    reads: witness
+    means: >-
+      The specific `c` and `n₀` you produce to back a claim — the fence's steepness and the
+      point it starts from. Naming them is what turns
+      "obviously it is `O(n²)`" into a proof. Every example below ends by naming its
+      witnesses.
+  - symbol: "c₁, c₂"
+    reads: c one, c two
+    means: >-
+      Two separate constants, numbered so they can be talked about apart. `Θ` needs two
+      because it holds a floor up and a ceiling down at the same time, and those come from
+      two different arguments.
+  - symbol: "∎"
+    reads: end of proof
+    means: >-
+      The tombstone marking a finished proof. Older texts write **QED** instead, from the
+      Latin for "which was to be demonstrated".
+  - symbol: "max{f, g}"
+    reads: max of f and g
+    means: >-
+      Whichever of the two is larger at that input. The curly brackets group the
+      candidates; `max` picks the winner.
+  - symbol: "⌈c⌉"
+    reads: the ceiling of c
+    means: >-
+      Round `c` up to the next whole number. Used to manufacture a specific counterexample
+      that is guaranteed to be bigger than `c`.
+questions:
+  - ask: >-
+      For `T(n) = ½n² + 3n`, which of these is true *and* the most informative?
+    choices:
+      - text: "`T(n) = Θ(n²)`"
+        correct: true
+        explains: >-
+          Witnesses `c₁ = ½`, `c₂ = 3.5`, `n₀ = 1`. It is true and it is tight, which is
+          what makes it the useful answer. `Ω(n)` and `O(n³)` are also true but leave
+          slack.
+      - text: "`T(n) = O(n)`"
+        explains: >-
+          This one is simply false: `½n² + 3n ≤ c·n` would require `n ≤ 2c - 6`, which
+          fails for large `n`. A quadratic cannot be bounded above by a constant multiple
+          of `n`.
+      - text: "`T(n) = O(n³)`"
+        explains: >-
+          True — `T(n) ≤ 3.5n² ≤ 3.5n³` for `n ≥ 1` — but unhelpfully loose. This is
+          misconception 1 from the previous concept in action.
+      - text: "`T(n) = Ω(n)`"
+        explains: >-
+          True, with `c = 1, n₀ = 1`, since `T(n) ≥ 3n`. But it is a weak lower bound when
+          a quadratic one is available.
+  - ask: >-
+      An algorithm runs two phases in sequence, costing `f(n)` and `g(n)`. What is its
+      total cost?
+    choices:
+      - text: "`Θ(f(n) + g(n))`, which equals `Θ` of the slower phase"
+        correct: true
+        explains: >-
+          Since `max(f,g) ≤ f+g ≤ 2·max(f,g)`, the sum and the maximum are the same up to
+          a constant. So you may drop the faster phase from the analysis entirely — which
+          is why nobody writes `O(n log n + n)`.
+      - text: "`Θ(f(n) · g(n))`"
+        explains: >-
+          Multiplication is for nesting, not sequencing. Phases run one after the other,
+          so their costs add.
+      - text: "`Θ(min(f(n), g(n)))`"
+        explains: >-
+          The total cannot be less than either phase — you have to pay for both. It is the
+          larger that dominates.
+      - text: It cannot be simplified without knowing `f` and `g`
+        explains: >-
+          It can, and that is the value of the theorem: the bound holds for any nonnegative
+          `f` and `g` whatsoever.
+---
+
+The definitions are behind you. This page is drill: the same three steps, applied seven
+times, until the mechanics stop needing thought.
+
+Keep the picture from *Big-O, Formally* in mind, because every proof below is the same move.
+`T(n)` is just the wait. The claim is about its **shape**, and proving it means **building a
+fence the growth never breaks through**:
+
+- the **fence** is `c·f(n)` — you choose how steep,
+- the **starting point** is `n₀` — you choose when to start caring,
+- and then it must hold forever after.
+
+## Which relation should you claim?
+
+The symbol you pick encodes *which question you are answering*.
+
+| you want to say | use | typically because |
+| --- | --- | --- |
+| never worse than this | `O` | you are giving a guarantee |
+| at least this bad | `Ω` | you are showing it cannot be beaten |
+| exactly this rate | `Θ` | you can prove both, so say the strongest true thing |
+| negligible beside this | `o` | you are discarding a term, or proving strict separation |
+| cannot be this fast | not `O` | you are proving two rates are genuinely different |
+
+The rule of thumb: **claim `Θ` if you can prove it; `O` if a promise is all you need; `Ω`
+when the whole point is that no cleverness will help.** `Θ` is strictly more informative than
+either one-sided bound, which is why claiming only `O` when you know `Θ` throws information
+away.
+
+## The recipe
+
+Having chosen the relation, every upper-bound proof is the same three steps. To prove
+`T(n) = O(f(n))`:
+
+1. **Pick the fence's shape** — the leading term, the fastest-growing one. That is `f(n)`.
+2. **Pick how steep, and from when** — the witnesses `c` and `n₀`.
+3. **Show the growth stays under it** — `T(n) ≤ c·f(n)` for every `n ≥ n₀`.
+
+Step 1 is usually obvious by inspection. The next two sections are steps 2 and 3 in detail.
+
+## Where do the witnesses come from?
+
+Three facts make finding `c` and `n₀` mechanical rather than inspired.
+
+**1 · They are not unique.** If `c = 10, n₀ = 1` works, so does `c = 10, n₀ = 500`, and so
+does `c = 10000, n₀ = 1`. You need *one* working pair, never the best one. So aim for the
+pair that is easiest to check, not the tightest.
+
+**2 · Choose `n₀` first, and almost always choose 1.** You pick it in order to *license* the
+next step: at `n ≥ 1` the powers line up, `1 ≤ n ≤ n² ≤ n³ ≤ …`. Take `n₀ > 1` only when a
+term needs `n` to be large before it is dominated.
+
+**3 · Then `c` falls out of the inflation.** Once every term has become a multiple of `f(n)`,
+add the multipliers together. That sum is your `c`.
+
+The direction of the move flips with the relation. For an **upper** bound you *inflate*
+smaller terms up to the leading one; for a **lower** bound you *discard* them, because
+dropping a positive term only makes the left side smaller.
+
+### Why inflate at all?
+
+Because the definition accepts only one shape of answer: `T(n) ≤ c·f(n)` — a **single**
+multiple of `f(n)`. And `3n + 7` is two different kinds of thing added together. No fixed `c`
+makes `3n + 7 = c·n`, because the `7` refuses to scale with `n`.
+
+So replace each awkward term with something that is **(a)** at least as big and **(b)**
+already the right shape. `7 ≤ 7n` is both. Now every term is a multiple of `n`, and multiples
+of `n` collapse into one:
+
+```
+3n + 7  ≤  3n + 7n  =  10n
+```
+
+Over-estimating is safe because you are proving a **ceiling** — raising the right-hand side
+can never turn a true ceiling into a false one. Lower bounds discard for the mirror-image
+reason: lowering a floor cannot break it either.
+
+And `7 ≤ 7n` is not free — it fails at `n = 0`. **The inflation is what fixes `n₀ = 1`.** The
+threshold is not chosen arbitrarily; it is the price of the move you just made.
+
+---
+
+### 1 · `T(n) = 3n + 7` is `O(n)`
+
+**Why `O`.** The question is "does this scale like a straight line?" — a promise about the
+ceiling. (`Θ(n)` is also true here and is the stronger claim; `O` is what a guarantee needs.)
+
+Inflate the constant into a multiple of `n`. For `n ≥ 1` we have `7 ≤ 7n`, so
+
+```
+T(n) = 3n + 7 ≤ 3n + 7n = 10n
+```
+
+Witnesses `c = 10`, `n₀ = 1`. ∎
+
+**The witnesses.** `n₀ = 1` was chosen first, purely so that `7 ≤ 7n` holds; `c = 10` is then
+just `3 + 7`. A completely different pair also works: `c = 4, n₀ = 7`, since `3n + 7 ≤ 4n`
+exactly when `7 ≤ n`. Both are valid proofs of the same claim, and nothing in the definition
+prefers one — but notice the trade. **Inflation buys a trivial threshold at the cost of a
+loose constant**; the tighter `c = 4` costs you having to work out where two lines cross.
+That is why inflating is the default: it always works, and it needs no thought.
+
+### 2 · `T(n) = 5n³ + 4n + 3` is `O(n³)`
+
+**Why `O`.** The everyday question about a polynomial: what shape is it? Again `Θ(n³)` holds,
+but `O` is the convention when reporting a cost.
+
+For `n ≥ 1`: `4n ≤ 4n³` and `3 ≤ 3n³`, so
+
+```
+T(n) ≤ 5n³ + 4n³ + 3n³ = 12n³
+```
+
+Witnesses `c = 12`, `n₀ = 1`. ∎
+
+**The witnesses.** `c` is the sum of the coefficients, `5 + 4 + 3`, which is exactly rule 3.
+Note it is *loose* — the real ratio `T(n)/n³` settles down to 5, not 12. That does not matter
+in the slightest. Chasing `c = 6` would force a larger `n₀` and buy nothing, because the
+definition asks only whether **some** constant exists.
+
+> **The general recipe for polynomials:** take `n₀ = 1` and `c =` the sum of the *absolute
+> values* of the coefficients. Absolute values, because a negative coefficient must not be
+> allowed to shrink the bound.
+
+### 3 · `T(n) = 2n + 100` is `Ω(n)`
+
+**Why `Ω`.** Here the interesting claim is a **floor** — that no implementation trick makes
+this sublinear. Upper bounds promise; lower bounds forbid.
+
+Discard rather than inflate, since dropping a positive term only makes the left side smaller:
+
+```
+T(n) = 2n + 100 ≥ 2n ≥ 1·n     for n ≥ 1
+```
+
+Witnesses `c = 1`, `n₀ = 1`. ∎
+
+**The witnesses.** The `100` was thrown away, so `c` comes from whatever survives — the `2n`.
+`c = 2` would also work; `c = 1` is chosen only because it makes the final step trivial. And
+the same inflation move as example 1 gives the matching upper bound — `100 ≤ 100n` for
+`n ≥ 1`, so `T(n) ≤ 102n` — which means the honest claim here is `Θ(n)`.
+
+### 4 · `T(n) = ½n² + 3n` is `Θ(n²)`
+
+**Why `Θ`.** Both directions are provable, so the strongest true statement is available. `O(n²)`
+alone would be true but weaker; `O(n³)` would be true and misleading.
+
+```
+lower:  T(n) ≥ ½n²                  → c₁ = ½
+upper:  3n ≤ 3n²  (n ≥ 1), so
+        T(n) ≤ ½n² + 3n² = 3.5n²    → c₂ = 3.5
+```
+
+Witnesses `c₁ = ½`, `c₂ = 3.5`, `n₀ = 1`. ∎
+
+**The witnesses.** The two constants come from **opposite moves** — `c₁` from discarding `3n`,
+`c₂` from inflating it — which is exactly why `Θ` needs two. `n₀ = 1` happens to serve both;
+where the two arguments need different thresholds, take the larger.
+
+### 5 · `T(n) = n²` is **not** `O(n)`
+
+**Why "not `O`".** Without separation results, `O` would be near-vacuous. This is what makes
+"quadratic is genuinely worse than linear" a theorem rather than an impression.
+
+Suppose `c, n₀` existed with `n² ≤ c·n` for all `n ≥ n₀`. Divide by `n`:
+
+```
+n ≤ c        for all n ≥ n₀
+```
+
+But `c` is *fixed* and `n` runs off to infinity. Take `n = max(n₀, ⌈c⌉ + 1)` — it satisfies
+`n ≥ n₀` yet exceeds `c`. Contradiction, so no such constants exist. ∎
+
+**The witnesses — the roles swap.** You no longer supply `c` and `n₀`; your opponent does, and
+you must defeat **every** pair they could choose. So your counterexample has to be written
+*in terms of* their constants, and it must clear two bars at once:
+
+- `max(n₀, …)` puts it inside the range they claimed, so they cannot dismiss it as too small;
+- `⌈c⌉ + 1` puts it above `c`, so the inequality genuinely fails.
+
+Drop either half and the proof collapses. This is the shape of every "not `O`" argument.
+
+### 6 · `T(n) = 3n` is `o(n²)`
+
+**Why `o`.** Not merely "no bigger than `n²`" — `3n` is *negligible* beside `n²`, and their
+ratio vanishes. That is the claim you need when discarding a term entirely.
+
+Given any `c > 0`, we need `3n ≤ c·n²`. Divide by `n`: `3 ≤ cn`, i.e. `n ≥ 3/c`. So take
+`n₀ = ⌈3/c⌉`. ∎
+
+**The witnesses — `c` is no longer yours.** Little-o must hold for *every* positive `c`, so
+you cannot go shopping for a convenient one. Only `n₀` remains yours, and it therefore has to
+be computed **as a function of `c`**. Sanity-check it with a hostile value: `c = 0.001` gives
+`n₀ = 3000`. Finite, so the claim survives — and it survives for any `c`, however small.
+
+Compare example 1, where a single `c` sufficed. That is the whole difference between `O` and
+`o`.
+
+### 7 · `T(n) = max{f(n), g(n)}` is `Θ(f(n) + g(n))`
+
+**Why `Θ`.** The result is used as an *equivalence* — "you may replace the max by the sum" —
+and a one-sided bound would not license that substitution.
+
+For non-negative `f` and `g`:
+
+```
+max{f, g} ≤ f + g ≤ 2 · max{f, g}
+```
+
+Left: the sum is the larger plus something non-negative. Right: replace each of `f`, `g` by
+the larger and you have added it to itself. Rearranged, `½(f+g) ≤ T(n) ≤ 1·(f+g)`.
+
+Witnesses `c₁ = ½`, `c₂ = 1`, `n₀ = 1`. ∎
+
+**The witnesses.** These fall out of a chain of inequalities rather than term-by-term
+inflation — and notice they do not depend on what `f` and `g` actually *are*. That is what
+makes the theorem reusable: the same two constants work for every pair of non-negative
+functions.
+
+**Why it matters:** two phases running in sequence cost `Θ` of the *slower* one. You may drop
+the faster phase without apology — which is why nobody writes `O(n log n + n)`.
+
+---
+
+## Two traps
+
+**True but useless.** `T(n) = ½n² + 3n` is honestly `O(n³)`: since `T(n) ≤ 3.5n² ≤ 3.5n³`,
+witnesses `c = 3.5`, `n₀ = 1`. Valid, and it throws away everything you knew.
+
+**Bounds cannot be proved by example.** Checking `n = 10` proves nothing — the claim is about
+*every* `n` past `n₀`. Finding one spot where the plant is under the fence says nothing about
+the rest of the garden. One example can only ever **disprove** (as in example 5).

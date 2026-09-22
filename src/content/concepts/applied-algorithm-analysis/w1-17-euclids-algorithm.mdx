@@ -1,0 +1,144 @@
+---
+course: applied-algorithm-analysis
+section: w1-numbers
+order: 170
+title: Euclid's Algorithm for the GCD
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week1.html?hash=true#/48
+    caption: >-
+      Slides 57–61 of 65 — the definition, Euclid's rule and its proof, the algorithm,
+      and a step-by-step runner. Try 1035/759, then 610/377. Press down inside the deck
+      for the stacked slides.
+notation:
+  - symbol: "gcd(a, b)"
+    reads: g-c-d of a and b
+    means: >-
+      The greatest common divisor — the largest whole number that divides both `a` and `b`
+      with nothing left over.
+  - symbol: "d divides a"
+    reads: d divides a
+    means: >-
+      `a` is a whole number of `d`s, with no remainder. 3 divides 12; 5 does not. Sometimes
+      written `d | a`, with a vertical bar.
+  - symbol: "a = qb + r"
+    reads: a equals q b plus r
+    means: >-
+      Division stated without a division sign: `a` contains `q` whole copies of `b`, with
+      `r` left over. The same shape as the definition of `mod`.
+  - symbol: "a/2"
+    reads: a over two
+    means: >-
+      Half of `a`. The key lemma says a remainder is always smaller than this, which is
+      what makes the algorithm fast rather than merely finite.
+questions:
+  - ask: >-
+      Euclid's algorithm runs in at most `2n` rounds on `n`-bit inputs. What guarantees
+      that?
+    choices:
+      - text: "`a mod b < a/2` whenever `a ≥ b`, so `a` halves every two rounds"
+        correct: true
+        explains: >-
+          The lemma splits on where `b` sits. If `b ≤ a/2` the remainder is already below
+          `a/2`; if `b > a/2` then a single subtraction leaves `a − b < a/2`. Either way `a`
+          halves within two rounds, and an `n`-bit number can only halve `n` times.
+      - text: "`b` decreases by at least 1 each round"
+        explains: >-
+          True, and far too weak — it would only bound the rounds by the *value* of `b`,
+          which is exponential in the input size.
+      - text: The remainder is always smaller than `b`
+        explains: >-
+          Also true, also too weak on its own. It proves termination but gives no rate, so
+          it cannot bound the round count.
+      - text: Because `gcd(a, b)` divides both, so it halves the inputs
+        explains: >-
+          The GCD's size has nothing to do with the round count — `gcd(a, b)` can be 1 while
+          the algorithm runs its full length.
+  - ask: What is the total cost of Euclid's algorithm on `n`-bit inputs?
+    choices:
+      - text: "`O(n³)` — about `2n` rounds, each one division at `O(n²)`"
+        correct: true
+        explains: >-
+          Same accounting as fast exponentiation: rounds × cost per round. Division of
+          `n`-bit numbers is `O(n²)`, and there are at most `2n` rounds.
+      - text: "`O(n²)` — `n` rounds of `O(n)` subtraction"
+        explains: >-
+          A round is a division (`a mod b`), not a subtraction, and division costs `O(n²)`.
+      - text: "`O(n log n)`"
+        explains: >-
+          The round count is already `O(n)` and each round costs `O(n²)`, so the total
+          cannot be near-linear.
+      - text: "`O(log n)` — it is a halving algorithm"
+        explains: >-
+          Halving gives a logarithm in the *value*, which is `n`, the bit length. That
+          `O(n)` round count then multiplies by the per-round cost.
+---
+
+The **greatest common divisor** is the largest whole number dividing both inputs exactly.
+("`d` divides `a`" means `a` is a whole number of `d`s: 3 divides 12, 5 does not.)
+
+```
+divisors of 12:  1, 2, 3, 4, 6, 12
+divisors of 18:  1, 2, 3, 6, 9, 18
+in common:       1, 2, 3, 6      →  gcd = 6
+```
+
+Now scale that to two 100-digit numbers. You cannot — you would have to factorise them, and
+nobody knows how to do that quickly. A different idea is needed.
+
+## Euclid's rule
+
+> For `a ≥ b > 0`:  `gcd(a, b) = gcd(b, a mod b)`
+
+`gcd(1035, 759)` becomes `gcd(759, 276)`. Smaller numbers, same answer. Repeat until
+something hits zero. That is the algorithm; the interesting part is why the rule holds.
+
+## Why it holds — a technique worth stealing
+
+Instead of reasoning about the *greatest* divisor, show the two pairs have **the same set**
+of common divisors. Identical sets, identical largest member.
+
+Write `a = qb + r`, where `r = a mod b`. Take any `d`:
+
+- **`d` divides `a` and `b`** → it divides `qb`, so it divides `a − qb = r`. So `d` divides
+  `b` and `r`.
+- **`d` divides `b` and `r`** → it divides `qb + r = a`. So `d` divides `a` and `b`.
+
+Same set, same greatest member. ∎
+
+> The proof never mentions "greatest" until the last sentence. Turning a question about a
+> maximum into one about a whole set is worth remembering.
+
+## The algorithm
+
+```
+function Euclid(a, b)
+  if b = 0: return a
+  return Euclid(b, a mod b)
+```
+
+It stops because `b` strictly decreases and cannot go below 0.
+
+## Terminating is not the same as being fast
+
+Decreasing by 1 each time would also terminate — after `b` steps, hopeless for a 100-digit
+number. We need a **rate**:
+
+> **Lemma.** If `a ≥ b` then `a mod b < a/2`.
+
+Two cases. If `b ≤ a/2`: the remainder is smaller than `b`, which is already at most `a/2`.
+If `b > a/2`: then `b` goes into `a` once, so `a mod b = a − b`, and since `b` is more than
+half of `a`, what remains is less than half.
+
+Either way the larger value **halves every two rounds**. An `n`-bit number halves only `n`
+times, so at most `2n` rounds.
+
+## The cost
+
+> `2n` rounds × `O(n²)` per division = **`O(n³)`**
+
+The worst case is consecutive Fibonacci numbers — try 610 and 377 in the slide's runner and
+watch it grind one round per number. That is no coincidence: numbers whose ratio is closest
+to `φ` resist division hardest. A pleasing place to end the week we began with `fib1`.
+
+> Practice: [1979 · Find Greatest Common Divisor of Array](https://leetcode.com/problems/find-greatest-common-divisor-of-array).

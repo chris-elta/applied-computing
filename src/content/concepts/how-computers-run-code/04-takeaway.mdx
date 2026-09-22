@@ -1,0 +1,25 @@
+---
+course: how-computers-run-code
+order: 40
+section: wrapup
+title: What to Take Away
+skipCheck: true
+---
+
+Three things, in the order they matter.
+
+**The cycle is simple; the speed comes from overlap.** Fetch, decode, execute, write
+back, repeat. A real processor runs several of these at once, staggered, which is why
+stalling one stage is so expensive — it drains the whole pipeline.
+
+**The bottleneck is waiting, not computing.** Arithmetic is effectively free next to a
+trip to main memory. When a program is slow, the useful first question is what it's
+waiting on, not how many operations it performs.
+
+**Your access pattern is the lever.** Caches reward sequential, predictable access and
+punish scattered access, and they do it by a factor large enough to swamp most other
+optimisations. Laying data out so it's read in the order it's stored is usually worth
+more than shaving operations off the loop body.
+
+> The next deck picks this up where it gets practical: measuring which of these is
+> actually hurting a given program, rather than guessing.

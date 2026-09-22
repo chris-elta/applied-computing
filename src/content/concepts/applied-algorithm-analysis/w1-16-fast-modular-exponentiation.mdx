@@ -1,0 +1,134 @@
+---
+course: applied-algorithm-analysis
+section: w1-numbers
+order: 160
+title: Fast Modular Exponentiation
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week1.html?hash=true#/44
+    caption: >-
+      Slides 53–55 of 65 — the naïve cost, repeated squaring, and a full trace.
+notation:
+  - symbol: "xʸ mod N"
+    reads: x to the y, mod N
+    means: >-
+      Raise `x` to the power `y`, then take the remainder mod `N`. In practice you never
+      compute `xʸ` itself — the whole page is about avoiding that.
+  - symbol: "x¹⁶ = (((x²)²)²)²"
+    reads: x to the sixteen equals x squared, squared, squared, squared
+    means: >-
+      Squaring four times reaches the 16th power, because each squaring doubles the
+      exponent: 2, 4, 8, 16.
+  - symbol: "z·z"
+    reads: z times z
+    means: >-
+      Squaring the value you already computed. The dot is just multiplication, used to keep
+      expressions uncluttered.
+questions:
+  - ask: >-
+      `modexp` is `O(n³)` where `n` is the bit length. Which two quantities multiply to
+      give that?
+    choices:
+      - text: At most `n` calls, each costing one modular multiplication at `O(n²)`
+        correct: true
+        explains: >-
+          The exponent at least halves every call, so there are at most `n` calls where `n`
+          is the bit length of `y`. Each call does one modular multiplication of `n`-bit
+          numbers, which the previous concept priced at `O(n²)`.
+      - text: "`n` calls, each costing `O(n)` for a modular addition"
+        explains: >-
+          The work per call is a multiplication, not an addition. Squaring and multiplying
+          are the operations being counted.
+      - text: "`n²` calls, each costing `O(n)`"
+        explains: >-
+          The call count is governed by halving the exponent, which gives `n` calls, not
+          `n²`.
+      - text: "`y` calls, each costing `O(n²)`"
+        explains: >-
+          `y` calls is the *naïve* method — and since `y` can be exponential in `n`, that is
+          exactly what repeated squaring exists to avoid.
+  - ask: Computing `x¹⁶` by repeated squaring takes how many multiplications?
+    choices:
+      - text: "Four squarings"
+        correct: true
+        explains: >-
+          `x¹⁶ = (((x²)²)²)²`. The exponent halves cleanly four times, and each halving
+          costs one squaring — against fifteen multiplications the naïve way.
+      - text: "Fifteen multiplications"
+        explains: >-
+          That is the naïve count, multiplying `x` by itself `y − 1` times.
+      - text: "Sixteen multiplications"
+        explains: >-
+          Even naïvely it is `y − 1 = 15`. Repeated squaring needs four.
+      - text: "Eight — half of sixteen"
+        explains: >-
+          Halving the *count* would still be linear in `y`. Repeated squaring halves the
+          exponent each step, which is a logarithm rather than a division by two.
+---
+
+Compute `xʸ mod N` for enormous `x`, `y`, `N`. This is the operation at the heart of RSA and
+Diffie–Hellman.
+
+## Why the obvious method fails
+
+Reducing after every step keeps every *value* small. So multiply `x` by itself, reducing each
+time. Where is the catch?
+
+**The number of operations.** That does `y − 1` multiplications, and `y` has hundreds of
+digits — something like `2⁵⁰⁰` multiplications.
+
+Note which problem this is: the values are under control, the **count** is not. Fixing counts
+is what algorithms are for.
+
+## Halve the exponent instead of decrementing it
+
+Decrementing `y` takes `y` steps; halving takes `log₂ y` steps — which is just `n`, the bit
+length. The trick is that squaring **doubles** an exponent:
+
+```
+x¹⁶ = (((x²)²)²)²
+```
+
+Four squarings, not fifteen multiplications: 2 → 4 → 8 → 16.
+
+```
+function modexp(x, y, N)
+  if y = 0: return 1
+  if y is even:
+    z = modexp(x, y/2, N)
+    return z·z mod N
+  else:
+    z = modexp(x, y−1, N)
+    return x·z mod N
+```
+
+Even `y`: halve, then square. Odd `y`: peel off one `x`, leaving an even exponent. And reduce
+mod `N` every step.
+
+## Watch it run — `3¹³ mod 7`
+
+The recursion descends `13 → 12 → 6 → 3 → 2 → 1 → 0`, then fills in coming back up:
+
+| value | how | mod 7 |
+| --- | --- | --- |
+| `3¹` | `3 · 3⁰ = 3` | 3 |
+| `3²` | `(3¹)² = 9` | 2 |
+| `3³` | `3 · 3² = 6` | 6 |
+| `3⁶` | `(3³)² = 36` | 1 |
+| `3¹²` | `(3⁶)² = 1` | 1 |
+| `3¹³` | `3 · 3¹² = 3` | **3** |
+
+Six rows, and nothing exceeds 36 — while `3¹³` computed directly is `1,594,323`.
+
+## The cost
+
+**Rounds:** the exponent at least halves per call, so at most `n` calls.
+**Per round:** one modular multiplication, priced last page at `O(n²)`.
+
+> `n` calls × `O(n²)` = **`O(n³)`**
+
+The naive method was `y` multiplications; this is `log₂ y`. Since `y ≈ 2ⁿ`, that is the
+difference between impossible and instant — the same repeated-squaring trick that beat linear
+time for Fibonacci.
+
+> Practice: [372 · Super Pow](https://leetcode.com/problems/super-pow).

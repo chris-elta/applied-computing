@@ -1,0 +1,62 @@
+---
+course: how-computers-run-code
+order: 30
+section: memory
+title: Locality Is What Makes Cache Work
+visuals:
+  type: animation
+  component: CacheLocality
+  caption: Eight sequential reads through a direct-mapped cache.
+questions:
+  - ask: Why is the read at address 1 a hit, when nothing ever explicitly loaded it?
+    choices:
+      - text: The cache guessed it would be needed and fetched it early
+        explains: >-
+          That's prefetching, which is a real technique — but it isn't what happened here.
+          This hit needs no prediction at all.
+      - text: A miss loads a whole block, not a single word
+        correct: true
+        explains: >-
+          Exactly. Address 0 missed, and the cache brought back the entire four-word block
+          because memory is read in blocks anyway. Addresses 1, 2 and 3 came along free.
+      - text: Address 1 was already in a register
+        explains: >-
+          Registers are a separate, even smaller tier. The figure is showing cache
+          behaviour — the word genuinely came from the cache.
+  - ask: You rewrite a loop so it reads every 16th element instead of every element. What happens?
+    choices:
+      - text: Roughly the same speed — it does fewer reads, so it evens out
+        explains: >-
+          Fewer reads, but each one now pays full memory latency. Doing a quarter of the
+          work at eighty times the cost per item is not a good trade.
+      - text: Faster, because it touches less data
+        explains: >-
+          Touching less data would help if the cost were per byte. It's per *trip to
+          memory*, and you've just made every read its own trip.
+      - text: Much slower per element, because every read misses
+        correct: true
+        explains: >-
+          Right. With a stride larger than the block, no read ever benefits from the block
+          its neighbour pulled in. You pay full latency every single time.
+---
+
+The cache is small — a few megabytes against many gigabytes of memory. It cannot hold
+your data. It can only hold a *guess* about which part of your data you'll want next,
+and that guess is startlingly crude:
+
+- **Spatial locality** — if you touched an address, you'll probably touch its neighbours.
+- **Temporal locality** — if you touched an address, you'll probably touch it again soon.
+
+That's it. No prediction, no learning, no model of your program. Yet it works, because
+almost all real code walks arrays, loops over the same variables, and calls the same
+functions repeatedly.
+
+## The part that matters to you
+
+The cache is not something you configure. It is something you either cooperate with or
+fight, and which one you're doing is decided entirely by your **memory access pattern**.
+
+An array of structs walked in order cooperates. A linked list scattered across the heap
+fights. Two implementations of the same algorithm, with identical operation counts, can
+differ by an order of magnitude on this alone — which is why "how many operations" is so
+often the wrong question.

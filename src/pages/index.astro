@@ -1,0 +1,115 @@
+---
+import Base from '../layouts/Base.astro';
+import CourseProgress from '../components/CourseProgress';
+import { getCourses, getConcepts, coursePath, conceptPath } from '../lib/course';
+
+const courses = await getCourses();
+const withCounts = await Promise.all(
+  courses.map(async (course) => {
+    const concepts = await getConcepts(course);
+    return { course, count: concepts.length };
+  }),
+);
+---
+
+<Base title="Applied Computing">
+  <section class="hero shell">
+    <p class="eyebrow">Courses, not slide dumps</p>
+    <h1>Concepts worth stopping on.</h1>
+    <p class="hero__lede">
+      Each course is a sequence of concepts. Every concept gets the same three things:
+      the figure, an explanation of what it actually means, and a question to check that
+      it landed. Work through at your own pace — your place is remembered in this browser.
+    </p>
+  </section>
+
+  <section class="shell">
+    <ul class="courses">
+      {withCounts.map(({ course, count }) => (
+        <li class="course">
+          <a class="course__link" href={coursePath(course.id)}>
+            {course.data.code && <p class="course__code">{course.data.code}</p>}
+            <h2 class="course__title">{course.data.title}</h2>
+            <p class="course__summary">{course.data.summary}</p>
+          </a>
+          {count > 0 ? (
+            <>
+              <CourseProgress client:load courseId={course.id} total={count} />
+              <a class="btn course__start" href={conceptPath(course.id, 1)}>Start →</a>
+            </>
+          ) : (
+            <p class="course__pending">No concepts yet</p>
+          )}
+          {course.data.draft && <span class="course__draft">Draft</span>}
+        </li>
+      ))}
+    </ul>
+
+    {withCounts.length === 0 && (
+      <p class="empty">
+        No courses yet. Add one in <code>src/content/courses/</code> and its concepts in
+        <code>src/content/concepts/</code>.
+      </p>
+    )}
+  </section>
+</Base>
+
+<style>
+  .hero { padding: 4rem 1.25rem 2.5rem; max-width: 46rem; margin-inline: 0; }
+  .hero h1 { margin: 0.35rem 0 0.9rem; }
+  .hero__lede { font-size: 1.08rem; color: var(--ink-soft); margin: 0; }
+
+  .courses {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 2rem;
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 21rem), 1fr));
+  }
+
+  .course {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    padding: 1.35rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--bg-raised);
+    transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+  }
+  .course:hover { border-color: var(--line-strong); transform: translateY(-2px); box-shadow: var(--shadow); }
+
+  .course__link { text-decoration: none; color: inherit; }
+  /* Stretch the title link over the whole card, keeping Start clickable above it. */
+  .course__link::after { content: ''; position: absolute; inset: 0; border-radius: var(--radius); }
+  .course__code {
+    margin: 0 0 0.3rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.02em;
+    color: var(--accent);
+  }
+  .course__title { margin: 0 0 0.4rem; font-size: 1.15rem; }
+  .course__summary { margin: 0; color: var(--ink-soft); font-size: 0.92rem; }
+
+  .course__start { position: relative; z-index: 1; align-self: flex-start; margin-top: auto; }
+
+  .course__pending { margin: auto 0 0; font-size: 0.78rem; color: var(--ink-faint); }
+
+  .course__draft {
+    position: absolute;
+    top: 1.35rem;
+    right: 1.35rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+  }
+
+  .empty { color: var(--ink-soft); }
+</style>

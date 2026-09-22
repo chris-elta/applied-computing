@@ -1,0 +1,116 @@
+---
+course: applied-algorithm-analysis
+section: w1-bigo
+order: 80
+title: The Growth-Rate Ladder, and What It Costs
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week1.html?hash=true#/23
+    caption: >-
+      Slides 29–30 of 65 — the ladder with the curves on linear and log axes, then the
+      runtime table.
+notation:
+  - symbol: "log₂ n"
+    reads: log base two of n
+    means: >-
+      "How many times can I halve `n` before reaching 1?" `log₂ 1000 ≈ 10`, because a
+      thousand halves about ten times. The small `2` is the **base** — what you are
+      dividing by.
+  - symbol: "n log n"
+    reads: n log n
+    means: >-
+      `n` multiplied by `log n`. Barely worse than linear: at a million, `log₂ n` is only
+      20, so it is linear times a small number.
+  - symbol: "2ⁿ"
+    reads: two to the n
+    means: >-
+      `n` twos multiplied together. Each extra unit of input **doubles** the work — the
+      signature of exponential growth.
+  - symbol: "n!"
+    reads: n factorial
+    means: >-
+      `n × (n−1) × (n−2) × … × 1`. So `5! = 120`. It grows even faster than `2ⁿ`, and it
+      counts the number of ways to put `n` things in order.
+  - symbol: "ns · µs · ms"
+    reads: nanosecond, microsecond, millisecond
+    means: >-
+      Billionth, millionth and thousandth of a second. Each step up the list is a thousand
+      times longer than the one before.
+questions:
+  - ask: >-
+      At one operation per nanosecond, an `O(n³)` algorithm on an input of a million takes
+      about 32 years. Where does the practical line between usable and unusable sit?
+    choices:
+      - text: >-
+          Between the polynomial rows and `2ⁿ` — polynomials survive a bigger input,
+          exponentials never will
+        correct: true
+        explains: >-
+          That is the line that matters. 32 years may or may not be acceptable for a given
+          problem, but it scales: a smaller input brings it back. `2ⁿ` at a million is
+          never, on any hardware, at any point in the future.
+      - text: Between `n log n` and `n²`
+        explains: >-
+          A real and important engineering line, but not the categorical one. `n²` at a
+          million is 17 minutes — slow, not impossible.
+      - text: Between `O(1)` and everything else
+        explains: >-
+          Constant time is lovely and rarely available. Almost all useful algorithms live
+          further down the ladder and are perfectly practical there.
+      - text: >-
+          There is no line — it depends entirely on hardware
+        explains: >-
+          Hardware moves the polynomial rows around. It does not move `2ⁿ` at `n = 1000`,
+          which stands at 10²⁸⁴ years however fast the machine is.
+---
+
+Almost every algorithm lands on one of a handful of growth rates. Learning them as a ladder
+— and knowing what each rung costs — is most of what asymptotic analysis is *for*.
+
+| order | name | comes from |
+| --- | --- | --- |
+| `O(1)` | constant | you go straight to the answer — hash lookup |
+| `O(log n)` | logarithmic | you halve the problem each step — binary search |
+| `O(n)` | linear | you look at everything once — `fib2` |
+| `O(n log n)` | linearithmic | everything, `log n` times over — mergesort |
+| `O(n²)` | quadratic | every **pair** — two nested loops |
+| `O(n³)` | cubic | every **triple** — matrix multiply |
+| `O(2ⁿ)` | exponential | every **subset** — `fib1` |
+| `O(n!)` | factorial | every **ordering** |
+
+The right-hand column is the useful one: growth rates come from the *shape* of the work.
+There are `2ⁿ` subsets because each item is independently in or out, and `n!` orderings
+because there are `n` choices for first place, `n−1` for second, and so on. That is why
+brute-force search lands on those two rows — they count *combinations*, not items.
+
+## Why the slide switches axes
+
+On a linear axis `2ⁿ` leaves the frame immediately and everything else is squashed flat.
+On a **logarithmic** axis, where each gridline is ten times the last, every polynomial
+becomes a straight line ranked by degree — and the exponential is still visibly different
+in kind.
+
+## What the ladder costs
+
+At roughly one operation per nanosecond:
+
+| `T(n)` | `n = 10` | `n = 1,000` | `n = 1,000,000` |
+| --- | --- | --- | --- |
+| `log₂ n` | 3 ns | 10 ns | 20 ns |
+| `n` | 10 ns | 1 µs | 1 ms |
+| `n log₂ n` | 33 ns | 10 µs | 20 ms |
+| `n²` | 100 ns | 1 ms | 17 minutes |
+| `n³` | 1 µs | 1 second | 32 years |
+| `2ⁿ` | 1 µs | 10²⁸⁴ years | never |
+| `n!` | 3.6 ms | never | never |
+
+## The line that matters
+
+Scan the last column for where the *character* of the answer changes.
+
+`n³` at a million is 32 years — probably unacceptable, but it is a **number**, and a smaller
+input brings it back. Those rows degrade. `2ⁿ` at a thousand is 10²⁸⁴ years: not slow,
+**impossible**, and it stays impossible on any hardware that will ever exist.
+
+> The boundary runs between `n³` and `2ⁿ`. Polynomial rows survive a bigger input; the rows
+> below never will.

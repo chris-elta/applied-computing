@@ -1,0 +1,104 @@
+---
+course: applied-algorithm-analysis
+section: w1-bigo
+order: 20
+title: Two Linear Algorithms
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week1.html?hash=true#/8
+    caption: >-
+      Slides 9–10 of 65 — tabulation (bottom-up) and memoisation (top-down).
+notation:
+  - symbol: "f[0…n]"
+    reads: f from 0 to n
+    means: >-
+      A row of numbered boxes — an **array**. `f[0…n]` means "make me boxes numbered 0, 1,
+      2, all the way to n". Each box holds one value.
+  - symbol: "f[i]"
+    reads: f at i, or f sub i
+    means: >-
+      The contents of box number `i`. Square brackets mean "look inside the box with this
+      number on it"; round brackets, as in `F(n)`, mean "run this machine on this input".
+  - symbol: "linear"
+    reads: linear
+    means: >-
+      Work that grows in step with the input. Twice the input, twice the work. Contrast
+      with the exponential growth of `fib1`, where one more unit of input multiplies the
+      work.
+questions:
+  - ask: >-
+      `fib3` makes the same recursive calls that `fib1` does, and yet it runs in linear
+      time. Why?
+    choices:
+      - text: Each subproblem is computed once; every later call returns from the memo
+        correct: true
+        explains: >-
+          Right. The call *tree* is the same shape, but only the first visit to each value
+          does any work — the other visits hit the memo and return immediately. There are
+          `n` distinct subproblems, so there is `O(n)` real work.
+      - text: Recursion is optimised into a loop by the compiler
+        explains: >-
+          No compiler transformation is doing this. Remove the memo and the same code is
+          exponential again, on the same compiler.
+      - text: It computes smaller values first, so nothing is repeated
+        explains: >-
+          That describes `fib2`, the bottom-up version. `fib3` still starts at `n` and
+          works downwards — it just refuses to redo work.
+      - text: The recursion depth is only `log n`
+        explains: >-
+          The depth is `n`, not `log n` — which is exactly why `fib3` risks a stack
+          overflow where `fib2` does not.
+---
+
+`fib1`'s problem was not recursion. It was **forgetting** — the same subproblem solved over
+and over because nothing wrote an answer down.
+
+So write them down. There are two directions to do it in.
+
+## Bottom-up: `fib2`
+
+Start at 0 and work up, keeping your working on the page.
+
+```
+function fib2(n)
+  if n = 0 return 0
+  create an array f[0…n]
+  f[0] = 0, f[1] = 1
+  for i = 2…n:
+    f[i] = f[i−1] + f[i−2]
+  return f[n]
+```
+
+An **array** is that page of working: numbered boxes, where `f[i]` is the contents of box
+`i`. The loop goes in order, so every box it needs is already filled. This is called
+**tabulation**.
+
+**Cost:** one addition per box, so about `n` of them. `F(100)` takes 99 additions; `F(200)`
+takes 199. Double the input, double the work — that is **linear**, and a different world
+from `fib1`.
+
+## Top-down: `fib3`
+
+Keep `fib1`'s shape but give it a notebook (a **memo**) and two habits: check the notebook
+before computing, and write to it after. This is **memoisation**.
+
+## Why memoisation is fast — the non-obvious bit
+
+`fib3` makes **the same calls** `fib1` did. The call tree is just as bushy. So why is it
+not exponential?
+
+Because almost all those calls now do no work. There are only `n` *different questions* —
+`F(0)` through `F(n)` — and each is computed once. Every later call is a lookup.
+
+> Count the **distinct subproblems**, not the calls. That is the core idea of dynamic
+> programming, and it returns repeatedly in this course.
+
+## Choosing between them
+
+Same asymptotic cost; different subproblems get solved. `fib2` computes every value whether
+needed or not. `fib3` computes only those the recursion reaches — better when the
+subproblem space is huge and you touch a scattered few.
+
+Neither is free. `fib2` holds `n` array entries; `fib3` holds a memo **and** a stack `n`
+calls deep, which is a real crash risk. We bought linear time with linear memory — and the
+next page asks whether we had to.

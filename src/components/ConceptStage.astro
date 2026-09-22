@@ -1,0 +1,118 @@
+---
+import AnimationHost from './animations/AnimationHost';
+import { isAnimation } from './animations/index';
+import type { CollectionEntry } from 'astro:content';
+
+type Visual = CollectionEntry<'concepts'>['data']['visuals'][number];
+
+interface Props {
+  visuals: Visual[];
+  title: string;
+}
+
+const { visuals, title } = Astro.props;
+
+// Vector slides are inlined rather than linked, so they scale with the stage
+// and cost no extra request. `npm run import:pdf` writes them here.
+const vectorSlides = import.meta.glob('../assets/slides/**/*.svg', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+}) as Record<string, string>;
+
+/** Resolve each visual once, up front, so the markup below stays declarative. */
+const staged = visuals.map((visual) => {
+  let missing: string | undefined;
+  let inlineSvg: string | undefined;
+
+  if (visual.type === 'svg') {
+    inlineSvg = vectorSlides[`../assets/slides/${visual.src}`];
+    if (!inlineSvg) missing = `src/assets/slides/${visual.src}`;
+  }
+  if (visual.type === 'animation' && !isAnimation(visual.component)) {
+    missing = `animation "${visual.component}" (register it in src/components/animations/index.ts)`;
+  }
+
+  return {
+    visual,
+    inlineSvg,
+    missing,
+    // Imported slides keep presentation proportions; animations size themselves.
+    ratio: visual.type !== 'animation',
+    // Vector and raster imports are page artwork drawn for paper — pdftocairo
+    // emits black glyphs with no background at all — so they need a light
+    // surface underneath in every theme, or they vanish in dark mode. HTML
+    // slides paint their own background and must not be forced onto white.
+    paper: visual.type === 'svg' || visual.type === 'image',
+  };
+});
+---
+
+{staged.length > 0 && (
+  <div class:list={['stages', staged.length > 1 && 'stages--multi']}>
+    {staged.map(({ visual, inlineSvg, missing, ratio, paper }) => (
+      <figure class="stage-wrap">
+        <div class:list={['stage', ratio && 'stage--ratio', paper && 'stage--paper']}>
+          {missing ? (
+            <p class="stage__missing">Missing asset: <code>{missing}</code></p>
+          ) : visual.type === 'animation' ? (
+            <AnimationHost client:visible name={visual.component} />
+          ) : visual.type === 'svg' ? (
+            <div class="stage__svg" set:html={inlineSvg} />
+          ) : visual.type === 'image' ? (
+            <img src={visual.src} alt={visual.alt} loading="lazy" decoding="async" />
+          ) : (
+            <iframe src={visual.src} title={title} loading="lazy" sandbox="allow-scripts allow-same-origin" />
+          )}
+        </div>
+        {visual.caption && <figcaption class="stage__caption">{visual.caption}</figcaption>}
+      </figure>
+    ))}
+  </div>
+)}
+
+<style>
+  .stages { display: flex; flex-direction: column; gap: 1.5rem; }
+  .stage-wrap { margin: 0; }
+
+  .stage {
+    background: var(--stage);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .stage--ratio { aspect-ratio: 16 / 9; padding: 0; }
+
+  /* Source slides are artwork drawn for a white page. Giving them their own
+     light surface keeps them legible in dark mode, where they would otherwise
+     be black ink on a black background. */
+  .stage--paper { background: #fff; color-scheme: light; }
+
+  /* Several source slides for one idea read better a little smaller — the
+     concept is the unit here, not any individual slide. */
+  .stages--multi .stage--ratio { max-width: 46rem; margin-inline: auto; width: 100%; }
+
+  .stage :global(svg) { width: 100%; height: auto; }
+  .stage__svg { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+  .stage__svg :global(svg) { width: 100%; height: 100%; }
+
+  .stage img { width: 100%; height: 100%; object-fit: contain; }
+  /* No background of its own: an embedded deck paints its own, and a white
+     under-layer would flash before it loads. */
+  .stage iframe { width: 100%; height: 100%; border: 0; display: block; }
+
+  .stage__missing { margin: 0; padding: 2rem; text-align: center; color: var(--bad); font-size: 0.9rem; }
+
+  .stage__caption {
+    margin-top: 0.7rem;
+    font-size: 0.85rem;
+    color: var(--ink-faint);
+    text-align: center;
+  }
+</style>

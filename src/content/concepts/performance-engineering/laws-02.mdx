@@ -1,0 +1,59 @@
+---
+course: performance-engineering
+section: laws
+order: 20
+title: "Little's Law"
+visuals:
+  - type: svg
+    src: performance-engineering/laws/02.svg
+questions:
+  - ask: A service handles 200 requests per second, and each takes 50 ms end to end. How many requests are in flight at any moment?
+    choices:
+      - text: "10"
+        correct: true
+        explains: >-
+          L = λW = 200 × 0.05 = 10. That's your required concurrency: fewer than 10
+          workers and arrivals queue up regardless of how fast each one is.
+      - text: "4"
+        explains: >-
+          That's 200 divided by 50 — but the units don't line up. W has to be in seconds
+          to cancel against a per-second arrival rate.
+      - text: "250"
+        explains: >-
+          This divides rather than multiplies. Little's Law is L = λW, a product.
+      - text: Not enough information — it depends on the arrival distribution
+        correct: false
+        explains: >-
+          Remarkably, no. Little's Law needs no assumption about distributions. It holds
+          for any stable system, which is exactly what makes it so useful.
+---
+
+Three quantities, one relationship that holds for any queue that isn't growing without
+bound:
+
+```
+L = λW
+```
+
+`L` is the average number of items in the system, `λ` the average arrival rate, and `W`
+the average time each item spends inside. Requests in a service, cars on a motorway,
+work items on a team — the shape of the system doesn't matter.
+
+## What makes it unusual
+
+Most queueing results demand assumptions: Poisson arrivals, exponential service times,
+a particular scheduling discipline. **Little's Law assumes none of that.** It needs only
+that the system is stable — that what goes in comes out, and nothing accumulates
+forever. That is why it survives contact with real systems where the tidy distributions
+never hold.
+
+## Using it in practice
+
+The value is in solving for whichever term you can't measure directly:
+
+- **Sizing a pool** — you know arrival rate and latency, so `L` tells you the
+  concurrency you must support. Provision less and the queue grows without limit.
+- **Inferring latency** — you can see queue depth and throughput, so `W = L/λ` gives
+  the latency you couldn't instrument.
+- **Sanity-checking a claim** — if reported throughput, latency and concurrency don't
+  multiply out, one of the three is measured wrong.

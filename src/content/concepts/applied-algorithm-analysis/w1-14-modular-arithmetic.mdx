@@ -1,0 +1,140 @@
+---
+course: applied-algorithm-analysis
+section: w1-numbers
+order: 140
+title: Modular Arithmetic
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week1.html?hash=true#/37
+    caption: >-
+      Slides 45–50 of 65 — the clock, the definition, equivalence classes, congruence
+      and the substitution rule. Press down inside the deck for the stacked slides.
+notation:
+  - symbol: "x mod N"
+    reads: x mod N, or x modulo N
+    means: >-
+      The remainder left when `x` is divided by `N`. `75 mod 24 = 3`. Always lands in
+      `0 … N−1`, never negative.
+  - symbol: "N"
+    reads: N
+    means: >-
+      The **modulus** — the number you are dividing by, the size of the clock face. Mod 24
+      for hours, mod 7 for weekdays.
+  - symbol: "≡"
+    reads: is congruent to
+    means: >-
+      Three lines rather than two: not "equal", but "the same as far as this modulus is
+      concerned". `17 ≡ 5 (mod 12)` — different numbers, same position on the clock.
+  - symbol: "(mod N)"
+    reads: mod N
+    means: >-
+      Written in brackets at the end of a congruence, it says which clock face you are on.
+      It applies to the whole statement, not just the nearest number.
+  - symbol: "q and r"
+    reads: q and r
+    means: >-
+      Quotient and remainder — how many whole times `N` went in, and what was left over.
+      Conventional single-letter names.
+questions:
+  - ask: What is `−7 mod 3`?
+    choices:
+      - text: "2"
+        correct: true
+        explains: >-
+          The definition insists on `0 ≤ r < N`. Writing `−7 = (−3)(3) + 2` gives quotient
+          `−3` and remainder `2`. Negative inputs are where this convention earns its
+          keep — and where most bugs in modular code come from.
+      - text: "−1"
+        explains: >-
+          `−1` does satisfy `−7 = (−2)(3) + (−1)`, but it violates `0 ≤ r < N`. Many
+          programming languages return this; mathematics does not.
+      - text: "1"
+        explains: >-
+          Check it: `−7 − 1 = −8`, which is not a multiple of 3. The remainder must differ
+          from `−7` by a multiple of 3.
+      - text: >-
+          `−7`, since it is already smaller than 3
+        explains: >-
+          The condition is `0 ≤ r`, not just `r < N`. Negative values are reduced upwards
+          into the range.
+  - ask: Is `−3 ≡ 9 (mod 12)`?
+    choices:
+      - text: Yes — they differ by a multiple of 12, and both reduce to 9
+        correct: true
+        explains: >-
+          `−3 − 9 = −12`, a multiple of 12. And `−3 mod 12 = 9`, matching `9 mod 12 = 9`.
+          Both readings of congruence agree, as they always must.
+      - text: No, because `−3 mod 12` is `−3`
+        explains: >-
+          This is the same trap as the previous question: reduction lands in `0…11`, so
+          `−3 mod 12 = 9`.
+      - text: No, because congruence is only defined for non-negative integers
+        explains: >-
+          Congruence is defined on all integers. Allowing negatives is much of the point —
+          it makes the integers fold into `N` classes.
+      - text: Only if 12 is prime
+        explains: >-
+          Primality matters later, for inverses and division. Congruence itself works for
+          any modulus.
+---
+
+You start a 25-episode season at midnight, 3 hours an episode. What time do you finish?
+
+`25 × 3 = 75` hours — and you did not count 75 hours forward. You divided by 24 and kept the
+remainder: **3 a.m.** That instinct is the entire subject.
+
+## The definition
+
+`x mod N` is the remainder when `x` is divided by `N`. Formally, there is a quotient `q` and
+remainder `r` with
+
+```
+x = qN + r,   with 0 ≤ r < N
+```
+
+`N` is the **modulus** — the size of the clock face.
+
+That `0 ≤ r < N` looks like housekeeping. It is the single most common source of bugs in
+modular code. **Test it:** what is `−7 mod 3`?
+
+Tempting: `−1`, from `−7 = (−2)(3) + (−1)`. But `−1` violates `0 ≤ r`. Push further:
+`−7 = (−3)(3) + 2`. So `−7 mod 3 = 2`. Remainders are never negative. (Several programming
+languages disagree; mathematics does not.)
+
+## Two pictures
+
+**Restriction** — numbers confined to `0 … N−1`, wrapping like an hour hand.
+
+**Folding** — all integers kept, grouped into `N` piles by remainder. Mod 5, the pile
+labelled 2 holds `…, −8, −3, 2, 7, 12, …`. Each pile is an **equivalence class**.
+
+## Congruence: the three-line equals
+
+```
+x ≡ y (mod N)
+```
+
+`≡` is deliberately not `=`: 17 and 5 are not equal, but mod 12 they are indistinguishable.
+Two equivalent readings — same remainder, or difference is a multiple of `N`.
+
+| claim | difference a multiple of 12? | same remainder? |
+| --- | --- | --- |
+| `17 ≡ 5 (mod 12)` | `12` ✓ | both 5 ✓ |
+| `−3 ≡ 9 (mod 12)` | `−12` ✓ | both 9 ✓ |
+| `14 ≡ 5 (mod 12)` | `9` ✗ | 2 vs 5 ✗ |
+
+The middle row trips people, for the reason above: `−3 mod 12` is `9`.
+
+## The substitution rule
+
+> If `x ≡ x′` and `y ≡ y′ (mod N)`, then `x + y ≡ x′ + y′` and `xy ≡ x′y′`.
+
+In plain terms: **swap any number for another in its pile, at any point, without changing
+the answer.** Ordinary algebra still works. Watch what that buys:
+
+```
+2³⁴⁵ ≡ (2⁵)⁶⁹ ≡ 32⁶⁹ ≡ 1⁶⁹ ≡ 1 (mod 31)
+```
+
+`2³⁴⁵` is a 104-digit number we never wrote down. We spotted `32 ≡ 1`, swapped, and it
+collapsed. The next page turns that move into a technique.

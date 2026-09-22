@@ -1,0 +1,62 @@
+.quiz {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+  padding: 1.15rem 1.25rem 1.25rem;
+}
+.quiz > .eyebrow { margin-bottom: 0.9rem; }
+.quiz__q + .quiz__q { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--line); }
+.quiz__ask { margin: 0 0 0.75rem; font-weight: 550; line-height: 1.45; }
+.quiz__choices { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.4rem; }
+
+.quiz__choice {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  width: 100%;
+  text-align: left;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.92rem;
+  line-height: 1.4;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.quiz__choice:hover:not(:disabled) { border-color: var(--accent); }
+.quiz__choice:disabled { cursor: default; }
+.quiz__choice.is-correct { border-color: var(--ok); background: var(--ok-soft); }
+.quiz__choice.is-wrong { border-color: var(--bad); background: var(--bad-soft); }
+
+.quiz__mark {
+  flex: 0 0 1rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+.quiz__choice.is-correct .quiz__mark { color: var(--ok); }
+.quiz__choice.is-wrong .quiz__mark { color: var(--bad); }
+
+.quiz__feedback {
+  margin: 0.7rem 0 0;
+  padding-left: 0.75rem;
+  border-left: 2px solid var(--line-strong);
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+}
+.quiz__feedback.is-correct { border-color: var(--ok); }
+.quiz__feedback.is-wrong { border-color: var(--bad); }
+
+/* Inline code inside questions and feedback: quieter than a prose code span,
+   since it appears mid-sentence and often several times per line. */
+.quiz code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  background: var(--bg-sunken);
+  padding: 0.1em 0.3em;
+  border-radius: 3px;
+}
+.quiz__choice.is-correct code { background: color-mix(in srgb, var(--ok) 14%, transparent); }
+.quiz__choice.is-wrong code { background: color-mix(in srgb, var(--bad) 14%, transparent); }

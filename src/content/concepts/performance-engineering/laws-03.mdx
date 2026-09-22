@@ -1,0 +1,72 @@
+---
+course: performance-engineering
+section: laws
+order: 30
+title: The Roofline Model
+visuals:
+  - type: svg
+    src: performance-engineering/laws/03.svg
+questions:
+  - ask: A kernel reads two 4-byte floats, adds them, and writes a 4-byte result. What is its arithmetic intensity?
+    choices:
+      - text: About 0.08 FLOPs per byte
+        correct: true
+        explains: >-
+          One addition against 12 bytes moved is 1/12 ≈ 0.08. That is far below the
+          crossover on any modern machine, so this kernel is memory bound — a faster
+          ALU would change nothing.
+      - text: 1 FLOP per byte
+        explains: >-
+          That would need one operation per byte moved. Here it's one operation per
+          twelve bytes.
+      - text: 3 FLOPs per byte
+        explains: >-
+          This inverts the ratio. Intensity is operations divided by bytes, and the
+          bytes dominate here.
+      - text: It depends on the CPU's clock speed
+        explains: >-
+          Intensity is a property of the algorithm, not the machine. The machine
+          supplies the roofline you compare it against.
+  - ask: Your kernel sits well under the sloped part of the roofline. What is most likely to help?
+    choices:
+      - text: Improving data reuse so fewer bytes move
+        correct: true
+        explains: >-
+          Under the slope means memory bound. Blocking or tiling for cache raises
+          intensity, which moves you right along the roof towards the compute limit.
+      - text: Using a CPU with a higher clock speed
+        explains: >-
+          Compute capacity is the flat part of the roof. You aren't touching it, so
+          raising it moves the ceiling you aren't hitting.
+      - text: Adding more threads
+        explains: >-
+          More threads generally means more demand on the same memory bandwidth. When
+          bandwidth is the constraint, this often makes things worse.
+---
+
+Whether your code is limited by arithmetic or by memory traffic is not a matter of
+opinion. It follows from one ratio:
+
+```
+arithmetic intensity = FLOPs performed / bytes moved
+```
+
+Plot achievable performance against that ratio and you get a roof with two parts. The
+**sloped section** is the bandwidth limit — at low intensity you can only compute as
+fast as data arrives. The **flat section** is the compute limit — past a crossover
+point, memory keeps up and your peak FLOP rate binds instead.
+
+## Why it settles arguments
+
+Locate your kernel on that graph and the optimisation question answers itself:
+
+- **Under the slope** — memory bound. Improve reuse: block for cache, change layout,
+  compress. Faster arithmetic is wasted effort.
+- **Under the flat part** — compute bound. Now vectorisation, better instruction
+  selection, and lower-precision arithmetic pay off.
+- **Near the roof** — you are close to what the hardware can do. Further gains need a
+  different algorithm, not a better implementation of this one.
+
+Most real code sits well under the sloped section, which is the same conclusion the
+memory hierarchy pushed us towards: **moving data, not computing on it, is usually what
+costs you.** The roofline just makes it quantitative.

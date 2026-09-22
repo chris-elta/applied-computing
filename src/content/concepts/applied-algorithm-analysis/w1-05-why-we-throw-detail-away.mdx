@@ -1,0 +1,100 @@
+---
+course: applied-algorithm-analysis
+section: w1-bigo
+order: 50
+title: Why We Throw Detail Away
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week1.html?hash=true#/13
+    caption: >-
+      Slides 17–18 of 65 — the big picture, and asymptotic notation in seven words.
+notation:
+  - symbol: "5n³ + 4n + 3"
+    reads: five n cubed plus four n plus three
+    means: >-
+      An expression built from **terms** added together. `n³` means `n × n × n`. The `5` in
+      front of `n³` is its **coefficient** — a plain multiplier.
+  - symbol: "leading term"
+    reads: leading term
+    means: >-
+      The term that grows fastest — here `5n³`. For large `n` it dwarfs the others, which
+      is the entire justification for throwing the rest away.
+  - symbol: "O(n³)"
+    reads: big-oh of n cubed
+    means: >-
+      "Grows no faster than `n³`, give or take a constant multiplier." The formal
+      definition is two concepts away; this reading is what it amounts to.
+questions:
+  - ask: >-
+      An algorithm takes exactly `5n³ + 4n + 3` steps. Asymptotic analysis reports `O(n³)`.
+      What has been discarded, and why is that defensible?
+    choices:
+      - text: >-
+          The constant factor and lower-order terms — they are system-dependent or
+          irrelevant as `n` grows
+        correct: true
+        explains: >-
+          Both categories go for their own reason. The `5` depends on the machine, the
+          compiler and the constant hidden in "one step"; the `4n + 3` is genuinely
+          negligible once `n` is large. What survives is the shape.
+      - text: Nothing important — the notation is exact
+        explains: >-
+          A great deal is discarded, deliberately. `O(n³)` is compatible with `5n³` and
+          with `500n³`, and those are very different programs to run.
+      - text: The `n³` term, since only growth matters
+        explains: >-
+          It is the other way round: the leading term is the only thing kept.
+      - text: >-
+          The lower-order terms only — constants are preserved so implementations can be
+          compared
+        explains: >-
+          Constants are dropped too, and that is the more contentious half of the deal.
+          Comparing implementations is exactly what asymptotics cannot do.
+---
+
+Suppose you count carefully and find an algorithm takes exactly `5n³ + 4n + 3` steps.
+
+Read that as English first: three **terms** added together. `n³` means `n × n × n`. The `5`
+in front is a **coefficient** — a plain multiplier.
+
+Precise. Also more precise than useful, and here is why we throw most of it away.
+
+## Watch the terms fight
+
+| `n` | `5n³` | `4n + 3` as a share |
+| --- | --- | --- |
+| 1 | 5 | 58% |
+| 10 | 5,000 | 0.9% |
+| 100 | 5,000,000 | 0.008% |
+| 1,000 | 5,000,000,000 | 0.00008% |
+
+The `3` never mattered. The `4n` stops mattering almost immediately. By `n = 100` the answer
+is `5n³` and a rounding error. Keeping them would be **noise dressed as precision**.
+
+## The `5` goes for a different reason
+
+The lower-order terms went because they become negligible. The coefficient goes because it
+was never really a property of the algorithm: change the language, compiler, processor, or
+what you counted as "one step", and 5 becomes 3 or 11. It describes your measuring setup as
+much as your algorithm.
+
+So we say `O(n³)`.
+
+> **We report the shape, not the number.**
+
+## Seven words
+
+> Suppress constant factors and lower-order terms.
+
+- **Constant factors** — too machine-dependent to carry.
+- **Lower-order terms** — irrelevant once the input is large.
+
+## This granularity was chosen
+
+Not a mathematical accident — a deliberate setting, picked to be **coarse enough** to hide
+your hardware and **precise enough** to still separate exponential from linear, quadratic
+from linearithmic.
+
+And it deliberately gives something up. `O(n³)` cannot tell you which of two `O(n log n)`
+sorts to ship, because it discarded exactly what decides that. Once the shape is settled,
+constants matter again — that is engineering, and it comes *after* this analysis.

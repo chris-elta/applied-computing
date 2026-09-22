@@ -1,0 +1,111 @@
+---
+course: applied-algorithm-analysis
+section: w1-bigo
+order: 10
+title: The Definition Is Not an Algorithm
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week1.html?hash=true#/6
+    caption: >-
+      Slides 7–8 of 65 — the Fibonacci definition, and the recursion tree it produces.
+notation:
+  - symbol: "F(n)"
+    reads: "F of n"
+    means: >-
+      A machine with a name. Feed it a whole number `n` and it hands back the nth
+      Fibonacci number. The slides write it `Fₙ`, with `n` shrunk down beside the F —
+      same thing, different handwriting.
+  - symbol: "n"
+    reads: "n"
+    means: >-
+      The stand-in for "whichever number you asked about". Saying `F(n)` instead of
+      `F(7)` is how you state a rule that works for every case at once.
+  - symbol: "≈"
+    reads: "is approximately"
+    means: Nearly equal, close enough for the point being made.
+  - symbol: "φ"
+    reads: fye (rhymes with eye), or fee
+    means: >-
+      A specific number, about 1.618, the way `π` is a specific number about 3.14. It is
+      the factor the Fibonacci numbers grow by.
+questions:
+  - ask: In the recursion tree for `fib1(n)`, roughly how many times is `F(n-3)` computed?
+    choices:
+      - text: Once — recursion computes each value once
+        explains: >-
+          That is what memoisation buys you, and `fib1` does not have it. Nothing in the
+          function records that a value has already been computed.
+      - text: Three times
+        correct: true
+        explains: >-
+          `F(n-2)` is computed twice and `F(n-3)` three times — the counts are themselves
+          Fibonacci numbers. That repetition, compounded down every level, is where the
+          exponential cost comes from.
+      - text: n times
+        explains: >-
+          Linear repetition would still leave the algorithm linear overall. The repetition
+          here multiplies at every level, which is a much worse thing.
+      - text: It depends on the order the two recursive calls are made in
+        explains: >-
+          Swapping the two calls changes the order the tree is walked, not its size. Every
+          node still gets visited.
+---
+
+Write down `0` and `1`. Then keep writing the sum of the last two:
+
+```
+0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, …
+```
+
+That is the whole sequence. Now name it: `F(n)` means "the Fibonacci number at position
+`n`", where `n` stands in for whichever position you mean. So `F(0) = 0`, `F(1) = 1`,
+`F(7) = 13`, and the rule is:
+
+```
+F(n) = F(n−1) + F(n−2)
+```
+
+Read as English: *the number at position `n` is the one before it plus the one before
+that.*
+
+## Defining `F` using `F` is allowed
+
+The rule looks circular, but the chain stops: `F(0)` and `F(1)` are given outright. Those
+are **base cases**, and a self-referring rule with base cases is called **recursive**. It is
+a perfectly good definition.
+
+## Typing it in gives you a bad algorithm
+
+```
+function fib1(n)
+  if n = 0: return 0
+  if n = 1: return 1
+  return fib1(n−1) + fib1(n−2)
+```
+
+Correct — feed it 7, get 13. Also close to unusable, and a pencil shows why.
+
+`fib1(5)` needs `fib1(4)` and `fib1(3)`. But `fib1(4)` *also* needs `fib1(3)`. Nothing
+records an answer, so it is recomputed from scratch. Count how often each value is needed:
+
+| needed | times computed |
+| --- | --- |
+| `F(4)` | 1 |
+| `F(3)` | 2 |
+| `F(2)` | 3 |
+| `F(1)` | 5 |
+
+Those counts are themselves Fibonacci numbers. **The waste grows at the rate of the thing
+being computed.**
+
+## How bad is that?
+
+Every extra `n` multiplies the work by about **1.618** — a constant called `φ`, used the
+way `π` is. Multiplying by a fixed factor per step is what **exponential** means. Ten more
+inputs is not ten more units of work; it is 1.618 applied ten times, a factor of ~120.
+
+> **A definition says what the answer is. An algorithm says how to get it.** The gap
+> between them is what this course is about.
+
+> Practice: [509 · Fibonacci Number](https://leetcode.com/problems/fibonacci-number),
+> [70 · Climbing Stairs](https://leetcode.com/problems/climbing-stairs).

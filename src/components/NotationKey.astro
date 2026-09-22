@@ -1,0 +1,79 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { splitInline } from '../lib/inline-code';
+
+interface Props {
+  entries: CollectionEntry<'concepts'>['data']['notation'];
+}
+
+const { entries } = Astro.props;
+---
+
+{entries.length > 0 && (
+  <aside class="notation" aria-label="Notation used on this page">
+    <p class="eyebrow">Notation on this page</p>
+    <dl class="notation__list">
+      {entries.map((entry) => (
+        <div class="notation__row">
+          <dt class="notation__symbol">{entry.symbol}</dt>
+          <dd class="notation__body">
+            <span class="notation__reads">say “{entry.reads}”</span>
+            <span class="notation__means">
+              {splitInline(entry.means).map((part) =>
+                part.kind === 'code' ? <code>{part.text}</code>
+                : part.kind === 'strong' ? <strong>{part.text}</strong>
+                : part.kind === 'em' ? <em>{part.text}</em>
+                : part.text,
+              )}
+            </span>
+          </dd>
+        </div>
+      ))}
+    </dl>
+  </aside>
+)}
+
+<style>
+  .notation {
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius);
+    background: var(--bg-raised);
+    padding: 1rem 1.15rem 1.15rem;
+  }
+  .notation > .eyebrow { margin-bottom: 0.8rem; }
+
+  .notation__list { margin: 0; display: flex; flex-direction: column; gap: 0.75rem; }
+
+  .notation__row {
+    display: grid;
+    grid-template-columns: minmax(3.5rem, auto) 1fr;
+    gap: 0.25rem 1rem;
+    align-items: baseline;
+  }
+
+  .notation__symbol {
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  .notation__body { margin: 0; display: flex; flex-direction: column; gap: 0.15rem; }
+  .notation__reads { font-size: 0.78rem; color: var(--ink-faint); font-style: italic; }
+  .notation__means { font-size: 0.9rem; color: var(--ink); line-height: 1.45; }
+  .notation__means strong { font-weight: 650; }
+  .notation__means em { font-style: italic; }
+  .notation__means code {
+    font-family: var(--font-mono);
+    font-size: 0.88em;
+    background: var(--bg-sunken);
+    padding: 0.1em 0.3em;
+    border-radius: 3px;
+  }
+
+  @media (max-width: 30rem) {
+    .notation__row { grid-template-columns: 1fr; gap: 0.2rem; }
+  }
+</style>

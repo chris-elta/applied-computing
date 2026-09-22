@@ -1,0 +1,142 @@
+---
+course: applied-algorithm-analysis
+section: w1-numbers
+order: 130
+title: Multiplication Costs Quadratic Time
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week1.html?hash=true#/34
+    caption: >-
+      Slides 42–44 of 65 — the recursive rule, schoolbook multiplication in binary, and
+      Al-Khwarizmi's method.
+notation:
+  - symbol: "⌊y/2⌋"
+    reads: the floor of y over two
+    means: >-
+      `y` halved and rounded **down** to a whole number: `⌊7/2⌋ = 3`. Feet pointing down
+      means round down. Its partner `⌈ ⌉` rounds up.
+  - symbol: "1101₂"
+    reads: one one zero one, base two
+    means: >-
+      The small `2` says which base the digits are in. `1101₂` is binary for 13; without
+      the subscript you would read it as one thousand one hundred and one.
+  - symbol: "partial product"
+    reads: partial product
+    means: >-
+      One row of a long multiplication — the top number multiplied by a single digit of the
+      bottom one, shifted into position.
+  - symbol: "O(n²)"
+    reads: big-oh of n squared
+    means: >-
+      Work proportional to `n × n`. Here it arises as `n` rows, each costing `O(n)` to add
+      in — the standard "count × cost each" shape.
+questions:
+  - ask: >-
+      Al-Khwarizmi's method looks nothing like schoolbook multiplication. What does it
+      cost?
+    choices:
+      - text: "`O(n²)` — the same, and for the same reason"
+        correct: true
+        explains: >-
+          `y` halves every round, so there are `n` rounds, and each round adds two `n`-bit
+          numbers at `O(n)`. That is `n × O(n) = O(n²)` — identical to schoolbook, because
+          the two methods are the same algorithm in different clothing.
+      - text: "`O(n log n)`, because halving `y` gives a logarithmic number of rounds"
+        explains: >-
+          Halving `y` gives `log₂ y` rounds — but `log₂ y` *is* `n`, the bit length. That
+          is the trap this whole module exists to defuse.
+      - text: "`O(n)` — each row is one doubling and one halving"
+        explains: >-
+          Each row is cheap only if a doubling is one step. On `n`-bit numbers it is `O(n)`,
+          and there are `n` rows.
+      - text: "`O(2ⁿ)`, since `y` can be exponentially large in `n`"
+        explains: >-
+          `y` is large in value but only `n` bits long, and the round count follows the bit
+          length. The method is quadratic, not exponential.
+  - ask: In binary schoolbook multiplication, why is each partial product cheap?
+    choices:
+      - text: >-
+          Every bit of `y` is 0 or 1, so each partial product is either zero or a shifted
+          copy of `x`
+        correct: true
+        explains: >-
+          Shifting is free — append a zero — so no partial product needs a real
+          multiplication. The cost is entirely in adding the `n` rows together.
+      - text: Because binary numbers are shorter than decimal ones
+        explains: >-
+          They are longer, by a factor of about 3.32. The saving is in the digits being
+          0 or 1, not in how many there are.
+      - text: Because carries never occur in binary
+        explains: >-
+          Carries occur constantly in binary addition. What is avoided is a digit-by-digit
+          *multiplication* table.
+      - text: Because the partial products can be added in any order
+        explains: >-
+          True but irrelevant to cost — reordering still leaves `n` additions to perform.
+---
+
+Addition came out at `Θ(n)`. Multiplication is where big numbers start to hurt.
+
+## The rule as an instruction
+
+> Halve `y`, double the product, and add `x` back if `y` was odd.
+
+```
+function multiply(x, y)
+  if y = 0: return 0
+  z = multiply(x, ⌊y/2⌋)
+  if y is even: return 2z
+  else: return x + 2z
+```
+
+`⌊y/2⌋` is `y` halved and **rounded down** — `⌊7/2⌋ = 3`. Why it works: if `y` is even,
+`x·y = 2·(x·(y/2))`; if odd, peel off one `x` and the rest is even.
+
+## Schoolbook multiplication, in binary
+
+```
+    1 1 0 1     (13)
+  × 1 0 1 1     (11)
+  ───────────
+    1 1 0 1     13 × 1
+  1 1 0 1 ·     13 × 1, shifted once
+0 0 0 0 · ·     13 × 0, shifted twice
+1 1 0 1 · · ·   13 × 1, shifted three times
+───────────────
+1 0 0 0 1 1 1 1 (143)
+```
+
+Each row is a **partial product**. In decimal that needs a real multiplication per row; in
+binary the digit is 0 or 1, so every row is either **nothing** or **a copy of `x`**.
+Shifting is free — append a zero.
+
+**Cost:** the multiplications are free; the additions are not. There are `n` partial
+products, each up to `2n` bits, added one after another.
+
+> `n` rows × `O(n)` per row = **`O(n²)`**
+
+That "how many × how much each" shape is the standard way to price an algorithm, and you use
+it three more times this week.
+
+## Al-Khwarizmi's method: same price, different ritual
+
+Double the left column, halve the right, and keep the left values whose right partner is
+**odd**.
+
+| `x` — double | `y` — halve | odd? | keep |
+| --- | --- | --- | --- |
+| 11 | 13 | yes | 11 |
+| 22 | 6 | no | — |
+| 44 | 3 | yes | 44 |
+| 88 | 1 | yes | 88 |
+| — | 0 | stop | **143** |
+
+Not sorcery: the rows kept are exactly the 1-bits of `13 = 1101₂`. Halving repeatedly *is*
+reading off binary digits; doubling *is* shifting. This is binary shift-and-add, written a
+thousand years before binary.
+
+`n` rounds × `O(n)` per addition = **`O(n²)`** — identical to schoolbook.
+
+> Two methods that look nothing alike cost the same, because they are the same algorithm in
+> different clothing. Beating `O(n²)` needs a different **idea** — divide and conquer, as
+> Karatsuba's algorithm, in a later week.

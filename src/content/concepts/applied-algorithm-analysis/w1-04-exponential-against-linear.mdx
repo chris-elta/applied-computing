@@ -1,0 +1,102 @@
+---
+course: applied-algorithm-analysis
+section: w1-bigo
+order: 40
+title: Exponential Against Linear, in Numbers
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week1.html?hash=true#/11
+    caption: >-
+      Slides 14–15 of 65 — drag `n` to watch the gap open. Press the down arrow inside
+      the deck for the exact figures.
+notation:
+  - symbol: "C(n)"
+    reads: C of n
+    means: >-
+      A second machine, invented just to count. Feed it `n` and it returns how many calls
+      `fib1(n)` makes. Naming a cost like this is standard practice — it lets you do
+      algebra on the running time.
+  - symbol: "10⁹"
+    reads: ten to the nine
+    means: >-
+      1 followed by 9 zeros — a billion. The little raised number says how many times to
+      multiply by 10, which is why it is a compact way to write enormous quantities.
+  - symbol: "µs"
+    reads: microsecond
+    means: >-
+      A millionth of a second. The ladder is ns (billionth), µs (millionth), ms
+      (thousandth), then seconds.
+  - symbol: "log_φ 2"
+    reads: log base phi of 2
+    means: >-
+      "How many times must I multiply by `φ` to reach 2?" The answer is about 1.44. A
+      logarithm is always answering a question of that shape.
+questions:
+  - ask: >-
+      `fib1` at n = 50 takes about 41 seconds. You buy a machine twice as fast. Roughly
+      what `n` now takes 41 seconds?
+    choices:
+      - text: About 51
+        correct: true
+        explains: >-
+          Each extra `n` multiplies the work by `φ ≈ 1.618`, so doubling the speed buys
+          `log_φ 2 ≈ 1.44` extra values of `n`. Twice the hardware moves you about one and
+          a half steps along — and this is the entire argument of the prologue.
+      - text: About 100
+        explains: >-
+          That would be true if the cost were linear in `n`. It is exponential, so
+          doubling the speed does not double the reachable input.
+      - text: About 60
+        explains: >-
+          That would need each extra `n` to cost only about 7% more. The real factor is
+          about 62% more per step.
+      - text: About 75
+        explains: >-
+          Halving the work does not halve the exponent. You gain roughly 1.4 in `n`, not
+          half of 50.
+---
+
+Drag the slider on the slide and watch the curves separate. Around `n = 40` on an ordinary
+laptop, `fib1` stops being instant and starts looking broken. This page puts numbers on
+that.
+
+## Counting the calls exactly
+
+Give the cost a name: let `C(n)` be the number of calls `fib1(n)` makes. From the code:
+
+- `C(0) = C(1) = 1` — base cases do one call and stop.
+- `C(n) = C(n−1) + C(n−2) + 1` — two recursive calls, plus the one you are in.
+
+That middle line is the Fibonacci rule with `+1` bolted on, and it solves to
+`C(n) = 2·F(n+1) − 1`.
+
+> **The work `fib1` does *is* the Fibonacci sequence.** Its cost and its output grow at the
+> same rate — what comes of taking a definition literally.
+
+Since `F(n) ≈ φⁿ/√5` with `φ ≈ 1.618`, the calls multiply by ~1.618 per extra `n`.
+
+## In seconds, at a billion calls per second
+
+| `n` | `fib1` calls | `fib2` additions | `fib1` at 10⁹/sec |
+| --- | --- | --- | --- |
+| 20 | 21,891 | 19 | instant |
+| 40 | 331,160,281 | 39 | 0.3 seconds |
+| 50 | 40,730,022,147 | 49 | 41 seconds |
+| 100 | 1.15 × 10²¹ | 99 | 36,000 years |
+| 200 | 9.08 × 10⁴¹ | 199 | 10¹⁵ × the age of the universe |
+
+Read the middle columns together: at `n = 200`, one algorithm needs 199 additions and the
+other needs more operations than there are atoms to perform them with.
+
+## Why a faster computer does not save you
+
+Buy a machine **twice as fast**. How much further does `fib1` reach? You can afford one
+extra multiplication by `φ` for as long as `φ` fits into 2 — which is `log_φ 2 ≈ 1.44`
+times. (A logarithm is just the answer to "how many times must I multiply by this to reach
+that?")
+
+**Doubling your hardware buys about 1.4 extra values of `n`.** Meanwhile `fib2` reaches
+`n = 200` on a phone.
+
+> **The algorithm, not the hardware, decides what is computable.** Every asymptotic argument
+> in this course is a way of seeing that without building the table first.

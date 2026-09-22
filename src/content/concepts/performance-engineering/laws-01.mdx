@@ -1,0 +1,55 @@
+---
+course: performance-engineering
+section: laws
+order: 10
+title: "Amdahl's Law"
+visuals:
+  - type: svg
+    src: performance-engineering/laws/01.svg
+questions:
+  - ask: A program spends 20% of its time in code that cannot be parallelised. What is the best possible speedup, with unlimited cores?
+    choices:
+      - text: 5×
+        correct: true
+        explains: >-
+          With p = 0.8, the parallel part shrinks towards zero and you are left with the
+          serial 20%. One divided by 0.2 is 5. More cores cannot help with work that
+          must happen in sequence.
+      - text: 20×
+        explains: >-
+          That would be the answer if 95% were parallel, not 80%. The cap is one over
+          the *serial* fraction — here 1 / 0.2.
+      - text: 80×
+        explains: >-
+          The parallel fraction isn't the speedup. It's the part that can be divided up;
+          what's left over is what limits you.
+      - text: Unlimited, given enough cores
+        explains: >-
+          This is exactly the intuition Amdahl's Law kills. The serial 20% takes the same
+          wall-clock time no matter how many cores you add.
+---
+
+Parallelism is bounded by the part of the program that refuses to be parallel. If a
+fraction `p` of the runtime can be spread across `N` workers and the rest cannot:
+
+```
+S = 1 / ((1 - p) + p/N)
+```
+
+Let `N` grow without limit and the `p/N` term vanishes, leaving `S = 1 / (1 - p)`. The
+speedup ceiling depends only on the **serial fraction** — the part you didn't
+parallelise.
+
+## Why this is worth knowing before you start
+
+The numbers are brutal in a way intuition isn't. A program that is 95% parallel — which
+already sounds like a triumph — caps out at 20×, no matter whether you throw 64 cores or
+64,000 at it. At 99% parallel the ceiling is 100×.
+
+So the useful question is never "how do I spread this across more cores". It's **"what
+is my serial fraction, and can I shrink it"**. An hour spent removing a lock that
+serialises 5% of the runtime can be worth more than any amount of scaling out.
+
+> The same reasoning applies well beyond threads. Any optimisation that speeds up only
+> part of a system is governed by this: fix the part that dominates, or accept the
+> ceiling that the rest imposes.

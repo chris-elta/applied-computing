@@ -1,0 +1,159 @@
+---
+course: applied-algorithm-analysis
+section: w1-review
+order: 180
+title: Where We Landed
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week1.html?hash=true#/53
+    caption: >-
+      Slides 63–65 of 65 — the summary table, the self-check, and the reading.
+notation:
+  - symbol: "O · Ω · Θ · o"
+    reads: big-oh, big-omega, big-theta, little-oh
+    means: >-
+      The four relations between functions: `≤`, `≥`, `=` and a strict `<`. Each needs
+      witnesses — a constant `c` and a threshold `n₀` — before it counts as proved.
+  - symbol: "n ≈ log₂ N"
+    reads: n is approximately log base two of N
+    means: >-
+      The bridge between the two halves of the week. `N` is a number's **value**, `n` is its
+      **length in bits**, and input size always means the second.
+  - symbol: "mod"
+    reads: mod, or modulo
+    means: >-
+      Remainder after division. Keeps every intermediate value below `N`, which is what
+      makes arithmetic on huge numbers possible at all.
+  - symbol: "rounds × cost per round"
+    reads: rounds times cost per round
+    means: >-
+      Not really notation — the accounting pattern used to price fast exponentiation and
+      Euclid, and the most reusable tool from this week.
+questions:
+  - ask: >-
+      `fib3` makes the same recursive calls as `fib1`. Why is it linear anyway?
+    choices:
+      - text: Each memo entry is computed once; every repeat call returns in `O(1)`
+        correct: true
+        explains: >-
+          There are only `n` distinct subproblems. The first visit to each does the work,
+          and every later visit is a table lookup — so the total work is proportional to
+          the number of distinct subproblems, not to the size of the call tree.
+      - text: The memo makes the recursion depth logarithmic
+        explains: >-
+          The depth is still `n`, which is why `fib3` can overflow the stack where `fib2`
+          cannot. Depth is not what changed.
+      - text: It makes strictly fewer calls than `fib1`
+        explains: >-
+          It makes the same calls — that is the premise. What changed is how much work each
+          call does.
+      - text: Because addition is `O(1)`
+        explains: >-
+          Both versions assume that, and `fib1` is exponential regardless. The assumption
+          is not what separates them.
+  - ask: >-
+      An algorithm is both `O(n)` and `Ω(n)`. What is the one-symbol conclusion — and what
+      does it still not tell you?
+    choices:
+      - text: "`Θ(n)`; it says nothing about best vs worst case, or about constants"
+        correct: true
+        explains: >-
+          Matching upper and lower bounds give `Θ`. But bound-tightness and case are
+          independent axes, so `Θ(n)` alone does not say which case was analysed — and the
+          constants it suppresses may still decide which implementation you ship.
+      - text: "`Θ(n)`, and the algorithm's running time is therefore fully determined"
+        explains: >-
+          `Θ` pins the growth *order* only. Two `Θ(n)` algorithms can differ by a factor of
+          100 in practice.
+      - text: "`O(n)`, since the upper bound is what matters"
+        explains: >-
+          When both bounds hold, `Θ` is the stronger and more honest statement. Reporting
+          only `O` throws away what you proved.
+      - text: Nothing — the two bounds are contradictory
+        explains: >-
+          They are complementary, not contradictory. Holding simultaneously is exactly the
+          definition of `Θ`.
+  - ask: >-
+      Euclid's algorithm is run on two 100-digit numbers. Is the input size 100, 200, about
+      664, or 10¹⁰⁰?
+    choices:
+      - text: About 664
+        correct: true
+        explains: >-
+          200 decimal digits in total, at `log₂ 10 ≈ 3.32` bits each, is about 664 bits.
+          Input size is the length of the input, and the whole second half of the lecture
+          turns on not confusing it with the value.
+      - text: "10¹⁰⁰"
+        explains: >-
+          That is the value, and using it as the size would make Euclid look impossibly
+          slow. This is the misconception the module is built to remove.
+      - text: "100"
+        explains: >-
+          That is the digit count of one number of the two, and in decimal digits rather
+          than bits.
+      - text: "200"
+        explains: >-
+          The right number of digits, but the conventional unit is bits — multiply by
+          `log₂ 10`.
+---
+
+Three things to carry forward, and one habit.
+
+## 1 · The algorithm decides what is computable, not the machine
+
+One problem, three algorithms, exponential down to linear — with the hardware never changing.
+`fib1` multiplies its work by `φ ≈ 1.618` per extra `n`, so a machine twice as fast buys
+about **1.4 more inputs**. `fib2` reaches `n = 200` in 199 additions on anything.
+
+That gap is not an optimisation. It is the difference between possible and impossible.
+
+## 2 · Asymptotic notation reports the shape, not the number
+
+**Suppress constant factors and lower-order terms** — constants because they describe your
+machine, lower-order terms because they stop mattering.
+
+| | reads as | means |
+| --- | --- | --- |
+| `O` | `≤` | grows no faster than |
+| `Ω` | `≥` | grows at least as fast as |
+| `Θ` | `=` | grows at the same rate as |
+| `o` | strict `<` | grows strictly slower than |
+
+Two things to keep straight: a claim needs **witnesses** (an actual `c` and `n₀`) to be
+proved rather than asserted; and bound-tightness is a *separate axis* from which case you
+mean.
+
+## 3 · For numbers, input size is bits
+
+`N` is a value; `n ≈ log₂ N` is its length. Forgetting that is what makes an innocent loop
+over `1…N` secretly exponential. Once you count bits, arithmetic stops being free:
+
+| on `n`-bit numbers | cost |
+| --- | --- |
+| addition | `O(n)` |
+| multiplication | `O(n²)` |
+| division and mod | `O(n²)` |
+| modular exponentiation | `O(n³)` |
+| gcd, by Euclid | `O(n³)` |
+
+## The habit: rounds × cost per round
+
+The last two rows were derived the same way, with nothing clever:
+
+- **Fast exponentiation** — exponent halves each call → `n` rounds; each is one modular
+  multiplication at `O(n²)`.
+- **Euclid** — larger value halves every two rounds → `2n` rounds; each is one division at
+  `O(n²)`.
+
+Find the round count, find the per-round cost, multiply. That is the most reusable thing in
+this week's material, and what next week's recurrences generalise.
+
+## Next
+
+Divide and conquer: recurrences and the master theorem.
+
+## Reading
+
+- Dasgupta, Papadimitriou & Vazirani, *Algorithms* — ch. 0 for `fib1`/`fib2` and Big-O, ch. 1
+  for arithmetic, modular arithmetic and Euclid.
+- Roughgarden, *Algorithms Illuminated, Part 1* — ch. 2 for asymptotic notation.

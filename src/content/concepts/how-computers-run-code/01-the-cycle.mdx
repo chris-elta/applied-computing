@@ -1,0 +1,50 @@
+---
+course: how-computers-run-code
+order: 10
+section: mechanics
+title: The Fetch–Decode–Execute Cycle
+visuals:
+  type: animation
+  component: FetchDecodeExecute
+  caption: One instruction making its way through a simplified datapath.
+questions:
+  - ask: Which stage is the only one that actually performs arithmetic?
+    choices:
+      - text: Fetch
+        explains: >-
+          Fetch only moves an instruction from memory into the CPU. No arithmetic on your
+          data happens here — though the CPU does quietly add 4 to the program counter.
+      - text: Decode
+        explains: >-
+          Decode works out what the instruction means and which units to switch on. It
+          computes nothing about your data.
+      - text: Execute
+        correct: true
+        explains: >-
+          Right. The ALU does the work in Execute; every other stage is logistics — moving
+          the instruction in, working out what it wants, and putting the answer away.
+      - text: Write back
+        explains: >-
+          Write back stores a result that has already been computed. The arithmetic
+          happened one stage earlier.
+---
+
+A processor has no idea what your program *means*. It runs a loop so simple you could
+carry it out on paper: read the next instruction, work out what it says, do it, repeat.
+
+The program counter is the whole plot. It holds one address — the next instruction — and
+almost everything else follows from it. Fetch reads that address, decode inspects what
+came back, execute does the work, write back stores the answer, and the counter moves on.
+
+## Why the stages are separate
+
+Splitting the cycle into named stages isn't bureaucracy. It's what lets a real CPU be
+fast, because the stages use different hardware. While the ALU is executing instruction
+three, nothing is stopping the fetch unit from reading instruction four.
+
+That overlap is called **pipelining**, and it's why a chip running at 3 GHz can retire
+several instructions per cycle rather than one every five. The cycle in the figure is
+the logical story; the physical chip runs five of them at once, staggered.
+
+> Step through the animation and watch the program counter. Everything else in the
+> datapath is downstream of that one number.

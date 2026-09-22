@@ -1,0 +1,112 @@
+---
+course: applied-algorithm-analysis
+section: w1-bigo
+order: 30
+title: What the Linear Versions Cost in Space
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week1.html?hash=true#/10
+    caption: >-
+      Slides 11–13 of 65 — rolling variables, and beating linear. Press down inside the
+      deck for the stacked slides.
+notation:
+  - symbol: "Θ(n)"
+    reads: theta of n
+    means: >-
+      "Grows in step with n." `Θ(n)` space means the memory needed is proportional to `n`;
+      `Θ(1)` means it does not grow with `n` at all. The exact definition arrives in
+      *Omega, Theta and Little-o* — for now this reading is enough.
+  - symbol: "bit"
+    reads: bit
+    means: >-
+      One binary digit, a single 0 or 1. The smallest unit of stored information. A number
+      needs more bits the bigger it gets.
+  - symbol: "word"
+    reads: word
+    means: >-
+      One "slot" of memory that a program treats as holding a single number, regardless of
+      how big that number is. Counting words and counting bits give different answers, and
+      that difference is the point of this page.
+  - symbol: "0.694n"
+    reads: nought point six nine four n
+    means: >-
+      A number of bits. The constant is `log₂ φ` — how many bits are added to the answer
+      each time `n` goes up by one, because each step multiplies the value by `φ`.
+questions:
+  - ask: >-
+      `fib4` keeps only two variables, so its space is often quoted as `Θ(1)`. What does
+      that claim quietly assume?
+    choices:
+      - text: That we are counting words, not bits
+        correct: true
+        explains: >-
+          Exactly. `F(n)` is about `0.694n` bits long, so merely writing the answer down
+          costs `Θ(n)` bits. Two *words* is constant only if a word is assumed to hold any
+          value — which is the same simplification that will make multiplication look free
+          later, and it is not free.
+      - text: That the input `n` is small
+        explains: >-
+          The claim is about how space grows with `n`, so small `n` is not the assumption
+          being made. The assumption is about what a single variable costs.
+      - text: That addition takes constant time
+        explains: >-
+          That is a related simplification, and also false for large numbers — but it is a
+          claim about *time*. The `Θ(1)` here is a claim about space.
+      - text: That the compiler keeps both variables in registers
+        explains: >-
+          Register allocation changes constants, not the asymptotic count. The issue is
+          the size of each value, not where it is stored.
+---
+
+To fill box `i`, `fib2` reads boxes `i−1` and `i−2`. It never looks further back. So why
+keep the rest?
+
+```
+function fib4(n)
+  if n = 0 return 0
+  prev = 0, curr = 1
+  for i = 2…n:
+    prev, curr = curr, prev + curr
+  return curr
+```
+
+Two variables — exactly what you would keep on your fingers. Same linear time, no array, no
+call stack.
+
+## Saying "how much memory" precisely
+
+Read `Θ(something)` as **"grows in step with something"**:
+
+- `fib2` uses `Θ(n)` space — bigger `n`, proportionally more room.
+- `fib4` uses `Θ(1)` space — two variables, whatever `n` is. `Θ(1)` means "does not grow".
+
+The full definition of `Θ` is a few pages away; this reading is what practitioners mean day
+to day.
+
+## The catch, which matters more than the algorithm
+
+`Θ(1)` is true only if **one variable costs one unit**, whatever is in it. That is a
+convenient fiction. `F(n)` grows exponentially, so writing it down takes about `0.694 × n`
+**bits**. `F(1000)` is a 694-bit number; it does not fit where `F(10)` fits.
+
+| what you count | `fib4`'s space |
+| --- | --- |
+| **words** — variables, any number as one slot | `Θ(1)` |
+| **bits** — actual storage | `Θ(n)` |
+
+Neither is wrong; they answer different questions. Confusing them is the most common error
+in this part of the subject.
+
+> The second half of the week is what happens when you stop pretending a number costs one
+> unit: addition becomes `O(n)` and multiplication `O(n²)`.
+
+## Beating linear
+
+Yes — if you count arithmetic operations. The Fibonacci rule can be written as a small grid
+of numbers (a **matrix**) raised to the `n`th power, and powers don't need `n`
+multiplications: square, square the result, square that — reaching `n` in about `log n`
+steps.
+
+Same caveat, though: those operations act on numbers `0.694n` bits long, so the *bit* cost
+is not logarithmic. You meet this squaring trick again on Friday, as fast modular
+exponentiation.

@@ -1,0 +1,104 @@
+---
+course: applied-algorithm-analysis
+section: w1-bigo
+order: 70
+title: Omega, Theta and Little-o
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week1.html?hash=true#/19
+    caption: >-
+      Slides 25–28 of 65 — the four relations and their definitions.
+notation:
+  - symbol: "O"
+    reads: big-oh
+    means: An upper bound — "grows no faster than". Behaves like `≤` between two functions.
+  - symbol: "Ω"
+    reads: big-omega
+    means: >-
+      A lower bound — "grows at least as fast as". Behaves like `≥`. Capital Greek omega;
+      the lower-case one is `ω`.
+  - symbol: "Θ"
+    reads: big-theta
+    means: >-
+      Both bounds at once — "grows at the same rate as". Behaves like `=`. Capital Greek
+      theta.
+  - symbol: "o"
+    reads: little-oh
+    means: >-
+      A strict upper bound — "grows *strictly* slower than". Behaves like `<`. Same letter
+      as big-O in lower case, and a genuinely different meaning.
+  - symbol: "c₁, c₂"
+    reads: c one, c two
+    means: >-
+      Two separate constants, numbered so they can be talked about apart. `Θ` needs two
+      because it squeezes `T(n)` from below and above at the same time.
+questions:
+  - ask: Is `3n = o(n)`?
+    choices:
+      - text: No — the definition must hold for every `c`, and `c = 1` already fails
+        correct: true
+        explains: >-
+          Little-o demands `T(n) ≤ c·f(n)` for *every* positive `c`. Take `c = 1`: no
+          threshold makes `3n ≤ n`. This is precisely where little-o differs from Big-O,
+          which would only need *some* `c` — and `c = 3` works there.
+      - text: Yes — constant factors are suppressed, so `3n` and `n` are the same
+        explains: >-
+          That reasoning is right for Big-O and Big-Theta, and wrong for little-o. Little-o
+          is a *strict* comparison, so a constant multiple is not close enough.
+      - text: Yes, because `3n/n` tends to a finite limit
+        explains: >-
+          A finite nonzero limit gives Big-Theta. Little-o needs the ratio to vanish.
+      - text: Only for `n ≥ 3`
+        explains: >-
+          The definition already ignores small `n` via the threshold `n₀`. Choosing a
+          threshold cannot rescue this one, because the failure is for every large `n`.
+---
+
+Big-O says "no bigger than". That is one of four things you might want to say. The fastest
+way in is to read them as comparison signs between functions:
+
+| symbol | say it | behaves like | means |
+| --- | --- | --- | --- |
+| `O` | big-oh | `≤` | grows no faster than |
+| `Ω` | big-omega | `≥` | grows at least as fast as |
+| `Θ` | big-theta | `=` | grows at the same rate as |
+| `o` | little-oh | `<` | grows strictly slower than |
+
+`Ω` and `Θ` are capital Greek letters, used purely to stay visually distinct from ordinary
+algebra.
+
+## Omega and Theta
+
+**`Ω`** is Big-O with the inequality flipped: `T(n) ≥ c·f(n)` beyond `n₀`. Is `n² = Ω(n)`?
+Yes — `c = 1`, `n₀ = 1`.
+
+**`Θ`** demands both bounds at once: `c₁·f(n) ≤ T(n) ≤ c₂·f(n)`. Two constants, numbered so
+they can be discussed apart — one holds the floor up, the other the ceiling down. `T(n)` is
+trapped, so it cannot be growing faster or slower. It grows *the same*.
+
+Is `n² = Θ(n³)`? No. The ceiling is fine, but no constant multiple of `n³` stays **below**
+`n²` forever. The floor fails.
+
+## Theta is honest, so why does everyone write O?
+
+Designers want **guarantees**, and a guarantee is naturally an upper bound: "never worse
+than…". `Θ(n log n)` promises that *and* rules out doing better — more than a guarantee
+needs. The habit is harmless as long as you say `Θ` when you mean it.
+
+## Little-o is a different quantifier
+
+Watch one word move:
+
+- **Big-O**: **there exists** a `c` with `T(n) ≤ c·f(n)` eventually.
+- **Little-o**: **for every** `c > 0`, `T(n) ≤ c·f(n)` eventually.
+
+Big-O lets you shop for a constant. Little-o says *every* constant works, however tiny — you
+may hand it `c = 0.0001` and it must still hold from some point on. That turns a loose bound
+into a strict one.
+
+Is `3n = o(n)`? Take `c = 1`: you would need `3n ≤ n`, which never happens. So no — `3n` is
+`O(n)` but not `o(n)`, because they grow at the *same* rate. Is `3n = o(n²)`? Yes: whatever
+tiny `c` you name, `3n ≤ c·n²` once `n ≥ 3/c`.
+
+> These relate **functions**, not numbers. The `=` in `n² = Ω(n)` is historical and reads
+> better as "is".

@@ -1,0 +1,165 @@
+---
+course: applied-algorithm-analysis
+section: w1-bigo
+order: 60
+title: Big-O, Formally
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week1.html?hash=true#/15
+    caption: >-
+      Slides 19–24 of 65 — the picture, the definition, and the two proof shapes. Down
+      arrow on the "Prove" slides for the full proofs.
+notation:
+  - symbol: "="
+    reads: is
+    means: >-
+      In `T(n) = O(f(n))` this is **not** an equals sign and nothing is being equated. Read
+      it as the word *is*: "the running time **is** straight-line-ish". Historical notation
+      that misleads everyone once.
+  - symbol: "T(n)"
+    reads: T of n
+    means: >-
+      The running time, as a machine you can feed an input size to. `T` for time. `T(100)`
+      is how many steps the algorithm takes on an input of size 100.
+  - symbol: "≤"
+    reads: is less than or equal to
+    means: Smaller than, or exactly the same as.
+  - symbol: "c"
+    reads: c
+    means: >-
+      A constant you get to choose — any fixed positive number, picked once and never
+      changed. It is the "give or take a multiplier" allowance.
+  - symbol: "n₀"
+    reads: n nought, or n zero
+    means: >-
+      A starting line you get to choose — the claim only has to hold from here on, so small
+      awkward inputs can be ignored. The little `0` is part of the name, not maths; think of
+      it as `n_start`. Setting it huge is not a cheat: see below.
+  - symbol: "∃ / ∀"
+    reads: there exists / for all
+    means: >-
+      The two quantifiers. "There exists" means *you may pick one that works*. "For all"
+      means *it must hold for every one*. Which of the two applies to which symbol is the
+      entire content of these definitions.
+  - symbol: "aₖ"
+    reads: a sub k
+    means: >-
+      A numbered name. `a₀`, `a₁`, `a₂`, … are the coefficients of a polynomial, and `aₖ`
+      is "the one attached to `nᵏ`". Subscripts number things; they never multiply.
+  - symbol: "|a|"
+    reads: the absolute value of a, or mod a
+    means: >-
+      The size of `a` with any minus sign stripped off. `|−7| = 7`. Used here so negative
+      coefficients cannot sabotage an inequality.
+questions:
+  - ask: >-
+      To prove `T(n) = O(f(n))`, what exactly must you produce?
+    choices:
+      - text: >-
+          Two constants `c` and `n₀`, and a check that `T(n) ≤ c·f(n)` for every `n ≥ n₀`
+        correct: true
+        explains: >-
+          That is the whole ritual: name the witnesses, then verify the inequality. The
+          quantifier order is what makes it work — there *exist* `c` and `n₀` such that
+          *for all* larger `n` the bound holds.
+      - text: A proof that `T(n) ≤ f(n)` for all `n`
+        explains: >-
+          Far too strong. Big-O allows any constant multiple and ignores small `n`
+          entirely — `3n` is `O(n)` even though `3n ≤ n` never holds.
+      - text: A limit calculation showing `T(n)/f(n)` tends to zero
+        explains: >-
+          That is closer to little-o, and even there the definition is about all `c` rather
+          than a limit. A ratio tending to a nonzero constant is still Big-O.
+      - text: A value of `n` where `T(n)` is smaller than `f(n)`
+        explains: >-
+          A single point proves nothing about eventual behaviour — the claim is about every
+          `n` beyond some threshold.
+---
+
+Before any of the machinery: **`T(n)` is not something you prove.** It is a name for the
+wait. `n` is how much you gave the program; `T(n)` is how long it took. `T(10)` is the wait
+for ten things. It is a fact about your program, like "this kettle takes four minutes" —
+there is nothing to prove about it.
+
+What gets proved is the sentence you put it in:
+
+```
+T(n) = O(n)
+```
+
+**That `=` is a liar.** Nothing is being equated — nobody claims the wait *equals* `n`. Read
+it as the word *is*: "the wait **is** straight-line-ish". The claim is about the **shape** of
+the growth, not about any number.
+
+## The fence
+
+Picture the wait as a plant. Bigger inputs, taller plant. `T(n) = O(n)` says:
+
+> I can build a straight sloping fence, and the plant will never grow through it.
+
+Straight fence, straight-line growth. If the plant bursts through *every* straight fence
+anyone builds, the claim is false and the growth is worse than linear.
+
+Two cheats make the idea workable rather than uselessly strict:
+
+- **You choose how steep the fence is.** That is `c`. A fence ten times steeper than `n` is
+  still a *straight* fence — which is why `3n + 7` counts as straight-line growth even
+  though it is not `n`.
+- **You choose when to start caring.** That is `n₀`. Small inputs are allowed to be weird;
+  say "from 5 onwards" and nobody checks 1 to 4.
+
+Once you have picked both, the plant must stay under that fence **forever**. Not mostly. Not
+for a while.
+
+## What `n₀` is actually for
+
+Small inputs are noisy. A program can be slow on tiny inputs for reasons that say nothing
+about how it scales — a warm-up, a fixed setup cost — and that should not disqualify it from
+being straight-line-ish. Growth claims are about the **trend**, and a trend only shows up
+once things get big.
+
+Watch it earn its keep. Try to fence `3n + 7` in with `4n`. At `n = 1` the wait is 10 against
+a fence of 4 — the plant pokes straight through. At `n = 6`, 25 against 24, still through. At
+`n = 7`, 28 against 28 — and from there on it never escapes again. That does not make the
+claim false. This fence simply needs a starting line of `n₀ = 7`.
+
+**The obvious objection.** Could you set `n₀` enormous and claim anything you like? No — and
+this is what keeps the definition honest. After `n₀` the fence must hold for *infinitely
+many* inputs. Postponing the start skips a **finite** number of awkward cases, so it can
+never rescue a false claim: `n²` bursts through a straight fence eventually, whether you
+begin looking at 10 or at 10 billion.
+
+Bigger is always safe, though. If `n₀ = 7` works, so do 8, 100, a million. You never need the
+smallest threshold that works.
+
+Written out, that is the definition:
+
+> `T(n) = O(f(n))` if and only if **there exist** positive constants `c` and `n₀` such that
+> `T(n) ≤ c·f(n)` **for all** `n ≥ n₀`.
+
+## The quantifier order is the whole thing
+
+- **There exist** `c` and `n₀` — *you* pick the fence and the starting point, and one
+  working pair is enough.
+- **For all** `n ≥ n₀` — once picked, it must hold at **every** larger input. One place the
+  plant pokes through and the claim is dead.
+
+You choose first; then the universe checks every case. Swap those round and you get a
+strictly stronger statement — which is exactly how little-o differs from big-O.
+
+The slide's picture is this drawn: `T(n)` ducks under `3·f(n)` at `n₀` and never comes back
+up. Note `c = 1` would not have worked — the fence had to be steepened, and that is allowed.
+
+## The two proof shapes
+
+To prove a bound, you hand over three things: **the fence, the starting point, and the
+showing.**
+
+> **Name `c` and `n₀`, then check the inequality.**
+
+To disprove one, you must show *no* fence works — so let someone pick any `c` they like, then
+point at an `n` where the plant breaks through.
+
+> **Assume the constants exist, cancel, then exhibit one `n` that breaks it.**
+
+The next page but three is a workbook of both shapes.

@@ -1,0 +1,114 @@
+.stepframe {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  width: 100%;
+}
+.stepframe:focus-visible { outline: 2px solid var(--accent); outline-offset: 6px; }
+
+.stepframe__figure {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+.stepframe__figure svg { width: 100%; height: auto; display: block; }
+
+.stepframe__caption {
+  margin: 0;
+  min-height: 2.8em;
+  text-align: center;
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+  line-height: 1.5;
+  max-width: 44rem;
+  margin-inline: auto;
+}
+
+.stepframe__controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.stepframe__btn {
+  min-width: 2.2rem;
+  height: 2.2rem;
+  padding: 0 0.6rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+.stepframe__btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+.stepframe__btn:disabled { opacity: 0.35; cursor: default; }
+.stepframe__btn--wide { min-width: 4.5rem; font-weight: 550; }
+
+.stepframe__dots {
+  display: flex;
+  gap: 0.3rem;
+  list-style: none;
+  margin: 0 0 0 0.4rem;
+  padding: 0;
+}
+.stepframe__dot {
+  width: 0.62rem;
+  height: 0.62rem;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.2s;
+}
+.stepframe__dot.is-done { background: var(--line-strong); }
+.stepframe__dot.is-current { background: var(--accent); border-color: var(--accent); transform: scale(1.25); }
+
+.stepframe__count {
+  margin-left: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--ink-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Shared figure vocabulary, so every animation looks like the same course. */
+.fig-box { fill: var(--bg-raised); stroke: var(--line-strong); stroke-width: 1.5; }
+.fig-box--active { fill: var(--accent-soft); stroke: var(--accent); }
+.fig-label { fill: var(--ink); font-size: 13px; font-weight: 600; font-family: var(--font); }
+.fig-sub { fill: var(--ink-faint); font-size: 10.5px; font-family: var(--font-mono); }
+.fig-wire { stroke: var(--line-strong); stroke-width: 1.5; fill: none; }
+.fig-wire--hot { stroke: var(--accent); }
+
+.stepframe__loading {
+  width: 100%;
+  min-height: 18rem;
+  border-radius: var(--radius);
+  background: linear-gradient(90deg, var(--bg-sunken), var(--bg-raised), var(--bg-sunken));
+  background-size: 200% 100%;
+  animation: stepframe-shimmer 1.4s ease-in-out infinite;
+}
+@keyframes stepframe-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.stepframe__error { color: var(--bad); text-align: center; padding: 2rem; margin: 0; }
+
+/* Entrance for figure elements that appear mid-sequence. Deliberately CSS
+   rather than a JS mount animation: if anything goes wrong it still ends
+   visible, and it needs no hydration to have run. */
+.fig-pop {
+  animation: fig-pop 260ms ease-out both;
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+}
+@keyframes fig-pop {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}

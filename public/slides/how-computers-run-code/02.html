@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Memory Is the Real Bottleneck</title>
+<style>
+  /* A standalone slide. Its CSS is fully isolated by the frame, so it can style
+     itself however it likes without touching the surrounding site. */
+  * { box-sizing: border-box; margin: 0; }
+  html, body { height: 100%; }
+  body {
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 6% 7%;
+    font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background: #0f1420; color: #e8ecf4;
+  }
+  h1 { font-size: clamp(20px, 3.4vw, 40px); letter-spacing: -0.02em; margin-bottom: 0.15em; }
+  .sub { color: #8b97ad; font-size: clamp(11px, 1.5vw, 17px); margin-bottom: 6%; }
+  .bars { display: flex; flex-direction: column; gap: 4%; }
+  .row { display: grid; grid-template-columns: 8.5em 1fr auto; align-items: center; gap: 1em; }
+  .name { font-size: clamp(10px, 1.35vw, 15px); color: #b9c3d6; }
+  .track { background: #1b2334; border-radius: 999px; height: clamp(10px, 1.7vw, 20px); overflow: hidden; }
+  .fill { height: 100%; border-radius: 999px; }
+  .t { font-variant-numeric: tabular-nums; font-size: clamp(10px, 1.3vw, 15px); color: #e8ecf4; }
+  .note { margin-top: 6%; font-size: clamp(10px, 1.3vw, 15px); color: #8b97ad; border-left: 3px solid #f0803c; padding-left: 1em; }
+  strong { color: #f0803c; }
+</style>
+</head>
+<body>
+  <h1>One instruction, or one trip to memory</h1>
+  <p class="sub">Approximate latency, logarithmic scale</p>
+
+  <div class="bars">
+    <div class="row">
+      <span class="name">Register</span>
+      <span class="track"><span class="fill" style="width:8%;background:#4ea87a"></span></span>
+      <span class="t">~0.3 ns</span>
+    </div>
+    <div class="row">
+      <span class="name">L1 cache</span>
+      <span class="track"><span class="fill" style="width:20%;background:#4ea87a"></span></span>
+      <span class="t">~1 ns</span>
+    </div>
+    <div class="row">
+      <span class="name">L2 cache</span>
+      <span class="track"><span class="fill" style="width:38%;background:#c9a94a"></span></span>
+      <span class="t">~4 ns</span>
+    </div>
+    <div class="row">
+      <span class="name">L3 cache</span>
+      <span class="track"><span class="fill" style="width:58%;background:#c9a94a"></span></span>
+      <span class="t">~20 ns</span>
+    </div>
+    <div class="row">
+      <span class="name">Main memory</span>
+      <span class="track"><span class="fill" style="width:82%;background:#d4573f"></span></span>
+      <span class="t">~80 ns</span>
+    </div>
+    <div class="row">
+      <span class="name">NVMe SSD</span>
+      <span class="track"><span class="fill" style="width:100%;background:#a03a2c"></span></span>
+      <span class="t">~100 µs</span>
+    </div>
+  </div>
+
+  <p class="note">
+    From L1 to main memory is roughly <strong>80×</strong>. In that time the CPU could
+    have retired hundreds of instructions.
+  </p>
+</body>
+</html>
