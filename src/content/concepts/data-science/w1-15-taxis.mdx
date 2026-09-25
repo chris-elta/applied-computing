@@ -30,6 +30,13 @@ questions:
         explains: >-
           Not recorded. Some questions in the list, such as nightly earnings, get close only
           by inference from fares.
+assessed:
+  - "Lab 1 · Task 1"
+prerequisites:
+  - topic: "What a fare column contains"
+    explains: "In the taxi records `fare_amount` is the metered fare alone. `total_amount` adds tips, tolls and surcharges, so the two answer different questions. Pick the one that matches what you are asking, and note which unit each row is: one trip."
+  - topic: "Timestamps"
+    explains: "Pickup and drop-off times arrive as text. Convert them to real date-times before subtracting, so that trip duration, and impossible durations such as a drop-off before the pickup, can be computed and checked."
 ---
 
 The last dataset is **NYC taxi cab data**. It gives the **driver or owner, pickup and dropoff

@@ -133,6 +133,30 @@ const concepts = defineCollection({
      */
     highlight: z.boolean().default(false),
     /**
+     * Where the course has already tested this concept — "Quiz 2 · Q1", "Lab 1 ·
+     * Task 5". A second, independent highlight from `highlight`: that one is the
+     * lecturer's emphasis, this one is what the assessments actually asked. Any
+     * entry marks the concept assessed; the strings are shown to the learner as
+     * the reason. Maintained by the `mark-assessed` skill.
+     */
+    assessed: z.array(z.string()).default([]),
+    /**
+     * Background a learner needs before this concept lands, that the concept
+     * itself does not teach. Written for assessed concepts. `see` points at an
+     * earlier concept that already covers the topic, so the panel can link there
+     * rather than re-explain; leave it off when the course never teaches it.
+     */
+    prerequisites: z
+      .array(
+        z.object({
+          topic: z.string(),
+          /** Two to four sentences. Inline `code`, **strong** and *em* only. */
+          explains: z.string(),
+          see: reference('concepts').optional(),
+        }),
+      )
+      .default([]),
+    /**
      * Mark a concept as deliberately having no knowledge check — a section
      * break or a summary. Without this there is no way to tell "no question
      * yet" from "no question wanted", and `content:status` would nag forever.

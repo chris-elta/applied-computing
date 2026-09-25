@@ -48,6 +48,13 @@ questions:
         explains: >-
           Changing base moves the digit count by only a constant factor, which `Θ` discards.
           The gap between `2ⁿ` and `n` survives any base.
+assessed:
+  - "Quiz 1 · Q3"
+prerequisites:
+  - topic: "Binary place values"
+    explains: "In binary each place is worth twice the one to its right: 1, 2, 4, 8, 16, 32, 64. With `n` bits you can write every whole number from 0 up to `2ⁿ − 1`. So 100 is `1100100`, which takes 7 bits because 64 ≤ 100 < 128."
+  - topic: "Logarithms as counting"
+    explains: "`log₂ N` answers the question \"how many times must I double 1 to reach `N`?\", or equivalently \"how many times can I halve `N` before reaching 1?\". Since each bit is one doubling, the number of bits of `N` is about `log₂ N`, rounded up. Growing `N` a thousandfold adds only about 10 bits."
 ---
 
 Every cost so far has assumed that basic arithmetic takes one step. Adding two numbers: one

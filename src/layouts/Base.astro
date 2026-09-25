@@ -1,6 +1,7 @@
 ---
 import { ClientRouter } from 'astro:transitions';
 import '../styles/global.css';
+import { withBase } from '../lib/course';
 
 interface Props {
   title: string;
@@ -16,7 +17,7 @@ const site = 'Applied Computing';
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
     <title>{title === site ? site : `${title} · ${site}`}</title>
     <meta name="description" content={description} />
     <ClientRouter />
@@ -33,7 +34,7 @@ const site = 'Applied Computing';
   <body>
     <header class="masthead">
       <div class="shell masthead__inner">
-        <a class="masthead__brand" href="/">{site}</a>
+        <a class="masthead__brand" href={withBase('/')}>{site}</a>
         <button class="masthead__theme" type="button" data-theme-toggle aria-label="Switch colour theme">
           <span aria-hidden="true">◐</span>
         </button>

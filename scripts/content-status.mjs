@@ -75,6 +75,8 @@ for (const courseId of courseIds) {
         needsProse: text.includes('TODO:') || text.includes('SOURCE TEXT'),
         questions: countQuestions(fm),
         skipCheck: /^skipCheck:\s*true$/m.test(fm),
+        assessed: /^assessed:\s*$/m.test(fm),
+        prereqs: (fm.match(/^\s+- topic:/gm) ?? []).length,
       };
     })
     .sort((a, b) => a.order - b.order);
@@ -101,6 +103,12 @@ for (const courseId of courseIds) {
   if (needsQuiz.length) {
     console.log(`\n  Needs a knowledge check (${needsQuiz.length}):`);
     for (const c of needsQuiz) console.log(`    ${c.section.padEnd(14)} ${c.title}`);
+  }
+  const assessed = concepts.filter((c) => c.assessed);
+  if (assessed.length) {
+    console.log(`\n  ${assessed.length} assessed · ${assessed.filter((c) => c.prereqs > 0).length} with prerequisites`);
+    const bare = assessed.filter((c) => c.prereqs === 0);
+    if (bare.length) console.log(`  Assessed with no prerequisites: ${bare.map((c) => c.title).join('; ')}`);
   }
   if (!needsProse.length && !needsQuiz.length && concepts.length) {
     console.log('  Nothing outstanding.');

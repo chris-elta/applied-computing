@@ -4,6 +4,14 @@ section: w2-probability
 order: 190
 title: Bayes' Theorem
 highlight: true
+assessed:
+  - "Lab 1 · Task 6"
+prerequisites:
+  - topic: "Law of total probability"
+    explains: "The denominator `P(B)` is often not given. When `A` and `not A` cover every case, `P(B) = P(B|A)·P(A) + P(B|not A)·P(not A)`: the chance of `B` is a weighted average of its chance inside each group, weighted by the group's size. The worked example's 0.0981 is this sum."
+    see: "data-science/w2-03-conditional-probability"
+  - topic: "Checking a formula by counting"
+    explains: "With a table of counts, `P(A|B)` can also be found directly as (rows in both `A` and `B`) ÷ (rows in `B`). Bayes' theorem and the direct count must agree; if they do not, one of them has a mistake."
 visuals:
   - type: svg
     src: data-science/w2-probability/06.svg

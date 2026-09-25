@@ -34,6 +34,15 @@ questions:
       - text: It guarantees the highest possible score
         explains: >-
           It gives a steadier estimate, not a higher one.
+assessed:
+  - "Lab 1 · Task 5"
+prerequisites:
+  - topic: "Sampling with and without replacement"
+    explains: "Sampling **with** replacement puts each item back after it is drawn, so the same item can appear more than once in a sample and every draw is independent. Sampling **without** replacement never repeats an item. Simulating repeated experiments from one dataset uses replacement."
+  - topic: "Variance of a sample mean"
+    explains: "If each observation has variance `σ²` and the observations are independent, the mean of `n` of them has variance `σ²/n`. So the standard deviation of a mean shrinks like `1/√n`: samples of 30 rather than 5 vary about `√6 ≈ 2.4` times less. This holds only for independent observations; real years and real trips are often related, and then averaging helps less."
+  - topic: "Simulation and random seeds"
+    explains: "A Monte Carlo experiment repeats a random process many times and studies the results. Fixing the random seed makes the run reproducible, but the simulated numbers still only *approximate* theory, and roughly agree rather than match exactly."
 ---
 
 If noise hides differences, the natural response is to reduce it. The lecture lists four

@@ -98,5 +98,7 @@ export function groupIntoSections(course: Course, steps: Step[]): Section[] {
   return sections;
 }
 
-export const coursePath = (courseId: string) => `/courses/${courseId}`;
-export const conceptPath = (courseId: string, number: number) => `/courses/${courseId}/${number}`;
+/** Prefix a site-absolute path with the configured base (for GitHub Pages project sites). */
+export const withBase = (path: string) => `${import.meta.env.BASE_URL.replace(/\/$/, '')}${path}`;
+export const coursePath = (courseId: string) => withBase(`/courses/${courseId}`);
+export const conceptPath = (courseId: string, number: number) => withBase(`/courses/${courseId}/${number}`);

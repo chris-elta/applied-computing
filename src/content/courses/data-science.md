@@ -4,6 +4,8 @@ summary: >-
   How to think about data before you model it: what the field is, why shipping a model is
   harder than training one, and the habits of questioning and humility that separate
   insight from noise.
+code: COMP-9170-0
+crn: "51910"
 order: 4
 sections:
   - id: w1-what

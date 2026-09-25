@@ -114,6 +114,19 @@ invoke it, and gives those concepts a longer explanation and an extra check:
 /upload-content ~/slides/week2.pdf --highlight "master theorem, recurrences"
 ```
 
+Two more optional fields sit beside `highlight`:
+
+- `assessed` — a list like `["Quiz 2 · Q1", "Lab 1 · Task 5"]`. Any entry gives the concept a
+  green **assessed** badge, in the contents and on the page, with the sources as the reason. It
+  is independent of `highlight`: that is the lecturer's emphasis, this is what was tested.
+- `prerequisites` — background the concept needs but does not teach: `topic`, `explains`, and
+  an optional `see` pointing at an earlier concept that covers it. Shown as a
+  "Before you read this" panel above the notation key.
+
+Both are written by the `mark-assessed` skill (`npm run assessed:extract`, `assessed:apply`),
+which reads a course's `.content/<course>/quizzes` and `labs` folders and can be re-run as new
+ones arrive.
+
 ### The four visual types
 
 | `type` | Source | Use it for |

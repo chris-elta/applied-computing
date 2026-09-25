@@ -13,7 +13,9 @@
     "import:pdf": "node scripts/import-pdf.mjs",
     "check": "astro check",
     "content:status": "node scripts/content-status.mjs",
-    "content:extract": "node scripts/extract-deck.mjs"
+    "content:extract": "node scripts/extract-deck.mjs",
+    "assessed:extract": "node scripts/assessments-extract.mjs",
+    "assessed:apply": "node scripts/apply-assessed.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^8.0.1",

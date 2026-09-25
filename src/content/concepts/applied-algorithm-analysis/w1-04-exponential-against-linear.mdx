@@ -54,6 +54,14 @@ questions:
         explains: >-
           Halving the work does not halve the exponent. You gain roughly 1.4 in `n`, not
           half of 50.
+assessed:
+  - "Quiz 1 · Q4"
+prerequisites:
+  - topic: "The Fibonacci sequence and recursion"
+    explains: "Each Fibonacci number is the sum of the two before it: 0, 1, 1, 2, 3, 5, 8, 13. `fib1` codes that rule directly, so every call to `fib1(n)` makes two more calls, to `fib1(n−1)` and `fib1(n−2)`, each of which does the same, until it reaches 0 or 1. Picture the calls as a tree that branches in two at every level."
+    see: "applied-algorithm-analysis/w1-01-definition-is-not-an-algorithm"
+  - topic: "Polynomial versus exponential growth"
+    explains: "A polynomial such as `n²` grows by a fixed *power* of `n`: doubling `n` multiplies the cost by 4. An exponential grows by a fixed *ratio* for each extra unit of `n`, so adding 1 to `n` multiplies the cost by a constant such as 2 or 1.618. Any exponential eventually overtakes every polynomial."
 ---
 
 Drag the slider on the slide and watch the curves separate. Around `n = 40` on an ordinary

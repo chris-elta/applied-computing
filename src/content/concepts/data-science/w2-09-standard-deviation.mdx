@@ -56,6 +56,14 @@ questions:
       - text: No, because they always give identical answers
         explains: >-
           They are identical only in the limit. For small `n` they differ.
+assessed:
+  - "Lab 1 · Task 3"
+  - "Lab 1 · Task 5"
+prerequisites:
+  - topic: "Population versus sample, and `ddof`"
+    explains: "Software chooses the divisor for you, and defaults differ. NumPy's `np.var` and `np.std` divide by `n` (`ddof=0`); pandas' `.var()` and `.std()` divide by `n − 1` (`ddof=1`). Say which you used. Use `n − 1` when the data is a sample from something larger, and `n` when it is the entire population you are describing."
+  - topic: "Units"
+    explains: "Variance is a squared quantity, so dollars become dollars squared. The standard deviation takes the square root and returns to dollars, which is why you report it and explain it in the data's own units."
 ---
 
 The mean says where the data is centred. **Standard deviation** (SD) says how spread out it

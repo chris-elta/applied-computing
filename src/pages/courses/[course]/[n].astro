@@ -4,6 +4,7 @@ import Base from '../../../layouts/Base.astro';
 import ConceptStage from '../../../components/ConceptStage.astro';
 import Quiz from '../../../components/Quiz';
 import NotationKey from '../../../components/NotationKey.astro';
+import Prerequisites from '../../../components/Prerequisites.astro';
 import { getCourses, getSteps, conceptPath, coursePath, type Step } from '../../../lib/course';
 
 export async function getStaticPaths() {
@@ -21,11 +22,21 @@ interface Props { step: Step }
 
 const { step } = Astro.props;
 const { concept, course, number, total, prev, next } = step;
+const steps = await getSteps(course);
 const { Content } = await render(concept);
 
 const section = course.data.sections.find((s) => s.id === concept.data.section);
 const prevHref = prev ? conceptPath(course.id, number - 1) : coursePath(course.id);
 const nextHref = next ? conceptPath(course.id, number + 1) : coursePath(course.id);
+const prerequisites = concept.data.prerequisites.map((p) => {
+  const target = p.see ? steps.find((s) => s.concept.id === p.see!.id) : undefined;
+  return {
+    topic: p.topic,
+    explains: p.explains,
+    href: target ? conceptPath(course.id, target.number) : undefined,
+    seeTitle: target?.concept.data.title,
+  };
+});
 const percent = Math.round((number / total) * 100);
 ---
 
@@ -42,6 +53,9 @@ const percent = Math.round((number / total) * 100);
         <a href={coursePath(course.id)}>{course.data.title}</a>
         {section && <span class="concept__section">{section.title}</span>}
         {concept.data.highlight && <span class="concept__key">key concept</span>}
+        {concept.data.assessed.length > 0 && (
+          <span class="concept__assessed" title={`Assessed in ${concept.data.assessed.join(', ')}`}>assessed</span>
+        )}
       </span>
       <span class="concept__count">{number} / {total}</span>
     </nav>
@@ -49,6 +63,12 @@ const percent = Math.round((number / total) * 100);
     <h1>{concept.data.title}</h1>
 
     <ConceptStage visuals={concept.data.visuals} title={concept.data.title} />
+
+    {prerequisites.length > 0 && (
+      <div class="concept__prereq">
+        <Prerequisites items={prerequisites} assessed={concept.data.assessed} />
+      </div>
+    )}
 
     {concept.data.notation.length > 0 && (
       <div class="concept__notation">
@@ -135,6 +155,17 @@ const percent = Math.round((number / total) * 100);
       border-radius: 4px;
     }
 
+    .concept__assessed {
+      border: 1px solid var(--ok);
+      color: var(--ok);
+      font-size: 0.66rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+    }
+
     .concept h1 { margin-bottom: 1.25rem; }
 
     .prose {
@@ -179,6 +210,7 @@ const percent = Math.round((number / total) * 100);
     }
     .prose :global(tbody tr:last-child td) { border-bottom: 0; }
 
+    .concept__prereq { max-width: var(--measure); margin: 2rem auto 0; }
     .concept__notation { max-width: var(--measure); margin: 2rem auto 0; }
 
     .concept__quiz { max-width: var(--measure); margin: 2.5rem auto 0; }

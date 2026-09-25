@@ -1,0 +1,82 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { splitInline } from '../lib/inline-code';
+
+interface Item {
+  topic: string;
+  explains: string;
+  /** Resolved by the page: where the course already teaches this, if it does. */
+  href?: string;
+  seeTitle?: string;
+}
+
+interface Props {
+  items: Item[];
+  assessed: CollectionEntry<'concepts'>['data']['assessed'];
+}
+
+const { items, assessed } = Astro.props;
+---
+
+{items.length > 0 && (
+  <details class="prereq" open>
+    <summary class="prereq__head">
+      <span class="eyebrow">Before you read this</span>
+      <span class="prereq__count">{items.length} prerequisite{items.length === 1 ? '' : 's'}</span>
+    </summary>
+    {assessed.length > 0 && (
+      <p class="prereq__why">Assessed in {assessed.join(', ')}.</p>
+    )}
+    <ul class="prereq__list">
+      {items.map((item) => (
+        <li class="prereq__item">
+          <h3 class="prereq__topic">{item.topic}</h3>
+          <p class="prereq__body">
+            {splitInline(item.explains).map((part) =>
+              part.kind === 'code' ? <code>{part.text}</code>
+              : part.kind === 'strong' ? <strong>{part.text}</strong>
+              : part.kind === 'em' ? <em>{part.text}</em>
+              : part.text,
+            )}
+          </p>
+          {item.href && (
+            <a class="prereq__see" href={item.href}>Covered in: {item.seeTitle} →</a>
+          )}
+        </li>
+      ))}
+    </ul>
+  </details>
+)}
+
+<style>
+  .prereq {
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--ok);
+    border-radius: var(--radius);
+    background: var(--bg-raised);
+    padding: 1rem 1.15rem;
+  }
+  .prereq__head {
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    list-style: none;
+  }
+  .prereq__head::-webkit-details-marker { display: none; }
+  .prereq__count { font-size: 0.78rem; color: var(--ink-faint); }
+  .prereq__why { margin: 0.5rem 0 0; font-size: 0.82rem; color: var(--ink-soft); }
+  .prereq__list { list-style: none; margin: 1rem 0 0; padding: 0; display: flex; flex-direction: column; gap: 1rem; }
+  .prereq__topic { margin: 0 0 0.2rem; font-size: 0.95rem; }
+  .prereq__body { margin: 0; font-size: 0.9rem; line-height: 1.5; color: var(--ink); }
+  .prereq__body code {
+    font-family: var(--font-mono);
+    font-size: 0.88em;
+    background: var(--bg-sunken);
+    padding: 0.1em 0.3em;
+    border-radius: 3px;
+  }
+  .prereq__see { display: inline-block; margin-top: 0.35rem; font-size: 0.82rem; color: var(--accent); text-decoration: none; }
+  .prereq__see:hover { text-decoration: underline; }
+</style>

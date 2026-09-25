@@ -36,6 +36,13 @@ questions:
         explains: >-
           They are not useless. When they are indistinguishable you can choose on other
           grounds, and simplicity is a good tie-breaker.
+assessed:
+  - "Quiz 2 · Q6"
+prerequisites:
+  - topic: "Train/test splits and accuracy"
+    explains: "A model is fitted on a *training* set and scored on held-back *test* data. **Accuracy** is the fraction of test items it gets right. Which items land in the test set is chosen at random, so the score is itself a random quantity that changes from split to split."
+  - topic: "Overfitting"
+    explains: "A model that is too flexible can memorise the training set's quirks and then score worse on new data. Simpler models are less prone to it, which is part of why they are preferred when scores tie."
 ---
 
 The signal-versus-noise problem is not just about baseball. It applies to the models you will

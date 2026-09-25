@@ -66,6 +66,17 @@ questions:
       - text: It is a safety margin with no particular meaning
         explains: >-
           It has a precise cause: the odd branch spends a call without halving.
+assessed:
+  - "Quiz 1 · Q1"
+prerequisites:
+  - topic: "Total cost is calls times cost per call"
+    explains: "To price a recursive algorithm, count how many times the function runs, then multiply by the work done in one run. Constant factors and lower-order terms are dropped, so `2n` calls each costing `n²` is `O(n³)`."
+  - topic: "Cost of multiplying `n`-bit numbers"
+    explains: "Schoolbook multiplication of two `n`-bit numbers takes `O(n²)` bit operations, and reducing the product mod `N` is no worse than that order. So one modular multiplication is `O(n²)`."
+    see: "applied-algorithm-analysis/w2-03-schoolbook-multiplication"
+  - topic: "Halving takes at most `n` steps"
+    explains: "An `n`-bit number can be halved at most `n` times before it reaches 0 or 1. That is why an algorithm that halves its exponent takes a number of steps proportional to the exponent's *bit length*, not to its value."
+    see: "applied-algorithm-analysis/w2-01-input-size-is-bits"
 ---
 
 Compute `xʸ mod N` for enormous `x`, `y` and `N`. This is the operation at the heart of RSA

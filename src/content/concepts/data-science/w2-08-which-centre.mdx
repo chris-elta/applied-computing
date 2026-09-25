@@ -4,6 +4,13 @@ section: w2-descriptive
 order: 230
 title: Mean, Median, Geometric Mean — Which to Use
 highlight: true
+assessed:
+  - "Lab 1 · Task 3"
+prerequisites:
+  - topic: "Skew"
+    explains: "A distribution is *right-skewed* when a few very large values stretch its right tail. Those values pull the mean upward but barely move the median, so a mean well above the median is the sign of a right skew."
+  - topic: "Geometric mean"
+    explains: "The geometric mean multiplies the `n` values and takes the `n`th root. Equivalently, take the mean of the logarithms and undo it with an exponential. Because logarithms are undefined for zero and negative numbers, every value must be strictly positive. It suits quantities that combine by multiplying, such as growth rates."
 visuals:
   - type: svg
     src: data-science/w2-probability/13.svg

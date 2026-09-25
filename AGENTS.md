@@ -24,6 +24,15 @@ npm run content:extract -- <deck.html> --out slides.txt
 npm run content:status [course-id]
 ```
 
+To mark which concepts a quiz or lab has tested, and add prerequisites to them, use the
+**`mark-assessed` skill** (`.claude/skills/mark-assessed/`). Re-run it whenever new quizzes or labs
+arrive; each run only handles sources not yet mapped.
+
+```
+npm run assessed:extract -- <course-id>
+npm run assessed:apply -- <course-id> <spec.json>
+```
+
 Content model and frontmatter: `README.md` and `src/content.config.ts`.
 
 ## Documentation

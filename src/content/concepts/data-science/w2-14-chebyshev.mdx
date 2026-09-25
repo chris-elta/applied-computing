@@ -4,6 +4,14 @@ section: w2-variance
 order: 290
 title: "Chebyshev's Inequality"
 highlight: true
+assessed:
+  - "Quiz 2 · Q1"
+prerequisites:
+  - topic: "Mean and standard deviation"
+    explains: "The bound is stated in units of standard deviations: \"within `k` standard deviations of the mean\" means the interval from `μ − kσ` to `μ + kσ`."
+    see: "data-science/w2-09-standard-deviation"
+  - topic: "Solving an inequality for a whole number"
+    explains: "To find the smallest `k` that guarantees a target share, set `1 − 1/k² ≥ target` and rearrange: `1/k² ≤ 1 − target`, so `k² ≥ 1/(1 − target)`. Take the square root, then round **up** to the next whole number, because a smaller `k` would not reach the target."
 visuals:
   - type: svg
     src: data-science/w2-probability/22.svg

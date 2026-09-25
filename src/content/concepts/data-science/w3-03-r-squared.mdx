@@ -64,6 +64,14 @@ questions:
         explains: >-
           Reading `r` as a percentage is the common slip. 40% of the variance needs
           `r ≈ 0.63`.
+assessed:
+  - "Quiz 2 · Q5"
+prerequisites:
+  - topic: "Squaring a decimal"
+    explains: "Squaring a number between 0 and 1 gives a smaller number: `0.7² = 0.49`. The fraction of variance explained is `r²`, so a fairly strong `r` of 0.7 explains under half. Read a result like 0.49 as 49%."
+  - topic: "Variance as leftover spread"
+    explains: "Variance is the average squared distance from the mean. After a model makes its predictions, what is left over (the residuals) has its own, smaller variance. `r²` is the share of the original variance that the model removed."
+    see: "data-science/w2-09-standard-deviation"
 ---
 
 Last week you learnt that variance measures how spread out data is. A model earns its keep

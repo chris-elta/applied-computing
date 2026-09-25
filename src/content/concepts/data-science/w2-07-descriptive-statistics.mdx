@@ -29,6 +29,13 @@ questions:
         explains: >-
           These are descriptions of observed data, which is statistics. Descriptive measures
           summarise the sample you have.
+assessed:
+  - "Lab 1 · Task 3"
+prerequisites:
+  - topic: "Quartiles and the five-number summary"
+    explains: "Sort the data. The **median** splits it in half; the **first quartile** `Q1` is the value a quarter of the way up, and `Q3` three quarters. With the minimum and maximum these five numbers summarise the spread. When a quartile falls between two data points, *linear interpolation* takes a proportional point between them; state the convention you used, because software differs."
+  - topic: "Interquartile range and outliers"
+    explains: "`IQR = Q3 − Q1` is the width of the middle half of the data. The common **1.5 × IQR rule** flags values below `Q1 − 1.5·IQR` or above `Q3 + 1.5·IQR` as *potential* outliers. A flag is a prompt to inspect the value, not proof that it is an error."
 ---
 
 A dataset can have thousands of values. Nobody reads them all. **Descriptive statistics**

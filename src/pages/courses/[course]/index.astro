@@ -1,7 +1,7 @@
 ---
 import Base from '../../../layouts/Base.astro';
 import CourseProgress from '../../../components/CourseProgress';
-import { getCourses, getSteps, groupIntoSections, conceptPath, type Step, type Course } from '../../../lib/course';
+import { getCourses, getSteps, groupIntoSections, conceptPath, withBase, type Step, type Course } from '../../../lib/course';
 import { splitInline } from '../../../lib/inline-code';
 
 export async function getStaticPaths() {
@@ -20,11 +20,12 @@ const { course, steps } = Astro.props;
 const sections = groupIntoSections(course, steps);
 const withQuestions = steps.filter((s) => s.concept.data.questions.length > 0).length;
 const highlighted = steps.filter((s) => s.concept.data.highlight).length;
+const assessed = steps.filter((s) => s.concept.data.assessed.length > 0).length;
 ---
 
 <Base title={course.data.title} description={course.data.summary}>
   <div class="coursehead shell">
-    <p class="eyebrow"><a href="/">All courses</a></p>
+    <p class="eyebrow"><a href={withBase('/')}>All courses</a></p>
     <h1>{course.data.title}</h1>
 
     {(course.data.code || course.data.term || course.data.crn) && (
@@ -42,7 +43,7 @@ const highlighted = steps.filter((s) => s.concept.data.highlight).length;
         <CourseProgress client:load courseId={course.id} total={steps.length} resettable />
         {withQuestions > 0 && (
           <p class="coursehead__checks">
-            {withQuestions} knowledge checks{highlighted > 0 && ` · ${highlighted} key concepts`}
+            {withQuestions} knowledge checks{highlighted > 0 && ` · ${highlighted} key concepts`}{assessed > 0 && ` · ${assessed} assessed`}
           </p>
         )}
       </div>
@@ -80,6 +81,9 @@ const highlighted = steps.filter((s) => s.concept.data.highlight).length;
                 <span class="toc__title">{concept.data.title}</span>
                 <span class="toc__tags">
                   {concept.data.highlight && <span class="tag tag--key">key</span>}
+                  {concept.data.assessed.length > 0 && (
+                    <span class="tag tag--assessed" title={`Assessed in ${concept.data.assessed.join(', ')}`}>assessed</span>
+                  )}
                   {concept.data.visuals.some((v) => v.type === 'animation') && (
                     <span class="tag tag--anim">animated</span>
                   )}
@@ -164,6 +168,7 @@ const highlighted = steps.filter((s) => s.concept.data.highlight).length;
     padding: 0.1rem 0.4rem;
     border-radius: 4px;
   }
+  .tag--assessed { color: var(--ok); border-color: var(--ok); }
   .tag--anim { color: var(--accent); border-color: var(--accent); }
 
   /* Filled rather than outlined, so it reads as a level above the other tags. */

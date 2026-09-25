@@ -41,6 +41,17 @@ questions:
         explains: >-
           Cumulative charts are right for some questions, such as total to date. They are
           misleading only when read as a growth rate.
+assessed:
+  - "Quiz 2 · Q4"
+  - "Lab 1 · Task 4"
+prerequisites:
+  - topic: "Accumulating and differencing"
+    explains: "Adding up a quantity as it arrives gives a running total; the amount added in each step is the change in that total. Calculus names these operations: **integrating** accumulates, and **differentiating** recovers the rate of change. They undo each other, which is why a cdf and its pdf hold the same information."
+  - topic: "The empirical cdf"
+    explains: "For data, `F(x)` is the fraction of observations less than or equal to `x`. Sort the values and step up by `1/n` at each one, so the curve starts at 0 and reaches 1 at the largest value. Reading a proportion below a threshold means finding the threshold on the horizontal axis and reading the height."
+  - topic: "Bar height times bin width"
+    explains: "To turn a histogram's densities into a cumulative probability, add up *height × width* for each bar. Adding heights alone is wrong whenever the bin width is not 1."
+    see: "data-science/w2-05-random-variables"
 ---
 
 You have a pdf. You can also ask a different question: how likely is the variable to be
