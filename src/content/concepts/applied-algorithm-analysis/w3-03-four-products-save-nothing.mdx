@@ -1,0 +1,78 @@
+---
+course: applied-algorithm-analysis
+section: w3-karatsuba
+order: 420
+title: Four Half-Size Products Save Nothing
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week3.html?hash=true#/9
+    caption: Slide 10 of 40 — the same count, both ways.
+notation:
+  - symbol: "4(n/2)²"
+    reads: four times, n over two, squared
+    means: >-
+      Four products of half-size numbers. It simplifies to `4 · n²/4 = n²` — exactly what you
+      started with.
+questions:
+  - ask: >-
+      Halving the size of a multiplication makes it four times cheaper. So why does splitting
+      into four half-size products save nothing?
+    choices:
+      - text: Because the split then asks for four of them, and 4 × ¼ = 1
+        correct: true
+        explains: >-
+          Each product is a quarter of the cost, and there are four — so the total is exactly
+          what you began with. Making subproblems smaller is not by itself progress; you have
+          to end up with *fewer* of them than the shrinkage pays for.
+      - text: Because splitting the number costs too much
+        explains: >-
+          Splitting is just index arithmetic and shifting, all linear. It is nowhere near the
+          `O(n²)` that dominates.
+      - text: Because half-size products are not actually cheaper
+        explains: >-
+          They are — quadratically so, which is the whole tension. A quarter of the cost, four
+          times over, lands back where it started.
+      - text: Because the recombination is quadratic
+        explains: >-
+          Recombination is additions and shifts, so linear. If it were quadratic the split
+          would be hopeless rather than merely break-even.
+---
+
+Here is the trap, and it is worth sitting with before reading on. Halving the size of a
+multiplication makes it **four times** cheaper — cost goes like the square, so half the size
+is a quarter of the work.
+
+So surely splitting into half-size products is a win?
+
+## Count it directly
+
+Take two 8-bit inputs and count single-bit products both ways:
+
+| method | count |
+| --- | --- |
+| schoolbook — every bit of `x` meets every bit of `y` | `8 × 8 = 64` |
+| four half-size products — each 4 bits by 4 bits | `4 × (4 × 4) = 64` |
+
+Identical. And in general:
+
+```
+4 · (n/2)²  =  4 · n²/4  =  n²
+```
+
+The split bought **nothing**. `T(n) = 4T(n/2) + O(n)` solves to `O(n²)`, which is exactly
+what schoolbook multiplication already cost in week 2.
+
+## Why this is the important slide
+
+Each subproblem really is a quarter of the cost. There really are four of them. A quarter,
+four times, is one.
+
+> Cutting the input in half is not by itself a saving. The shrinkage has to outrun the
+> multiplication in the *number* of subproblems.
+
+That reframes the goal completely. The aim is not to make the subproblems smaller — the
+split already does that, for free. The aim is to end up with **fewer subproblems** than the
+shrinkage pays for.
+
+Four is one too many. Losing a single one of the four is what the next page does, and it is
+why the section needed Gauss.

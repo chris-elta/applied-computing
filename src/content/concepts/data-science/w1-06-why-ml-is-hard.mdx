@@ -1,0 +1,72 @@
+---
+course: data-science
+section: w1-teams
+order: 60
+title: Why Software With ML Is Hard
+visuals:
+  - type: svg
+    src: data-science/w1-what/33.svg
+    caption: Slides 33–34 of 63 — no specification, and specifications drawn from data.
+  - type: svg
+    src: data-science/w1-what/34.svg
+questions:
+  - ask: >-
+      What changes when a model gets its "specification" from data rather than from rules a
+      programmer wrote?
+    choices:
+      - text: >-
+          You move from applying rules you were given to generalising from observations, and
+          there is no written statement of what the system should do
+        correct: true
+        explains: >-
+          The slide frames this as deductive reasoning giving way to inductive reasoning. The
+          training data stands in for the spec, so what the system does is only as clear as
+          the data behind it.
+      - text: The system becomes easier to test, because the data acts as the test
+        explains: >-
+          The opposite. With no specification to check against, it is unclear what "correct"
+          even means for a given input.
+      - text: The system needs less data, because the model fills in gaps
+        explains: >-
+          The slide says the larger the dataset, the better. That is precisely what causes
+          the scalability issues.
+      - text: Nothing changes; it is ordinary software with a different library
+        explains: >-
+          Ordinary software has a specification you can write down and test against. That
+          is the property that goes missing.
+---
+
+In traditional software engineering you **specify what to do and how to test it**. You write
+the rule, then write a check that the rule holds. Machine-learning components break that
+loop in two ways.
+
+## No written specification
+
+Models are usually **black boxes**. That may be justified by their complexity, but it means
+you cannot read a rule off the system.
+
+Even when you do try to state a specification — for example inside an LLM prompt — it is
+unclear whether the model will follow it.
+
+## The specification comes from data
+
+Instead of a programmer's rules, a model gets its "specs" from **data**, and the larger the
+dataset, the better. The slide describes this as a shift:
+
+| Traditional software | Machine learning |
+| --- | --- |
+| Deductive reasoning: apply logic rules | Inductive reasoning: generalise from observations |
+| Behaviour follows from the rules written | Behaviour follows from the data seen |
+
+The dependence on large datasets is also what **causes scalability issues** — storing,
+cleaning and processing data becomes part of the system's job.
+
+## Consequences
+
+Two things follow that the next slides develop:
+
+- Without a spec, you cannot say exactly what a correct output is. See the next concept.
+- The behaviour of the system reflects the data it learned from, so a change in the data can
+  change the behaviour, even if no code changed.
+
+> With ML, the data is part of the program.

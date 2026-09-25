@@ -1,0 +1,93 @@
+---
+course: applied-algorithm-analysis
+section: w3-recurrences
+order: 480
+title: Which Case Applies?
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week3.html?hash=true#/19
+    caption: >-
+      Slides 25–26 of 40 — the level bars, with presets to compare, and binary search worked
+      through.
+notation:
+  - symbol: "z[1…n]"
+    reads: z one to n
+    means: A sorted array of `n` keys, indexed from 1. The input binary search is given.
+  - symbol: "T(n) = T(n/2) + O(1)"
+    reads: T of n equals T of n over two, plus big-oh of one
+    means: >-
+      **One** subproblem of half the size, and constant work per call. `a = 1` because the
+      other half is discarded rather than recursed into.
+questions:
+  - ask: Why is binary search `a = 1` rather than `a = 2`?
+    choices:
+      - text: It throws one half away rather than recursing into it
+        correct: true
+        explains: >-
+          `a` counts the subproblems you actually **solve**, not the pieces you split into.
+          One comparison eliminates half the array outright, so only one recursive call is
+          made.
+      - text: Because it only needs one comparison per level
+        explains: >-
+          That is `d = 0`, the work per call. `a` is a separate knob — the number of recursive
+          calls.
+      - text: Because the array is sorted, so one half is already done
+        explains: >-
+          The discarded half is not solved; it is ruled out. Either way `a` counts calls
+          made, and there is one.
+      - text: Because `b = 2` already accounts for the two halves
+        explains: >-
+          `b` describes how much smaller each subproblem is, not how many there are. The two
+          are independent, which is exactly what the slide's presets demonstrate.
+---
+
+The theorem is three lines of algebra, but the thing worth building is an intuition for
+*which* line a given algorithm lands on. The figure on slide 25 draws the work at each level
+relative to the root, and the presets are the fastest way to feel the difference.
+
+Step through them in this order:
+
+- **Karatsuba** (`a=3, b=2, d=1`) — ratio 1.5, bars **grow** downward. Leaves dominate,
+  `O(n^1.58)`.
+- **Mergesort** (`a=2, b=2, d=1`) — `a` drops by one and the bars go **flat**. Balanced.
+- **Binary search** (`a=1, b=2, d=0`) — the bars **fall away** and the root alone decides.
+- **Matrix multiplication, 8 products** against **Strassen's 7** — same `b`, same `d`, only
+  `a` changes. It is the cleanest demonstration that `a` is what moves the exponent.
+
+> On the matrix presets: to multiply two `n × n` matrices, cut each into four `n/2 × n/2`
+> blocks. The definition needs 8 block products plus `O(n²)` additions; Strassen gets the
+> same answer with 7 — the same "lose one subproblem" move Karatsuba made.
+
+## Binary search, worked through
+
+The simplest divide-and-conquer algorithm there is. To find `q` in a sorted array
+`z[1…n]`: compare `q` with `z[n/2]`, then recurse on whichever half can still contain it.
+
+```
+T(n) = T(⌈n/2⌉) + O(1)
+```
+
+Read off the knobs:
+
+- **`a = 1`** — one recursive call. This is the one people get wrong. The array is split in
+  two, but the other half is **thrown away**, not solved. `a` counts subproblems you
+  actually solve, not pieces you cut into.
+- **`b = 2`** — the surviving half is half the size.
+- **`d = 0`** — the work per call is one comparison, and `O(n⁰) = O(1)`.
+
+Now compare: `log₂1 = 0`, and `d = 0`. They are **equal**, so this is the balanced middle
+case:
+
+```
+T(n) = O(n⁰ log n) = O(log n)
+```
+
+Which is the answer you already knew for binary search, now derived rather than remembered.
+
+## The pattern worth noticing
+
+Binary search has the *fewest* subproblems of anything on this page — one — and mergesort has
+two, yet both are balanced. Karatsuba has three and is leaf-dominated.
+
+So it is not `a` alone that decides. It is `a` measured against `bᵈ`, which is the point the
+last page in this module returns to.

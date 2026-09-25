@@ -1,0 +1,116 @@
+---
+course: data-science
+section: w2-variance
+order: 290
+title: "Chebyshev's Inequality"
+highlight: true
+visuals:
+  - type: svg
+    src: data-science/w2-probability/22.svg
+    caption: Slide 22 of 23 — a guarantee about spread that holds for any distribution.
+notation:
+  - symbol: "μ"
+    reads: mu
+    means: >-
+      The mean of the distribution.
+  - symbol: "σ"
+    reads: sigma
+    means: >-
+      The standard deviation. "k sigma" means `k` standard deviations.
+  - symbol: "1 − 1/k²"
+    reads: one minus one over k squared
+    means: >-
+      The fraction that must lie within `k` standard deviations of the mean, whatever the
+      shape of the distribution.
+questions:
+  - ask: >-
+      A dataset has mean 100 and standard deviation 10, with an unknown shape. At least what
+      fraction of the values lie between 80 and 120?
+    choices:
+      - text: "75%, because 80 to 120 is two sigma either side, so `1 − 1/4`"
+        correct: true
+        explains: >-
+          The interval is the mean plus or minus 2 standard deviations, so `k = 2` and the
+          bound is `1 − 1/2² = 0.75`. This is the slide's own worked case. The true share may
+          well be higher.
+      - text: "50%"
+        explains: >-
+          That would be the bound for a much narrower interval. With `k = 2` the guarantee is
+          75%.
+      - text: "95%"
+        explains: >-
+          95% is roughly what a normal distribution gives at two sigma. Chebyshev must cover
+          any shape, so its guarantee is weaker: 75%.
+      - text: "Nothing can be said without knowing the shape"
+        explains: >-
+          The remarkable thing about the inequality is that it holds regardless of shape.
+  - ask: >-
+      Using the bound, at least what fraction lies within three standard deviations of the
+      mean?
+    choices:
+      - text: "About 89%, since `1 − 1/9 ≈ 0.889`"
+        correct: true
+        explains: >-
+          Substitute `k = 3`. Note how the guarantee grows with `k`: 0% at `k = 1`, 75% at 2,
+          89% at 3.
+      - text: "99.7%"
+        explains: >-
+          That is the figure for a normal distribution. The general guarantee is much
+          weaker.
+      - text: "75%"
+        explains: >-
+          That is `k = 2`. For `k = 3` the interval is wider and so is the guarantee.
+      - text: "67%"
+        explains: >-
+          Not what the formula gives; `1 − 1/k²` with `k = 3` is about 0.889.
+---
+
+You have a mean and a standard deviation and nothing else. Can you say anything firm about
+where the data lies? Yes, and you can say it without knowing the shape.
+
+## The inequality
+
+The slide states it in words. **Regardless of how data is distributed, at least `1 − 1/k²`
+of the mass must lie within `k` sigma of the mean.**
+
+```
+P( μ − kσ < X < μ + kσ )  ≥  1 − 1/k²
+```
+
+Plug in values of `k`:
+
+| `k` (sigma from the mean) | Guaranteed within the interval |
+| --- | --- |
+| 1 | 0% (no information) |
+| 2 | 75% |
+| 3 | about 89% |
+| 5 | 96% |
+
+The slide draws out the case `k = 2`: **at least 75% lies within two sigma of the mean**, so
+at most 25% is more than two sigma away.
+
+## A worked example
+
+Response times have mean 100 ms and standard deviation 10 ms. Without knowing anything about
+the shape, at least 75% of responses fall between 80 and 120 ms, and at least 89% between
+70 and 130 ms. That is enough to set a service target or spot an unusual reading.
+
+## Why it is loose, and why that is fine
+
+The slide adds that **even tighter bounds apply for normal distributions**. For the bell
+curve, about 95% lies within two sigma, against Chebyshev's 75%.
+
+The inequality is weak because it has to cover every distribution, including awkward ones.
+Its value is the guarantee: no distribution with a given mean and spread can break it. So it
+is a safe fallback when you do not know the shape.
+
+## The misconception
+
+Some people quote the normal distribution's 95% for any data. That is wrong unless the data
+is close to normal. When you cannot vouch for the shape, use Chebyshev.
+
+This finishes the idea from the previous concept: the mean and standard deviation do not
+just describe a distribution loosely, they *constrain* it.
+
+> Whatever the shape, most of the data sits within a few standard deviations of the mean.
+> Two numbers give a guarantee.

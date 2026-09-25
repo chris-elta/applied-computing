@@ -1,0 +1,91 @@
+---
+course: applied-algorithm-analysis
+section: w3-recurrences
+order: 460
+title: The Generic Pattern
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week3.html?hash=true#/17
+    caption: Slide 19 of 40 — three knobs, and what each one means.
+notation:
+  - symbol: "a"
+    reads: a
+    means: How many subproblems each call makes — the branching factor of the tree.
+  - symbol: "b"
+    reads: b
+    means: >-
+      How much smaller each subproblem is. Inputs of size `n` become size `n/b`, so the tree
+      is `log_b n` tall.
+  - symbol: "d"
+    reads: d
+    means: >-
+      The exponent on the work **one call does by itself** — splitting and combining, not
+      counting anything its children do. Misreading this is the most costly mistake here.
+questions:
+  - ask: >-
+      In `T(n) = aT(n/b) + O(nᵈ)`, what exactly does `d` measure?
+    choices:
+      - text: >-
+          The work a single call does on its own — splitting and combining — excluding its
+          recursive calls
+        correct: true
+        explains: >-
+          The recursive work is already counted by `aT(n/b)`. `d` is the exponent on what is
+          left over. Both Karatsuba (`a = 3`) and the four-product version (`a = 4`) have
+          `d = 1`, and their answers differ — so `d` clearly is not the algorithm's cost.
+      - text: The exponent in the algorithm's overall running time
+        explains: >-
+          That is what you are solving *for*. If `d` were already the answer the theorem
+          would have nothing to do — and note Karatsuba has `d = 1` but runs in `O(n^1.59)`.
+      - text: The depth of the recursion
+        explains: >-
+          Depth is `log_b n`, set by `b`. `d` is about cost per call, not about height.
+      - text: How many subproblems are combined at each step
+        explains: >-
+          That is `a`. `d` is the exponent on the *cost* of combining them, not their number.
+---
+
+Both versions of the multiplication algorithm had the same shape, and so did every other
+divide-and-conquer cost this week will meet:
+
+> Solve `a` subproblems of size `n/b`, then combine the answers in `O(nᵈ)` time.
+
+```
+T(n) = aT(⌈n/b⌉) + O(nᵈ)
+```
+
+Three knobs, and each controls a different feature of the recursion tree:
+
+| knob | meaning | effect on the tree |
+| --- | --- | --- |
+| `a` | how many subproblems | branching factor — how fast levels widen |
+| `b` | how much smaller each is | height, `log_b n` |
+| `d` | how expensive the combine step is | cost per node |
+
+For Karatsuba: `a = 3`, `b = 2`, `d = 1`.
+
+## The mistake that costs marks
+
+`d` is the exponent on the work **one call does on its own** — the splitting and the
+recombining — *not counting anything its children do*.
+
+That distinction is easy to nod along to and easy to get wrong under pressure. The clean test
+is the pair of algorithms you have just seen:
+
+- Four-product version: `a = 4`, `b = 2`, `d = 1` → `O(n²)`
+- Karatsuba: `a = 3`, `b = 2`, `d = 1` → `O(n^1.59)`
+
+Both have `d = 1`. Their running times differ. So `d` plainly is not the algorithm's cost —
+if it were, the two could not disagree while sharing a value.
+
+The recursive work is already fully accounted for by the `aT(n/b)` term. Counting it again in
+`d` double-counts, and every answer comes out wrong.
+
+## Why bother generalising
+
+Module 02 drew one recursion tree by hand and got one answer. This module does the identical
+argument with letters instead of numbers — which solves **every** recurrence of that shape at
+once, including ones nobody has drawn yet.
+
+The next page states the result and proves it, and the proof is just the Karatsuba tree with
+`3` replaced by `a` and `2` replaced by `b`.

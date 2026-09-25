@@ -1,0 +1,75 @@
+---
+course: data-science
+section: w1-mindset
+order: 90
+title: Computer Scientists vs. Real Scientists
+visuals:
+  - type: svg
+    src: data-science/w1-what/43.svg
+    caption: Slides 43–45 of 63 — why data is unfamiliar to computer scientists, and two contrasts.
+  - type: svg
+    src: data-science/w1-what/44.svg
+  - type: svg
+    src: data-science/w1-what/45.svg
+questions:
+  - ask: >-
+      A dataset contains a few obviously wrong entries. Which reaction fits the lecture's
+      picture of a data scientist?
+    choices:
+      - text: >-
+          Expect it: data from the real world has errors, so decide how to deal with them
+          and carry on
+        correct: true
+        explains: >-
+          "Scientists are comfortable with the idea that data has errors; computer scientists
+          are not." A data scientist treats errors as a normal property of real data.
+      - text: >-
+          Refuse to proceed until the data is perfectly clean
+        explains: >-
+          That is the computer-science instinct the slide warns about. Data collected from a
+          messy world is rarely perfect, so waiting for perfection means never starting.
+      - text: >-
+          Assume the algorithm must be wrong, since data cannot be
+        explains: >-
+          The slides say scientists are data-driven, but not that data is infallible. Data
+          can be wrong too.
+      - text: >-
+          Delete the whole dataset and generate a random one
+        explains: >-
+          The slide says interesting datasets are a scarce resource, obtained by hard work
+          and imagination. Random data is the usual way to *test algorithms*, not to learn
+          about the world.
+---
+
+Computer scientists do not **naturally appreciate data**. To a programmer it is stuff to run
+through a program, and the usual way to test an algorithm is to run it on "random data".
+
+The lecture argues that this habit is the opposite of what data science needs, because
+interesting datasets are a **scarce resource** that takes hard work and imagination to obtain.
+
+## Two worldviews
+
+The slides set out the contrast in two parts.
+
+| Scientists | Computer scientists |
+| --- | --- |
+| Strive to understand a complicated, messy natural world | Build their own clean, organised virtual worlds |
+| Nothing is ever completely true or false | Everything is either true or false |
+| Data-driven | Algorithm-driven |
+| Obsessed with *discovering* things | *Invent* rather than discover |
+| Comfortable that data has errors | Not comfortable with errors |
+
+## What this means for you
+
+If your training is in computing, the right-hand column is your default. It is a good default
+for writing programs: a sorting routine is correct or it is not.
+
+It becomes a liability when the object of study is the world. A claim about customers, a
+football league or taxi journeys is not true or false in the way a theorem is. It is better
+or worse supported, and the data behind it will have gaps and mistakes.
+
+So the shift the lecture asks for is not to abandon rigour but to change what rigour looks
+like: work out how much you can trust the data, and say how sure you are.
+
+> In mathematics you prove. With data you weigh evidence, and you expect the evidence to be
+> imperfect.

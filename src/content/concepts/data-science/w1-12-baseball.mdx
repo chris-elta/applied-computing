@@ -1,0 +1,74 @@
+---
+course: data-science
+section: w1-practice
+order: 120
+title: "Practice: Baseball-Reference.com"
+visuals:
+  - type: svg
+    src: data-science/w1-what/51.svg
+    caption: Slides 51–54 of 63 — the site, its statistical record, and two sets of questions.
+  - type: svg
+    src: data-science/w1-what/52.svg
+  - type: svg
+    src: data-science/w1-what/53.svg
+  - type: svg
+    src: data-science/w1-what/54.svg
+questions:
+  - ask: >-
+      Baseball-Reference holds each year's batting, pitching and fielding record, with teams
+      and awards. Which of these questions can it answer only by going *beyond* baseball?
+    choices:
+      - text: Do left-handed people have shorter lifespans than right-handers?
+        correct: true
+        explains: >-
+          The record includes handedness and life dates for players, so it can be asked, but
+          the conclusion is about people in general. That means asking whether players
+          represent everyone, which is a question about the data's coverage.
+      - text: How does a player's batting change as they age?
+        explains: >-
+          Answerable directly from year-by-year records for each player.
+      - text: Which teams won which awards?
+        explains: >-
+          The site records teams and awards directly.
+      - text: How many runs a batter scored in a season?
+        explains: >-
+          Summary statistics of each year's batting are exactly what the site provides.
+---
+
+The first practice dataset is **Baseball-Reference.com**, a *statistical record of play*:
+summary statistics for each year's batting, pitching and fielding record, with teams and
+awards.
+
+For each dataset the exercise is to ask who, what, where, when and why. Here the *who* is
+players and teams, the *what* is season statistics, and the *when* is every year the record
+goes back.
+
+## Questions about baseball
+
+The lecturer's list is about the game itself:
+
+- How do we best measure an individual player's skill, value or performance?
+- How fairly do trades between teams work out?
+- What is the trajectory of a player's performance as they mature and age?
+- To what extent does batting performance correlate with the position played?
+
+## Questions about people
+
+The same data supports questions that are not about baseball at all:
+
+- Do left-handed people have shorter lifespans than right-handers?
+- How often do people return to where they were born?
+- Do player salaries reflect past, present or future performance?
+- Are heights and weights increasing in the population?
+
+## What to notice
+
+A single dataset yields two kinds of question. The first kind is answered by the data you
+have. The second uses the data as a **stand-in for a wider population**, and that stretch
+needs care: professional ballplayers are not a random sample of people.
+
+That is the sort of doubt the previous concepts on wisdom and curiosity were preparing you
+for.
+
+> A dataset's subject is the thing it describes. Its uses go well beyond that, but each
+> step away raises a question about who is missing.

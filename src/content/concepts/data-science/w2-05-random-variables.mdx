@@ -1,0 +1,72 @@
+---
+course: data-science
+section: w2-distributions
+order: 200
+title: Random Variables and Their Distributions
+visuals:
+  - type: svg
+    src: data-science/w2-probability/08.svg
+    caption: Slide 8 of 23 — a random variable, a pdf as a histogram, and two dice.
+notation:
+  - symbol: RV
+    reads: R-V, or random variable
+    means: >-
+      A numerical quantity whose value depends on chance, such as the total shown by two dice.
+  - symbol: pdf
+    reads: P-D-F, or probability density function
+    means: >-
+      A description of how likely each value of a random variable is. For a variable that
+      takes separate values, it is a histogram of probabilities.
+questions:
+  - ask: >-
+      `V` is the sum of two fair dice. Which value has the highest probability?
+    choices:
+      - text: "7, because six of the 36 equally likely rolls give it"
+        correct: true
+        explains: >-
+          The pairs (1,6), (2,5), (3,4), (4,3), (5,2), (6,1) all total 7. Other totals have
+          fewer pairs, so the histogram peaks at 7 and falls away on either side.
+      - text: All totals are equally likely
+        explains: >-
+          The 36 *rolls* are equally likely, but different totals are produced by different
+          numbers of rolls. The distribution is a peak, not flat.
+      - text: "12, because it is the largest total"
+        explains: >-
+          12 needs a single pair, (6,6), so it is among the least likely.
+      - text: "6, because it is the middle of the possible range"
+        explains: >-
+          The possible range 2–12 is centred on 7, not 6. Six pairs make 7, but only five
+          make 6.
+---
+
+Roll two dice and add them. The total is not a single fixed number: it varies from roll to
+roll, and some totals turn up more often than others.
+
+## Random variables
+
+A **random variable** (RV) is a numerical function whose values come with probabilities. It
+turns outcomes into numbers so that you can reason about them: the outcome "a 3 and a 5"
+becomes the value 8.
+
+## The probability density function
+
+The **probability density function** (pdf) represents a random variable, **essentially as a
+histogram**. Each value gets a bar whose height is its probability.
+
+For `V`, the sum of two dice, count the ways each total can occur out of 36:
+
+| Total | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Ways | 1 | 2 | 3 | 4 | 5 | 6 | 5 | 4 | 3 | 2 | 1 |
+
+Divide each count by 36 and you have the pdf. The heights sum to 1, as the first concept
+this week required. The shape is a symmetric peak at 7.
+
+## Why this matters
+
+A single number such as an average hides the shape. Two variables can share a centre and
+still behave completely differently. The pdf is the whole picture, and everything later in
+the week — cumulative distributions, means, spread, Chebyshev's inequality — is a way of
+summarising or reading it.
+
+> A random variable is a number that varies. Its distribution says how it varies.

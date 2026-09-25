@@ -1,0 +1,95 @@
+---
+course: data-science
+section: w1-teams
+order: 70
+title: Models Make Mistakes
+visuals:
+  - type: svg
+    src: data-science/w1-what/35.svg
+    caption: Slides 35–38 of 63 — the camera that followed a bald head, and how systems interact with the world.
+  - type: svg
+    src: data-science/w1-what/36.svg
+questions:
+  - ask: >-
+      An AI camera tracking the ball at a football match repeatedly follows the linesman's
+      bald head. What does this example most directly illustrate?
+    choices:
+      - text: >-
+          Models can fail in unexpected ways that are hard to foresee, because there is no
+          specification listing what to guard against
+        correct: true
+        explains: >-
+          Nobody wrote "do not mistake a head for a ball" because nobody thought of it. That
+          is the slide's point: failures are hard to foresee and capture without a spec.
+      - text: That the camera needed more processing power
+        explains: >-
+          The failure is about what the model learned to recognise, not about speed. More
+          hardware would repeat the same mistake faster.
+      - text: That such models should never be used in live settings
+        explains: >-
+          The slide's conclusion is milder: the system must tolerate some incorrect
+          predictions and be aware of their effect, not avoid models altogether.
+      - text: That the operators failed to test the camera at all
+        explains: >-
+          Testing may well have happened. Without a spec, tests cover the cases someone
+          imagined, and this was not one of them.
+  - ask: >-
+      You evaluate a model on held-out test data and it scores well on average. What may you
+      conclude?
+    choices:
+      - text: >-
+          It works well *enough* on average on that data; nothing more precise can be
+          guaranteed about individual cases
+        correct: true
+        explains: >-
+          The slide's own phrasing. With no specification, "correct" cannot be defined case
+          by case, so an average on test data is the evidence you have.
+      - text: That every individual prediction is correct
+        explains: >-
+          An average hides individual errors. The camera above was probably accurate on most
+          frames.
+      - text: That the system is safe to deploy without monitoring
+        explains: >-
+          Average performance says nothing about the rare failures that matter, or about how
+          the system's outputs will influence the world once deployed.
+      - text: That the data is free of errors
+        explains: >-
+          A good score says nothing about the quality of the test data itself.
+---
+
+During a live-streamed match involving Inverness Caledonian Thistle in Scotland, an
+AI-powered camera designed to track the ball repeatedly focused on the linesman's bald head
+instead of the ball.
+
+It is a funny clip, and it also states something structural about ML systems.
+
+## Mistakes you cannot list in advance
+
+Traditional software fails in ways you can usually trace to a line of code. A model fails in
+ways that are **often unexpected**, and they are **hard to foresee and capture because there
+is no spec**. Nobody had "the ball may look like a head" on a list.
+
+## What "correct" means
+
+That raises a question the slides pose outright: *what does it mean to be correct?* For a
+model you cannot check every case against a rule. You can only evaluate whether it works
+**well enough, on average, on some test data**.
+
+Two words in that sentence do the work:
+
+- **Enough** — the standard is acceptable, not perfect.
+- **On average** — some individual predictions will be wrong, and the score does not say
+  which.
+
+## Living with it
+
+The next slide states the consequence: the system must be able to **tolerate some incorrect
+predictions**, and be aware of how it might **influence the world**. Two slides on
+*complexity* follow as pictures; they make the point visually that a real system has many
+more moving parts than the model alone.
+
+So the design question changes. It is no longer "how do I make it never wrong?" but "what
+happens when it is wrong, and how bad is that?"
+
+> An average score tells you how often you will be wrong. It does not tell you how badly, or
+> where.

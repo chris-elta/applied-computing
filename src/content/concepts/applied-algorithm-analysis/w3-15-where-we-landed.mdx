@@ -1,0 +1,140 @@
+---
+course: applied-algorithm-analysis
+section: w3-review
+order: 540
+title: Where We Landed
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week3.html?hash=true#/31
+    caption: Slides 38–40 of 40 — the summary table, the self-check, and the reading.
+notation:
+  - symbol: "d vs log_b a"
+    reads: d versus log base b of a
+    means: >-
+      The single comparison the master theorem performs. Which side `d` lands on says where
+      the cost sits: root, spread evenly, or leaves.
+  - symbol: "recursion tree"
+    reads: recursion tree
+    means: >-
+      One node per call. Level `k` holds `aᵏ` nodes of size `n/bᵏ`, so level costs form a
+      geometric series with ratio `a/bᵈ`. It is *why* the theorem is true.
+questions:
+  - ask: >-
+      Karatsuba does three multiplications instead of four and gets `O(n^1.59)`. If some
+      further trick got it down to **two**, what would the running time be?
+    choices:
+      - text: "`O(n log n)`"
+        correct: true
+        explains: >-
+          Two subproblems gives `T(n) = 2T(n/2) + O(n)`, so `a = 2, b = 2, d = 1` and
+          `log₂2 = 1 = d` — the balanced case. Dropping from three subproblems to two moves
+          it from leaf-dominated all the way to balanced.
+      - text: "`O(n)`"
+        explains: >-
+          That would need the recursion to vanish. Even balanced, the `log₂ n` levels each
+          cost `O(n)`, so a log factor survives.
+      - text: "`O(n^1.26)`, since `log₂2 = 1.26`"
+        explains: >-
+          `log₂2 = 1`, not 1.26. And with `d = log_b a` the leaves no longer dominate, so the
+          `n^log_b a` line does not apply.
+      - text: "`O(n²)` — fewer subproblems means more work each"
+        explains: >-
+          The subproblems stay half-size; only their number changes. Fewer of them cannot
+          cost more.
+  - ask: >-
+      Mergesort is `T(n) = 2T(n/2) + O(n)`. If merging two sorted halves cost `O(n²)` instead
+      of `O(n)`, what would sorting cost?
+    choices:
+      - text: "`O(n²)` — the recursion would have bought nothing"
+        correct: true
+        explains: >-
+          Now `a = 2, b = 2, d = 2`, and `log₂2 = 1 < 2`. The root dominates: the top-level
+          merge alone costs `O(n²)` and everything below is a constant factor. All the
+          dividing and recursing would be wasted effort.
+      - text: "`O(n² log n)`"
+        explains: >-
+          That is the *balanced* answer, which needs `d = log_b a`. Here `d = 2` exceeds
+          `log₂2 = 1`, so the root dominates and no log appears.
+      - text: "`O(n log n)` still — the recursion structure is unchanged"
+        explains: >-
+          The structure is unchanged but the per-call cost is not, and `d` is exactly what
+          the theorem tests. Changing it changes the case.
+      - text: "`O(n³)`"
+        explains: >-
+          The root level alone costs `O(n²)`, and the levels below shrink geometrically. The
+          total stays at `O(n²)`.
+  - ask: >-
+      `T(n) = T(n/2) + O(1)` is the balanced case. How much work is there per level, and how
+      many levels?
+    choices:
+      - text: "`O(1)` per level, across `log₂ n` levels — so `O(log n)`"
+        correct: true
+        explains: >-
+          One subproblem per call means one node per level, each doing constant work. Halving
+          gives `log₂ n` levels. Multiply and you get binary search's `O(log n)`, derived
+          rather than recalled.
+      - text: "`O(n)` per level across `log₂ n` levels"
+        explains: >-
+          That would be mergesort's profile. Here `d = 0`, so each call does constant work,
+          and there is only one call per level.
+      - text: "`O(1)` per level across `n` levels"
+        explains: >-
+          The size halves each call, so the depth is `log₂ n`, not `n`.
+      - text: "`O(log n)` per level across `log₂ n` levels"
+        explains: >-
+          That double-counts the log. The per-level cost is `O(n⁰) = O(1)`.
+---
+
+One shape, one comparison, one picture.
+
+## The shape
+
+Every running time this week had the form
+
+```
+T(n) = aT(n/b) + O(nᵈ)
+```
+
+and the master theorem does exactly one thing: **compare `d` with `log_b a`.** Which side it
+lands on says where the cost sits — at the root, spread evenly across the levels, or at the
+leaves.
+
+## The picture underneath
+
+The theorem is a shortcut for an argument you can always redo by hand. Level `k` of the
+recursion tree holds `aᵏ` nodes of size `n/bᵏ`, so the level costs form a geometric series
+with ratio `a/bᵈ`:
+
+- ratio below 1 — the series shrinks, the **root** is the whole cost;
+- ratio exactly 1 — every level costs the same, so multiply by the `log_b n` levels;
+- ratio above 1 — the series grows, the **leaves** are the whole cost.
+
+That is why recurrences outside the theorem's form are not a dead end. Draw the tree.
+
+## The table
+
+| algorithm | recurrence | `a, b, d` | `log_b a` vs `d` | running time |
+| --- | --- | --- | --- | --- |
+| Multiplication, four products | `4T(n/2) + O(n)` | 4, 2, 1 | `2 > 1` | `O(n²)` |
+| Karatsuba | `3T(n/2) + O(n)` | 3, 2, 1 | `1.585 > 1` | `O(n^1.59)` |
+| Binary search | `T(n/2) + O(1)` | 1, 2, 0 | `0 = 0` | `O(log n)` |
+| Mergesort | `2T(n/2) + O(n)` | 2, 2, 1 | `1 = 1` | `O(n log n)` |
+| Mergesort, quadratic merge | `2T(n/2) + O(n²)` | 2, 2, 2 | `1 < 2` | `O(n²)` |
+
+The top two rows are the week in miniature: same `b`, same `d`, and the *only* difference is
+one subproblem — which is worth `n²` against `n^1.59`.
+
+The bottom two are the same lesson from the other direction: same `a`, same `b`, and a more
+expensive combine step throws the recursion's benefit away entirely.
+
+## Next
+
+**Part 4 — medians and the selection problem.**
+
+## Reading
+
+- Dasgupta, Papadimitriou & Vazirani, *Algorithms* — §2.1 integer multiplication, §2.2
+  recurrence relations and the master theorem, §2.3 mergesort.
+- Roughgarden, *Algorithms Illuminated, Part 1* — chapter 1 for the paradigm and mergesort,
+  chapter 4 for the master method and its three cases.
+- Practice: LeetCode 148, 912, 88.

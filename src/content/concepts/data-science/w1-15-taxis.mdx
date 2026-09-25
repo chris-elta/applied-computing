@@ -1,0 +1,67 @@
+---
+course: data-science
+section: w1-practice
+order: 150
+title: "Practice: NYC Taxi Cab Data"
+visuals:
+  - type: svg
+    src: data-science/w1-what/61.svg
+    caption: Slides 61–62 of 63 — the dataset, and the questions it supports.
+  - type: svg
+    src: data-science/w1-what/62.svg
+questions:
+  - ask: >-
+      Which of these questions can the taxi data answer most directly, given that it records
+      driver or owner, pickup and dropoff location, and fare for every trip?
+    choices:
+      - text: Where are people travelling to and from at different times of day?
+        correct: true
+        explains: >-
+          Pickup and dropoff locations, with times, answer this directly by grouping trips
+          by hour and place.
+      - text: Are passengers satisfied with their journey?
+        explains: >-
+          Nothing in the record measures satisfaction. Fare and location describe the trip,
+          not the passenger's view of it.
+      - text: Why did a particular driver choose their route?
+        explains: >-
+          The data gives endpoints, not the path or the reasons for it.
+      - text: How do taxi drivers feel about their working conditions?
+        explains: >-
+          Not recorded. Some questions in the list, such as nightly earnings, get close only
+          by inference from fares.
+---
+
+The last dataset is **NYC taxi cab data**. It gives the **driver or owner, pickup and dropoff
+location, and fare** for every taxi trip taken. It was obtained from New York City through a
+Freedom of Information Act request.
+
+That last detail is worth noticing. Interesting data is often not sitting in a public
+download; somebody had to ask for it. The lecture earlier called such datasets a **scarce
+resource** that takes hard work and imagination to obtain.
+
+## The lecturer's questions
+
+- How much do drivers make each night?
+- How far do they travel?
+- How much slower is traffic during rush hour?
+- Where are people travelling to and from at different times of the day?
+- Do faster drivers get tipped better?
+- Where should drivers go to pick up their next fare?
+
+## Sorting them by what is needed
+
+| Question | Straight from the record? |
+| --- | --- |
+| Where do people travel, by time of day | Yes — locations and times |
+| How much drivers make each night | Nearly — sum the fares by driver and night, though costs are not there |
+| How far they travel | Needs distance worked out from locations |
+| Traffic slower at rush hour | Inferred from trip length against time taken |
+| Faster drivers tipped better | Needs a measure of "faster" and needs tips recorded |
+| Where to pick up next | A recommendation — needs a model built on the rest |
+
+The bottom of the list is where data science begins: the record does not contain the answer,
+and you must construct it, then decide how far to trust what you built.
+
+> Some questions are lookups. The interesting ones are built out of the data, and the
+> building is where you can go wrong.

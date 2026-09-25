@@ -1,0 +1,65 @@
+---
+course: data-science
+section: w2-descriptive
+order: 220
+title: "Descriptive Statistics: Centre and Spread"
+visuals:
+  - type: svg
+    src: data-science/w2-probability/12.svg
+    caption: Slide 12 of 23 — the two families of descriptive summary.
+questions:
+  - ask: >-
+      Two datasets both have a mean of 50. One ranges from 48 to 52, the other from 0 to 100.
+      Which family of measure tells them apart?
+    choices:
+      - text: Variation, or spread
+        correct: true
+        explains: >-
+          Both share a centre. How far the measurements lie from it is what differs, and that
+          is what spread measures.
+      - text: Central tendency
+        explains: >-
+          Both have the same centre by construction. A central tendency measure cannot
+          separate them.
+      - text: Neither — the datasets are effectively the same
+        explains: >-
+          They behave very differently. One is tightly clustered; the other is widely
+          scattered.
+      - text: Probability, not statistics
+        explains: >-
+          These are descriptions of observed data, which is statistics. Descriptive measures
+          summarise the sample you have.
+---
+
+A dataset can have thousands of values. Nobody reads them all. **Descriptive statistics**
+provides ways to capture the properties of a given dataset or sample in a few numbers.
+
+The lecture sorts these into two families.
+
+## Central tendency
+
+**Central tendency** measures describe the centre around which the data is distributed:
+where is a typical value? The next two concepts cover the mean, median and geometric mean.
+
+## Variation
+
+**Variation**, or variability, measures describe the spread: how far the measurements lie
+from the centre. Standard deviation is the main one.
+
+## Why both
+
+One number is never enough. Consider how the same average can arise:
+
+| Dataset | Values | Mean |
+| --- | --- | --- |
+| A | 48, 49, 50, 51, 52 | 50 |
+| B | 0, 25, 50, 75, 100 | 50 |
+
+A tells you what to expect. B tells you to expect almost anything. If you report only the
+mean, you have said the same thing about both.
+
+So a description of data has two jobs: say where it is, and say how much it varies. The
+rest of the week works through each in turn, then shows how much a mean and spread together
+can guarantee.
+
+> Centre says where. Spread says how sure you can be.

@@ -1,0 +1,91 @@
+---
+course: applied-algorithm-analysis
+section: w3-paradigm
+order: 400
+title: The Paradigm, and Gauss's Trick
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week3.html?hash=true#/3
+    caption: Slides 4–5 of 40 — the three steps, and the trade in miniature.
+notation:
+  - symbol: "i"
+    reads: i
+    means: >-
+      The imaginary unit, where `i² = −1`. A complex number `a + bi` is just a pair of real
+      numbers carried around together; nothing here depends on understanding them deeply.
+  - symbol: "(a+b)(c+d)"
+    reads: a plus b, times c plus d
+    means: >-
+      One multiplication of two **sums**. The trick is that this single product secretly
+      contains the two cross-terms you wanted.
+questions:
+  - ask: >-
+      Gauss's trick replaces four multiplications with three, at the cost of extra additions.
+      Why is that a good trade?
+    choices:
+      - text: >-
+          Because additions are cheap relative to multiplications, and this trade is made
+          recursively
+        correct: true
+        explains: >-
+          On `n`-bit numbers addition is `O(n)` and multiplication `O(n²)`, so swapping a
+          multiplication for a couple of additions is already a win. The real force comes
+          later: applied recursively, dropping one of four subproblems changes the exponent.
+      - text: Because three is fewer than four, so less work is always done
+        explains: >-
+          Not on its own — you also added two extra additions. The trade is only a win
+          because the two sides have different costs.
+      - text: Because it avoids complex arithmetic entirely
+        explains: >-
+          The identity is stated for complex numbers but is pure algebra. The same rearranging
+          works on integers, which is exactly where the next section takes it.
+      - text: Because the result is exact rather than approximate
+        explains: >-
+          Both sides are exact. Nothing here involves approximation.
+---
+
+Divide and conquer is three steps:
+
+1. **Divide** the input into smaller subproblems.
+2. **Conquer** the subproblems recursively.
+3. **Combine** the solutions into a solution for the original problem.
+
+Step 3 is where the cost usually hides. The paradigm only wins when combining is cheap
+relative to the work it saves — and most of this week is really about measuring that trade
+precisely.
+
+## The trade, in miniature
+
+Multiplying two complex numbers looks like it needs four real multiplications:
+
+```
+(a + bi)(c + di) = ac − bd + (bc + ad)i
+```
+
+Count them: `ac`, `bd`, `bc`, `ad`. Four.
+
+Gauss noticed that three are enough, because the awkward middle term can be recovered from
+a single extra product:
+
+```
+bc + ad = (a + b)(c + d) − ac − bd
+```
+
+Look at what the right-hand side actually costs. `(a+b)(c+d)` is one multiplication. `ac` and
+`bd` are two more — **but you needed both of those anyway** for the real part. So the whole
+calculation takes three multiplications and two extra additions instead of four
+multiplications.
+
+## Why that matters
+
+One multiplication traded for two additions. On its own that is a minor saving, and it is
+worth being precise about why it is a saving at all: from week 2, addition on `n`-bit numbers
+costs `O(n)` while multiplication costs `O(n²)`. The two sides of the trade are not the same
+price.
+
+> Additions are cheap. That is the trade, and the rest of the week is what happens when you
+> make it **recursively**.
+
+Doing it once saves a constant factor. Doing it at every level of a recursion changes the
+exponent — and changing an exponent is the only kind of improvement that survives the input
+getting large.

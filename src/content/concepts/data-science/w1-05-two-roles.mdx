@@ -1,0 +1,65 @@
+---
+course: data-science
+section: w1-teams
+order: 50
+title: Two Roles, Two Priorities
+visuals:
+  - type: svg
+    src: data-science/w1-what/29.svg
+    caption: Slides 28–32 of 63 — the team a product needs, and the two roles at its centre.
+  - type: svg
+    src: data-science/w1-what/30.svg
+questions:
+  - ask: >-
+      A colleague from software engineering asks how large the model is and how it will be
+      updated. Which reading of the two roles explains why the data scientist had not
+      thought about it?
+    choices:
+      - text: >-
+          Data scientists usually work on a fixed dataset and focus on accuracy, so model
+          size and updateability typically do not matter to them
+        correct: true
+        explains: >-
+          That is the slide's description. It is not carelessness; it is what the role
+          rewards. The engineer has to run and maintain the thing.
+      - text: Data scientists are less skilled than software engineers
+        explains: >-
+          The slide compares priorities, not ability. Data scientists are the experts in
+          modelling techniques and feature engineering.
+      - text: Data scientists work only in notebooks and cannot write production code
+        explains: >-
+          Prototyping in notebooks is typical, but the point is what they optimise for, not
+          a limit on what they can do.
+      - text: Model size never matters to any real project
+        explains: >-
+          It matters a great deal to whoever must deploy and maintain the model. That is
+          exactly the engineer's concern.
+---
+
+A product needs more than one kind of person. The slides list the cast: data engineers,
+domain specialists, operators, a business team, project managers, designers and UI experts,
+safety and security specialists, lawyers, social scientists and more. Two roles sit closest
+to the model, and the lecture sets them side by side.
+
+| | Data scientist | Software engineer |
+| --- | --- | --- |
+| Data | Often a fixed dataset for training and evaluation | Large amounts of live data, which the solution must scale to |
+| Goal | Accuracy | A product: performance, stability, release time |
+| Working style | Prototyping, often in Jupyter notebooks | Maintaining, evolving and extending over long periods |
+| Expertise | Modelling techniques and feature engineering | Detecting and handling mistakes, preferably automatically |
+| Judged by | Accuracy on evaluation data | Customer satisfaction |
+| Often ignored | Model size, updateability, implementation stability | Requirements for security, safety and fairness are considered |
+
+## Where friction comes from
+
+The slides pose two open questions to the room: *likely collaboration challenges?* and
+*what might each role focus on?* The table answers them without being asked. If one person
+optimises for accuracy on a fixed set while the other worries about stability and updates,
+each will experience the other's default behaviour as an obstacle.
+
+Neither view is wrong. A model that cannot be deployed is not a product; a product built
+around a poor model is not useful. Trouble starts when each side assumes the other's concerns
+are the same as its own.
+
+> When people on the same team disagree, check first whether they are optimising for
+> different things.

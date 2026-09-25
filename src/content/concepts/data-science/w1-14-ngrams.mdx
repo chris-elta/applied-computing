@@ -1,0 +1,74 @@
+---
+course: data-science
+section: w1-practice
+order: 140
+title: "Practice: Google Ngrams"
+visuals:
+  - type: svg
+    src: data-science/w1-what/58.svg
+    caption: Slides 58–60 of 63 — what the dataset is, the viewer, and the questions.
+  - type: svg
+    src: data-science/w1-what/59.svg
+  - type: svg
+    src: data-science/w1-what/60.svg
+notation:
+  - symbol: n-gram
+    reads: en-gram
+    means: >-
+      A run of `n` consecutive words. A 1-gram is a word, a 2-gram a pair of adjacent words.
+questions:
+  - ask: >-
+      The Ngram data counts phrases that appear more than 40 times in total, in the books
+      Google has scanned. Which limitation does this most directly create?
+    choices:
+      - text: >-
+          Rare words and phrases are missing, and the books are only a sample of everything
+          ever written
+        correct: true
+        explains: >-
+          "Popular" excludes anything at or below the threshold, and the corpus covers only
+          about 15% of all books published. Conclusions about language as a whole must allow
+          for that.
+      - text: The counts are only accurate for single words
+        explains: >-
+          The data covers phrases of one to five words, so this is not the limitation.
+      - text: It cannot show change over time
+        explains: >-
+          It is an annual time series, so change over time is its main strength.
+      - text: It contains only recent books
+        explains: >-
+          Nothing on the slides restricts it to recent books. The stated limits are the
+          popularity threshold and the fraction of books scanned.
+---
+
+The third dataset is **Google Ngrams**. It presents an annual time series of how often every
+"popular" word or phrase of **one to five words** occurs in scanned books.
+
+Two facts define what it can and cannot tell you:
+
+- **"Popular"** means it appears more than 40 times in total.
+- Google has scanned about **15% of all books ever published**, making the resource quite
+  comprehensive but far from complete.
+
+In who/what/where/when/why terms, the *what* is word frequencies, the *when* is by year, and
+the *who* is authors and publishers of the books that got scanned, which is not the same as
+everyone who speaks the language.
+
+## The lecturer's questions
+
+- How has the amount of **cursing** changed over time?
+- What is the **lifespan of fame and technologies**? Is it increasing or decreasing?
+- How often do **new words emerge**? Do they stay in common usage?
+- What words are **associated with other words** — can you build a language model?
+
+## Reading a chart of counts
+
+These are good questions because a time series makes them visible. Each also needs a check
+against the data's biases. A rise in a word's frequency could mean the world changed, or that
+more books were printed, or that the library scanned more recent titles.
+
+The fourth question links to what you saw in the music case: a **language model** is the same
+kind of thing MeLoDy builds on, trained on text instead of audio.
+
+> Counts in a corpus describe the corpus. Whether they describe the world depends on how the
+> corpus was assembled.

@@ -1,0 +1,77 @@
+---
+course: data-science
+section: w1-case
+order: 40
+title: What Turning Research Into a Product Involves
+visuals:
+  - type: svg
+    src: data-science/w1-what/24.svg
+    caption: Slides 24–27 of 63 — the breakout prompt and three slides of example questions.
+  - type: svg
+    src: data-science/w1-what/25.svg
+  - type: svg
+    src: data-science/w1-what/26.svg
+  - type: svg
+    src: data-science/w1-what/27.svg
+questions:
+  - ask: >-
+      "We improve our model, but somehow system behaviour degrades." Which category of
+      challenge is this?
+    choices:
+      - text: Operating and updating the product
+        correct: true
+        explains: >-
+          A change that helps on paper yet hurts in practice is a deployment problem. It sits
+          with questions like when to deploy, whether you can roll back, and how you notice
+          something is wrong.
+      - text: A machine-learning challenge only
+        explains: >-
+          The model may be involved, but the surprise is that the whole system got worse.
+          Finding out why means looking at the operation of the system, not just the model.
+      - text: A business challenge
+        explains: >-
+          Business challenges concern customers, cost and market. This one is about the
+          behaviour of what has been shipped.
+      - text: A safety or ethics challenge
+        explains: >-
+          It could become one if the degradation causes harm, but as stated it is about
+          keeping the system working as it changes.
+---
+
+The breakout asks a group to name one likely challenge in each of six areas when the team
+turns the music research into a product:
+
+| Area | Sample question from the slides |
+| --- | --- |
+| Machine learning | What does correctness or accuracy really mean? Which accuracy do customers care about? |
+| Engineering | Can we cope with an influx of customers? Generation takes longer as customers grow — what can we do? |
+| Operating and updating | Models improve continuously. When do we deploy? Can we roll back? |
+| Team or management | None given — the slides leave this one for your group to supply |
+| Business | Buy more machines or move to the cloud? |
+| Safety or ethics | What are unacceptable mistakes? Might we leak private data? |
+
+## The questions the slides raise
+
+The discussion slides do not answer these. Read them as a checklist of things a research
+paper never had to consider.
+
+**Knowing how you are doing.** How can we see how well we are doing in practice? Can we
+estimate how good the generated music is, and how do we do for different customers or
+genres? Will the same prompt give the same result twice, and does it matter?
+
+**When it breaks.** Generation sometimes crashes. How do we achieve high availability? How
+do we see that all is fine, and page somebody if not? What happens when Tensorflow updates —
+does our infrastructure still work?
+
+**When it succeeds.** With more customers, generation slows down. How do we handle large
+amounts of data per day? Can we offer live generation as an app or web service?
+
+**What we are allowed to do.** Can and should we learn from customer data? How do we debug
+problem files we are not allowed to see? Can competitors or bad actors attack the system?
+
+## The pattern
+
+Almost none of these questions is about the model. They concern measurement, reliability,
+change and responsibility — the rest of the system the model lives inside.
+
+> The model is one component. Most of the product is everything else.

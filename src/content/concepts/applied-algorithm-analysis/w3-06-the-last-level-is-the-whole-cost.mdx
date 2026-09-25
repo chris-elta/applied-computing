@@ -1,0 +1,100 @@
+---
+course: applied-algorithm-analysis
+section: w3-karatsuba
+order: 450
+title: The Last Level Is the Whole Cost
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week3.html?hash=true#/15
+    caption: >-
+      Slides 16–17 of 40 — the two endpoints and the series between them. Press down for the
+      sum.
+notation:
+  - symbol: "Σ"
+    reads: sum, or sigma
+    means: >-
+      Add up a sequence of terms. `Σ` from `k = 0` to `log₂ n` means "add one term for each
+      level of the tree".
+  - symbol: "geometric series"
+    reads: geometric series
+    means: >-
+      A sum where each term is a fixed multiple of the one before. That multiple is the
+      **ratio**, and whether it exceeds 1 decides everything.
+  - symbol: "n^log₂3"
+    reads: n to the log base two of three
+    means: >-
+      About `n^1.59`. It comes from `3^log₂n`, which equals `n^log₂3` — take `log₂` of both
+      and each gives `log₂n · log₂3`.
+questions:
+  - ask: >-
+      The level costs form a geometric series with ratio `3/2`. Why is the total within a
+      constant factor of just the **last** term?
+    choices:
+      - text: >-
+          For any ratio `r > 1`, the whole sum is less than `r/(r−1)` times its last term
+        correct: true
+        explains: >-
+          With `r = 3/2` that factor is 3 — the entire tree costs at most three times its
+          bottom level, and a factor of three vanishes inside the `O`. An increasing
+          geometric series is dominated by its final term.
+      - text: Because the earlier levels do no work
+        explains: >-
+          They do real work; the root alone does `O(n)`. It is simply dwarfed by the bottom,
+          and the shrinking contributions add up to a constant factor.
+      - text: Because there are `log₂ n` levels, so the largest dominates by that factor
+        explains: >-
+          That reasoning would multiply the largest level by `log₂ n` and invent an extra log
+          factor. It is the trap here: a *geometric* series does not behave like `levels ×
+          largest`.
+      - text: Because the last level has the most nodes
+        explains: >-
+          True, but node count alone is not the argument — what matters is that the level
+          *costs* form a geometric series with ratio above 1.
+---
+
+Work at depth `k` is `(3/2)ᵏ × O(n)`. Look at the two ends of the tree:
+
+- **Top** (`k = 0`): work is `O(n)` — the root splitting and recombining once.
+- **Bottom** (`k = log₂ n`): work is `O(3^log₂n) = O(n^log₂3)`.
+
+That last equality is the one algebraic step worth doing by hand: take `log₂` of both sides
+and each comes to `log₂n · log₂3`.
+
+Between those endpoints the work **increases geometrically**, by a factor of `3/2` each level
+down.
+
+So what does the sum over all `log₂ n` levels come to?
+
+## The trap
+
+The tempting answer is "`log₂ n` levels times the largest level", which would introduce an
+extra log factor. That is wrong, and it is worth knowing why before reading the right answer.
+
+Ask instead what *kind* of series this is. It is **geometric** — each term is a fixed multiple
+of the one before — and geometric series with ratio above 1 do not behave like `count ×
+largest`. They are dominated by their final term.
+
+## The sum
+
+```
+Σ (k = 0 to log₂n) (3/2)ᵏ · O(n)  =  O( (3/2)^log₂n · n )  =  O(n^log₂3)  =  O(n^1.59)
+```
+
+**Why the last term is enough.** For any ratio `r > 1`, the sum of a geometric series is less
+than `r/(r−1)` times its last term. With `r = 3/2` that factor is 3 — so the whole tree costs
+at most three times its bottom level, and a factor of three disappears inside the `O`.
+
+> **The leaves dominate.** The bottom level alone already costs `O(n^1.59)`, and everything
+> above it adds only a constant factor.
+
+## What was actually bought
+
+`O(n^1.59)` against schoolbook's `O(n²)`. Kolmogorov's conjecture — that `n²` was necessary —
+broken by dropping one subproblem out of four.
+
+Note what did *not* change: the subproblems are the same size, the combine step is still
+linear, the tree is still `log₂ n` tall. The single difference from the four-product version
+is the branching factor, 3 instead of 4 — and that alone moved the exponent from 2 to 1.59.
+
+Which raises the obvious question: is there a formula that reads off the answer from `a`, `b`
+and `d` without drawing the tree each time? That is the next module.

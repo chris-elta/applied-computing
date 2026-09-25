@@ -1,0 +1,130 @@
+---
+course: data-science
+section: w2-probability
+order: 190
+title: Bayes' Theorem
+highlight: true
+visuals:
+  - type: svg
+    src: data-science/w2-probability/06.svg
+    caption: Slides 6–7 of 23 — the theorem, and its proof.
+  - type: svg
+    src: data-science/w2-probability/07.svg
+notation:
+  - symbol: "P(A|B) = P(B|A) · P(A) / P(B)"
+    reads: P of A given B equals P of B given A, times P of A, over P of B
+    means: >-
+      Bayes' theorem. It turns a probability of `B` given `A` — often what you can measure —
+      into a probability of `A` given `B` — often what you want to know.
+  - symbol: "P(A)"
+    reads: the prior, or P of A
+    means: >-
+      What you believed about `A` *before* seeing evidence `B`. "Prior" means before.
+  - symbol: "P(A|B)"
+    reads: the posterior, or P of A given B
+    means: >-
+      What you believe about `A` *after* seeing `B`. "Posterior" means after.
+questions:
+  - ask: >-
+      A condition affects 1% of people. A test detects it in 90% of people who have it, but
+      also gives a positive result for 9% of people who do not. You test positive. Roughly
+      how likely is it that you have the condition?
+    choices:
+      - text: About 9%
+        correct: true
+        explains: >-
+          Of 10,000 people, 100 have it and 90 test positive. Of the 9,900 without it, 891
+          test positive. So of 981 positives, only 90 are true: about 9%. The condition is
+          rare, so false positives swamp true ones.
+      - text: About 90%
+        explains: >-
+          That is `P(positive | condition)`, the test's sensitivity. The question asks for the
+          reverse, `P(condition | positive)`. Confusing the two is the standard mistake.
+      - text: About 1%
+        explains: >-
+          That is the prior, before the test. A positive result should raise it, and it does,
+          to about 9%.
+      - text: About 50%
+        explains: >-
+          Nothing in the numbers points to an even split. Working it out from the counts
+          gives about 9%.
+  - ask: >-
+      Which quantity must you know, besides `P(B|A)` and `P(B)`, to compute `P(A|B)` with
+      Bayes' theorem?
+    choices:
+      - text: "`P(A)`, the prior probability of `A`"
+        correct: true
+        explains: >-
+          The formula multiplies by `P(A)`. Without the base rate, you cannot convert one
+          direction of conditioning into the other.
+      - text: "`P(A|B)` itself"
+        explains: >-
+          That is the answer you are trying to find.
+      - text: "Nothing else"
+        explains: >-
+          The prior is essential. It is the part people forget.
+      - text: "The number of observations"
+        explains: >-
+          The formula uses probabilities, not sample sizes.
+---
+
+The previous concept ended on a warning: `P(A|B)` and `P(B|A)` are different questions.
+Bayes' theorem is how you get from one to the other.
+
+## The theorem
+
+The slide states it as a way to **update our likelihood estimate of `A` in response to
+knowledge of `B`**:
+
+```
+P(A|B) = P(B|A) × P(A) / P(B)
+```
+
+You start with a belief, `P(A)`, the **prior**. Evidence `B` arrives. The theorem gives the
+revised belief, `P(A|B)`, the **posterior**.
+
+## Why it works
+
+The proof slide is short, and it is worth following because it reveals there is nothing
+mysterious. The definition of conditional probability gives two statements about the same
+joint event:
+
+```
+P(A ∩ B) = P(A|B) × P(B)
+P(A ∩ B) = P(B|A) × P(A)
+```
+
+Both equal the same thing, so set them equal and divide by `P(B)`. The theorem is the
+definition of conditioning, written twice.
+
+## A worked example
+
+A condition affects 1% of people. A test catches it in 90% of those who have it, but wrongly
+flags 9% of those who do not. You test positive. What now?
+
+Picture 10,000 people:
+
+| Group | People | Test positive |
+| --- | --- | --- |
+| Have it (1%) | 100 | 90 |
+| Do not (99%) | 9,900 | 891 |
+
+That is 981 positives, of whom 90 are real. So `P(condition | positive) = 90/981 ≈ 9%`.
+The formula agrees: `0.9 × 0.01 / 0.0981 ≈ 0.092`.
+
+## The misconception
+
+The intuition that a positive means a 90% chance is very strong, and wrong. It confuses
+`P(positive | condition)`, which the test's makers report, with `P(condition | positive)`,
+which is what *you* need.
+
+They differ because of the **prior**. When the condition is rare, even a good test produces
+more false alarms than true ones, since there are so many more people who do not have it.
+The base rate is not a detail; it dominates the answer.
+
+The same trap appears wherever you evaluate a detector on rare events — fraud, faults,
+attacks. Conditional probability told you the two directions differ; Bayes tells you by how
+much.
+
+> To update a belief you need the evidence and where you started. Forgetting the prior is
+> the classic error.

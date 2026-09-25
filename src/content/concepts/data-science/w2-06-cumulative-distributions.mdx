@@ -1,0 +1,87 @@
+---
+course: data-science
+section: w2-distributions
+order: 210
+title: Cumulative Distributions, and Why They Mislead
+visuals:
+  - type: svg
+    src: data-science/w2-probability/09.svg
+    caption: Slides 9–11 of 23 — the cdf as a running sum, and the iPhone sales example.
+  - type: svg
+    src: data-science/w2-probability/10.svg
+  - type: svg
+    src: data-science/w2-probability/11.svg
+notation:
+  - symbol: cdf
+    reads: C-D-F, or cumulative distribution function
+    means: >-
+      For each value `x`, the probability that the variable is `x` or less. It is the running
+      total of the pdf.
+questions:
+  - ask: >-
+      A chart shows cumulative iPhone sales climbing steeply year after year. What can you
+      conclude about growth?
+    choices:
+      - text: >-
+          Very little — a cumulative total rises even if sales each year are flat or falling,
+          so the growth rate is hard to read off it
+        correct: true
+        explains: >-
+          The slide's point. A running total can only go up. The yearly change is the
+          derivative of the curve, which is hard to judge by eye. Plot yearly sales to see
+          real growth.
+      - text: Sales are accelerating every year
+        explains: >-
+          Not necessarily. Steady sales of the same amount each year still produce a curve
+          that climbs.
+      - text: Sales must be falling, since the curve is smooth
+        explains: >-
+          Smoothness is not evidence either way. The curve is smooth because it is a sum.
+      - text: The chart is wrong and should never be used
+        explains: >-
+          Cumulative charts are right for some questions, such as total to date. They are
+          misleading only when read as a growth rate.
+---
+
+You have a pdf. You can also ask a different question: how likely is the variable to be
+**at most** some value?
+
+## The cdf
+
+The **cumulative distribution function** (cdf) is the running sum of the pdf:
+
+```
+F(x) = P(V ≤ x)
+```
+
+For the two dice, add up the bars as you move right: after 2 you have 1/36, after 3 you have
+3/36, and so on until you reach 1 at 12. It starts at 0, ends at 1 and never goes down.
+
+The pdf and cdf hold **exactly the same information**. One is the integral of the other, and
+the other is its derivative. The slide's phrase is worth keeping: sum to go from pdf to cdf,
+difference to come back.
+
+## Same information, different readability
+
+Both contain the full story, but they make different questions easy.
+
+| Question | Easier in |
+| --- | --- |
+| What is the most likely value? | pdf — look for the peak |
+| What fraction lies below a threshold? | cdf — read off the height |
+| Is the shape symmetric, skewed, lumpy? | pdf |
+
+## The iPhone example
+
+The slides ask: *Apple iPhone sales have been exploding, right?* The chart shown is
+cumulative sales over time, which climbs steeply. It looks explosive.
+
+Then: **how explosive is that growth, really?** The answer is that cumulative charts present
+a misleading view of growth rate. A running total always rises, even if you sell the same
+number every quarter. What you actually care about is the incremental change, which is the
+derivative of this function, and that is hard to see by eye.
+
+To judge growth, plot sales per period instead.
+
+> Choose the plot for the question. A cumulative curve tells you totals to date, not how
+> fast things are changing.

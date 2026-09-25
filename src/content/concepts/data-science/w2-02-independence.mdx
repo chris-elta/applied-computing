@@ -1,0 +1,125 @@
+---
+course: data-science
+section: w2-probability
+order: 170
+title: Compound Events and Independence
+highlight: true
+visuals:
+  - type: svg
+    src: data-science/w2-probability/04.svg
+    caption: Slide 4 of 23 — two events, both at once, and the test for independence.
+notation:
+  - symbol: "A ∩ B"
+    reads: A and B, or A intersect B
+    means: >-
+      Both events happen. In the slide, a student who is both female and above the median.
+  - symbol: "P(A) × P(B)"
+    reads: P of A times P of B
+    means: >-
+      The product of the two separate probabilities. It equals `P(A ∩ B)` *only* when the
+      events are independent.
+  - symbol: iff
+    reads: if and only if
+    means: >-
+      The statement works both ways: independence implies the product rule, and the product
+      rule implies independence.
+questions:
+  - ask: >-
+      Half of students are female (`A`) and half are above median (`B`). Of all students,
+      30% are both. Are `A` and `B` independent?
+    choices:
+      - text: >-
+          No — independence would give `0.5 × 0.5 = 0.25`, but the observed 0.30 differs
+        correct: true
+        explains: >-
+          The test is whether `P(A ∩ B)` equals `P(A) × P(B)`. Here it does not, so knowing
+          one event changes what you expect of the other.
+      - text: Yes, because each event has probability 0.5
+        explains: >-
+          Equal probabilities say nothing about independence. What matters is whether the
+          joint probability equals the product.
+      - text: Yes, because 0.30 is close to 0.25
+        explains: >-
+          "Close" is not the test. In real data the numbers rarely match exactly, so the
+          gap's size relative to sampling noise is what you would examine. As posed, they
+          differ and the events are not independent.
+      - text: No, because independence needs the events to have different probabilities
+        explains: >-
+          Independent events can have any probabilities, equal or not.
+  - ask: >-
+      You assume two features in your data are independent and multiply their probabilities
+      to estimate how often both occur. When does this most likely give a poor estimate?
+    choices:
+      - text: When the features are actually related, so one tells you something about the other
+        correct: true
+        explains: >-
+          The product rule holds only under independence. Related features make the true
+          joint probability differ from the product, sometimes by a lot.
+      - text: When the features have small probabilities
+        explains: >-
+          Size is not the issue. Independent events with tiny probabilities still multiply
+          correctly.
+      - text: When there are many observations
+        explains: >-
+          More data helps you *measure* the joint frequency; it does not make a false
+          independence assumption true.
+      - text: Never — the product rule is always valid
+        explains: >-
+          It is valid only for independent events. That is the whole point of the definition.
+---
+
+Start with the slide's setup. Half of your students are female, and call that event `A`.
+Half of your students are above the median, and call that event `B`. The question: *what is
+the probability that a student is both?*
+
+The tempting answer is a quarter, half of a half. That answer is correct **only if the two
+events are independent**.
+
+## The definition
+
+Events `A` and `B` are independent if and only if
+
+```
+P(A ∩ B) = P(A) × P(B)
+```
+
+In words: learning that `B` happened tells you nothing new about `A`. The lecture also
+calls this **zero correlation**.
+
+If the two are independent, the answer to the slide's question is `0.5 × 0.5 = 0.25`. If
+they are not, the product is the wrong tool and you need more information, such as how many
+above-median students are female. That extra information is what the next concept, on
+conditional probability, formalises.
+
+## A worked check
+
+Suppose you count and find that 30% of all students are both female and above the median.
+The independence test compares two numbers:
+
+| Quantity | Value |
+| --- | --- |
+| `P(A) × P(B)` | 0.5 × 0.5 = 0.25 |
+| `P(A ∩ B)` observed | 0.30 |
+
+They differ, so the events are not independent. In this class, being female makes being above
+the median a little more likely than it would be otherwise.
+
+## Why the lecture warns about it
+
+The slide ends with a sentence to hold on to:
+
+> Independence (zero correlation) is good to simplify calculations but bad for prediction.
+
+Both halves matter. Assuming independence turns a hard joint problem into a product of easy
+single ones, which is why it is so tempting. But **prediction works precisely because
+features are related**: if knowing one told you nothing about another, no feature could help
+predict anything. An independence assumption throws away exactly the structure you hoped to
+exploit.
+
+## The misconception
+
+People take "the events have equal probabilities" or "the events look unrelated" as evidence
+of independence. Neither is. Independence is a numerical claim, checked by the product rule.
+
+Independence returns in two places later this week. Conditional probability is trivial when
+events are independent, and Bayes' theorem matters only when they are not.

@@ -1,0 +1,100 @@
+---
+course: applied-algorithm-analysis
+section: w3-recurrences
+order: 490
+title: Working the Cases
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week3.html?hash=true#/21
+    caption: >-
+      Slides 27–28 of 40 — four recurrences to classify. Press down for the worked answers.
+notation:
+  - symbol: "O(n² log n)"
+    reads: big-oh of n squared log n
+    means: >-
+      The balanced case with `d = 2`. A log factor does appear — just attached to `n²`, not
+      to `n`, which is the trap in row (b).
+questions:
+  - ask: Which of these solve to `O(n log n)`?
+    choices:
+      - text: "`2T(n/2) + O(n)` and `3T(n/3) + O(n)`"
+        correct: true
+        explains: >-
+          Both are balanced with `d = 1`. For (a), `log₂2 = 1 = d`; for (c), `log₃3 = 1 = d`.
+          Three subproblems of a third the size is the *same balance* as two of a half,
+          because both logs come to 1.
+      - text: "`2T(n/2) + O(n)` and `4T(n/2) + O(n²)`"
+        explains: >-
+          (b) is balanced too, but with `d = 2` — so it picks up its log factor on `n²`,
+          giving `O(n² log n)`. That is the trap: balanced does not mean `O(n log n)`.
+      - text: "`2T(n/2) + O(n)` only"
+        explains: >-
+          (c) also lands there. It is easy to assume three subproblems must be worse than
+          two, but they are a third the size rather than a half.
+      - text: "`3T(n/3) + O(n)` and `2T(n/2) + O(n²)`"
+        explains: >-
+          (d) is root-dominated: `log₂2 = 1 < 2 = d`, so the combine step swamps everything
+          and the answer is `O(n²)` with no log.
+  - ask: >-
+      Rows (a), (b) and (c) are all the balanced case, yet only two give `O(n log n)`. What
+      separates them?
+    choices:
+      - text: The value of `d`, which sets what the log factor is attached to
+        correct: true
+        explains: >-
+          Balanced means `d = log_b a`, and the answer is `O(nᵈ log n)`. With `d = 1` that is
+          `O(n log n)`; with `d = 2` it is `O(n² log n)`. Being balanced fixes the *shape* of
+          the answer, not the exponent.
+      - text: The number of subproblems
+        explains: >-
+          (a) has 2, (b) has 4, (c) has 3 — and (a) and (c) agree while (b) differs. The
+          subproblem count is not what separates them.
+      - text: Whether `b` divides `a` evenly
+        explains: >-
+          No such condition appears anywhere in the theorem. Only `d` against `log_b a`
+          matters.
+      - text: The height of the recursion tree
+        explains: >-
+          Height is `log_b n` in all of them, and it is the same log factor each picks up.
+          What differs is the per-level cost.
+---
+
+Four recurrences. Which solve to `O(n log n)`?
+
+```
+a)  T(n) = 2T(n/2) + O(n)
+b)  T(n) = 4T(n/2) + O(n²)
+c)  T(n) = 3T(n/3) + O(n)
+d)  T(n) = 2T(n/2) + O(n²)
+```
+
+Work them before reading on. The method never varies: read off `a`, `b`, `d`, compute
+`log_b a`, and see which side `d` lands on.
+
+## The answers
+
+| recurrence | `a, b, d` | `log_b a` | case | `T(n)` | |
+| --- | --- | --- | --- | --- | --- |
+| a) `2T(n/2) + O(n)` | 2, 2, 1 | 1 | `d = log_b a` | `O(n log n)` | ✓ |
+| b) `4T(n/2) + O(n²)` | 4, 2, 2 | 2 | `d = log_b a` | `O(n² log n)` | |
+| c) `3T(n/3) + O(n)` | 3, 3, 1 | 1 | `d = log_b a` | `O(n log n)` | ✓ |
+| d) `2T(n/2) + O(n²)` | 2, 2, 2 | 1 | `d > log_b a` | `O(n²)` | |
+
+**(a) and (c).**
+
+## The two traps
+
+**Row (b) is the subtle one.** It *is* balanced, and it *does* pick up a log factor — just
+not on `n`. With `d = 2` the balanced answer is `O(nᵈ log n) = O(n² log n)`. Being balanced
+tells you the shape of the answer; `d` tells you the exponent. Reading "balanced" as
+"`O(n log n)`" is the single most common error with this theorem.
+
+**Row (c) is the other one.** Three subproblems instead of two *sounds* worse than (a). It is
+not: they are a third the size rather than a half, and `log₃3 = log₂2 = 1`. The balance is
+identical.
+
+> Three of the four rows are balanced. What separates them is not how many subproblems there
+> are, but whether `d` matches `log_b a` — and, when it does, what `d` actually is.
+
+Row (d) is the one genuinely different case: the combine step at `O(n²)` swamps the recursion
+entirely, the root dominates, and the answer carries no log at all.

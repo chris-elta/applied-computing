@@ -1,0 +1,81 @@
+---
+course: applied-algorithm-analysis
+section: w3-mergesort
+order: 510
+title: Why the Quadratic Sorts Are Quadratic
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week3.html?hash=true#/24
+    caption: >-
+      Slide 31 of 40 — selection, insertion and bubble sort racing on the same eight numbers.
+      Press play.
+notation:
+  - symbol: "comparison"
+    reads: comparison
+    means: >-
+      One "is this bigger than that?" test. It is the unit sorting is counted in — moves and
+      swaps are a separate, usually smaller, cost.
+questions:
+  - ask: >-
+      Selection sort swaps at most once per pass — four times in total on the slide's input —
+      yet it still counts 28 comparisons. What does that tell you?
+    choices:
+      - text: >-
+          Comparisons, not moves, are what the quadratic exponent counts
+        correct: true
+        explains: >-
+          Selection sort barely moves anything and is still `O(n²)`, because each pass sweeps
+          the whole unsorted remainder looking for the minimum. The nested sweep is the cost,
+          regardless of how little gets rearranged.
+      - text: Selection sort is more efficient than the other two
+        explains: >-
+          It does fewer *moves* — four against fourteen — which can matter when moving is
+          expensive. Its comparison count, and so its asymptotic cost, is no better.
+      - text: The input was already partly sorted
+        explains: >-
+          That helps insertion sort, which gets 19 here rather than its usual worst case. It
+          does not help selection sort, which always does the same 28.
+      - text: Swaps are free, so only comparisons have a cost
+        explains: >-
+          Swaps are not free — they are just not what the quadratic count comes from here.
+---
+
+Before building a better sort, it is worth seeing precisely where the bad ones lose.
+
+The figure on slide 31 races **selection**, **insertion** and **bubble** sort on the same
+eight numbers. Press play and watch the comparison counters climb.
+
+## What all three have in common
+
+A loop inside a loop. Every pass sweeps whatever is not yet finished, so the comparisons pile
+up as `n + (n−1) + (n−2) + …`, which is `O(n²)`.
+
+That shape — *walk the remaining part, once per element* — is where the squared exponent comes
+from, and it is the same in all three despite their different characters.
+
+## A detail worth pausing on
+
+Watch selection sort. It barely moves anything: it swaps at most once per pass, **four times
+in total** on this input, against fourteen moves each for the other two.
+
+And it still performs **28 comparisons**, the most of the three.
+
+> Comparisons are what the quadratic exponent counts, not moves.
+
+That is a useful separation to carry. Selection sort's low move count is a genuine advantage
+when moving items is expensive — but it does nothing at all for the asymptotic cost, because
+the nested sweep is untouched.
+
+(Insertion sort manages 19 here rather than its usual count, because this particular input is
+already partly in order. Its *worst* case is still quadratic.)
+
+## The target
+
+Mergesort sorts these same eight numbers in **16 comparisons**. On eight items that is
+unremarkable — 16 against 28.
+
+The point is the shape, not the count at `n = 8`. At `n = 1000` it is roughly **ten thousand
+against half a million**, and the gap widens from there without limit.
+
+Where do those 16 comparisons go? Every one of them happens inside a **merge**, which is the
+next two pages.

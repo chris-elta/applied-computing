@@ -1,0 +1,128 @@
+---
+course: applied-algorithm-analysis
+section: w3-recurrences
+order: 470
+title: The Master Theorem
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week3.html?hash=true#/18
+    caption: >-
+      Slides 20–24 of 40 — the statement, then the proof in four steps. Press down through
+      the proof.
+notation:
+  - symbol: "log_b a"
+    reads: log base b of a
+    means: >-
+      The quantity `d` gets compared against. It is the exponent that makes the leaves' count
+      match: `a^(log_b n) = n^(log_b a)`.
+  - symbol: "a/bᵈ"
+    reads: a over b to the d
+    means: >-
+      The ratio of the geometric series. Below 1 the levels shrink, at 1 they are flat, above
+      1 they grow — which is precisely the three cases.
+  - symbol: "O(nᵈ log n)"
+    reads: big-oh of n to the d, log n
+    means: >-
+      The balanced case: every one of the `log_b n` levels costs `O(nᵈ)`, so the total is
+      that cost times the number of levels.
+questions:
+  - ask: >-
+      The three cases of the master theorem come from comparing `d` with `log_b a`. What is
+      that comparison really testing?
+    choices:
+      - text: Whether the ratio `a/bᵈ` is below, equal to, or above 1
+        correct: true
+        explains: >-
+          The level costs form a geometric series with ratio `a/bᵈ`. Taking logs turns
+          `a < bᵈ` into `d > log_b a`, and so on for the other two. The comparison in the
+          statement and the ratio in the proof are the same fact in different clothes.
+      - text: Whether there are more subproblems than levels
+        explains: >-
+          Those are not comparable quantities. The test is about how level *costs* change as
+          you descend.
+      - text: Whether the algorithm is faster than `O(n log n)`
+        explains: >-
+          `O(n log n)` is one possible answer, not the dividing line. The line is where the
+          cost sits in the tree.
+      - text: Whether the recursion terminates
+        explains: >-
+          It terminates whenever `b > 1`, in all three cases. The theorem is about cost, not
+          termination.
+  - ask: >-
+      Why does the balanced case pick up a `log n` factor that the other two do not?
+    choices:
+      - text: >-
+          Every level costs the same, so the total is that cost multiplied by the number of
+          levels
+        correct: true
+        explains: >-
+          With ratio exactly 1, all `log_b n + 1` terms are equal to `O(nᵈ)` — so the sum is
+          `O(nᵈ log n)`. In the other two cases the series is geometric and collapses to one
+          end, which is why no log appears there.
+      - text: Because logarithms always appear when `a = b`
+        explains: >-
+          `a = b` is neither necessary nor sufficient — binary search has `a = 1, b = 2` and
+          is balanced, because what matters is `a` against `bᵈ`.
+      - text: Because the tree is deeper in the balanced case
+        explains: >-
+          The height is `log_b n` in every case. What differs is how the level costs behave
+          as you go down.
+      - text: Because the combine step is called `log n` times
+        explains: >-
+          It is called once per node, not once per level. The log comes from summing equal
+          level costs.
+---
+
+> **Master theorem.** If `T(n) = aT(⌈n/b⌉) + O(nᵈ)` for constants `a > 0`, `b > 1`, `d ≥ 0`,
+> then:
+>
+> | | when | meaning |
+> | --- | --- | --- |
+> | `O(nᵈ)` | `d > log_b a` | the root dominates |
+> | `O(nᵈ log n)` | `d = log_b a` | balanced — every level costs the same |
+> | `O(n^log_b a)` | `d < log_b a` | the leaves dominate |
+
+Say the three cases in words before symbols: **the root dominates, every level costs the
+same, the leaves dominate.** That is the whole content; the algebra is bookkeeping.
+
+For Karatsuba: `a = 3`, `b = 2`, `d = 1`, and `log₂3 ≈ 1.59 > 1`. Third case, leaves dominate,
+`T(n) = O(n^1.59)` — the same answer module 02 got by drawing the tree.
+
+## The proof is the Karatsuba tree with letters
+
+Assume `n` is a power of `b`, so the rounding in `⌈n/b⌉` can be ignored — it changes each
+subproblem by less than 1 and the bound absorbs it.
+
+**Height.** Each level divides the size by `b`, so size 1 is reached after `log_b n` levels.
+
+**Work at level `k`.** The branching factor is `a`, so level `k` has `aᵏ` nodes, each of size
+`n/bᵏ`. Each does `O((n/bᵏ)ᵈ)` work of its own:
+
+```
+aᵏ × O( (n/bᵏ)ᵈ )  =  O(nᵈ) × (a/bᵈ)ᵏ
+```
+
+Identical shape to module 02: a fixed `O(nᵈ)` multiplied by the `k`-th power of a single
+ratio. For Karatsuba, `a/bᵈ` was `3/2`.
+
+**Three cases.** As `k` runs from 0 to `log_b n`, those level costs form a geometric series
+with ratio `a/bᵈ`. Summing has exactly three outcomes, and taking logs turns each into a line
+of the theorem:
+
+| ratio | series | sum is | in logs |
+| --- | --- | --- | --- |
+| `a/bᵈ < 1` | decreasing | within a constant of the **first** term → `O(nᵈ)` | `a < bᵈ` means `d > log_b a` |
+| `a/bᵈ = 1` | flat | all `log_b n + 1` terms equal → `O(nᵈ log n)` | `a = bᵈ` means `d = log_b a` |
+| `a/bᵈ > 1` | increasing | within a constant of the **last** term → `O(n^log_b a)` | `a > bᵈ` means `d < log_b a` |
+
+That "taking logs" step is the only thing connecting the proof to the statement. Everything
+else you already did by hand for Karatsuba.
+
+## Where the log factor comes from
+
+Only the middle case produces `log n`, and the reason is worth holding on to: when the ratio
+is exactly 1, the series is not geometric-and-collapsing — every level genuinely costs the
+same, so the total is *one level's cost × the number of levels*.
+
+In the other two cases the series collapses onto one end and the level count never enters the
+answer.

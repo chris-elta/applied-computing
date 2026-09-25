@@ -1,0 +1,73 @@
+---
+course: data-science
+section: w2-variance
+order: 270
+title: Reducing Variance
+visuals:
+  - type: svg
+    src: data-science/w2-probability/20.svg
+    caption: Slide 20 of 23 — four ways to make a result less noisy.
+notation:
+  - symbol: k-fold cross-validation
+    reads: k-fold cross validation
+    means: >-
+      Split the data into `k` parts, train on all but one and test on the held-out part, and
+      repeat so each part is the test set once. Average the `k` scores.
+questions:
+  - ask: >-
+      Why does repeating an experiment, as in k-fold cross-validation, reduce variance?
+    choices:
+      - text: >-
+          Averaging many results smooths out the chance effects of any single split, so the
+          average is steadier than one run
+        correct: true
+        explains: >-
+          Each run has its own luck. When you average several, good and bad luck partly
+          cancel, leaving an estimate that varies less from one attempt to the next.
+      - text: It makes the model itself more accurate
+        explains: >-
+          The model is unchanged. What improves is the *reliability of your measurement* of
+          how good it is.
+      - text: It removes the outliers from the data
+        explains: >-
+          Cross-validation does not delete anything. It re-uses all the data across folds.
+      - text: It guarantees the highest possible score
+        explains: >-
+          It gives a steadier estimate, not a higher one.
+---
+
+If noise hides differences, the natural response is to reduce it. The lecture lists four
+methods.
+
+## The four methods
+
+**1. Choose the lower-variance option.** The slide's illustration: walking to class is slower
+than taking the bus, but the **arrival times have lower variance**. If being on time matters
+more than being fast, the slower option is better. Optimising the average is not always the
+goal.
+
+**2. Repeat the experiment.** Repeating an experiment multiple times reduces variance.
+**k-fold cross-validation** is the standard example: instead of trusting one train/test
+split, you evaluate on `k` different ones and average.
+
+**3. Sample properly.** Proper random and deterministic sampling means that the data you
+evaluate on is chosen by a fair, reproducible procedure, not by convenience. Deterministic
+means you can repeat it exactly.
+
+**4. Eliminate outliers, if justifiable.** Extreme values inflate variance. Removing them
+reduces it, but only if there is a good reason. Deleting inconvenient points because they
+spoil the result would be dishonest.
+
+## A worked idea
+
+Say one test split gives 82% and another gives 78%. If you report the first, you say 82; if
+the second, 78. Averaging five splits might give 80% with the runs ranging over a few points.
+Now the estimate does not depend on a lucky draw, and you can see the spread too.
+
+## Choosing among them
+
+The methods target different sources of noise: the choice of process (1), the choice of data
+split (2 and 3), and extreme values (4). In practice you combine them, and the fourth carries
+a duty to explain why the points were dropped.
+
+> You cannot remove noise from the world, but you can make your measurement of it steadier.

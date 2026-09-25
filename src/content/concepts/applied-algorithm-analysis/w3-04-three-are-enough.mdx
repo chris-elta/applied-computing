@@ -1,0 +1,105 @@
+---
+course: applied-algorithm-analysis
+section: w3-karatsuba
+order: 430
+title: Three Are Enough
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week3.html?hash=true#/10
+    caption: >-
+      Slides 11–12 of 40 — Gauss's identity applied to the halves, and the algorithm it
+      produces.
+notation:
+  - symbol: "P1, P2, P3"
+    reads: P one, P two, P three
+    means: >-
+      The three recursive products the algorithm actually performs. Everything else in the
+      pseudocode is addition, subtraction or shifting.
+  - symbol: "⌈n/2⌉ and ⌊n/2⌋"
+    reads: ceiling of n over two, floor of n over two
+    means: >-
+      Round up and round down. When `n` is odd the two halves differ by one bit, so one gets
+      the extra.
+questions:
+  - ask: >-
+      The middle term `xL·yR + xR·yL` is recovered as `P3 − P1 − P2`. Why does that cost no
+      extra multiplication?
+    choices:
+      - text: >-
+          `P1` and `P2` were already needed for the outer terms, so only `P3` is new — and
+          subtraction is linear
+        correct: true
+        explains: >-
+          `xL·yL` and `xR·yR` appear in the answer anyway. The one genuinely new product is
+          `(xL+xR)(yL+yR)`, and peeling the two known ones off it is subtraction, which is
+          `O(n)`. Three products total instead of four.
+      - text: Because subtraction of large numbers is free
+        explains: >-
+          It is not free — it is `O(n)`. But that is cheap beside a multiplication, which is
+          exactly why the trade works.
+      - text: Because the middle term cancels out of the final answer
+        explains: >-
+          It does not cancel; it is the coefficient of `2^(n/2)` in the result. It has to be
+          computed, just not with its own multiplication.
+      - text: Because `xL·yR` and `xR·yL` are equal
+        explains: >-
+          They are different products in general. The identity recovers their **sum**, which
+          is all the formula needs.
+---
+
+The previous page set the target: lose one of the four subproblems. Gauss's identity is
+exactly the tool, moved from complex numbers to the two halves of an integer.
+
+Instead of four products, compute three:
+
+```
+xL·yL       xR·yR       (xL + xR)(yL + yR)
+```
+
+The middle term of the expansion then comes for free:
+
+```
+xL·yR + xR·yL = (xL + xR)(yL + yR) − xL·yL − xR·yR
+```
+
+Two of those three were needed anyway — `xL·yL` and `xR·yR` are the outer terms of the
+product. So only `(xL+xR)(yL+yR)` is genuinely new, and recovering the middle term from it
+costs two subtractions, which are linear.
+
+**Three multiplications, not four.**
+
+```
+T(n) = 3T(n/2) + O(n)
+```
+
+One recursive call fewer than before. How much that saves is not obvious, and it is worth
+resisting the urge to guess — the recursion tree over the next two pages produces the number,
+and it is more convincing watched than asserted.
+
+## The algorithm
+
+```
+function multiply(x, y)
+  Input:  Positive integers x and y, in binary
+  Output: Their product
+
+  n = max(size of x, size of y)
+  if n = 1: return xy
+
+  xL, xR = leftmost ⌈n/2⌉, rightmost ⌊n/2⌋ bits of x
+  yL, yR = leftmost ⌈n/2⌉, rightmost ⌊n/2⌋ bits of y
+
+  P1 = multiply(xL, yL)
+  P2 = multiply(xR, yR)
+  P3 = multiply(xL + xR, yL + yR)
+
+  return P1 · 2^n + (P3 − P1 − P2) · 2^(n/2) + P2
+```
+
+Three recursive calls — `P1`, `P2`, `P3`. Everything else on the page is addition,
+subtraction or shifting, all linear.
+
+> A little history worth having: in 1960 Kolmogorov told a Moscow seminar that multiplying
+> two `n`-digit numbers had to cost about `n²` steps. Karatsuba, a student in the room, broke
+> the conjecture within a week — using an identity Gauss had applied to complex numbers a
+> century and a half earlier.

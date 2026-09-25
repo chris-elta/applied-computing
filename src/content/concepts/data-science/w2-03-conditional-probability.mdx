@@ -1,0 +1,86 @@
+---
+course: data-science
+section: w2-probability
+order: 180
+title: Conditional Probability
+visuals:
+  - type: svg
+    src: data-science/w2-probability/05.svg
+    caption: Slide 5 of 23 — the definition, and what it becomes when the events are independent.
+notation:
+  - symbol: "P(A|B)"
+    reads: P of A given B
+    means: >-
+      The probability of `A` once you already know `B` happened. The bar reads "given", not
+      "divided by".
+  - symbol: "P(A ∩ B) / P(B)"
+    reads: P of A and B, over P of B
+    means: >-
+      The definition of `P(A|B)`: of all the ways `B` can happen, the share in which `A`
+      happens too.
+questions:
+  - ask: >-
+      If `A` and `B` are independent, what is `P(A|B)`?
+    choices:
+      - text: "`P(A)` — knowing `B` changes nothing"
+        correct: true
+        explains: >-
+          By the definition, `P(A|B) = P(A ∩ B) / P(B)`. With independence, the top is
+          `P(A) × P(B)`, and the `P(B)` cancels. This is what the slide means by
+          conditional probabilities getting interesting only when events are not
+          independent.
+      - text: "`P(B)`"
+        explains: >-
+          That would be `P(B|A)` if `B` did not depend on `A`, but here we are asking about
+          `A`. The result is the probability of `A`.
+      - text: "`0`"
+        explains: >-
+          Zero would mean `A` cannot happen when `B` does. Independence says `B` has no
+          effect, which is a different thing.
+      - text: "`P(A) × P(B)`"
+        explains: >-
+          That is the probability of *both* happening, `P(A ∩ B)`. Conditioning divides by
+          `P(B)`, which removes the `P(B)` factor.
+---
+
+You roll two dice and are told the first is a 6. How likely is it that the total is 10 or
+more? The answer changed the moment you were told something, because you are no longer asking
+about all rolls, only those that start with a 6.
+
+## The definition
+
+The **conditional probability** of `A` given `B` is
+
+```
+P(A|B) = P(A ∩ B) / P(B)
+```
+
+Read the fraction as a share. Of everything that can happen when `B` occurs (the bottom),
+what portion also has `A` (the top)? Conditioning shrinks the world to the cases where `B`
+happened and asks how much of that smaller world is `A`.
+
+The dice example: given a 6 first, the total is at least 10 if the second die is 4, 5 or 6.
+That is 3 of the 6 equally likely second rolls, so `P = 3/6 = 0.5`. Without the information,
+the probability of a total of 10 or more is only `6/36`.
+
+## When it does nothing
+
+The slide notes that conditional probabilities get interesting **only when events are not
+independent**. If they are, `P(A ∩ B) = P(A) × P(B)`, and the definition collapses:
+
+```
+P(A|B) = P(A) × P(B) / P(B) = P(A)
+```
+
+Learning `B` leaves the probability of `A` where it was. This is the same fact as the
+definition of independence, seen from the other side: independent means being told about
+`B` is useless.
+
+## Order matters
+
+`P(A|B)` and `P(B|A)` are generally **different numbers**. The chance that a professional
+footballer is fit is not the chance that a fit person is a professional footballer. The next
+concept, Bayes' theorem, is exactly the rule that converts one into the other.
+
+> Conditioning restricts attention to the cases where you know something happened. The
+> bar means "given", and the two orders are different questions.

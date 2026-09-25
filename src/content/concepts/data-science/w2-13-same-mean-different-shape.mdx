@@ -1,0 +1,69 @@
+---
+course: data-science
+section: w2-variance
+order: 280
+title: Same Mean, Different Distribution
+visuals:
+  - type: svg
+    src: data-science/w2-probability/21.svg
+    caption: Slide 21 of 23 — printer cartridge lifetimes, with the same mean and different shapes.
+questions:
+  - ask: >-
+      Two makes of printer cartridge have the same mean life. What may you conclude?
+    choices:
+      - text: >-
+          Nothing yet about how they behave: the distributions could look very different, and
+          the standard deviation helps show how
+        correct: true
+        explains: >-
+          The slide's point. A mean alone leaves the shape open. One cartridge could be
+          reliably at the average, another could vary widely around it.
+      - text: They are equally reliable
+        explains: >-
+          Reliability is about variation, which the mean does not capture.
+      - text: The distributions must look the same
+        explains: >-
+          Distributions with the same mean can look very different.
+      - text: The one with the larger standard deviation is better
+        explains: >-
+          A larger spread means less predictability. Whether that is bad depends on the use,
+          but it is not automatically better.
+---
+
+Here is a trap for anyone who has just learned the mean. Two products have the same average
+lifetime, so surely they are equivalent?
+
+The lecture's example uses **printer cartridges**, with two lifetime distributions drawn side
+by side, both centred on 3000. One is a bell curve: most cartridges last close to 3000,
+but a fair number fall short or run long. The other is a single spike at 3000: every cartridge
+lasts almost exactly that long. The mean is the same; the behaviour is not.
+
+## What the slide says
+
+Two statements, and they pull in opposite directions:
+
+- **Distributions with the same mean can look very different.**
+- **Together, the mean and standard deviation fairly well characterise any distribution.**
+
+The first is the warning: one number is not enough. The second is the reassurance: two
+numbers are much better.
+
+## Why two are enough
+
+The mean says where the distribution sits, and the standard deviation says how wide it is.
+For a cartridge buyer, that translates into two questions: how long will it last on average,
+and how much will it vary around that? A buyer planning stock cares about the second at
+least as much as the first.
+
+The claim is "fairly well", not "completely". There are shapes two numbers cannot capture,
+such as a distribution with two separate peaks. That is why you should still plot the data
+where you can.
+
+## The next question
+
+If mean and standard deviation are close to a full description, can we say something precise
+about how the mass is spread from them alone? The final concept gives a guarantee that holds
+for any distribution.
+
+> A mean tells you where the distribution sits. It cannot tell you how much to trust that
+> as a prediction for one item.

@@ -1,0 +1,130 @@
+---
+course: applied-algorithm-analysis
+section: w3-mergesort
+order: 530
+title: The Merge Step
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week3.html?hash=true#/27
+    caption: >-
+      Slides 34–36 of 40 — merge in pseudocode, traced comparison by comparison, and the
+      whole tree of merges.
+notation:
+  - symbol: "∘"
+    reads: followed by
+    means: >-
+      Puts one element on the front of a list. `x[1] ∘ merge(…)` means "output `x[1]`, then
+      whatever the rest of the merge produces".
+  - symbol: "k + l"
+    reads: k plus l
+    means: >-
+      The combined length of the two lists being merged. The merge costs `O(k+l)` — linear in
+      what it produces.
+questions:
+  - ask: >-
+      Merging two sorted lists of total length `k + l` takes at most `k + l − 1` comparisons.
+      Why one fewer than the number of elements?
+    choices:
+      - text: >-
+          Every comparison writes one element, but the final run is copied across with
+          nothing left to compare against
+        correct: true
+        explains: >-
+          Each comparison outputs exactly one element and shortens one input. Once one list
+          empties, the remainder of the other is copied straight out — no comparisons needed.
+          With `k = l = 4` the bound is 7, and the traced merge takes exactly 7.
+      - text: Because the first element needs no comparison
+        explains: >-
+          The first output *does* require a comparison — the two fronts must be compared to
+          see which is smaller. It is the tail that comes free.
+      - text: Because the lists are already sorted
+        explains: >-
+          That is what makes the merge linear at all, but it does not explain the specific
+          "minus one". The saving is at the end, when one side runs out.
+      - text: Because the last two elements are compared together
+        explains: >-
+          Each comparison involves exactly two elements and emits one. There is no paired
+          final step.
+  - ask: What is the *best* case for merging two sorted lists of four?
+    choices:
+      - text: Four comparisons — when every element of one list is smaller than all of the other
+        correct: true
+        explains: >-
+          If `x` is entirely below `y`, then `x` empties after four comparisons and the rest
+          of `y` is copied across untouched. So a merge of two length-4 lists costs between 4
+          and 7 comparisons — and both ends are linear, which is all the analysis needs.
+      - text: One comparison — the two fronts decide everything
+        explains: >-
+          One comparison emits one element. You cannot produce eight outputs from one test.
+      - text: Seven — merging always costs the same
+        explains: >-
+          Seven is the worst case. The count varies with how the values interleave.
+      - text: Zero — sorted inputs need no comparisons
+        explains: >-
+          The two lists are each sorted, but nothing says how they relate to one another.
+          That is what the comparisons discover.
+---
+
+Everything mergesort does is here.
+
+```
+function merge(x[1…k], y[1…l])
+  if k = 0: return y[1…l]
+  if l = 0: return x[1…k]
+  if x[1] ≤ y[1]:
+    return x[1] ∘ merge(x[2…k], y[1…l])
+  else:
+    return y[1] ∘ merge(x[1…k], y[2…l])
+```
+
+Compare the two fronts, emit the smaller, repeat. The two base cases are the stopping rule:
+when one list is empty there is nothing left to compare, so the other list *is* the answer.
+
+Each recursive call removes one element and does a single comparison, so the running time is
+`O(k + l)` — linear in the output.
+
+## Traced
+
+Merging `[2, 3, 5, 10]` with `[1, 6, 7, 13]`:
+
+| compare | emit |
+| --- | --- |
+| 2 vs 1 | 1 |
+| 2 vs 6 | 2 |
+| 3 vs 6 | 3 |
+| 5 vs 6 | 5 |
+| 10 vs 6 | 6 |
+| 10 vs 7 | 7 |
+| 10 vs 13 | 10 |
+| — | 13 |
+
+**Eight elements written, seven comparisons.** The last element is free: by then `x` is
+empty, so 13 is copied across with nothing to compare it against.
+
+That generalises. Every comparison writes exactly one element and shortens one input by one,
+so `k + l` elements need at most `k + l − 1` comparisons. With `k = l = 4` the bound is 7,
+and 7 is what this took.
+
+The *best* case is 4 — when every element of `x` is below every element of `y`, so `x` empties
+and the rest of `y` is copied untouched. Between 4 and 7, and both ends are linear, which is
+all the analysis needs.
+
+## The tree of merges
+
+Slide 36 shows the whole thing for eight numbers: 8 lists of 1, then 4 merges of 2 items,
+then 2 merges of 4, then 1 merge of 8. Three levels of merging, and `log₂8 = 3`.
+
+Every level moves all 8 items, so every level costs `O(n)` — which is the balanced case made
+visible.
+
+```
+T(n) = 2T(n/2) + O(n)   ⟹   O(n log n)
+```
+
+> Read that tree bottom-up and mergesort becomes an **iterative** algorithm: merge adjacent
+> pairs, then adjacent pairs of pairs, and so on. No recursion required — the recursion was
+> only ever a way of describing the order.
+
+> Practice: [148 · Sort List](https://leetcode.com/problems/sort-list),
+> [912 · Sort an Array](https://leetcode.com/problems/sort-an-array),
+> [88 · Merge Sorted Array](https://leetcode.com/problems/merge-sorted-array).

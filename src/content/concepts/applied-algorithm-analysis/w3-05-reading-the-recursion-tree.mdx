@@ -1,0 +1,105 @@
+---
+course: applied-algorithm-analysis
+section: w3-karatsuba
+order: 440
+title: Reading the Recursion Tree
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week3.html?hash=true#/12
+    caption: >-
+      Slides 13–15 of 40 — the tree, its vocabulary, and the work done at depth `k`.
+notation:
+  - symbol: "depth k"
+    reads: depth k
+    means: >-
+      How many steps below the root a node sits. The root is depth 0; all nodes at one depth
+      form a **level**.
+  - symbol: "branching factor"
+    reads: branching factor
+    means: >-
+      How many children each node has — here 3, one per recursive call. It is the `a` of the
+      master theorem next module.
+  - symbol: "3ᵏ"
+    reads: three to the k
+    means: >-
+      The number of nodes at depth `k`: each level triples. Meanwhile each node's input is
+      `n/2ᵏ` — halving. Two quantities pulling in opposite directions.
+  - symbol: "(3/2)ᵏ"
+    reads: three over two, to the k
+    means: >-
+      The ratio that decides everything. Work at depth `k` is `(3/2)ᵏ × O(n)`, so whether the
+      levels grow or shrink turns on whether this ratio exceeds 1.
+questions:
+  - ask: >-
+      At depth `k` the tree holds `3ᵏ` nodes of size `n/2ᵏ`. Why does the work per level come
+      out as `(3/2)ᵏ × O(n)`?
+    choices:
+      - text: >-
+          Each node does linear work, so it is `3ᵏ × O(n/2ᵏ)` — and the `n` comes out, leaving
+          the `k`s as one ratio
+        correct: true
+        explains: >-
+          `3ᵏ · (n/2ᵏ) = n · 3ᵏ/2ᵏ = n · (3/2)ᵏ`. Collecting the two `k`-powers into a single
+          ratio is the move that makes the whole analysis tractable — everything then depends
+          on one number.
+      - text: Because each node does `(3/2)` work
+        explains: >-
+          No single node does that. The ratio emerges from combining the node *count* with
+          the node *size*, not from any one node's cost.
+      - text: Because the tree has `3/2` children per node on average
+        explains: >-
+          Every node has exactly three children. The 2 comes from the halving of input size,
+          which is a separate axis entirely.
+      - text: Because the combine step costs `3/2` per bit
+        explains: >-
+          The combine step is linear per node. The ratio is not a per-node cost at all.
+---
+
+Karatsuba's cost is `T(n) = 3T(n/2) + O(n)`. To turn that into an actual bound, draw what the
+recursion does: one node per call, children below their parent.
+
+## The vocabulary
+
+- The top node is the **root**; the ones at the bottom that make no further calls are the
+  **leaves**.
+- A node at **depth `k`** sits `k` steps below the root. The nodes at one depth form a
+  **level**.
+- The **height** is the depth of the leaves.
+- The **branching factor** is how many children each node has — here 3, one per recursive
+  call.
+
+## How tall, and how wide
+
+Each call halves the input, so after `k` levels the subproblems have size `n/2ᵏ`. The
+recursion stops when that reaches 1, which happens at `k = log₂ n`:
+
+> **Height of the tree = `log₂ n`.**
+
+And since every node has three children, the level at depth `k` contains `3ᵏ` nodes.
+
+Two numbers moving in opposite directions as you descend:
+
+| going down one level | effect |
+| --- | --- |
+| number of nodes | **× 3** |
+| size of each input | **÷ 2** |
+
+Which one wins is the entire question.
+
+## Work at depth `k`
+
+Each subproblem does linear work of its own — identifying its subproblems, and combining
+their results. So the total work at depth `k` is:
+
+```
+3ᵏ × O(n / 2ᵏ)  =  (3/2)ᵏ × O(n)
+```
+
+That step is worth doing slowly. The `n` factors out of the bracket, and the two `k`-powers
+collect into a **single ratio**, `3/2`.
+
+Everything now hinges on one number. If the ratio were below 1 the levels would shrink going
+down; at exactly 1 every level would cost the same. Here it is `3/2`, comfortably above 1 —
+so the levels **grow**, and the bottom of the tree is where the cost lives.
+
+The next page sums them.

@@ -29,4 +29,24 @@ sections:
       Two algorithms priced the same way: rounds × cost per round.
   - id: w2-review
     title: Week 2 · Where we landed
+  - id: w3-paradigm
+    title: Week 3 · Divide and conquer
+    summary: >-
+      Three steps, and the trade that the whole week turns on: buy a cheaper operation with
+      extra cheap ones.
+  - id: w3-karatsuba
+    title: Week 3 · Integer multiplication (Karatsuba)
+    summary: >-
+      Beating the `O(n²)` that multiplication has cost since week 2 — by losing a
+      subproblem, not by shrinking them.
+  - id: w3-recurrences
+    title: Week 3 · Recurrence relations
+    summary: >-
+      One formula that solves every recursion tree of that shape, and the three places the
+      cost can sit.
+  - id: w3-mergesort
+    title: Week 3 · Mergesort
+    summary: The canonical divide-and-conquer algorithm, and where its comparisons go.
+  - id: w3-review
+    title: Week 3 · Where we landed
 ---

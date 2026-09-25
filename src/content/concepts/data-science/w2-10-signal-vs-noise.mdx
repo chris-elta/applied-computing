@@ -1,0 +1,100 @@
+---
+course: data-science
+section: w2-variance
+order: 250
+title: Signal vs. Noise — Skill or Luck?
+highlight: true
+visuals:
+  - type: svg
+    src: data-science/w2-probability/17.svg
+    caption: Slides 17–18 of 23 — investor skill, and the 0.300 hitter.
+  - type: svg
+    src: data-science/w2-probability/18.svg
+questions:
+  - ask: >-
+      A genuine 0.300 hitter bats 0.275 over a season of 500 at-bats. What is the best
+      reading?
+    choices:
+      - text: >-
+          Not much evidence of decline: a true 0.300 hitter would hit 0.275 or below about 11%
+          of the time by chance
+        correct: true
+        explains: >-
+          The slide's simulation. One season in ten is a plausible bad-luck year, so a single
+          dip is weak evidence that anything has changed.
+      - text: The player has clearly lost skill
+        explains: >-
+          An 11% chance event happens routinely. Concluding a decline from one season would
+          mistake noise for signal.
+      - text: The player is now a 0.275 hitter
+        explains: >-
+          One season's average is one noisy estimate of the true rate, not the rate itself.
+      - text: Simulation cannot say anything about real players
+        explains: >-
+          Simulating a hitter of known ability shows how much a single season can wobble,
+          which is exactly what you need to judge whether an observed result is unusual.
+  - ask: >-
+      Two investors have different returns this year. What must you know to say whether the
+      gap reflects skill?
+    choices:
+      - text: How much returns vary from year to year by chance alone
+        correct: true
+        explains: >-
+          With high variance, large differences can arise from luck. You can attribute a gap
+          to skill only when it is large relative to that variability.
+      - text: Only which investor earned more
+        explains: >-
+          The size of the difference tells you nothing until you compare it with the natural
+          variation.
+      - text: Their ages
+        explains: >-
+          Irrelevant to whether the gap is more than chance.
+      - text: Nothing — higher return always means more skill
+        explains: >-
+          That is the assumption the slide is warning against.
+---
+
+Everything you observe in data is a mixture of two things: a **signal**, the real effect you
+are after, and **noise**, the variation that would occur anyway. The lecture's point is that
+noise is usually much larger than people expect.
+
+> It is hard to measure "signal to noise" ratio, because much of what you see is just
+> variance.
+
+## Stock market investors
+
+Suppose you want to rank investors by skill. You look at their returns and sort them. But
+performance has high variance, so it is difficult to determine **how much of the observed
+difference is due to skill versus luck**. The best return this year may belong to somebody
+who was merely lucky, and the worst to somebody who was merely unlucky.
+
+## The 0.300 hitter
+
+A batting average of 0.300 means a 30% success rate. A 0.300 hitter over 500 at-bats is
+regarded as consistent. But the slide shows simulations of a hitter whose *true* ability is
+exactly 0.300:
+
+| Season result | Chance for a real 0.300 hitter |
+| --- | --- |
+| 0.275 or below | 11% |
+| 0.325 or above | 11% |
+
+So one season in nine, that hitter looks like a 0.275 player, and one in nine like a 0.325
+player, and nothing about their ability has changed. The slide's question is the right one:
+*good or bad season, or lucky or unlucky?*
+
+You can see the size of the effect from the mathematics. For 500 attempts at a 30% rate, the
+standard deviation of the observed average is about 0.02, and 0.275 is roughly 1.2
+deviations below 0.300. That is well within ordinary wobble.
+
+## The misconception
+
+We read results as if each number were the true value. It is not: it is **one draw** from a
+distribution. Before explaining a difference, ask how big a difference chance alone could
+produce, using the standard deviation from the previous concept as the yardstick.
+
+This matters directly in the next concept, where the numbers being compared are the scores of
+your own models.
+
+> A difference means something only when it is large compared with the variation you would
+> see anyway.

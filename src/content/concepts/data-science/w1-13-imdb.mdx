@@ -1,0 +1,69 @@
+---
+course: data-science
+section: w1-practice
+order: 130
+title: "Practice: IMDb"
+visuals:
+  - type: svg
+    src: data-science/w1-what/55.svg
+    caption: Slides 55–57 of 63 — movie data, actor data, and the questions they suggest.
+  - type: svg
+    src: data-science/w1-what/56.svg
+  - type: svg
+    src: data-science/w1-what/57.svg
+questions:
+  - ask: >-
+      The "six degrees of Kevin Bacon" question asks what the social network of actors looks
+      like. What does the data need to contain for that?
+    choices:
+      - text: Which actors appeared in which films
+        correct: true
+        explains: >-
+          Two actors are connected when they share a film. The actor and movie data together
+          give exactly that link, so the network can be built from them.
+      - text: Each actor's age
+        explains: >-
+          Age matters for other questions, such as age distributions, but it creates no link
+          between two actors.
+      - text: Each film's gross
+        explains: >-
+          Gross helps with predicting how well a film does, not with who is connected to
+          whom.
+      - text: Each actor's birthplace
+        explains: >-
+          It would connect actors from the same place, which is a different network from the
+          one the question asks about.
+---
+
+The second dataset is the **International Movie Database (IMDb)**. The slides show two pages:
+one of *movie data* and one of *actor data*.
+
+Applying who, what, where, when and why: the *who* is actors, directors and audiences, the
+*what* is films with their details, and the *when* is the year of release and the lives of
+the people involved.
+
+## The lecturer's questions
+
+- Can we **predict how well people will like a movie**? What about its gross?
+- What does the **social network of actors** look like? (Six degrees of Kevin Bacon.)
+- What is the **age distribution** of actors and actresses in film?
+- Do stars live longer or shorter lives than bit players or the public?
+
+## What each question needs
+
+It helps to ask what the data would have to hold before the question is even possible.
+
+| Question | Needs |
+| --- | --- |
+| Predict how well a movie is liked | A rating for each film, plus features describing it |
+| Predict gross | Gross for past films |
+| Social network of actors | Which actors share a film |
+| Age distribution | Age at the time of each role |
+| Do stars live longer | Life dates for stars *and* a comparison group |
+
+The last one is the hard one. Comparing stars with "bit players or the public" needs a
+comparison group you must go and find, and it needs you to think about who becomes a star in
+the first place.
+
+> Before analysing, list what each column would have to contain. Questions that sound simple
+> often need data you do not yet have.

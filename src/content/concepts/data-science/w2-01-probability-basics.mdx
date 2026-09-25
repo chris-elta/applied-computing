@@ -1,0 +1,86 @@
+---
+course: data-science
+section: w2-probability
+order: 160
+title: Probability, and How It Differs From Statistics
+visuals:
+  - type: svg
+    src: data-science/w2-probability/02.svg
+    caption: Slides 2–3 of 23 — the two rules an outcome's probability obeys, and probability against statistics.
+  - type: svg
+    src: data-science/w2-probability/03.svg
+notation:
+  - symbol: "p(s)"
+    reads: p of s, or the probability of s
+    means: >-
+      The probability of a single outcome `s`, such as a die landing on 4.
+  - symbol: "∑"
+    reads: sum
+    means: >-
+      Add up the expression for every value listed underneath. Here, every outcome `s` in the
+      set `S` of all possible outcomes.
+  - symbol: "s ∈ S"
+    reads: s in S, or s belongs to S
+    means: >-
+      `s` is one of the outcomes in the set `S`. The set `S` is every outcome that could
+      happen.
+questions:
+  - ask: >-
+      A dashboard shows three outcomes with "probabilities" 0.5, 0.4 and 0.3, and nothing
+      else can happen. What is wrong?
+    choices:
+      - text: They sum to 1.2, but the probabilities of all possible outcomes must sum to 1
+        correct: true
+        explains: >-
+          Each value is between 0 and 1, so the first rule holds. The second rule — the
+          total over all outcomes is exactly 1 — is the one broken. The lecture warns that
+          casual use of "probability" in data science often violates these.
+      - text: Probabilities must be whole numbers
+        explains: >-
+          They lie between 0 and 1 and are usually fractions. A probability of 0.5 is
+          perfectly valid.
+      - text: Nothing; each value is between 0 and 1
+        explains: >-
+          That satisfies only the first rule. The values must also sum to 1 across all
+          outcomes.
+      - text: Probabilities must be less than 0.5
+        explains: >-
+          There is no such limit. A certain outcome has probability 1.
+---
+
+Suppose a die is rolled. There are six outcomes, and no matter how you feel about the die,
+some rules apply.
+
+## The two rules
+
+Probability theory gives a formal framework for reasoning about the likelihood of events.
+The probability `p(s)` of an outcome `s` satisfies:
+
+1. `0 ≤ p(s) ≤ 1` — no outcome is less than impossible or more than certain.
+2. The probabilities of all outcomes add to one: `∑ p(s) = 1`, summing over every `s` in `S`.
+
+The second rule says something is bound to happen. If you have listed every outcome and the
+numbers do not add to 1, either a probability is wrong or an outcome is missing.
+
+The lecture adds a warning: **these basic properties are often violated in casual use** of
+the word "probability" in data science. Scores from a classifier, for example, may be called
+probabilities without ever being checked against these two rules.
+
+## Probability versus statistics
+
+The two words are used loosely, but the slides separate them:
+
+| | Probability | Statistics |
+| --- | --- | --- |
+| Looks at | Likelihood of *future* events | Frequency of *past* events |
+| Nature | A theoretical branch of mathematics: the consequences of definitions | Applied mathematics: making sense of real-world observations |
+| Starts from | A model of how things work | Data that was observed |
+
+Probability runs forwards: given the rules of the game, what will happen? Statistics runs
+backwards: given what happened, what were the rules?
+
+Data science mostly lives on the statistics side, since it starts with observations. But it
+borrows probability's language to make claims, so the rules above must still be respected.
+
+> If a set of "probabilities" does not add to one, it is not a probability distribution,
+> whatever it is called.

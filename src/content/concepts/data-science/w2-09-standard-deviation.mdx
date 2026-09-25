@@ -1,0 +1,99 @@
+---
+course: data-science
+section: w2-descriptive
+order: 240
+title: Variance and Standard Deviation
+visuals:
+  - type: svg
+    src: data-science/w2-probability/16.svg
+    caption: Slide 16 of 23 — standard deviation, and dividing by n or n−1.
+notation:
+  - symbol: "σ"
+    reads: sigma
+    means: >-
+      The standard deviation of a whole population. The lecture uses "sigma" throughout.
+  - symbol: "σ²"
+    reads: sigma squared
+    means: >-
+      The variance: the average squared distance from the mean. Its square root is `σ`.
+  - symbol: "n − 1"
+    reads: n minus one
+    means: >-
+      The divisor used for a *sample*. For a whole population you divide by `n`.
+questions:
+  - ask: >-
+      What is the relationship between variance and standard deviation?
+    choices:
+      - text: Standard deviation is the square root of the variance
+        correct: true
+        explains: >-
+          Variance is in squared units, such as dollars squared. Taking the root returns to
+          the original units. The slide's wording has this backwards, so trust this version.
+      - text: Variance is the square root of the standard deviation
+        explains: >-
+          The slide says this, but it is the wrong way round: variance is the *square* of the
+          standard deviation, not its root.
+      - text: They are the same number
+        explains: >-
+          They differ unless the value is 0 or 1, since one is the square of the other.
+      - text: Variance is the mean, and standard deviation is the median
+        explains: >-
+          Neither is a measure of centre. Both measure spread.
+  - ask: >-
+      For a very large dataset, does it matter whether you divide by `n` or `n − 1`?
+    choices:
+      - text: Barely, because `n` and `n − 1` are almost equal when `n` is large
+        correct: true
+        explains: >-
+          The lecture's point. For 10,000 values, the two divisors differ by 0.01%. For a
+          handful of values the difference is noticeable.
+      - text: Yes, always by a large amount
+        explains: >-
+          The gap shrinks as `n` grows, so it matters mostly for small samples.
+      - text: Neither is ever correct
+        explains: >-
+          Both are used: `n` for a whole population and `n − 1` for a sample.
+      - text: No, because they always give identical answers
+        explains: >-
+          They are identical only in the limit. For small `n` they differ.
+---
+
+The mean says where the data is centred. **Standard deviation** (SD) says how spread out it
+is around that mean.
+
+## How it is built
+
+Take each value's distance from the mean, square it so that distances above and below do not
+cancel, average those squares, and take the square root:
+
+```
+σ = sqrt( average of (x − mean)² )
+```
+
+The average of the squared distances is the **variance**, `σ²`. The standard deviation is
+its square root.
+
+One correction to the slide, which says variance is "the square root of the standard
+deviation". It is the other way round: **the standard deviation is the square root of the
+variance**, and the variance is the square of the standard deviation. The square root brings
+the result back into the units of the data, which is why SD is the number you quote.
+
+## A small example
+
+Values 2, 4, 4, 4, 5, 5, 7, 9 have mean 5. The squared distances are 9, 1, 1, 1, 0, 0, 4, 16,
+which sum to 32. Dividing by `n = 8` gives variance 4 and SD 2. A typical value lies about 2
+from the mean.
+
+## Divide by n or n − 1?
+
+The slide asks a question that puzzles most people the first time. The rule:
+
+- The **population** SD divides by `n`: you have every value.
+- The **sample** SD divides by `n − 1`: you have only some, and want to estimate the whole.
+
+The reason is that a sample tends to sit closer to its own mean than to the true mean, so
+dividing by `n` understates the spread. Using `n − 1` corrects for it. But for large `n`,
+`n ≈ n − 1`, and the choice **does not really matter**.
+
+> SD is the typical distance from the mean, in the data's own units. Variance is that
+> distance squared.

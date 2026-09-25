@@ -1,0 +1,111 @@
+---
+course: applied-algorithm-analysis
+section: w3-karatsuba
+order: 410
+title: Splitting a Multiplication in Half
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week3.html?hash=true#/6
+    caption: >-
+      Slides 7–9 of 40 — the setup, splitting each number, and the product rewritten as four
+      half-size ones.
+notation:
+  - symbol: "xL and xR"
+    reads: x left and x right
+    means: >-
+      The left and right halves of `x`'s bits. `x = 2^(n/2)·xL + xR` — the left half shifted
+      up, plus the right half.
+  - symbol: "2^(n/2)"
+    reads: two to the n over two
+    means: >-
+      A left-shift by `n/2` places. Multiplying a binary number by a power of 2 just appends
+      zeros, so it costs `O(n)`, not `O(n²)`.
+  - symbol: "T(n) = 4T(n/2) + O(n)"
+    reads: T of n equals four T of n over two, plus big-oh of n
+    means: >-
+      A **recurrence**: the cost on size `n` stated in terms of the cost on smaller inputs.
+      Four subproblems of half the size, plus linear work to split and recombine.
+questions:
+  - ask: >-
+      In `T(n) = 4T(n/2) + O(n)`, what does the `O(n)` term count?
+    choices:
+      - text: >-
+          Only the splitting and recombining done by *this* call — not anything its children
+          do
+        correct: true
+        explains: >-
+          The recursive work is already accounted for by the `4T(n/2)`. The `O(n)` is the
+          shifting and adding this one call performs on its own. Reading it as the whole
+          algorithm's cost makes every recurrence come out wrong.
+      - text: The total cost of the algorithm at this size
+        explains: >-
+          That is `T(n)` itself, the left-hand side. Putting the total on the right as well
+          would make the equation circular.
+      - text: The cost of the four recursive multiplications
+        explains: >-
+          Those are the `4T(n/2)` term. The two parts of the right-hand side are deliberately
+          separate.
+      - text: The number of bits in the answer
+        explains: >-
+          The answer has about `2n` bits, but the term counts *work*, not output size.
+---
+
+Week 2 left multiplication at `O(n²)` — schoolbook, Al-Khwarizmi and the recursion all cost
+the same, and beating them needed "a genuinely different idea". This is that idea.
+
+Let `x` and `y` be two `n`-bit integers, with `n` a power of 2 for convenience. (The general
+case is similar and does not change the analysis.)
+
+## Split each number in half
+
+Cut the bits of each number down the middle:
+
+```
+x = 2^(n/2)·xL + xR
+y = 2^(n/2)·yL + yR
+```
+
+`xL` is the left half of the bits, `xR` the right half, and the left half is shifted back up
+into place by the power of two. Worth checking on a real number:
+
+```
+x = 10110110 = 182     xL = 1011 = 11     xR = 0110 = 6
+                       11 · 16 + 6 = 182  ✓
+```
+
+## The product, rewritten
+
+Multiply the two split forms out:
+
+```
+xy = (2^(n/2)·xL + xR)(2^(n/2)·yL + yR)
+   = 2ⁿ·xL·yL + 2^(n/2)·(xL·yR + xR·yL) + xR·yR
+```
+
+Now audit what that costs. The additions are linear. The multiplications by powers of 2 are
+**left-shifts** — appending zeros — so they are linear too. Everything cheap.
+
+What is left is four multiplications of `n/2`-bit numbers: `xL·yL`, `xL·yR`, `xR·yL`,
+`xR·yR`.
+
+## Writing the cost as a recurrence
+
+Let `T(n)` be the running time on `n`-bit inputs. The algorithm does four half-size
+multiplications plus linear work, so:
+
+```
+T(n) = 4T(n/2) + O(n)
+```
+
+This is a **recurrence** — the cost at size `n` expressed in terms of the cost at smaller
+sizes. It is the central object of this week.
+
+Read the two terms separately, because conflating them is the most expensive mistake in this
+material:
+
+- **`4T(n/2)`** — the recursive work: four subproblems, each half the size.
+- **`O(n)`** — what *this call alone* does: splitting the input and recombining the results.
+  Not the total, and not anything the children do.
+
+Whether this recurrence is actually an improvement is the next question, and the answer is
+not the one most people expect.

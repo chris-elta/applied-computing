@@ -1,0 +1,90 @@
+---
+course: applied-algorithm-analysis
+section: w3-recurrences
+order: 500
+title: Three Things the Master Theorem Does Not Say
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week3.html?hash=true#/22
+    caption: Slide 29 of 40 — the limits, and where each one bites.
+notation:
+  - symbol: "T(n) = T(n−1) + O(n)"
+    reads: T of n equals T of n minus one, plus big-oh of n
+    means: >-
+      A recurrence that shrinks by **subtraction** rather than division, so there is no `b`
+      at all. Outside the theorem's form entirely.
+  - symbol: "GMP"
+    reads: G-M-P
+    means: >-
+      The GNU Multiple Precision library — the standard big-number implementation, which
+      multiplies small inputs the schoolbook way.
+questions:
+  - ask: >-
+      Karatsuba is `O(n^1.59)` and schoolbook is `O(n²)`. Why do real libraries still use
+      schoolbook for small inputs?
+    choices:
+      - text: >-
+          Karatsuba pays a larger constant per bit, and below a few hundred bits that
+          outweighs the better exponent
+        correct: true
+        explains: >-
+          Splitting the input, three recursive calls, then shifting and subtracting on the
+          way back — all hidden inside the `O`. At 64 bits schoolbook does about 4,100
+          operations against Karatsuba's 8,700, and the curves do not cross until roughly 512
+          bits.
+      - text: Because Karatsuba is only correct for `n` a power of 2
+        explains: >-
+          The power-of-2 assumption is for convenience in the analysis. The algorithm handles
+          any `n` with ceilings and floors.
+      - text: Because the master theorem does not apply to Karatsuba
+        explains: >-
+          It applies exactly — `a = 3, b = 2, d = 1`. The issue is what asymptotic notation
+          deliberately discards.
+      - text: Because recursion is always slower than iteration
+        explains: >-
+          Too broad, and not the reason. The cost is in the extra arithmetic per level, not
+          in the mechanics of recursive calls.
+---
+
+Three limits, and each one bites somewhere different.
+
+## 1 · It does not apply to every recurrence
+
+The theorem needs the form `aT(n/b) + O(nᵈ)`. Plenty of real recurrences are not that shape:
+
+- `T(n) = T(n−1) + O(n)` shrinks by **subtraction**, so there is no `b` at all.
+- `T(n) = T(n/3) + T(2n/3) + O(n)` splits **unequally**, so there is no single `n/b`.
+
+Neither can be fed to the formula. Draw the recursion tree instead — which is why module 02
+taught the tree before the theorem rather than after it.
+
+> This is the one that costs marks in an exam: **check the form before reaching for the
+> formula.**
+
+## 2 · A smaller exponent is not automatically a faster program
+
+Karatsuba buys `O(n^1.59)` against `O(n²)` — but it buys it with real extra work per bit:
+splitting the input, three recursive calls rather than one flat loop, then shifting and
+subtracting on the way back up.
+
+Big-O hides that multiplier entirely. Below a few hundred bits it outweighs the better
+exponent, which is why production libraries never recurse all the way down. GMP, the standard
+big-number library, multiplies small inputs the schoolbook way.
+
+The numbers, if you want them: at 64 bits schoolbook does about 4,100 operations against
+Karatsuba's 8,700, and the two curves do not cross until roughly 512 bits.
+
+> This is week 1's third misconception — *constants vanish only in the limit* — showing up
+> with a concrete price tag.
+
+## 3 · More subproblems is not the same as more work
+
+What picks the case is `a/bᵈ`, never `a` on its own.
+
+- Binary search: `a = 1` → balanced.
+- Mergesort and exercise row (a): `a = 2` → balanced.
+- Karatsuba: `a = 3` → leaves dominate, because 3 exceeds `bᵈ = 2`.
+
+One, two and three subproblems, and the *middle* two land in the same case. The count only
+means something once you weigh it against how much smaller the subproblems got and how
+expensive the combine step is.

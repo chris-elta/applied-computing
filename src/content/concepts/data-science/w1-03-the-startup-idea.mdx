@@ -1,0 +1,78 @@
+---
+course: data-science
+section: w1-case
+order: 30
+title: The Startup Idea
+visuals:
+  - type: svg
+    src: data-science/w1-what/21.svg
+    caption: Slides 21–22 of 63 — the research paper, and the pitch to commercialise it.
+  - type: svg
+    src: data-science/w1-what/22.svg
+notation:
+  - symbol: LM
+    reads: L-M, or language model
+    means: >-
+      A model that predicts the next piece of a sequence. In MusicLM, three of them are
+      stacked, one each for meaning, coarse sound and fine sound.
+  - symbol: Diffusion model
+    reads: diffusion model
+    means: >-
+      A model that produces output by starting from noise and removing it step by step.
+      MeLoDy uses one to turn semantic tokens into audio.
+questions:
+  - ask: >-
+      In the scenario, your research showed a 30% energy improvement at similar quality on
+      benchmark prompts. Why is that not yet a product?
+    choices:
+      - text: >-
+          A benchmark result says little about whether real customers get music they value,
+          reliably and at scale
+        correct: true
+        explains: >-
+          Benchmarks measure something narrow and fixed. A product must be judged in use,
+          across customers, genres and failures. That gap is what the next concept unpacks.
+      - text: 30% is too small an improvement to matter commercially
+        explains: >-
+          The slides do not argue the number is small. The issue is what a benchmark number
+          leaves out, not whether it is big enough.
+      - text: Research and products use entirely different kinds of model
+        explains: >-
+          The same model can serve both. What differs is the surrounding demands, not the
+          model family.
+      - text: Music generation cannot be sold to end users
+        explains: >-
+          The scenario assumes it can be sold to end users or to music producers. The
+          question is what building that product would require.
+---
+
+The case study starts from a real research paper: *Efficient Neural Music Generation*
+(Lam et al., NeurIPS 2023). It presents **MeLoDy**, a system that generates music of
+state-of-the-art quality while cutting the forward passes needed by 95.7% to 99.6% compared
+with the earlier MusicLM, for 10 to 30 seconds of music.
+
+You do not need the architecture to follow the case. The point is what the paper does and
+does not claim: it is faster and cheaper at comparable quality.
+
+## The scenario
+
+Put yourself in this position:
+
+- You have just finished a Master's or PhD thesis on making deep learning for generative AI
+  **more energy efficient**.
+- Your case study was music generation. You showed **30% energy savings** with similar
+  quality on benchmark prompts.
+- Two friends are excited about the application.
+- Their idea: *commercialise it and sell it to end users or music producers.*
+
+## Research success versus product success
+
+Everything above is a result about a model on a fixed set of prompts. It is exactly what a
+thesis is supposed to deliver, and it is a good result.
+
+A product asks a different question: does a **customer** get something they value, every
+time, at a price you can sustain? None of the slides so far say anything about that. The
+audience is invited to notice the gap before it is spelled out.
+
+> A model that wins on a benchmark has answered a research question. A product has to
+> answer a customer's.

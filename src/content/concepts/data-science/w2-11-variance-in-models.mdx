@@ -1,0 +1,79 @@
+---
+course: data-science
+section: w2-variance
+order: 260
+title: Variance When Comparing Models
+visuals:
+  - type: svg
+    src: data-science/w2-probability/19.svg
+    caption: Slide 19 of 23 — differences between models that may be noise, and what to prefer.
+notation:
+  - symbol: overfitting
+    reads: over-fitting
+    means: >-
+      A model that has fitted the quirks of its training data so closely that it does worse
+      on new data.
+questions:
+  - ask: >-
+      A complex model scores 0.5% better than a simple one on a single test split. What does
+      the lecture suggest?
+    choices:
+      - text: >-
+          The gap might be noise, and if so, prefer the simpler model: easier to interpret,
+          faster, and less prone to overfitting
+        correct: true
+        explains: >-
+          Which data was chosen for training and evaluation, and how well parameters were
+          tuned, all cause variation. A gain that small may sit inside it.
+      - text: Always pick the higher-scoring model
+        explains: >-
+          That treats one noisy number as the truth. The lecture says small gains might just
+          be noise.
+      - text: Always pick the more complex model, since it has more capacity
+        explains: >-
+          Complexity costs interpretability and speed, and raises the risk of overfitting.
+      - text: Discard both, since neither is significantly better
+        explains: >-
+          They are not useless. When they are indistinguishable you can choose on other
+          grounds, and simplicity is a good tie-breaker.
+---
+
+The signal-versus-noise problem is not just about baseball. It applies to the models you will
+build.
+
+The lecture says you will typically develop **several models for each challenge**, from very
+simple to complex. Then you compare their scores. The trouble is what fills those scores.
+
+## Where the differences come from
+
+Some of the difference in performance is explained by simple variance:
+
+- which training and evaluation pairs were selected,
+- how well the parameters were optimised,
+- and similar accidents of the process.
+
+None of these reflects the quality of the underlying approach. Re-run with a different split
+and the ranking can change.
+
+## A small improvement may be noise
+
+A model that is **0.5% better in accuracy** might just be noise. You would not celebrate a
+hitter going from 0.300 to 0.302; the same scepticism applies.
+
+## What to do
+
+In such cases, the slide's advice is to choose the **simpler model**. It is:
+
+- easier to interpret,
+- faster to run,
+- at less risk of **overfitting**.
+
+Choosing simple when scores are indistinguishable is not a compromise: you get the benefits
+of simplicity at no measured cost. The complex model has to earn its extra machinery with a
+gain that is clearly bigger than the noise.
+
+To know whether a gain is bigger than noise, you need to *measure* the noise — for example by
+repeating the evaluation, which the next concept covers.
+
+> A gap between two scores is a claim only if it beats the noise. If it does not, take the
+> simpler model.

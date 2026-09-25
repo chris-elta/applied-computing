@@ -1,0 +1,81 @@
+---
+course: data-science
+section: w1-what
+order: 20
+title: Data Science Is Not Machine Learning
+visuals:
+  - type: svg
+    src: data-science/w1-what/07.svg
+    caption: Slide 7 of 63 — the goal is to think about data, not only to build models.
+  - type: svg
+    src: data-science/w1-what/08.svg
+    caption: Slide 8 — the lecturer's own projects, which drive what the course teaches.
+  - type: svg
+    src: data-science/w1-what/12.svg
+    caption: Slide 12 — where generative AI fits.
+questions:
+  - ask: >-
+      What does the lecturer say is the *primary* goal of the course?
+    choices:
+      - text: >-
+          Learning to think about data — understanding it, cleaning it, visualising it —
+          not just building models
+        correct: true
+        explains: >-
+          Modelling appears in the course, but as one activity among several. The order
+          matters: understanding and cleaning come first.
+      - text: Building the most accurate model possible for each dataset
+        explains: >-
+          Accuracy matters, but the slide explicitly says this is not a machine learning
+          course. Optimising models is not the primary aim.
+      - text: Learning to train deep learning and generative AI models
+        explains: >-
+          Ruled out directly: "We will not be doing deep learning/Gen AI." Generative AI
+          will be discussed and used, not built.
+      - text: Learning to run analyses at very large scale
+        explains: >-
+          The lecture focuses on mid-scale data analysis and getting the right
+          understanding, not on scale for its own sake.
+---
+
+It is tempting to hear "data science" and picture someone training a model. The lecture
+pushes back on that in the first week.
+
+> Our primary goal here is to learn to think about data: understanding, cleaning,
+> visualization — not just building models.
+
+## What is in and what is out
+
+| In the course | Out of the course |
+| --- | --- |
+| Understanding, cleaning and visualising data | Deep learning |
+| Some applied machine learning | Building generative AI models |
+| Using generative AI tools, with citation | A course about machine learning as such |
+
+The reasoning is practical. A model can only be as good as the data it was handed and the
+question it was asked. Someone who can build any model but cannot tell whether the data is
+wrong will produce confident nonsense.
+
+## Where the lecturer's view comes from
+
+The slide on the lecturer's own experience lists the kind of data behind this stance:
+
+- Premier League data, to find exceptional players
+- DNS data, to find DNS tunnelling
+- DNS data from IoT devices, to find anomalous behaviour
+- Community question-answering data
+- A startup company focused on CRMs
+
+None of these is "train the biggest model you can". Each starts with a messy source and a
+question, and most of the effort goes into working out what the data can and cannot say. The
+lecturer states plainly: *this drives what I will teach here.*
+
+## Generative AI
+
+Generative AI is described as "eating the world", including parts of what the lecturer
+considers data science. The focus nonetheless stays on how to think correctly about
+**mid-scale** data analysis, so that you reach the right understanding on important tasks.
+You will discuss and use generative models but not build them.
+
+> Modelling is one step. Deciding what to model, and whether the data can bear it, is the
+> job.

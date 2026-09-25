@@ -1,0 +1,87 @@
+---
+course: applied-algorithm-analysis
+section: w3-mergesort
+order: 520
+title: Mergesort
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week3.html?hash=true#/25
+    caption: Slides 32–33 of 40 — the algorithm on eight numbers, and its pseudocode.
+notation:
+  - symbol: "a[1…n]"
+    reads: a one to n
+    means: An array of `n` numbers, indexed from 1.
+  - symbol: "a[1…⌊n/2⌋]"
+    reads: a one to floor n over two
+    means: >-
+      The first half of the array. Taking a slice like this costs nothing — it is index
+      arithmetic, not copying.
+questions:
+  - ask: In mergesort, where does the actual work happen?
+    choices:
+      - text: Entirely inside `merge` — splitting is free
+        correct: true
+        explains: >-
+          Splitting an array in half is index arithmetic, so it costs nothing worth counting.
+          Every comparison mergesort performs happens while merging two sorted halves back
+          together.
+      - text: Split evenly between dividing and merging
+        explains: >-
+          Dividing does no comparisons at all. It just names two ranges.
+      - text: Mostly in the recursive calls, with merging a minor cost
+        explains: >-
+          The recursive calls *are* mergesort on smaller inputs — their work is also merging,
+          all the way down. There is no other kind of work in the algorithm.
+      - text: In the base case, when single elements are compared
+        explains: >-
+          The base case is a single element, already sorted, and does nothing. Comparisons
+          begin one level up, in the first merge.
+---
+
+Mergesort is the divide-and-conquer paradigm applied to sorting, and it is almost
+embarrassingly direct:
+
+1. **Divide** the array in half.
+2. **Conquer** — sort each half recursively.
+3. **Combine** — merge the two sorted halves.
+
+```
+function mergesort(a[1…n])
+  Input:  An array of numbers a[1…n]
+  Output: A sorted version of this array
+
+  if n > 1:
+    return merge( mergesort(a[1…⌊n/2⌋]), mergesort(a[⌊n/2⌋+1…n]) )
+  else:
+    return a
+```
+
+## Splitting is free
+
+Worth stating plainly, because it is what makes the analysis simple: **splitting the array
+costs nothing.** It is index arithmetic — naming two ranges — with no comparisons and no
+copying.
+
+Follow the eight numbers on slide 32 down the divide phase and nothing happens to them. They
+are cut, then cut again, until each sits alone. A single element is already sorted, so the
+base case does nothing either.
+
+> All of the real work happens inside `merge`, on the way back **up**.
+
+That is the opposite of the quadratic sorts from the previous page, which do their work on
+the way *through*. Here the descent is pure bookkeeping and the ascent is where every
+comparison lives.
+
+## What this buys, in advance
+
+Two recursive calls on half the array, plus a merge:
+
+```
+T(n) = 2T(n/2) + O(n)
+```
+
+That is exercise row (a) from the recurrences module — `a = 2`, `b = 2`, `d = 1`, so
+`log₂2 = 1 = d`, the balanced case, `O(n log n)`.
+
+Two pieces of that are still owed: **why the merge is `O(n)`**, which the next page traces
+element by element, and how the merges stack up across the levels.
