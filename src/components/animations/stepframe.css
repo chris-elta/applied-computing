@@ -112,3 +112,30 @@
   from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: none; }
 }
+
+/* Dice grid (DiceGrid.tsx). Colours change with a CSS transition, so stepping
+   through reads as the same grid being re-marked rather than redrawn. */
+.dice-cell rect {
+  fill: var(--bg-raised);
+  stroke: var(--line-strong);
+  stroke-width: 1.2;
+  transition: fill 0.35s, stroke 0.35s, opacity 0.35s;
+}
+.dice-cell text {
+  fill: var(--ink-soft);
+  font-size: 12px;
+  font-family: var(--font-mono);
+  transition: fill 0.35s, opacity 0.35s;
+}
+.dice-cell.is-a rect { fill: var(--accent-soft); stroke: var(--accent); }
+.dice-cell.is-a text { fill: var(--accent); }
+.dice-cell.is-b rect { fill: var(--ok-soft); stroke: var(--ok); }
+.dice-cell.is-b text { fill: var(--ok); }
+.dice-cell.is-both rect { fill: var(--accent); stroke: var(--accent); }
+.dice-cell.is-both text { fill: var(--bg-raised); font-weight: 700; }
+.dice-cell.is-dim rect, .dice-cell.is-dim text { opacity: 0.35; }
+.dice-cell.is-out rect, .dice-cell.is-out text { opacity: 0.12; }
+.dice-bar { fill: var(--accent); transition: width 0.5s ease; }
+@media (prefers-reduced-motion: reduce) {
+  .dice-cell rect, .dice-cell text, .dice-bar { transition: none; }
+}

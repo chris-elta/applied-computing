@@ -13,6 +13,7 @@ type Loader = () => Promise<{ default: ComponentType }>;
 export const animations: Record<string, Loader> = {
   FetchDecodeExecute: () => import('./FetchDecodeExecute'),
   CacheLocality: () => import('./CacheLocality'),
+  DiceGrid: () => import('./DiceGrid'),
 };
 
 export const isAnimation = (name: string) => name in animations;

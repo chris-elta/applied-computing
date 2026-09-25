@@ -7,6 +7,9 @@ visuals:
   - type: svg
     src: data-science/w2-probability/05.svg
     caption: Slide 5 of 23 — the definition, and what it becomes when the events are independent.
+  - type: animation
+    component: DiceGrid
+    caption: The 36 outcomes of two dice, stepping from P(A) and P(B) to P(A ∩ B) and finally P(A|B).
 notation:
   - symbol: "P(A|B)"
     reads: P of A given B
@@ -67,9 +70,36 @@ Read the fraction as a share. Of everything that can happen when `B` occurs (the
 what portion also has `A` (the top)? Conditioning shrinks the world to the cases where `B`
 happened and asks how much of that smaller world is `A`.
 
-The dice example: given a 6 first, the total is at least 10 if the second die is 4, 5 or 6.
-That is 3 of the 6 equally likely second rolls, so `P = 3/6 = 0.5`. Without the information,
-the probability of a total of 10 or more is only `6/36`.
+## Worked example: the dice
+
+Roll two fair dice: 36 equally likely outcomes `(first, second)`. Let `A` be "the total is 10
+or more" and `B` be "the first die is a 6".
+
+Where does 36 come from? Each die has 6 faces and the first die does not limit the second, so
+there are `6 × 6 = 36` combined outcomes. Picture a grid with the first die down the side and
+the second across the top: 6 rows by 6 columns, one cell per outcome. Order counts, so (2,5)
+and (5,2) are different cells. "The first die is a 6" is the sixth row, which is why
+`P(B) = 6/36`.
+
+1. **`P(B)`.** The outcomes with a 6 first are (6,1) to (6,6). That is 6 outcomes, so
+   `P(B) = 6/36`.
+2. **`P(A ∩ B)`.** Among those six, the total is at least 10 for (6,4), (6,5) and (6,6). That
+   is 3 outcomes, so `P(A ∩ B) = 3/36`.
+3. **Apply the definition.**
+
+```
+P(A|B) = P(A ∩ B) / P(B) = (3/36) / (6/36) = 3/6 = 0.5
+```
+
+The 36s cancel, which is why you can simply count inside the shrunken world: 6 outcomes
+remain and 3 of them are in `A`.
+
+Without the information, the outcomes with a total of 10 or more are (4,6), (5,5), (5,6),
+(6,4), (6,5) and (6,6), so `P(A) = 6/36 ≈ 0.17`. Being told the first die is a 6 lifts it to
+0.5.
+
+Because `P(A|B) ≠ P(A)`, the events are **not independent**. Independence would need
+`P(A ∩ B) = P(A) × P(B) = 1/36`, but the actual value is `3/36`.
 
 ## When it does nothing
 
