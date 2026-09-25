@@ -1,0 +1,92 @@
+---
+course: data-science
+section: w3-interpreting
+order: 330
+title: Significance Is Not Importance
+visuals:
+  - type: svg
+    src: data-science/w3-correlation/08.svg
+    caption: Slide 8 of 21 — significance depends on sample size as well as r.
+  - type: svg
+    src: data-science/w3-correlation/09.svg
+    caption: Slide 9 of 21 — significance versus effect size.
+notation:
+  - symbol: "significant (at the 0.05 level)"
+    reads: significant at point oh five
+    means: >-
+      If the true correlation were zero, a sample this strong would turn up by chance less
+      than 5% of the time. It is a statement about chance, not about size.
+  - symbol: "effect size"
+    reads: effect size
+    means: >-
+      How large or important the relationship is. For a correlation, `r` and `r²` are
+      measures of it.
+  - symbol: "n"
+    reads: n, the sample size
+    means: >-
+      The number of data points.
+questions:
+  - ask: >-
+      A study with 100,000 records finds `r = 0.03` between two variables, and the result is
+      statistically significant. What is the fair reading?
+    choices:
+      - text: There is probably a real relationship, but it is tiny and explains almost none of the variance
+        correct: true
+        explains: >-
+          With that many points, even a very weak correlation is unlikely to be chance. Here
+          `r² ≈ 0.0009`, under a tenth of one percent of the variance, so it is not useful on
+          its own.
+      - text: The relationship is strong, because significance is high
+        explains: >-
+          Significance answers "is it real?", not "is it big?". A huge sample can make a
+          trivial effect significant.
+      - text: The result must be a fluke, since 0.03 is so small
+        explains: >-
+          Size alone does not make a result chance. With enough data, small values are
+          detectable and repeatable.
+      - text: A significant result guarantees the model will predict well
+        explains: >-
+          Prediction depends on effect size. This one leaves 99.9% of the variance
+          unexplained.
+---
+
+Two students ask the same question. One has 10 data points, one has 100,000. Both compute a
+correlation and both want to know whether to believe it. The answer depends on how many
+points there are as much as on `r`.
+
+## Significance depends on sample size
+
+Random data is never perfectly uncorrelated. Draw a few points and you will often see an
+accidental `r` of 0.3 or 0.4. A significance test asks how often chance alone would produce
+a correlation at least this large. Roughly, for the usual 0.05 threshold:
+
+| Sample size `n` | Smallest `r` that counts as significant |
+| --- | --- |
+| 10 | about 0.63 |
+| 100 | about 0.20 |
+| 10,000 | about 0.02 |
+
+(These are standard critical values for a two-sided test.) A correlation of 0.19 between video
+games and violent behaviour, from the earlier list, is only convincing with a large sample.
+The slide's point is: **even small correlations become significant with large-enough sample
+sizes.**
+
+## Significant is not important
+
+The slide's second warning: significance testing measures whether there is a *real*
+relationship, rather than random chance. It does **not** measure whether the relationship
+matters. That second thing is the **effect size**, and `r²` is one way to read it.
+
+So a headline saying "a significant link was found" needs one follow-up question: how big?
+A 0.02 correlation can be perfectly real and perfectly useless.
+
+## Why weak signals still matter
+
+The lecture draws an optimistic conclusion. Each single correlation may explain only a small
+effect, but **many weak, independent correlations can together have strong predictive
+power.** This motivates "big data" models with many parameters: no one feature is
+impressive, but a hundred of them, combined, can predict well. Independence is the condition
+that matters. Repeating the same weak signal a hundred times adds nothing.
+
+> Ask two questions of every correlation: is it real (significance), and is it big enough to
+> matter (effect size)? Large samples make the first easy and leave the second open.

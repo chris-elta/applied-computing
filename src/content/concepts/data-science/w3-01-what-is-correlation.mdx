@@ -1,0 +1,79 @@
+---
+course: data-science
+section: w3-measuring
+order: 300
+title: What Correlation Measures
+visuals:
+  - type: svg
+    src: data-science/w3-correlation/02.svg
+    caption: Slide 2 of 21 — the definition, and the scale from −1 to 1.
+notation:
+  - symbol: "X, Y"
+    reads: capital X, capital Y
+    means: >-
+      Two quantities measured on the same things, such as height and weight for each
+      person in a sample.
+  - symbol: "r"
+    reads: r, or the correlation coefficient
+    means: >-
+      One number between −1 and 1 summarising how closely two quantities move together.
+      The next concept gives the formula.
+questions:
+  - ask: >-
+      Daily temperature and hot-chocolate sales have a correlation of `r = −0.8`. What does
+      that tell you?
+    choices:
+      - text: Colder days tend to come with higher sales, and temperature has strong predictive power for sales
+        correct: true
+        explains: >-
+          The sign gives the direction (one goes up as the other goes down) and the size, 0.8,
+          says the relationship is strong. Negative does not mean weak.
+      - text: The two are barely related, because the number is negative
+        explains: >-
+          The sign is direction only. Strength lives in the distance from zero, so −0.8 is as
+          strong as +0.8.
+      - text: Cold weather causes people to buy hot chocolate
+        explains: >-
+          Correlation says the two move together, not why. That is a separate question, taken
+          up later this week.
+      - text: 80% of days follow the pattern
+        explains: >-
+          `r` is not a percentage of cases. Reading it as a proportion of variance needs
+          squaring it, which is the topic of a later concept.
+---
+
+Suppose you know a person's height and nothing else. Can you say something useful about
+their weight? Taller people tend to weigh more, so yes, a little. That is the whole idea of
+correlation.
+
+## The definition
+
+The lecture puts it this way: two factors are **correlated when the value of `x` has some
+predictive power on the value of `y`**. The **correlation coefficient** measures the degree
+to which `Y` is a function of `X`, and, symmetrically, `X` of `Y`. Nothing in the definition
+prefers one variable over the other.
+
+The coefficient runs on a fixed scale:
+
+| `r` | Meaning |
+| --- | --- |
+| 1 | fully correlated: knowing `x` fixes `y` exactly, and they rise together |
+| 0 | uncorrelated: knowing `x` gives no linear help with `y` |
+| −1 | anti-correlated: knowing `x` fixes `y` exactly, and one falls as the other rises |
+
+Two habits to build early:
+
+- **The sign is direction, the size is strength.** Both `+0.9` and `−0.9` are strong. They
+  differ only in which way the cloud of points tilts.
+- **Zero means no *linear* relationship.** Points arranged in a perfect U-shape can have
+  `r = 0`, because the rise on one side cancels the fall on the other. The next concepts show
+  why.
+
+## Why bother
+
+A single number lets you compare relationships that live in different units: height against
+weight, study hours against grades. You can rank a hundred candidate features by how much
+each tells you about the thing you want to predict, before building any model.
+
+> Correlation asks one question: how much does knowing one value help you guess the other?
+> The answer is a number from −1 to 1.

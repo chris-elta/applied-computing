@@ -1,0 +1,86 @@
+---
+course: data-science
+section: w3-logs
+order: 400
+title: Logarithms and Skewed Distributions
+visuals:
+  - type: svg
+    src: data-science/w3-correlation/20.svg
+    caption: Slide 20 of 21 — power-law data brought in line by a log.
+  - type: svg
+    src: data-science/w3-correlation/21.svg
+    caption: Slide 21 of 21 — take the logarithm before analysis.
+notation:
+  - symbol: "power law"
+    reads: power law
+    means: >-
+      A distribution with a long tail, where a few values are enormous and most are small.
+      Wealth, city sizes and word frequencies behave this way.
+  - symbol: "skewed"
+    reads: skewed
+    means: >-
+      Lopsided: the bulk of the data is bunched at one end with a long tail stretching out
+      the other.
+questions:
+  - ask: >-
+      Wealth in a group runs from about 10³ dollars for most people to 10¹¹ for one. Why take
+      logs before computing a correlation or a mean?
+    choices:
+      - text: The log compresses the tail so one extreme value no longer dominates the calculation
+        correct: true
+        explains: >-
+          On the log scale the values become 3 to 11, a range where the outlier is only a few
+          steps from everyone else, and the distribution looks far more like a traditional one.
+      - text: Logs remove the outlier from the data
+        explains: >-
+          Nothing is removed. Every point stays; only the scale changes, so the outlier is
+          brought closer rather than deleted.
+      - text: Logs make all the values equal
+        explains: >-
+          Order and relative differences in proportion are preserved. What changes is that
+          equal multiples become equal distances.
+      - text: Logs are only useful for probabilities
+        explains: >-
+          Probabilities are one use, from the earlier concept. Here the point is skewed
+          quantities.
+---
+
+Some quantities are not bunched around a typical value. Wealth, follower counts, city
+populations and website traffic have a few enormous values and a crowd of small ones. Their
+mean is dominated by the giants, and their standard deviation is huge for the same reason.
+The tools from last week assume a tamer shape.
+
+## Power laws
+
+A **power-law** distribution is one where values keep occurring far out in the tail. Plotted
+directly it is a spike against the left-hand axis with a tail too thin to see.
+
+The lecture's remedy: **taking the logarithm of variables with a power-law distribution
+brings them more in line with traditional distributions.** The log turns "how many
+times bigger" into "how many steps along".
+
+## The lecturer's example
+
+The slide jokes that the lecturer's wealth is roughly the same number of logs from typical
+students as from Bill Gates. Read that with round, illustrative figures: a typical student
+has about `10³` dollars and Bill Gates about `10¹¹`. On the log scale those are 3 and 11, and
+someone at 7 (about `10⁷` dollars) sits 4 logs from each. On the raw scale that person is
+ten thousand times richer than the student and ten thousand times poorer than the billionaire,
+which is just what the equal distance on the log scale says.
+
+That is not to say log scales are more true; they answer a different question, one about
+*proportions*. For wealth, income and traffic, proportions are usually what you care about.
+Doubling matters whether you start from a hundred or a million.
+
+## Why it matters for correlation
+
+This connects back to the start of the week. Pearson's `r` is dragged around by extreme
+values, since they dominate the sums of squares. Correlating raw wealth with anything is
+mostly correlating the few richest people. Take logs first and the whole population
+contributes.
+
+The last slide gives the rule: **take the logarithm of a value before analysis** when your
+data follows a power law or is a ratio. It applies to the two cases you have now seen.
+
+> If the data spans orders of magnitude, analyse it on a log scale. Equal ratios become equal
+> distances, and the giants stop drowning out everyone else.

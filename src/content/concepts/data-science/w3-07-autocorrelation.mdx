@@ -1,0 +1,90 @@
+---
+course: data-science
+section: w3-time
+order: 360
+title: Autocorrelation and Periodicity
+visuals:
+  - type: svg
+    src: data-science/w3-correlation/14.svg
+    caption: Slide 14 of 21 — cycles in time-series data.
+  - type: svg
+    src: data-science/w3-correlation/15.svg
+    caption: Slide 15 of 21 — a series with a cycle, and its autocorrelation function.
+notation:
+  - symbol: "S[t]"
+    reads: S at t, or S sub t
+    means: >-
+      The value of a time series at time step `t`, for example sales on day `t`.
+  - symbol: "lag k"
+    reads: lag k
+    means: >-
+      A shift of `k` steps. The lag-`k` autocorrelation compares `S[t]` with `S[t+k]`.
+  - symbol: "O(n log n)"
+    reads: big-O of n log n
+    means: >-
+      The running time grows in proportion to `n log n`. Lag by lag it would be
+      much slower for long series.
+  - symbol: "FFT"
+    reads: F-F-T, the Fast Fourier Transform
+    means: >-
+      A fast algorithm for converting a series into its component frequencies, which also
+      speeds up computing all the autocorrelations at once.
+questions:
+  - ask: >-
+      Daily sales show an unusually high autocorrelation at lag 7 and near zero at lags 1 to 6.
+      What does that suggest?
+    choices:
+      - text: A weekly cycle, with each day resembling the same day a week earlier
+        correct: true
+        explains: >-
+          A cycle of length `k` shows up as unexpectedly large correlation between `S[t]` and
+          `S[t+k]`. Here `k = 7`, a weekly pattern.
+      - text: Sales trend upward over time
+        explains: >-
+          A steady trend would raise autocorrelation at many lags, not spike at one.
+      - text: Each day's sales cause the next day's
+        explains: >-
+          That would show at lag 1. And autocorrelation is about pattern, not causation.
+      - text: The data is broken, since lags 1 to 6 are near zero
+        explains: >-
+          That is normal. Only the lags that match the cycle stand out.
+---
+
+Time-series data is the awkward case for everything so far. Yesterday's sales are not an
+independent draw from the same distribution as today's. The data has memory, and cycles.
+
+## Cycles
+
+The lecture's example: sales in different businesses may have **7-day, 30-day, 365-day and
+even four-year (`4 × 365`)** cycles. A café is busy at weekends, a shop at month end, a
+florist in February, an Olympic-year supplier every fourth year. If you ignore a cycle, you
+misread it: a January dip may be the season, not a problem.
+
+## Correlate a series with itself
+
+To find a cycle, correlate the series with a shifted copy of itself. **Autocorrelation at
+lag `k`** is the correlation between `S[t]` and `S[t+k]` over all valid `t`
+(`0 < t < n − k`). If the series repeats every `k` steps, this is unexpectedly large.
+
+| Lag | Autocorrelation | Reading |
+| --- | --- | --- |
+| 1 | near 0 | today does not predict tomorrow |
+| 7 | high | today predicts the same weekday next week |
+| 14, 21 | high, fading | multiples of the cycle also match |
+
+## The autocorrelation function
+
+Plot the autocorrelation against `k` and you get the **autocorrelation function** (the
+chart on slide 15). Peaks mark cycle lengths. One lag costs `O(n)` to compute, since you
+walk the series once. Naively, all `n` lags would cost `O(n²)`, but the **Fast Fourier
+Transform** yields the full set in `O(n log n)`. For a series of a million points that is
+the difference between hours and seconds.
+
+## Two cautions
+
+- A series that trends upward correlates with itself at every lag, drowning out cycles.
+  Remove the trend first.
+- A peak is a pattern, not a cause. That distinction is the subject of the next concept.
+
+> Autocorrelation asks when a series resembles its own past. Peaks in the answer reveal the
+> rhythm of the data.

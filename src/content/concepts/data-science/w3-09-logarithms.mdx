@@ -1,0 +1,78 @@
+---
+course: data-science
+section: w3-logs
+order: 380
+title: Logarithms for Data Science
+visuals:
+  - type: svg
+    src: data-science/w3-correlation/17.svg
+    caption: Slide 17 of 21 — the logarithm as the inverse of exponentiation.
+notation:
+  - symbol: "log_b(x)"
+    reads: log base b of x
+    means: >-
+      The power you raise `b` to in order to get `x`. `log₂(8) = 3` because `2³ = 8`.
+  - symbol: "log(ab) = log a + log b"
+    reads: log of a times b equals log a plus log b
+    means: >-
+      Logs turn multiplication into addition. This is the property the lecture uses.
+questions:
+  - ask: >-
+      You multiply 1,000 probabilities, each about 0.01. Why is it safer to add their logs?
+    choices:
+      - text: The product is about 10⁻²⁰⁰⁰, too small for a computer's floating-point number, but the sum of logs is an ordinary number
+        correct: true
+        explains: >-
+          Each log₁₀ is −2, so the sum is −2000, easily stored. The product underflows to 0
+          and the information is lost. Because `log(ab) = log a + log b`, nothing is lost by
+          switching.
+      - text: Logs make the probabilities larger
+        explains: >-
+          Logs of probabilities are negative. They do not make anything larger; they keep it
+          representable.
+      - text: Adding is more accurate than multiplying because there are fewer terms
+        explains: >-
+          The number of terms is the same. The gain is in the size of the numbers involved.
+      - text: The two methods give different answers, and the log one is correct
+        explains: >-
+          They agree mathematically. The log form only avoids the computer's underflow.
+---
+
+You already met logarithms in algorithms courses, where they count how many times something
+can be halved. Here they earn a place for different reasons.
+
+## What a logarithm is
+
+The logarithm is the **inverse of the exponential**. If `b^x = y`, then `log_b(y) = x`. It
+answers "what power?":
+
+| Statement | Reading |
+| --- | --- |
+| `2³ = 8` | so `log₂(8) = 3` |
+| `10⁴ = 10,000` | so `log₁₀(10,000) = 4` |
+
+Logs squash huge ranges. Going from 1 to a billion is only nine steps on a base-10 log
+scale.
+
+## Sums of logs instead of products
+
+The property that matters most in data work is `log(ab) = log a + log b`. The lecture
+applies it to probabilities: **summing logs of probabilities is more numerically stable than
+multiplying them.**
+
+Suppose a model scores a document by multiplying the probability of each of its 1,000 words,
+each around 0.01. The true answer is about `10⁻²⁰⁰⁰`. A computer's ordinary floating-point
+number bottoms out near `10⁻³⁰⁸`, so the product **underflows to zero**, and every document
+looks equally impossible.
+
+Sum the logs instead and each word contributes about −2, giving a total of −2000. Comparing
+documents by that sum ranks them correctly. And since the log is increasing, whichever
+document has the larger probability also has the larger log-probability.
+
+## Where this is going
+
+The two concepts after this one use the logarithm for a different purpose: making *ratios*
+and *skewed data* behave. Same function, different reasons.
+
+> A logarithm turns products into sums. Wherever numbers multiply to something absurdly small
+> or large, work in logs.

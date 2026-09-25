@@ -1,0 +1,116 @@
+---
+course: data-science
+section: w3-interpreting
+order: 320
+title: Variance Explained, r² and R²
+visuals:
+  - type: svg
+    src: data-science/w3-correlation/05.svg
+    caption: Slide 5 of 21 — r² as the fraction of variance explained.
+  - type: svg
+    src: data-science/w3-correlation/06.svg
+    caption: Slide 6 of 21 — a good fit leaves residuals with less variance than y.
+  - type: svg
+    src: data-science/w3-correlation/07.svg
+    caption: Slide 7 of 21 — the coefficient of determination as a formula.
+notation:
+  - symbol: "r²"
+    reads: r squared
+    means: >-
+      The square of the correlation. For a simple linear fit, the fraction of the variance
+      of `Y` that `X` accounts for. `r = 0.5` gives `r² = 0.25`.
+  - symbol: "f(x)"
+    reads: f of x
+    means: >-
+      The model's prediction of `y` for a given `x`, such as a fitted straight line.
+  - symbol: "y − f(x)"
+    reads: y minus f of x
+    means: >-
+      The residual: what is left over after the model has done its best on that point.
+  - symbol: "V(y)"
+    reads: variance of y
+    means: >-
+      How spread out the `y` values are, from last week. The slide writes `V(r)` for the
+      variance of the residuals.
+  - symbol: "SS_res, SS_tot"
+    reads: sum of squares residual, sum of squares total
+    means: >-
+      `SS_res` adds up the squared residuals `(y − f(x))²`. `SS_tot` adds up the squared
+      distances of `y` from its own mean.
+  - symbol: "R²"
+    reads: R squared, the coefficient of determination
+    means: >-
+      `1 − SS_res / SS_tot`. Zero if the model does no better than always guessing the mean,
+      one if it fits perfectly.
+questions:
+  - ask: >-
+      Two features correlate with a target at `r = 0.4` and `r = 0.8`. How do their predictive
+      values compare?
+    choices:
+      - text: The second explains about four times as much variance (0.64 against 0.16)
+        correct: true
+        explains: >-
+          Squaring gives 0.16 and 0.64. Doubling `r` quadruples the variance explained, which
+          is what the slide means by predictive value changing quadratically with `r`.
+      - text: The second explains twice as much
+        explains: >-
+          That would be true if `r` itself were the fraction explained. It is `r²` that
+          measures that, so the gap is fourfold.
+      - text: Both explain the same, since both are positive correlations
+        explains: >-
+          Sign does not set strength. The size of `r` does, and variance explained grows with
+          its square.
+      - text: The first explains 40% and the second 80%
+        explains: >-
+          Reading `r` as a percentage is the common slip. 40% of the variance needs
+          `r ≈ 0.63`.
+---
+
+Last week you learnt that variance measures how spread out data is. A model earns its keep
+by shrinking that spread. Predict every `y` with the plain mean and you are left with the
+full variance. Predict with a good line and what remains, the **residuals** `y − f(x)`, is
+more tightly clustered.
+
+## How much did the line help?
+
+Compare the two amounts of leftover spread:
+
+```
+SS_tot = Σ (y − ȳ)²        error if you always guess the mean
+SS_res = Σ (y − f(x))²     error after using the model
+
+R² = 1 − SS_res / SS_tot
+```
+
+If the model removes half the squared error, `R² = 0.5`. If it removes none, `R² = 0`. That
+is the slide's **coefficient of determination**, and the lecture's shorthand for it is the
+identity `1 − r² = V(residuals) / V(y)`: what remains is the fraction that `x` did not
+explain.
+
+## Link to r
+
+For a simple linear regression, `R²` equals `r²`, the square of the correlation. So `r²`
+**estimates the fraction of the variance in `Y` explained by `X`**.
+
+Worked examples from the slides:
+
+- Height and weight: `r ≈ 0.8`, so `r² ≈ 0.64`, about **two thirds** of the variance.
+- A fit with `r = 0.94` gives `r² = 0.884`. The slide's scatter plot explains **88.4%**
+  of `V(y)`.
+
+## The consequence
+
+Because of the square, correlations shrink fast. `r = 0.5` explains 25% of the variance, and
+`r = 0.3` explains 9%. The slide's warning: **the predictive value of a correlation decreases
+quadratically with `r`.** The 0.19 between video games and violent behaviour, from the
+previous concept, accounts for under 4% of the variation.
+
+## Beyond a line
+
+`R²` is defined through residuals, so it is not tied to straight lines. The slide's note
+that **models better than linear regression can produce a better `R²`** is the reason to
+define it this way: any model that predicts `y` from `x`, however elaborate, can be scored by
+how much squared error it removes.
+
+> `r` tells you how tightly the points hug a line. `r²` tells you what share of the
+> variation you can actually account for, and it is always smaller than it first looks.

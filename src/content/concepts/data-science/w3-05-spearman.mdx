@@ -1,0 +1,101 @@
+---
+course: data-science
+section: w3-rank
+order: 340
+title: Spearman Rank Correlation
+visuals:
+  - type: svg
+    src: data-science/w3-correlation/10.svg
+    caption: Slide 10 of 21 — ranks rather than a line fit.
+  - type: svg
+    src: data-science/w3-correlation/11.svg
+    caption: Slide 11 of 21 — the formula, built from rank differences.
+notation:
+  - symbol: "rank(xᵢ)"
+    reads: rank of x sub i
+    means: >-
+      The position of `xᵢ` when all the `x` values are sorted, from 1 (smallest) to `n`
+      (largest).
+  - symbol: "dᵢ"
+    reads: d sub i
+    means: >-
+      The difference between a point's `x` rank and its `y` rank. Zero when the point sits in
+      the same position in both orderings.
+  - symbol: "ρ"
+    reads: rho
+    means: >-
+      The Spearman correlation. Like `r`, it runs from −1 to 1.
+  - symbol: "Σ dᵢ²"
+    reads: sum of d-i squared
+    means: >-
+      Add up the squared rank differences. It is 0 when the orderings match exactly.
+questions:
+  - ask: >-
+      `y = x³` for `x = 1, 2, …, 10`. What are the Spearman and Pearson correlations?
+    choices:
+      - text: Spearman is exactly 1; Pearson is a little below 1
+        correct: true
+        explains: >-
+          `y` rises whenever `x` does, so the two rankings are identical and every `dᵢ` is 0.
+          The curve is not a straight line, so Pearson falls short of 1.
+      - text: Both are exactly 1
+        explains: >-
+          Pearson only reaches 1 for points exactly on a line. `x³` curves, so it scores lower.
+      - text: Both are below 1, because the relationship is non-linear
+        explains: >-
+          Spearman does not care about the shape, only the order. Any strictly increasing
+          relationship gives it 1.
+      - text: Spearman is 0, because the relationship is not linear
+        explains: >-
+          That describes Pearson's blind spot in the opposite direction. Spearman detects any
+          consistent ordering, linear or not.
+---
+
+Pearson correlation asks how well the points fit a line. That is the wrong question when the
+relationship is consistent but curved, and it is easily thrown by a single extreme value.
+Spearman rank correlation asks a different question: **when one variable goes up, does the
+other?** The lecture's phrase is that it counts **disordered pairs, not how well the data fits
+a line**.
+
+## Compute it from ranks
+
+1. Replace each `x` by its rank in sorted order, 1 to `n`. Do the same for `y`.
+2. For each point take the rank difference `dᵢ = rank(xᵢ) − rank(yᵢ)`.
+3. Plug into the slide's formula:
+
+```
+ρ = 1 − 6 Σ dᵢ² / ( n (n² − 1) )
+```
+
+Or, equivalently as the slide states, compute the **Pearson correlation of the ranks**.
+
+## A worked example
+
+Five students' hours studied against marks:
+
+| Hours | 2 | 3 | 5 | 8 | 40 |
+| --- | --- | --- | --- | --- | --- |
+| Mark | 50 | 55 | 61 | 70 | 72 |
+| Hours rank | 1 | 2 | 3 | 4 | 5 |
+| Mark rank | 1 | 2 | 3 | 4 | 5 |
+
+Every `dᵢ` is 0, so `ρ = 1`. The 40-hour student is an outlier that Pearson would find
+awkward (it would give a value below 1 because the point lies far off the trend). Spearman
+sees only that more hours went with a higher mark every time.
+
+The formula's shape explains itself: if two rankings differ a lot, `Σ dᵢ²` grows and `ρ`
+drops. A fully reversed ranking pushes `ρ` to −1.
+
+## When to choose it
+
+- **Non-linear but monotonic** relationships: Spearman rewards steady rise or fall of any
+  shape.
+- **Outliers**: ranks cap how far any value can pull. The biggest value is just "rank `n`"
+  however big it is.
+- **Ordinal data**: things you can order but not measure, such as satisfaction ratings.
+
+The formula shown assumes no tied values. With ties, use the Pearson-of-ranks definition,
+giving tied values the average of the ranks they occupy.
+
+> Pearson asks "how straight?", Spearman asks "how ordered?". Pick the one that matches the
+> question you are asking.

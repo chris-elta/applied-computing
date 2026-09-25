@@ -1,0 +1,104 @@
+---
+course: data-science
+section: w3-measuring
+order: 310
+title: The Pearson Correlation Coefficient
+visuals:
+  - type: svg
+    src: data-science/w3-correlation/03.svg
+    caption: Slide 3 of 21 — the formula, and which points push r up or down.
+  - type: svg
+    src: data-science/w3-correlation/04.svg
+    caption: Slide 4 of 21 — representative correlations from the real world.
+notation:
+  - symbol: "X̄, Ȳ"
+    reads: X bar, Y bar
+    means: >-
+      The mean (average) of the `X` values and of the `Y` values.
+  - symbol: "Σ"
+    reads: sigma, or "the sum of"
+    means: >-
+      Add up the expression that follows for every `i` from 1 to `n`. Here it is a capital
+      sigma, a sum, not the standard deviation.
+  - symbol: "Xᵢ, Yᵢ"
+    reads: X sub i, Y sub i
+    means: >-
+      The `i`-th pair of measurements. The subscript numbers the points; it does not multiply.
+  - symbol: "Σ(Xᵢ − X̄)(Yᵢ − Ȳ)"
+    reads: the sum of X-minus-mean times Y-minus-mean
+    means: >-
+      The covariance numerator. Each point contributes a product of its two distances from
+      the means.
+questions:
+  - ask: >-
+      A point has `x` above the mean of `X` and `y` below the mean of `Y`. What does it do to
+      the numerator of `r`?
+    choices:
+      - text: It makes a negative contribution, pulling `r` down
+        correct: true
+        explains: >-
+          One factor is positive and the other negative, so the product is negative. Only
+          points on the same side of both means (both above or both below) push `r` up.
+      - text: It makes a positive contribution, because it is far from the mean
+        explains: >-
+          Distance alone does not decide the sign. The sign is the product of the two
+          directions, and here they disagree.
+      - text: No contribution, since the two effects cancel within the point
+        explains: >-
+          Nothing cancels within a single point. It contributes a definite negative number;
+          cancelling happens between points.
+      - text: It depends only on how large `x` is, not on `y`
+        explains: >-
+          Both coordinates enter as a product. A point tells you nothing about correlation
+          from one coordinate alone.
+---
+
+Here is the recipe, built from the picture. Draw the two means as a horizontal and a vertical
+line through the scatter plot. That splits the plane into four quadrants.
+
+- Points in the **upper-right and lower-left** quadrants lie above both means or below both.
+  They agree, and vote for a positive relationship.
+- Points in the **other two** quadrants disagree, and vote for a negative one.
+
+Turn each vote into a number by multiplying the point's two distances from the means, `(Xᵢ − X̄)`
+times `(Yᵢ − Ȳ)`. Agreement gives a positive product, disagreement a negative one, and points
+far from the centre vote louder. Add the votes up.
+
+## The formula
+
+```
+        Σ (Xᵢ − X̄)(Yᵢ − Ȳ)
+r = ─────────────────────────────────
+    √Σ(Xᵢ − X̄)² · √Σ(Yᵢ − Ȳ)²
+```
+
+The numerator is the **covariance** (up to a constant). As the slide notes, it determines
+the **sign but not the scale**: measure height in millimetres rather than metres and it grows
+a thousandfold without the relationship changing. The denominator divides out the spread of
+each variable (the two square roots are, up to a constant, the standard deviations from last
+week), so that `r` always lands between −1 and 1 whatever the units.
+
+## What real values look like
+
+The lecture lists correlations from real studies:
+
+| Pair | `r` |
+| --- | --- |
+| SAT scores and freshman GPA | 0.47 |
+| SAT scores and economic status | 0.42 |
+| Income and coronary disease | −0.717 |
+| Smoking and mortality rate | 0.716 |
+| Video games and violent behaviour | 0.19 |
+
+Notice how rarely anything reaches 0.9. In the social and medical sciences, values around
+0.4 to 0.7 are typical of relationships people treat as real, and 0.19 is small. What those
+numbers *mean* is the subject of the next concept.
+
+## The limit
+
+Pearson's `r` measures how well the points fit a **straight line**. A relationship that is
+perfectly regular but curved can score low, and one extreme outlier can drag `r` a long way.
+Later this week you meet a rank-based alternative for exactly those cases.
+
+> Pearson correlation is the average agreement of two variables about their means, scaled
+> so the units cancel.

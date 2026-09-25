@@ -5,7 +5,6 @@ summary: >-
   harder than training one, and the habits of questioning and humility that separate
   insight from noise.
 order: 4
-draft: true
 sections:
   - id: w1-what
     title: Week 1 · What data science is
@@ -34,4 +33,28 @@ sections:
     title: Week 2 · Interpreting variance
     summary: >-
       Telling signal from noise, and what a mean and a standard deviation guarantee.
+  - id: w3-measuring
+    title: Week 3 · Correlation
+    summary: >-
+      What a correlation coefficient measures, and how Pearson computes it.
+  - id: w3-interpreting
+    title: Week 3 · Interpreting correlation
+    summary: >-
+      Variance explained, and why a significant result can still be unimportant.
+  - id: w3-rank
+    title: Week 3 · Rank correlation
+    summary: >-
+      Correlating orderings rather than values, for curves and outliers.
+  - id: w3-causation
+    title: Week 3 · Correlation and causation
+    summary: >-
+      Why two things moving together does not say one drives the other.
+  - id: w3-time
+    title: Week 3 · Time series
+    summary: >-
+      Cycles, autocorrelation and Granger causality.
+  - id: w3-logs
+    title: Week 3 · Logarithms
+    summary: >-
+      Logs for stable products, symmetric ratios and skewed data.
 ---

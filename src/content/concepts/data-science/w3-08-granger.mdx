@@ -1,0 +1,76 @@
+---
+course: data-science
+section: w3-time
+order: 370
+title: Granger Causality
+visuals:
+  - type: svg
+    src: data-science/w3-correlation/16.svg
+    caption: Slide 16 of 21 — causality through time lags.
+notation:
+  - symbol: "Y Granger-causes X"
+    reads: Y Granger-causes X
+    means: >-
+      Past values of `Y` help predict `X`, beyond what past values of `X` alone can do. The
+      lecture puts it as greater correlation when a time lag is allowed.
+  - symbol: "lag"
+    reads: lag
+    means: >-
+      A delay between the two series: `Y` today against `X` a few steps later.
+questions:
+  - ask: >-
+      Every time `Y` rises, `X` rises two days later, and not the other way round. What does a
+      Granger test conclude, and what does it leave open?
+    choices:
+      - text: Y Granger-causes X, but it does not say whether the link is direct or runs through something else
+        correct: true
+        explains: >-
+          The lagged correlation is the evidence. The slide's caveat is that it says nothing
+          about direct versus indirect causes, and a hidden `C` leading both could produce
+          the same pattern.
+      - text: Y truly causes X, and the mechanism is established
+        explains: >-
+          "Granger causes" is a narrower claim than causation. It is about prediction through
+          time, so a common driver `C` can produce it.
+      - text: Nothing, because correlation is not causation
+        explains: >-
+          The test adds something: the timing. Lagged prediction is stronger evidence than a
+          same-time correlation, even if it is not proof.
+      - text: X causes Y, because X moved last
+        explains: >-
+          The order is backwards. The one that moves first is the candidate cause.
+---
+
+The previous concept ended with a problem: correlation cannot tell you which way an arrow
+points. Time offers a partial answer. Causes come before effects, so if `Y` moves first and
+`X` follows, `Y` is a candidate cause.
+
+## The test
+
+The lecture's definition: **`Y` "Granger causes" `X` if there is greater correlation with a
+time lag.** In practice you ask whether knowing the recent past of `Y` improves your
+prediction of `X`, compared with using the past of `X` alone. If it does, and the reverse is
+not true, the evidence points one way.
+
+Example: rainfall this week against river level next week. Rain predicts river level; river
+level does not predict rain. That asymmetry is what the test looks for.
+
+## What it does not say
+
+The slide is explicit: it **says nothing about direct versus indirect causes**. Suppose a
+storm system `C` first raises rainfall at one station and then, later, another.
+Rainfall at the first station will Granger-cause rainfall at the second, without causing it.
+The timing is real; the arrow is borrowed from a third factor.
+
+Also note the word *predict*. Granger causality is a statement about forecasting, which is
+weaker than the everyday meaning of "causes". It is a stronger clue than a plain correlation,
+not a substitute for an experiment.
+
+## A footnote
+
+The slide asks whether his causality test won Granger the Nobel Prize. It did not: Clive
+Granger shared the 2003 economics prize for a related idea, cointegration, which handles
+series that wander but stay tied together over time.
+
+> Granger causality upgrades "moves together" to "moves first". That is a better clue, and
+> still not a proof.

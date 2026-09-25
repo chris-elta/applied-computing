@@ -1,0 +1,88 @@
+---
+course: data-science
+section: w3-causation
+order: 350
+title: Correlation Is Not Causation
+visuals:
+  - type: svg
+    src: data-science/w3-correlation/12.svg
+    caption: Slide 12 of 21 — the police and crime example.
+  - type: svg
+    src: data-science/w3-correlation/13.svg
+    caption: Slide 13 of 21 — the four explanations for any correlation.
+notation:
+  - symbol: "A → B"
+    reads: A causes B
+    means: >-
+      Changing `A` would change `B`. Correlation cannot tell you this.
+  - symbol: "confounder"
+    reads: confounder
+    means: >-
+      A third factor `C` that drives both `A` and `B`, creating a correlation between them
+      that neither causes.
+  - symbol: "spurious correlation"
+    reads: spurious correlation
+    means: >-
+      A correlation with no causal story at all, produced by coincidence, usually among
+      many comparisons.
+questions:
+  - ask: >-
+      Ice-cream sales and drowning deaths are strongly correlated across the months of the
+      year. Which explanation from the slide fits best?
+    choices:
+      - text: A third factor, hot weather, drives both
+        correct: true
+        explains: >-
+          "C causes both A and B." Warm days send people to ice-cream stands and to the water.
+          Banning ice cream would do nothing for drowning.
+      - text: Ice cream causes drowning
+        explains: >-
+          "A causes B" needs a mechanism, and it is not plausible here. It is also a useful
+          check: if you intervened on `A`, would `B` move?
+      - text: Drowning causes ice-cream sales
+        explains: >-
+          "B causes A" is the reverse arrow, and no one buys ice cream in response to a
+          drowning.
+      - text: There is no correlation, since neither causes the other
+        explains: >-
+          The correlation is real and measurable. It simply has no direct causal link.
+---
+
+The lecture's example: the number of police active in a precinct correlates strongly with the
+local crime rate. Does policing cause crime? Obviously not. Cities send more officers where
+crime is already high. The data shows the two moving together; it cannot show which is the
+driver, or whether either is.
+
+## Four explanations for A and B correlating
+
+Whenever two things `A` and `B` are correlated, one of these holds:
+
+| Explanation | Example |
+| --- | --- |
+| `A` causes `B` | smoking raises mortality |
+| `B` causes `A` | crime rates cause police numbers to rise |
+| `C` causes both | hot weather drives ice-cream sales and swimming |
+| Spurious correlation | butter production in Bangladesh tracks a stock index |
+
+The last row is the slide's joke. Search through enough pairs of unrelated series and some
+will line up by luck. A short series with a shared trend is especially easy to match.
+
+## What to do about it
+
+Correlation is still valuable: you can use it to predict without knowing why. Trouble comes
+when you act on it. If you want to *change* `B` by changing `A`, you need a causal claim,
+and the data alone cannot provide it.
+
+Habits to build:
+
+- **Name the reverse arrow and the third factor** before believing a causal story. Both are
+  usually easy to find.
+- **Be suspicious of sifting.** The more pairs you test, the more spurious ones appear.
+- **Look for interventions.** Randomised experiments, where you set `A` yourself, break
+  the link to any hidden `C`.
+
+The lecture ends the slide with a dry remark: social scientists are very good at not
+ascribing causality to correlations. It is a discipline worth copying. The next concepts look
+at one attempt to use timing to say more.
+
+> A correlation is evidence that something links two variables. It is silent on what.
