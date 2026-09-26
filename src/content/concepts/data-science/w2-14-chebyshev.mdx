@@ -17,6 +17,20 @@ visuals:
     src: data-science/w2-probability/22.svg
     caption: Slide 22 of 23 — a guarantee about spread that holds for any distribution.
 notation:
+  - symbol: "X"
+    reads: capital X
+    means: >-
+      The random variable: the quantity being measured, such as an exam score or a delivery
+      time. `P(|X − 70| ≥ 20)` reads "the probability that `X` is at least 20 away from 70".
+  - symbol: "P( … )"
+    reads: the probability of
+    means: >-
+      The probability that the statement inside the brackets is true.
+  - symbol: "|X − μ|"
+    reads: absolute value of X minus mu
+    means: >-
+      The distance between `X` and the mean, ignoring direction. It covers values both above
+      and below the mean.
   - symbol: "μ"
     reads: mu
     means: >-
@@ -97,11 +111,31 @@ Plug in values of `k`:
 The slide draws out the case `k = 2`: **at least 75% lies within two sigma of the mean**, so
 at most 25% is more than two sigma away.
 
-## A worked example
+## Worked examples
 
-Response times have mean 100 ms and standard deviation 10 ms. Without knowing anything about
-the shape, at least 75% of responses fall between 80 and 120 ms, and at least 89% between
-70 and 130 ms. That is enough to set a service target or spot an unusual reading.
+**Response times.** Response times have mean 100 ms and standard deviation 10 ms. Without
+knowing anything about the shape, at least 75% of responses fall between 80 and 120 ms, and
+at least 89% between 70 and 130 ms. That is enough to set a service target or spot an
+unusual reading.
+
+**Example 1: exam scores.** Scores have mean 70 and standard deviation 8, shape unknown.
+What is the most that can be said about the share outside 50 to 90?
+
+- 50 to 90 is `70 ± 20`, so `kσ = 20` and `k = 20/8 = 2.5`.
+- `P(|X − 70| ≥ 20) ≤ 1/2.5² = 1/6.25 = 0.16`
+
+At most 16% of students score below 50 or above 90, so at least 84% score between 50 and 90.
+
+**Example 2: delivery times.** A courier's delivery time has mean 30 min and variance 25, so
+`σ = 5`. Find a lower bound on the probability that a delivery takes between 20 and 40
+minutes.
+
+- 20 to 40 is `30 ± 10`, so `k = 10/5 = 2`.
+- `P(|X − 30| ≥ 10) ≤ 1/2² = 0.25`
+- Taking the complement, `P(20 < X < 40) ≥ 1 − 0.25 = 0.75`
+
+At least 75% of deliveries arrive within 10 minutes of the mean. Note the first step: when
+you are given a variance, take its square root to get `σ` before finding `k`.
 
 ## Why it is loose, and why that is fine
 
