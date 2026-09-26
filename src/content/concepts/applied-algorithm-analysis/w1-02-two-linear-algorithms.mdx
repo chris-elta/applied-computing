@@ -48,6 +48,11 @@ questions:
         explains: >-
           The depth is `n`, not `log n` — which is exactly why `fib3` risks a stack
           overflow where `fib2` does not.
+    work: |-
+      Count the work. `fib3` has `n` distinct subproblems, `F(1)` to `F(n)`.
+      The first call for each does real work, `O(1)` addition. Every later call finds the memo entry and returns at once.
+      Total: `n × O(1) = O(n)`.
+      The call tree is the same shape as `fib1`'s, but almost every visit costs nothing. It isn't a compiler trick, and the depth is still `n`.
 ---
 
 `fib1`'s problem was not recursion. It was **forgetting** — the same subproblem solved over

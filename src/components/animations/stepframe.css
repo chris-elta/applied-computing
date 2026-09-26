@@ -167,3 +167,22 @@
 /* cdf area slabs (BinnedCdf.tsx): each bin adds a trapezoid under the rising line. */
 .cdf-slab { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.2; }
 .cdf-slab.is-now { fill: var(--accent); fill-opacity: 0.55; }
+
+/* Pearson correlation (PearsonCorrelation.tsx): quadrants and per-point product rectangles. */
+.corr-quad.is-pos { fill: var(--ok-soft); opacity: 0.45; }
+.corr-quad.is-neg { fill: var(--bad); opacity: 0.1; }
+.corr-rect { stroke-width: 1.2; fill-opacity: 0.35; }
+.corr-rect.is-pos { fill: var(--ok); stroke: var(--ok); }
+.corr-rect.is-neg { fill: var(--bad); stroke: var(--bad); }
+.corr-rect.is-now { fill-opacity: 0.6; }
+.corr-pt { fill: var(--accent); stroke: var(--bg-raised); stroke-width: 1.5; }
+.corr-pt.is-now { r: 8px; }
+
+/* Significance vs sample size (SignificanceSampleSize.tsx): threshold curve, verdict, r² bar. */
+.sig-curve { stroke: var(--accent); stroke-width: 2.5; }
+.sig-dot { stroke: var(--bg-raised); stroke-width: 1.5; }
+.sig-dot.is-pos, .sig-verdict.is-pos { fill: var(--ok); }
+.sig-dot.is-neg, .sig-verdict.is-neg { fill: var(--bad); }
+.sig-track { fill: var(--accent-soft); }
+.sig-fill { fill: var(--accent); }
+.sig-tail { fill: var(--bad); fill-opacity: 0.35; }

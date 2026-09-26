@@ -62,6 +62,11 @@ questions:
         explains: >-
           Hardware moves the polynomial rows around. It does not move `2ⁿ` at `n = 1000`,
           which stands at 10²⁸⁴ years however fast the machine is.
+    work: |-
+      Cubic: `n = 10⁶`, so `n³ = 10¹⁸` operations at `10⁻⁹` s each is `10⁹` s. Divide by `3.15 × 10⁷` s per year: about 32 years.
+      Quadratic: `10¹²` ns is `1000` s, about 17 minutes.
+      Exponential: `2¹⁰⁰⁰ ≈ 10³⁰¹` operations, about `10²⁸⁴` years however fast the machine.
+      Polynomials scale, so a smaller input or faster machine brings them back within reach. Exponentials do not. That is the practical line.
 ---
 
 Almost every algorithm lands on one of a handful of growth rates. Learning them as a ladder

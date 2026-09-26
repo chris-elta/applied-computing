@@ -52,6 +52,11 @@ questions:
         explains: >-
           The definition already ignores small `n` via the threshold `n₀`. Choosing a
           threshold cannot rescue this one, because the failure is for every large `n`.
+    work: |-
+      Little-o: `T(n) = o(f(n))` needs `T(n) ≤ c·f(n)` for every `c > 0`, for large enough `n`.
+      Take `c = 1`: is `3n ≤ 1·n` for large `n`? No, since `3n > n` for every `n > 0`.
+      One failing `c` is enough, so `3n ≠ o(n)`.
+      For Big-O only some `c` is needed, and `c = 3` works. That is the difference.
 ---
 
 Big-O says "no bigger than". That is one of four things you might want to say. The fastest

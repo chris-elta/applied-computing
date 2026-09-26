@@ -48,6 +48,11 @@ questions:
       - text: Because sets of divisors are always finite
         explains: >-
           True, and not the point. The argument would work the same way regardless.
+    work: |-
+      Claim: `(a, b)` and `(b, r)` with `r = a mod b` have the same common divisors.
+      Forward: if `d | a` and `d | b`, then `d | a − qb = r`.
+      Backward: if `d | b` and `d | r`, then `d | qb + r = a`.
+      Equal sets have equal largest members, so `gcd(a, b) = gcd(b, r)`. "Greatest" appears only in the last step.
   - ask: Why does `Euclid(a, b)` terminate?
     choices:
       - text: "`b` strictly decreases each call and can never go below 0"
@@ -66,6 +71,11 @@ questions:
         explains: >-
           Only the second is guaranteed to shrink; `a` takes the old value of `b`. That is
           enough.
+    work: |-
+      Each call replaces `(a, b)` by `(b, a mod b)`.
+      The new second argument `a mod b` satisfies `0 ≤ a mod b < b`, so it is strictly smaller than the old `b` and non-negative.
+      A strictly decreasing sequence of non-negative integers can't go on forever, so it reaches 0.
+      At 0 the algorithm stops. Only the second argument needs to shrink.
 ---
 
 The **greatest common divisor** of two integers is the largest whole number that divides both

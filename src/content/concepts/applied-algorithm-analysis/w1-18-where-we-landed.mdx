@@ -41,6 +41,11 @@ questions:
         explains: >-
           Both versions assume that, and `fib1` is exponential regardless. The assumption
           is not what separates them.
+    work: |-
+      `fib3` makes the same calls as `fib1`, so the difference is the work per call.
+      There are `n` distinct subproblems. The first visit to each does `O(1)` work, and every repeat returns from the memo in `O(1)`.
+      Total work is proportional to the number of distinct subproblems, `n`, not to the size of the call tree.
+      Depth is still `n`, and addition is `O(1)` in both versions.
   - ask: >-
       An algorithm is both `O(n)` and `Ω(n)`. What is the one-symbol conclusion — and what
       does it still not tell you?
@@ -63,6 +68,11 @@ questions:
         explains: >-
           They are complementary, not contradictory. Holding simultaneously is exactly the
           definition of `Θ`.
+    work: |-
+      `O(n)` gives `T(n) ≤ c₂·n`, and `Ω(n)` gives `T(n) ≥ c₁·n`, both for large `n`.
+      Together, `c₁·n ≤ T(n) ≤ c₂·n`. That is the definition of `Θ(n)`.
+      What `Θ(n)` doesn't say: which case was analysed (best, worst, average), and the constants `c₁` and `c₂`.
+      Two `Θ(n)` algorithms can differ by 100× in practice.
 ---
 
 Three things to carry forward from Part 1, and one habit.

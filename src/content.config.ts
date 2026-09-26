@@ -12,6 +12,8 @@ const visual = z.discriminatedUnion('type', [
     type: z.literal('animation'),
     component: z.string(),
     caption: z.string().optional(),
+    // Default shows it in the stage at the top; 'after-notation' moves it below the notation key.
+    placement: z.enum(['top', 'after-notation']).default('top'),
   }),
   // Vector slide, typically produced by `npm run import:pdf`. Stays crisp at
   // any size and stays small. Note that pdftocairo converts text to glyph
@@ -61,6 +63,13 @@ const choice = z.object({
 const question = z.object({
   ask: z.string(),
   choices: z.array(choice).min(2),
+  /**
+   * The worked solution, one step per line (use a `|-` block). Shown behind a
+   * "Show the work" toggle once the question is answered: substitute the numbers,
+   * do the arithmetic, then say why each wrong option fails. Inline `code`,
+   * **strong** and *em* only.
+   */
+  work: z.string().optional(),
 });
 
 const courses = defineCollection({

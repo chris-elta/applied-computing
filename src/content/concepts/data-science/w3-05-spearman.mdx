@@ -49,6 +49,11 @@ questions:
         explains: >-
           That describes Pearson's blind spot in the opposite direction. Spearman detects any
           consistent ordering, linear or not.
+    work: |-
+      Rank the values. `x = 1…10` gives ranks 1…10. `y = x³` is increasing, so it gives the same ranks.
+      Each difference `dᵢ = 0`, so Spearman = `1 − 6Σdᵢ² / (n(n² − 1)) = 1 − 0 = 1`.
+      Pearson measures fit to a straight line, and `x³` curves. Calculating it gives `r ≈ 0.93`, below 1.
+      So Spearman is exactly 1 and Pearson is a little below 1.
 ---
 
 Pearson correlation asks how well the points fit a line. That is the wrong question when the

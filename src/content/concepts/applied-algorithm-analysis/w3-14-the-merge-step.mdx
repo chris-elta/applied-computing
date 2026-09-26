@@ -45,6 +45,11 @@ questions:
         explains: >-
           Each comparison involves exactly two elements and emits one. There is no paired
           final step.
+    work: |-
+      Each comparison compares the two fronts and outputs one element.
+      So after `k + l − 1` comparisons, `k + l − 1` elements are out.
+      When one list runs out, the rest of the other is already in order and is copied with no comparisons.
+      At best one element remains at that point, so at most `k + l − 1` comparisons. With `k = l = 4`, that is 7.
   - ask: What is the *best* case for merging two sorted lists of four?
     choices:
       - text: Four comparisons — when every element of one list is smaller than all of the other
@@ -63,6 +68,11 @@ questions:
         explains: >-
           The two lists are each sorted, but nothing says how they relate to one another.
           That is what the comparisons discover.
+    work: |-
+      Best case: all of one list is smaller than all of the other, say `x` below `y`.
+      Each comparison outputs an `x` element, and there are four. After four comparisons `x` is empty.
+      The four `y` elements are copied with no comparisons.
+      So best is 4 comparisons, against 7 in the worst case. Both are linear.
 ---
 
 Everything mergesort does is here.

@@ -18,6 +18,8 @@ export const animations: Record<string, Loader> = {
   DicePdf: () => import('./DicePdf'),
   BinnedCdf: () => import('./BinnedCdf'),
   VarianceReduction: () => import('./VarianceReduction'),
+  PearsonCorrelation: () => import('./PearsonCorrelation'),
+  SignificanceSampleSize: () => import('./SignificanceSampleSize'),
 };
 
 export const isAnimation = (name: string) => name in animations;

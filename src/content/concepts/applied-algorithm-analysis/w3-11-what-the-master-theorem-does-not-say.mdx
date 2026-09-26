@@ -44,6 +44,11 @@ questions:
         explains: >-
           Too broad, and not the reason. The cost is in the extra arithmetic per level, not
           in the mechanics of recursive calls.
+    work: |-
+      Asymptotics hide constants. Karatsuba's `O(n^1.59)` hides splitting, three calls, and shifts and subtractions on the way back.
+      At 64 bits: schoolbook about `64² ≈ 4,100` operations against Karatsuba's about `8,700`, so schoolbook wins.
+      The curves cross at roughly 512 bits. Below that, the larger constant outweighs the better exponent.
+      The master theorem applies fine (`a = 3, b = 2, d = 1`), so that is not the reason.
 ---
 
 Three limits, and each one bites somewhere different.

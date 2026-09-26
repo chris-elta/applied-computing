@@ -43,6 +43,11 @@ questions:
       - text: How many subproblems are combined at each step
         explains: >-
           That is `a`. `d` is the exponent on the *cost* of combining them, not their number.
+    work: |-
+      In `T(n) = aT(n/b) + O(nᵈ)`, the `aT(n/b)` part covers the recursive calls.
+      `O(nᵈ)` is what remains: the work of one call, splitting and combining.
+      Check by example: Karatsuba (`a = 3`) and the four-product version (`a = 4`) both have `d = 1`, yet Karatsuba is `O(n^1.59)`. So `d` is not the total cost.
+      `a` is the number of subproblems, and the depth `log_b n` comes from `b`.
 ---
 
 Both versions of the multiplication algorithm had the same shape, and so did every other

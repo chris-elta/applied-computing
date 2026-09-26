@@ -64,6 +64,12 @@ questions:
         explains: >-
           Reading `r` as a percentage is the common slip. 40% of the variance needs
           `r ≈ 0.63`.
+    work: |-
+      Variance explained is `r²`.
+      First feature: `0.4² = 0.16`, so 16%.
+      Second feature: `0.8² = 0.64`, so 64%.
+      Ratio: `0.64 / 0.16 = 4`. Doubling `r` quadruples the variance explained.
+      To explain 40% you would need `r = √0.4 ≈ 0.63`, not `0.4`.
 assessed:
   - "Quiz 2 · Q5"
 prerequisites:

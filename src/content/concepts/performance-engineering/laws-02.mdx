@@ -26,6 +26,11 @@ questions:
         explains: >-
           Remarkably, no. Little's Law needs no assumption about distributions. It holds
           for any stable system, which is exactly what makes it so useful.
+    work: |-
+      Little's Law: `L = λ · W`, where `L` is items in the system, `λ` is the arrival rate and `W` is time in the system.
+      Convert units: `W = 50 ms = 0.05 s`.
+      `L = 200 × 0.05 = 10` requests in flight.
+      Dividing `200 / 50 = 4` mixes units, and the law needs no assumption about arrival distribution.
 ---
 
 Three quantities, one relationship that holds for any queue that isn't growing without

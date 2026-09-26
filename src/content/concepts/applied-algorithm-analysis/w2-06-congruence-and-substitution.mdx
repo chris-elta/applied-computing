@@ -44,6 +44,11 @@ questions:
         explains: >-
           Primality matters later, for inverses and division. Congruence itself works for any
           modulus.
+    work: |-
+      Test 1: `−3 − 9 = −12`, and `−12` is a multiple of 12.
+      Test 2: reduce each side. `9 mod 12 = 9`. And `−3 = (−1)(12) + 9`, so `−3 mod 12 = 9`.
+      Both reduce to 9, so `−3 ≡ 9 (mod 12)` is true.
+      Congruence works for negatives and any modulus, prime or not.
   - ask: >-
       `a mod N` and `x ≡ y (mod N)` both contain the word "mod". What is the difference?
     choices:
@@ -67,6 +72,11 @@ questions:
         explains: >-
           It does not — that is the whole convenience. `17 ≡ 5 (mod 12)` is a perfectly good
           statement with neither side reduced.
+    work: |-
+      `13 mod 5` is an operation: it evaluates to 3, a number.
+      `13 ≡ 3 (mod 5)` is a statement: it is true, because `13 − 3 = 10` is a multiple of 5.
+      You can put `a mod N` on the right of an equals sign because it is a value. A congruence can be true or false, so it can't.
+      In the statement, `(mod 5)` only names the modulus.
 ---
 
 Two numbers are **congruent** mod `N` when the modulus cannot tell them apart:

@@ -59,6 +59,13 @@ questions:
         explains: >-
           Nothing in the numbers points to an even split. Working it out from the counts
           gives about 9%.
+    work: |-
+      Picture 10,000 people. 1% have the condition: 100 people.
+      Of those 100, 90% test positive: `100 × 0.9 = 90` true positives.
+      The other 9,900 don't have it, and 9% of them test positive: `9,900 × 0.09 = 891` false positives.
+      Total positives: `90 + 891 = 981`.
+      `P(condition | positive) = 90 / 981 ≈ 0.092`, about 9%.
+      Check with Bayes: `0.9 × 0.01 / (0.9 × 0.01 + 0.09 × 0.99) = 0.009 / 0.0981 ≈ 0.092`.
   - ask: >-
       Which quantity must you know, besides `P(B|A)` and `P(B)`, to compute `P(A|B)` with
       Bayes' theorem?
@@ -77,6 +84,10 @@ questions:
       - text: "The number of observations"
         explains: >-
           The formula uses probabilities, not sample sizes.
+    work: |-
+      Bayes' theorem: `P(A|B) = P(B|A) × P(A) / P(B)`.
+      You are given `P(B|A)` and `P(B)`. The remaining piece on the right-hand side is `P(A)`, the prior or base rate.
+      `P(A|B)` is the unknown, and the formula uses probabilities, not counts.
 ---
 
 The previous concept ended on a warning: `P(A|B)` and `P(B|A)` are different questions.

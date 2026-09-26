@@ -61,6 +61,12 @@ questions:
         explains: >-
           True, with `c = 1, n₀ = 1`, since `T(n) ≥ 3n`. But it is a weak lower bound when
           a quadratic one is available.
+    work: |-
+      Upper bound: `½n² + 3n ≤ ½n² + 3n² = 3.5n²` for `n ≥ 1`. So `c₂ = 3.5`, `n₀ = 1`.
+      Lower bound: `½n² + 3n ≥ ½n²`. So `c₁ = ½`.
+      Both bounds hold, so `T(n) = Θ(n²)`.
+      `O(n)` fails: `½n² + 3n ≤ cn` needs `n ≤ 2c − 6`, false for large `n`.
+      `O(n³)` and `Ω(n)` are true but loose. The tight one is the most informative.
   - ask: >-
       An algorithm runs two phases in sequence, costing `f(n)` and `g(n)`. What is its
       total cost?
@@ -83,6 +89,11 @@ questions:
         explains: >-
           It can, and that is the value of the theorem: the bound holds for any nonnegative
           `f` and `g` whatsoever.
+    work: |-
+      The phases run one after the other, so add: `f(n) + g(n)`.
+      Let `m = max(f, g)`. Then `m ≤ f + g ≤ 2m`.
+      So `f + g` is within a constant factor of `m`: `Θ(f + g) = Θ(max(f, g))`.
+      So the slower phase dominates. Multiplying is for nested loops, and the total can't be less than the larger phase.
 ---
 
 The definitions are behind you. This page is drill: the same three steps, applied seven

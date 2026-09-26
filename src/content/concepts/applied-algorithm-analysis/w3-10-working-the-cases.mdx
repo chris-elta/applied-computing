@@ -35,6 +35,13 @@ questions:
         explains: >-
           (d) is root-dominated: `log₂2 = 1 < 2 = d`, so the combine step swamps everything
           and the answer is `O(n²)` with no log.
+    work: |-
+      Compare `d` with `log_b a` for each recurrence.
+      (a) `2T(n/2) + O(n)`: `log₂ 2 = 1 = d`, balanced, so `O(n log n)`.
+      (b) `4T(n/2) + O(n²)`: `log₂ 4 = 2 = d`, balanced, so `O(n² log n)`.
+      (c) `3T(n/3) + O(n)`: `log₃ 3 = 1 = d`, balanced, so `O(n log n)`.
+      (d) `2T(n/2) + O(n²)`: `log₂ 2 = 1 < 2 = d`, root dominated, so `O(n²)`.
+      So (a) and (c) are `O(n log n)`.
   - ask: >-
       Rows (a), (b) and (c) are all the balanced case, yet only two give `O(n log n)`. What
       separates them?
@@ -57,6 +64,11 @@ questions:
         explains: >-
           Height is `log_b n` in all of them, and it is the same log factor each picks up.
           What differs is the per-level cost.
+    work: |-
+      Balanced means `d = log_b a`, and the answer is `O(nᵈ log n)`.
+      (a): `d = 1`, so `O(n log n)`. (c): `d = 1`, so `O(n log n)`. (b): `d = 2`, so `O(n² log n)`.
+      The log is attached to `nᵈ`, so `d` sets what the log multiplies.
+      Subproblem count (2, 4, 3) doesn't separate them, since (a) and (c) agree with different counts.
 ---
 
 Four recurrences. Which solve to `O(n log n)`?

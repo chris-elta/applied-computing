@@ -36,6 +36,11 @@ questions:
       - text: The two methods give different answers, and the log one is correct
         explains: >-
           They agree mathematically. The log form only avoids the computer's underflow.
+    work: |-
+      The product is `0.01¹⁰⁰⁰ = 10⁻²⁰⁰⁰`.
+      A 64-bit float can't go below about `10⁻³⁰⁸`, so the product underflows to 0.
+      Take logs: `log₁₀(0.01) = −2` for each factor. Since `log(ab) = log a + log b`, the log of the product is the sum: `1000 × (−2) = −2000`.
+      −2000 is an ordinary number, so nothing is lost.
 ---
 
 You already met logarithms in algorithms courses, where they count how many times something

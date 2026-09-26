@@ -46,6 +46,11 @@ questions:
       - text: No, because independence needs the events to have different probabilities
         explains: >-
           Independent events can have any probabilities, equal or not.
+    work: |-
+      Test: `A` and `B` are independent only if `P(A ∩ B) = P(A) × P(B)`.
+      Product: `0.5 × 0.5 = 0.25`.
+      Observed joint: `0.30`. Since `0.30 ≠ 0.25`, they are not independent.
+      Same result by conditioning: `P(A|B) = 0.30 / 0.5 = 0.6`, which differs from `P(A) = 0.5`, so knowing `B` shifts what we expect of `A`.
   - ask: >-
       You assume two features in your data are independent and multiply their probabilities
       to estimate how often both occur. When does this most likely give a poor estimate?
@@ -66,6 +71,10 @@ questions:
       - text: Never — the product rule is always valid
         explains: >-
           It is valid only for independent events. That is the whole point of the definition.
+    work: |-
+      Multiplying probabilities gives `P(A ∩ B)` only when the events are independent.
+      If the features are related, the true joint probability differs from `P(A) × P(B)`, so the estimate is off.
+      Small probabilities, many observations and so on do not affect whether the product rule holds. Only relatedness does.
 ---
 
 Start with the slide's setup. Half of your students are female, and call that event `A`.

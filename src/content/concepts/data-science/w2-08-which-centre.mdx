@@ -55,6 +55,11 @@ questions:
         explains: >-
           They give 60k versus over a million on the same data, so the choice clearly
           matters.
+    work: |-
+      Mean: `(50 + 50 + 60 + 70 + 5000) / 5 = 5230 / 5 = 1046`, about 1.05M.
+      That is higher than four of the five salaries, so it is not typical.
+      Median: sort `50, 50, 60, 70, 5000`. The middle value is 60k.
+      The median ignores how big the outlier is, so it is the better summary. The geometric mean is for growth ratios, not amounts.
   - ask: >-
       A stock rises 50% one year and falls 50% the next. What is its average yearly change?
     choices:
@@ -76,6 +81,12 @@ questions:
       - text: −50%
         explains: >-
           That is the second year alone. Averaging must cover both.
+    work: |-
+      Convert each change to a factor: +50% is `1.5`, −50% is `0.5`.
+      Start at 100. After year one: `100 × 1.5 = 150`. After year two: `150 × 0.5 = 75`.
+      Overall factor: `1.5 × 0.5 = 0.75`, a 25% loss over two years.
+      Geometric mean: `√0.75 ≈ 0.866`, so about `−13%` a year. Check: `0.866² ≈ 0.75`.
+      The arithmetic mean says 0%, which would leave you at 100, not 75.
 ---
 
 A summary of data hides something. The question is whether it hides the thing you care

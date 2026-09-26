@@ -74,6 +74,11 @@ questions:
         explains: >-
           A single point proves nothing about eventual behaviour — the claim is about every
           `n` beyond some threshold.
+    work: |-
+      Definition: `T(n) = O(f(n))` means there exist `c > 0` and `n₀` such that for all `n ≥ n₀`, `T(n) ≤ c·f(n)`.
+      So you must produce two witnesses, `c` and `n₀`, and check the inequality for every `n ≥ n₀`.
+      `T(n) ≤ f(n)` for all `n` is too strong: `3n = O(n)` yet `3n ≤ n` never holds.
+      A limit going to 0 is little-o, and a single `n` proves nothing about all large `n`.
 ---
 
 Before any of the machinery: **`T(n)` is not something you prove.** It is a name for the

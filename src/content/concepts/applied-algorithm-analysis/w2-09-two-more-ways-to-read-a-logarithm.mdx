@@ -39,6 +39,10 @@ questions:
         explains: >-
           Same number, different mechanisms. Knowing *which* one is in play is what tells you
           whether an analysis generalises.
+    work: |-
+      Fast exponentiation halves `y` each round. Euclid's larger value halves every two rounds.
+      Both shrink their quantity by a constant factor per round, so the number of rounds is how many times you can halve before reaching 1: about `log₂` of the size.
+      The digits reading gives input size, which is the per-round cost. The tree-height reading is for divide and conquer, and neither algorithm branches.
 ---
 
 A logarithm answers one question — *how many times must I multiply `b` by itself to reach

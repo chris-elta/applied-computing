@@ -39,6 +39,11 @@ questions:
       - text: The rows can be added in any order
         explains: >-
           True but irrelevant to the cost — reordering still leaves `n` additions to perform.
+    work: |-
+      In binary each digit of `y` is 0 or 1.
+      A digit of 1 gives a row equal to `x` shifted left, and a 0 gives a row of zeros. No digit-by-digit multiplication is needed.
+      Shifting costs nothing (append a zero), so making the rows is cheap.
+      The cost is adding the `n` rows: `n` additions of `O(n)` bits, which is `O(n²)`.
 ---
 
 Addition came out at `Θ(n)` and optimal. Multiplication is where the price starts to hurt.

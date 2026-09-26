@@ -38,6 +38,11 @@ questions:
       - text: Swaps are free, so only comparisons have a cost
         explains: >-
           Swaps are not free — they are just not what the quadratic count comes from here.
+    work: |-
+      Selection sort swaps at most once per pass, so 4 swaps in total.
+      But each pass scans the whole unsorted remainder to find the minimum. That is `(n−1) + (n−2) + … + 1 = n(n−1)/2` comparisons, and for `n = 8` that is 28.
+      The comparison count doesn't depend on how much is already sorted, and it is quadratic.
+      So the quadratic exponent counts the nested sweeps of comparisons, not the moves.
 ---
 
 Before building a better sort, it is worth seeing precisely where the bad ones lose.

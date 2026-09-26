@@ -4,6 +4,10 @@ section: w3-interpreting
 order: 330
 title: Significance Is Not Importance
 visuals:
+  - type: animation
+    component: SignificanceSampleSize
+    placement: after-notation
+    caption: The same r = 0.10 is not significant at small n and becomes significant as n grows, while r² stays at 1%.
   - type: svg
     src: data-science/w3-correlation/08.svg
     caption: Slide 8 of 21 — significance depends on sample size as well as r.
@@ -48,6 +52,12 @@ questions:
         explains: >-
           Prediction depends on effect size. This one leaves 99.9% of the variance
           unexplained.
+    work: |-
+      Is it real? The t statistic for a correlation is `t = r · √(n − 2) / √(1 − r²)`. With `n = 100,000` and `r = 0.03`: `t = 0.03 · √99,998 / √(1 − 0.0009) ≈ 0.03 · 316.2 / 0.9995 ≈ 9.49`.
+      The cutoff for a 0.05 test with this many points is about 1.96. Since 9.49 is far above 1.96, chance alone would almost never give this, so the relationship is very probably real.
+      The same check in r terms: the bar is `1.96 / √(1.96² + 99,998) ≈ 0.006`, and `0.03` clears it comfortably.
+      Is it big? Effect size is `r² = 0.03² = 0.0009`, which is 0.09% of the variance. So 99.91% is unexplained.
+      So it is real but tiny. High significance came from the huge `n`, not from a strong `r`, and a tiny effect cannot predict well.
 assessed:
   - "Quiz 2 · Q2"
 prerequisites:

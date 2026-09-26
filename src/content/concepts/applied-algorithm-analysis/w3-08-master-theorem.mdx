@@ -48,6 +48,11 @@ questions:
         explains: >-
           It terminates whenever `b > 1`, in all three cases. The theorem is about cost, not
           termination.
+    work: |-
+      Level `k` has `aᵏ` nodes, each of size `n/bᵏ`, so each costs `(n/bᵏ)ᵈ`.
+      Level cost: `aᵏ · (n/bᵏ)ᵈ = nᵈ · (a/bᵈ)ᵏ`.
+      So level costs form a geometric series with ratio `a/bᵈ`. It is below, equal to, or above 1.
+      Take logs: `a < bᵈ` is `log_b a < d`, and so on. The comparison in the theorem is the ratio test in another form.
   - ask: >-
       Why does the balanced case pick up a `log n` factor that the other two do not?
     choices:
@@ -71,6 +76,11 @@ questions:
         explains: >-
           It is called once per node, not once per level. The log comes from summing equal
           level costs.
+    work: |-
+      Balanced case: `a/bᵈ = 1`, so every level costs `nᵈ · 1ᵏ = nᵈ`.
+      Number of levels: `log_b n + 1`.
+      Total: `(log_b n + 1) · O(nᵈ) = O(nᵈ log n)`.
+      In the other two cases the series is geometric, so one end dominates and the sum is a constant times that end. No `log n` appears.
 ---
 
 > **Master theorem.** If `T(n) = aT(⌈n/b⌉) + O(nᵈ)` for constants `a > 0`, `b > 1`, `d ≥ 0`,

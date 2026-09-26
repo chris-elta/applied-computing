@@ -27,6 +27,11 @@ questions:
         explains: >-
           This is exactly the intuition Amdahl's Law kills. The serial 20% takes the same
           wall-clock time no matter how many cores you add.
+    work: |-
+      Amdahl's Law: `speedup = 1 / ((1 − p) + p/N)`, with `p` the parallel fraction.
+      Here the serial part is 20%, so `p = 0.8`.
+      With unlimited cores, `N → ∞` and `p/N → 0`, leaving `1 / (1 − p) = 1 / 0.2 = 5`.
+      So the best possible speedup is 5×. The serial 20% takes the same time however many cores you add.
 ---
 
 Parallelism is bounded by the part of the program that refuses to be parallel. If a

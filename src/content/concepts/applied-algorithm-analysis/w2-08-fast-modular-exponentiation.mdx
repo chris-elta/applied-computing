@@ -47,6 +47,11 @@ questions:
         explains: >-
           `y` calls is the *naïve* method — and since `y` can be about `2ⁿ`, that is precisely
           what repeated squaring exists to avoid.
+    work: |-
+      Calls: an odd `y` becomes `y − 1`, and an even `y` is halved. So `y` at least halves every two calls.
+      An `n`-bit `y` can be halved `n` times, so at most `2n = O(n)` calls.
+      Work per call: one modular multiplication (squaring, or multiplying by `x`) at `O(n²)`.
+      Total: `O(n) × O(n²) = O(n³)`.
   - ask: Why does the analysis say `2n` calls rather than `n`?
     choices:
       - text: >-
@@ -66,6 +71,11 @@ questions:
       - text: It is a safety margin with no particular meaning
         explains: >-
           It has a precise cause: the odd branch spends a call without halving.
+    work: |-
+      Even `y`: one call, and `y` is halved.
+      Odd `y`: one call that only subtracts 1 (peeling off a factor of `x`), giving an even `y`. Then a second call halves it.
+      Worst case, every halving costs two calls. An `n`-bit `y` halves `n` times, giving at most `2n` calls.
+      Inside `O` the 2 disappears, so it is still `O(n)`.
 assessed:
   - "Quiz 1 · Q1"
 prerequisites:

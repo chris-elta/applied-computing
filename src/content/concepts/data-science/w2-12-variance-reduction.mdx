@@ -37,6 +37,11 @@ questions:
       - text: It guarantees the highest possible score
         explains: >-
           It gives a steadier estimate, not a higher one.
+    work: |-
+      Each split has its own luck, so one score is the true quality plus a chance error.
+      Run k folds and average: good and bad luck partly cancel.
+      The average of k noisy scores varies less between attempts than a single score does.
+      The model itself is unchanged, and the score isn't higher. Only the measurement is steadier.
 assessed:
   - "Lab 1 · Task 5"
 prerequisites:

@@ -42,6 +42,11 @@ questions:
       - text: Because the result is exact rather than approximate
         explains: >-
           Both sides are exact. Nothing here involves approximation.
+    work: |-
+      Gauss's trick: four multiplications become three multiplications plus a few extra additions.
+      On `n`-bit numbers, addition is `O(n)` and multiplication is `O(n²)`.
+      Swapping one `O(n²)` operation for a couple of `O(n)` ones is a net saving once `n` is large.
+      Applied recursively, dropping one of four subproblems changes the exponent, not just a constant. Three isn't better than four on its own, since the extra additions have a cost.
 ---
 
 Divide and conquer is three steps:

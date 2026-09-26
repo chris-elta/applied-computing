@@ -27,6 +27,11 @@ questions:
         explains: >-
           Intensity is a property of the algorithm, not the machine. The machine
           supplies the roofline you compare it against.
+    work: |-
+      Arithmetic intensity is FLOPs divided by bytes moved.
+      Bytes: read two 4-byte floats and write one 4-byte result: `4 + 4 + 4 = 12` bytes.
+      FLOPs: one addition.
+      `1 / 12 ≈ 0.08` FLOPs per byte. That is well below the crossover, so it is memory bound.
   - ask: Your kernel sits well under the sloped part of the roofline. What is most likely to help?
     choices:
       - text: Improving data reuse so fewer bytes move
@@ -42,6 +47,11 @@ questions:
         explains: >-
           More threads generally means more demand on the same memory bandwidth. When
           bandwidth is the constraint, this often makes things worse.
+    work: |-
+      Below the sloped part of the roofline means memory bound: bandwidth is the limit, not compute.
+      A higher clock raises the flat compute ceiling, which you aren't touching.
+      More threads add demand on the same bandwidth, which often hurts.
+      Reusing data (blocking or tiling) means fewer bytes moved per FLOP. That raises intensity and moves you right along the slope.
 ---
 
 Whether your code is limited by arithmetic or by memory traffic is not a matter of

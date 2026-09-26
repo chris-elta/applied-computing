@@ -27,6 +27,11 @@ questions:
         explains: >-
           Write back stores a result that has already been computed. The arithmetic
           happened one stage earlier.
+    work: |-
+      Go through the stages. Fetch moves the instruction from memory into the CPU.
+      Decode works out what the instruction means and which units to switch on.
+      Execute is where the ALU does the arithmetic on your data.
+      Write back stores a result that was already computed. So only Execute performs arithmetic.
 ---
 
 A processor has no idea what your program *means*. It runs a loop so simple you could

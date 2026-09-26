@@ -33,6 +33,11 @@ questions:
         explains: >-
           Testing may well have happened. Without a spec, tests cover the cases someone
           imagined, and this was not one of them.
+    work: |-
+      The camera follows a bald head. Nobody wrote a rule against that, because nobody thought of it.
+      Without a specification there is no list of failures to guard against, so surprising failures are expected.
+      The failure is about what was recognised, not speed, so more processing power would only repeat it faster.
+      The slide's conclusion is to tolerate some wrong predictions, not to avoid models or blame missing tests.
   - ask: >-
       You evaluate a model on held-out test data and it scores well on average. What may you
       conclude?
@@ -55,6 +60,12 @@ questions:
       - text: That the data is free of errors
         explains: >-
           A good score says nothing about the quality of the test data itself.
+    work: |-
+      A held-out score is an average over the test cases.
+      An average hides individual errors, so it cannot show that every prediction is correct.
+      It says nothing about rare failures, or about how outputs affect the world after deployment, so monitoring is still needed.
+      It also says nothing about the quality of the test data.
+      So the fair reading is: works well enough on average on that data, nothing more precise.
 ---
 
 During a live-streamed match involving Inverness Caledonian Thistle in Scotland, an

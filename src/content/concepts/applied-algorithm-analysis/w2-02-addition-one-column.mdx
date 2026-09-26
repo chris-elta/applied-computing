@@ -50,6 +50,11 @@ questions:
         explains: >-
           Carry propagation is a property of this method, and hardware does circumvent it.
           The floor here comes from having to read the input at all.
+    work: |-
+      `O(n)` is a statement about one method: column addition does `n` column steps.
+      `Ω(n)` is a statement about every algorithm. Any correct sum depends on all `n` bits of the input, so an algorithm that doesn't read them can't be right.
+      So no algorithm can beat `n`, however cleverly it is written.
+      Together the two bounds give `Θ(n)`.
 ---
 
 Now that `n` means digits, addition can be priced honestly.

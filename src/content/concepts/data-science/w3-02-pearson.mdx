@@ -4,6 +4,10 @@ section: w3-measuring
 order: 310
 title: The Pearson Correlation Coefficient
 visuals:
+  - type: animation
+    component: PearsonCorrelation
+    placement: after-notation
+    caption: Each point votes with the area of its rectangle, green when it agrees and red when it disagrees; the votes sum to the numerator of r.
   - type: svg
     src: data-science/w3-correlation/03.svg
     caption: Slide 3 of 21 — the formula, and which points push r up or down.
@@ -51,6 +55,11 @@ questions:
         explains: >-
           Both coordinates enter as a product. A point tells you nothing about correlation
           from one coordinate alone.
+    work: |-
+      Each point adds `(x − X̄)(y − Ȳ)` to the numerator of `r`.
+      Here `x` is above its mean, so `(x − X̄) > 0`. And `y` is below its mean, so `(y − Ȳ) < 0`.
+      Positive times negative is negative, for example `(+2)(−3) = −6`.
+      So the point pulls `r` down. Only points on the same side of both means push it up.
 assessed:
   - "Quiz 2 · Q3"
 prerequisites:

@@ -32,6 +32,11 @@ questions:
           Clock speed changes the arithmetic side but barely moves memory latency — that
           is exactly the gap that has been widening for thirty years. Faster clocks make
           the imbalance worse, not better.
+    work: |-
+      Compute time: 50 operations at about one per cycle on a 3 GHz core is `50 / 3×10⁹ ≈ 17 ns`.
+      Memory time: one read from main memory is about 80 ns.
+      `80 ns` is roughly `4.7×` the `17 ns` of compute, so the wait dominates.
+      Even split would need roughly `80 × 3 ≈ 240` operations per element. A faster clock shrinks compute but barely changes memory latency.
 ---
 
 Here is the uncomfortable number. A modern CPU executes an instruction in well under a

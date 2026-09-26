@@ -54,6 +54,12 @@ questions:
         explains: >-
           Halving the work does not halve the exponent. You gain roughly 1.4 in `n`, not
           half of 50.
+    work: |-
+      Each increase of `n` by 1 multiplies the work by `φ ≈ 1.618`.
+      A machine twice as fast lets you do double the work in 41 seconds. Find `Δ` with `φ^Δ = 2`.
+      `Δ = ln 2 / ln φ = 0.693 / 0.481 ≈ 1.44`.
+      So `n ≈ 50 + 1.44 ≈ 51`.
+      Linear growth would give 100, but the cost is exponential. Doubling the speed adds a constant, not a factor.
 assessed:
   - "Quiz 1 · Q4"
 prerequisites:

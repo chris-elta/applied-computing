@@ -45,6 +45,11 @@ questions:
         explains: >-
           The size of the gcd has nothing to do with the round count — it can be 1 while the
           algorithm runs its full length.
+    work: |-
+      Lemma: `a mod b < a/2` when `a ≥ b`.
+      Round 1 takes `(a, b)` to `(b, r₁)` with `r₁ < a/2`. Round 2 takes `(b, r₁)` to `(r₁, r₂)`.
+      After two rounds the value in the first slot is `r₁ < a/2`, half of what it was.
+      An `n`-bit number can halve at most `n` times, so at most `2n` rounds. "`b` decreases by 1" only gives a bound as large as the value.
   - ask: Why are consecutive Fibonacci numbers the worst case for Euclid?
     choices:
       - text: >-
@@ -68,6 +73,11 @@ questions:
         explains: >-
           That is a restatement of the observation rather than its cause. The cause is that
           each remainder is a bare subtraction.
+    work: |-
+      Take `gcd(610, 377)`. `610 mod 377 = 233`, which is `610 − 377`, a single subtraction.
+      Next: `377 mod 233 = 144`, `233 mod 144 = 89`, and so on down the Fibonacci sequence.
+      Each remainder is one subtraction, the smallest shrink the lemma allows, so it takes the most rounds.
+      The gcd being 1, or the numbers being large, doesn't make it slow. What matters is `b` being just over half of `a` every time.
 ---
 
 Termination was easy. A **rate** needs one more result.

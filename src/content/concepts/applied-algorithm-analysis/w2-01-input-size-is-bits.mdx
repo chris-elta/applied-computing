@@ -48,6 +48,11 @@ questions:
         explains: >-
           Changing base moves the digit count by only a constant factor, which `Θ` discards.
           The gap between `2ⁿ` and `n` survives any base.
+    work: |-
+      Input size is the length of what you are handed. `N` is written in about `n = log₂ N` bits.
+      So `N ≈ 2ⁿ`, and the loop runs `2ⁿ` times.
+      Add one bit and `N` doubles, so the work doubles. That is exponential in `n`, not linear.
+      Changing base only changes `n` by a constant factor, so it doesn't help.
 assessed:
   - "Quiz 1 · Q3"
 prerequisites:

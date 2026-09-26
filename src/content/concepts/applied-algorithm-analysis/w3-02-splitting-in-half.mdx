@@ -48,6 +48,11 @@ questions:
       - text: The number of bits in the answer
         explains: >-
           The answer has about `2n` bits, but the term counts *work*, not output size.
+    work: |-
+      Read `T(n) = 4T(n/2) + O(n)` term by term. `T(n)` is the total cost at size `n`.
+      `4T(n/2)` is the cost of the four half-size recursive calls. That covers everything the children do.
+      What is left is the work this call does itself: shifting and adding to recombine, which is `O(n)`.
+      So `O(n)` is only this call's own work, not the total and not the children.
 ---
 
 Week 2 left multiplication at `O(n²)` — schoolbook, Al-Khwarizmi and the recursion all cost

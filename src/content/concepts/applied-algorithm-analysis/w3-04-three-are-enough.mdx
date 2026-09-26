@@ -45,6 +45,12 @@ questions:
         explains: >-
           They are different products in general. The identity recovers their **sum**, which
           is all the formula needs.
+    work: |-
+      The product is `xL·yL · 2ⁿ + (xL·yR + xR·yL) · 2^(n/2) + xR·yR`.
+      `P1 = xL·yL` and `P2 = xR·yR` are already needed for the outer terms.
+      One new product: `P3 = (xL + xR)(yL + yR) = xL·yL + xL·yR + xR·yL + xR·yR`.
+      Subtract the known ones: `P3 − P1 − P2 = xL·yR + xR·yL`, the middle term.
+      Subtraction is `O(n)`, so this needs three multiplications in total, not four.
 ---
 
 The previous page set the target: lose one of the four subproblems. Gauss's identity is

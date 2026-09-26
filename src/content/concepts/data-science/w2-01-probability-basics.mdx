@@ -46,6 +46,11 @@ questions:
       - text: Probabilities must be less than 0.5
         explains: >-
           There is no such limit. A certain outcome has probability 1.
+    work: |-
+      Rule 1: each probability lies between 0 and 1. 0.5, 0.4 and 0.3 all pass.
+      Rule 2: over all possible outcomes the probabilities sum to 1. Nothing else can happen, so add them: `0.5 + 0.4 + 0.3 = 1.2`.
+      1.2 is not 1, so rule 2 is broken.
+      Probabilities need not be whole numbers, and there is no cap at 0.5.
 ---
 
 Suppose a die is rolled. There are six outcomes, and no matter how you feel about the die,

@@ -39,6 +39,11 @@ questions:
       - text: X causes Y, because X moved last
         explains: >-
           The order is backwards. The one that moves first is the candidate cause.
+    work: |-
+      Timing: `X` rises two days after `Y`, never the reverse.
+      Granger test: does past `Y` help predict `X` beyond what past `X` predicts? Yes, so `Y` Granger-causes `X`.
+      Limit: that is prediction through time. A hidden `C` that moves `Y` first and `X` two days later would give the same pattern.
+      So it does not settle whether the link is direct.
 ---
 
 The previous concept ended with a problem: correlation cannot tell you which way an arrow

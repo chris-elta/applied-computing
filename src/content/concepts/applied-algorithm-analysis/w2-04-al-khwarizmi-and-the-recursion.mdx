@@ -43,6 +43,11 @@ questions:
         explains: >-
           The left column's parity is irrelevant. The test is on the right column, and it is
           reading `y` in binary.
+    work: |-
+      Right column: halve `y` each row, dropping remainders. Left column: double `x`.
+      Halving and testing for odd reads off the bits of `y` from the right. A row is odd exactly when that bit is 1.
+      Left column at that row is `x · 2ᵏ`, the shifted copy of `x` for that bit.
+      So the sum of left values on odd rows is `Σ x · 2ᵏ` over the 1-bits of `y`, which equals `x · y`. Keeping any other rows would give the wrong sum.
   - ask: What do schoolbook multiplication, Al-Khwarizmi's table and the recursion have in common?
     choices:
       - text: They are one algorithm in three costumes, all costing `O(n²)`
@@ -62,6 +67,11 @@ questions:
         explains: >-
           Free shifting is what makes each *row* cheap. The `n` additions of `n`-bit numbers
           remain, and they are the whole cost.
+    work: |-
+      Count the work in each. Schoolbook: `n` rows, each an `O(n)` addition.
+      Al-Khwarizmi: about `n` halvings, each adding an `n`-bit number to the total.
+      Recursion: `n` levels, each doing one `O(n)` addition.
+      All three do `n × O(n) = O(n²)`. Each is the same shift-and-add computation written differently.
 ---
 
 Double the left column, halve the right (rounding down), stop when the right reaches 0, then

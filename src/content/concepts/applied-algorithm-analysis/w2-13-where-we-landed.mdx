@@ -40,6 +40,11 @@ questions:
         explains: >-
           Both versions assume that, and `fib1` is exponential regardless. This week has in
           any case shown that assumption to be false for large numbers.
+    work: |-
+      `fib3` makes the same calls as `fib1`, so look at work per call.
+      There are `n` distinct subproblems. The first visit to each does `O(1)` work, and repeats return from the memo.
+      Total is `n × O(1) = O(n)`, not the size of the call tree.
+      Depth is still `n`, and it makes as many calls as `fib1`.
   - ask: >-
       An algorithm is both `O(n)` and `Ω(n)`. What is the one-symbol conclusion — and what
       does that symbol still not tell you?
@@ -61,6 +66,11 @@ questions:
       - text: Nothing — the two bounds contradict each other
         explains: >-
           They are complementary. Holding simultaneously is exactly the definition of `Θ`.
+    work: |-
+      `O(n)` gives an upper bound `c₂·n` and `Ω(n)` a lower bound `c₁·n`.
+      Both together: `c₁·n ≤ T(n) ≤ c₂·n`, which is `Θ(n)`.
+      `Θ` doesn't say which case was analysed, and it hides the constants `c₁` and `c₂`.
+      Two `Θ(n)` algorithms can differ by a factor of 100 in practice.
   - ask: >-
       Euclid's algorithm runs on two 100-digit numbers. Taking `n` as the bit length of the
       larger one, is `n` about 100, 200, 332, or 10¹⁰⁰?
@@ -83,6 +93,11 @@ questions:
         explains: >-
           That is roughly the *value*, and using it as the size is exactly the mistake this
           week exists to remove — it would make Euclid look impossibly slow.
+    work: |-
+      Input size is the bit length of the larger number.
+      One decimal digit needs `log₂ 10 ≈ 3.32` bits.
+      `100 × 3.32 ≈ 332` bits.
+      Not 664: that adds both numbers, but `n` is the larger one alone. Not 100 (digits, not bits), and not `10¹⁰⁰`, which is the value.
 ---
 
 One sentence, one table, one habit.

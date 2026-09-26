@@ -23,6 +23,11 @@ questions:
         explains: >-
           Registers are a separate, even smaller tier. The figure is showing cache
           behaviour — the word genuinely came from the cache.
+    work: |-
+      Address 0 is a miss, so the cache fetches a whole block, not one word.
+      The block holds four words: addresses 0, 1, 2 and 3.
+      So when address 1 is read, it is already in the cache, a hit, with no prediction needed.
+      It isn't prefetching, and it isn't a register.
   - ask: You rewrite a loop so it reads every 16th element instead of every element. What happens?
     choices:
       - text: Roughly the same speed — it does fewer reads, so it evens out
@@ -38,6 +43,11 @@ questions:
         explains: >-
           Right. With a stride larger than the block, no read ever benefits from the block
           its neighbour pulled in. You pay full latency every single time.
+    work: |-
+      With a block of four words, reading every element gives one miss then three hits, per block.
+      A stride of 16 jumps over the block, so each read lands in a different block.
+      No read benefits from a neighbour's fetch, so every read misses and pays full memory latency.
+      Fewer reads doesn't help: each one costs about 80 times a cache hit.
 ---
 
 The cache is small — a few megabytes against many gigabytes of memory. It cannot hold

@@ -52,6 +52,11 @@ questions:
         explains: >-
           That is the cost *consequence*, not the reason. The reason is how far past `N` the
           result can land.
+    work: |-
+      Both inputs are in `0…N−1`.
+      Sum: `a + b ≤ 2N − 2 < 2N`. That is less than two copies of `N`, so one conditional subtraction reduces it.
+      Product: `a · b ≤ (N−1)² < N²`. That can be nearly `N` copies of `N`, so subtracting one at a time would take nearly `N` steps.
+      So a product needs a full long division, but a sum needs one subtraction.
 ---
 
 Modular arithmetic would be worthless if you had to compute the answer first and reduce it

@@ -43,6 +43,11 @@ questions:
         explains: >-
           Pivot choice changes which inputs are bad and how likely they are — it does not
           change whether the sentence is grammatically coherent.
+    work: |-
+      Split the sentence into its two claims. "Worst case is `O(n²)`" is a bound on one case. "Average case is `Θ(n log n)`" is a bound on a different case.
+      The bound type (`O`, `Ω`, `Θ`) and the case (worst, average, best) are independent choices, and each clause makes one of each.
+      Different cases can have different growth, so the claims don't conflict.
+      Even for a single case, `Θ(n log n)` implies `O(n²)`, since `n log n ≤ n²`.
 ---
 
 Three mistakes get made with these definitions, and they are worth more attention than the

@@ -36,6 +36,11 @@ questions:
         explains: >-
           The base case is a single element, already sorted, and does nothing. Comparisons
           begin one level up, in the first merge.
+    work: |-
+      Trace the three parts of mergesort. Splitting is index arithmetic (naming two ranges), with no comparisons.
+      The base case is a single element, already sorted, so it does nothing.
+      Every comparison happens in `merge`, when combining two sorted halves.
+      So all the work is in `merge`.
 ---
 
 Mergesort is the divide-and-conquer paradigm applied to sorting, and it is almost

@@ -56,6 +56,11 @@ questions:
         explains: >-
           Register allocation changes constants, not the asymptotic count. The issue is
           the size of each value, not where it is stored.
+    work: |-
+      Two variables is constant space only if each variable has constant size.
+      How big is `F(n)`? About `φⁿ/√5`, so `log₂ F(n) ≈ n · log₂ φ = 0.694n` bits.
+      So `F(n)` needs `Θ(n)` bits, and two of them need `Θ(n)` bits too.
+      `Θ(1)` counts words, assuming any value fits in one word. Counting bits, the space is `Θ(n)`.
 ---
 
 To fill box `i`, `fib2` reads boxes `i−1` and `i−2`. It never looks further back. So why

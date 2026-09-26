@@ -36,6 +36,11 @@ questions:
         explains: >-
           Recombination is additions and shifts, so linear. If it were quadratic the split
           would be hopeless rather than merely break-even.
+    work: |-
+      Multiplication is quadratic, so halving `n` makes each product `(1/2)² = 1/4` of the cost.
+      But the split asks for four products.
+      Total: `4 × 1/4 = 1`, the same as before.
+      Splitting and recombining are linear, so they don't cost enough to matter. Smaller subproblems only help if there are fewer than the shrinkage pays for.
 ---
 
 Here is the trap, and it is worth sitting with before reading on. Halving the size of a

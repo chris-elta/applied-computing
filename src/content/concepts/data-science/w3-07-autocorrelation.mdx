@@ -48,6 +48,11 @@ questions:
       - text: The data is broken, since lags 1 to 6 are near zero
         explains: >-
           That is normal. Only the lags that match the cycle stand out.
+    work: |-
+      Autocorrelation at lag `k` compares `S[t]` with `S[t+k]`.
+      High at lag 7 means each day resembles the day a week earlier. Near zero at lags 1 to 6 means days in between don't resemble each other.
+      That matches a weekly cycle, where Monday looks like Monday.
+      A trend would lift many lags, and a day-to-day effect would show at lag 1.
 ---
 
 Time-series data is the awkward case for everything so far. Yesterday's sales are not an

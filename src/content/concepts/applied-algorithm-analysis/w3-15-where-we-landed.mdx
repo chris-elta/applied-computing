@@ -41,6 +41,11 @@ questions:
         explains: >-
           The subproblems stay half-size; only their number changes. Fewer of them cannot
           cost more.
+    work: |-
+      Two subproblems of half size, combining at `O(n)`: `T(n) = 2T(n/2) + O(n)`.
+      So `a = 2`, `b = 2`, `d = 1`.
+      `log₂ 2 = 1 = d`, the balanced case, giving `O(nᵈ log n) = O(n log n)`.
+      Not `O(n)`, since `log₂ n` levels each cost `O(n)`. And `log₂ 2` is 1, not 1.26.
   - ask: >-
       Mergesort is `T(n) = 2T(n/2) + O(n)`. If merging two sorted halves cost `O(n²)` instead
       of `O(n)`, what would sorting cost?
@@ -63,6 +68,11 @@ questions:
         explains: >-
           The root level alone costs `O(n²)`, and the levels below shrink geometrically. The
           total stays at `O(n²)`.
+    work: |-
+      Now `T(n) = 2T(n/2) + O(n²)`, so `a = 2`, `b = 2`, `d = 2`.
+      `log₂ 2 = 1 < 2 = d`, so the root dominates.
+      Level costs shrink: `n² · (a/bᵈ)ᵏ = n² · (2/4)ᵏ = n² · (1/2)ᵏ`. Summing gives at most `2n²`.
+      So `O(n²)`, no log, and the recursion buys nothing.
   - ask: >-
       `T(n) = T(n/2) + O(1)` is the balanced case. How much work is there per level, and how
       many levels?
@@ -83,6 +93,11 @@ questions:
       - text: "`O(log n)` per level across `log₂ n` levels"
         explains: >-
           That double-counts the log. The per-level cost is `O(n⁰) = O(1)`.
+    work: |-
+      `T(n) = T(n/2) + O(1)`: `a = 1`, `b = 2`, `d = 0`.
+      Nodes per level: `aᵏ = 1`. Cost per node: `O(1)`. So `O(1)` per level.
+      Levels: halving `n` down to 1 takes `log₂ n` levels.
+      Total: `O(1) × log₂ n = O(log n)`. That is binary search.
 ---
 
 One shape, one comparison, one picture.

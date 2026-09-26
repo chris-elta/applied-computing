@@ -38,6 +38,11 @@ questions:
       - text: Because 13 is prime
         explains: >-
           Primality plays no part. The same short descent happens for 12 or 14.
+    work: |-
+      Trace the exponent: odd subtracts 1, even halves.
+      `13` (odd) → `12` → `6` (halve) → `3` → `2` (odd, minus 1) → `1` (halve) → `0` (odd, minus 1).
+      That is `13 → 12 → 6 → 3 → 2 → 1 → 0`, seven values, six calls before the base case.
+      Each even step halves, so the exponent collapses in about `log₂ 13 ≈ 3.7` halvings. Skipping isn't involved, and neither is 13 being prime.
   - ask: >-
       In the trace, the largest number that ever appears is 36, while `3¹³` is 1,594,323.
       What keeps it small?
@@ -60,6 +65,11 @@ questions:
         explains: >-
           The middle column shows the unreduced arithmetic too — `36` is visible there, and
           it is the largest thing that appears.
+    work: |-
+      Work up the trace mod 7: `3¹ = 3`, `3² = 9 ≡ 2`, `3³ = 3 · 2 = 6`, `3⁶ = 6² = 36 ≡ 1`, `3¹² = 1² = 1`, `3¹³ = 3 · 1 = 3`.
+      Each step is reduced mod 7, so every stored value is at most 6.
+      The biggest unreduced product ever formed is `6 · 6 = 36`.
+      So intermediates never exceed `N²`, however big the exponent. `3¹³ = 1,594,323` is never computed.
 ---
 
 The algorithm is two journeys in one: the recursion goes **down**, shrinking the exponent

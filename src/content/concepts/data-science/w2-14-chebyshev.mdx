@@ -66,6 +66,11 @@ questions:
       - text: "Nothing can be said without knowing the shape"
         explains: >-
           The remarkable thing about the inequality is that it holds regardless of shape.
+    work: |-
+      Chebyshev: at least `1 − 1/k²` of values lie within `k` standard deviations of the mean, for any shape.
+      Convert the interval: `80 to 120` is `100 ± 20`, and `20 / 10 = 2`, so `k = 2`.
+      Bound: `1 − 1/2² = 1 − 1/4 = 0.75`, so at least 75%.
+      95% is the normal-distribution figure, but this bound must hold for any shape.
   - ask: >-
       Using the bound, at least what fraction lies within three standard deviations of the
       mean?
@@ -85,6 +90,11 @@ questions:
       - text: "67%"
         explains: >-
           Not what the formula gives; `1 − 1/k²` with `k = 3` is about 0.889.
+    work: |-
+      Set `k = 3`.
+      Bound: `1 − 1/3² = 1 − 1/9 = 8/9 ≈ 0.889`, about 89%.
+      The guarantee grows with k: 0% at 1, 75% at 2, 89% at 3.
+      99.7% is the normal-distribution value, not the guarantee for any shape.
 ---
 
 You have a mean and a standard deviation and nothing else. Can you say anything firm about

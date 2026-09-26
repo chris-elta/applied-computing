@@ -50,6 +50,11 @@ questions:
         explains: >-
           True, but node count alone is not the argument — what matters is that the level
           *costs* form a geometric series with ratio above 1.
+    work: |-
+      Let the last term be `L`. The level costs are `L, L/r, L/r², …` going upward, with `r = 3/2`.
+      Sum: `L · (1 + 1/r + 1/r² + …) < L · 1/(1 − 1/r) = L · r/(r − 1)`.
+      With `r = 3/2`: `(3/2) / (1/2) = 3`. So the total is less than `3L`.
+      A factor of 3 disappears inside the `O`. The earlier levels do real work but form a geometric series, so the sum is not `levels × largest`.
 ---
 
 Work at depth `k` is `(3/2)ᵏ × O(n)`. Look at the two ends of the tree:

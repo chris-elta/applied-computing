@@ -50,6 +50,11 @@ questions:
         explains: >-
           Constants are dropped too, and that is the more contentious half of the deal.
           Comparing implementations is exactly what asymptotics cannot do.
+    work: |-
+      Start with `5n³ + 4n + 3`. Drop the lower-order terms `4n + 3`: at `n = 1000` they are `4003` against `5 × 10⁹`, negligible.
+      Drop the constant `5`: it depends on the machine and what counts as a step.
+      What is left is `n³`, the shape of growth.
+      The option that keeps the constant is wrong, since asymptotics can't compare implementations. The `n³` term is what survives, not what goes.
 ---
 
 Suppose you count carefully and find an algorithm takes exactly `5n³ + 4n + 3` steps.

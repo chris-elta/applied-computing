@@ -53,6 +53,11 @@ questions:
       - text: Because the combine step costs `3/2` per bit
         explains: >-
           The combine step is linear per node. The ratio is not a per-node cost at all.
+    work: |-
+      At depth `k` there are `3ᵏ` nodes, each of size `n/2ᵏ`.
+      Each node does linear work, so a node costs `O(n/2ᵏ)`.
+      Level cost: `3ᵏ · n/2ᵏ = n · 3ᵏ/2ᵏ = n · (3/2)ᵏ`.
+      No single node does `3/2` work. The ratio comes from combining the node count with the node size.
 ---
 
 Karatsuba's cost is `T(n) = 3T(n/2) + O(n)`. To turn that into an actual bound, draw what the

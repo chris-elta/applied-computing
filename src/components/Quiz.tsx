@@ -14,7 +14,7 @@ function withInline(text: string): ReactNode {
 }
 
 type Choice = { text: string; correct: boolean; explains?: string };
-type Question = { ask: string; choices: Choice[] };
+type Question = { ask: string; choices: Choice[]; work?: string };
 
 type Props = {
   courseId: string;
@@ -76,6 +76,20 @@ export default function Quiz({ courseId, conceptNumber, questions }: Props) {
                     ? 'That’s right.'
                     : 'Not quite — look at the highlighted answer and try again.'}
               </p>
+            )}
+
+            {answered && q.work && (
+              <details className="quiz__work">
+                <summary>Show the work</summary>
+                <ol>
+                  {q.work
+                    .split('\n')
+                    .filter((line) => line.trim())
+                    .map((line, i) => (
+                      <li key={i}>{withInline(line)}</li>
+                    ))}
+                </ol>
+              </details>
             )}
           </div>
         );

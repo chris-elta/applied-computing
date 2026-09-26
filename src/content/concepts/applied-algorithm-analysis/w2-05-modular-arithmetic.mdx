@@ -49,6 +49,11 @@ questions:
         explains: >-
           The condition is `0 ≤ r`, not merely `r < N`. Negative values are reduced upwards
           into range.
+    work: |-
+      Definition: `a mod N` is the `r` with `a = qN + r` and `0 ≤ r < N`.
+      Try `q = −2`: `−2 · 3 = −6`, so `r = −7 − (−6) = −1`. That fails `0 ≤ r`.
+      Try `q = −3`: `−3 · 3 = −9`, so `r = −7 − (−9) = 2`. That fits `0 ≤ 2 < 3`.
+      So `−7 mod 3 = 2`. Check: `−7 − 2 = −9`, a multiple of 3.
   - ask: What does `3 · 13 mod 5` mean?
     choices:
       - text: "`(3 · 13) mod 5`, which is 4"
@@ -69,6 +74,11 @@ questions:
         explains: >-
           There is a standing convention: `mod` binds loosest. The brackets are optional, and
           this deck omits them throughout.
+    work: |-
+      `mod` binds looser than `·`, so multiply first.
+      `3 · 13 = 39`.
+      `39 mod 5`: `39 = 7 · 5 + 4`, so the result is 4.
+      The other reading gives `3 · (13 mod 5) = 3 · 3 = 9`. That is congruent mod 5 (`9 − 4 = 5`) but not the remainder, since it is not in `0…4`.
 ---
 
 You start a 25-episode season at midnight, three hours an episode. What time do you finish?

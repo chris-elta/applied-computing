@@ -44,6 +44,11 @@ questions:
         explains: >-
           That is the probability of *both* happening, `P(A ∩ B)`. Conditioning divides by
           `P(B)`, which removes the `P(B)` factor.
+    work: |-
+      Definition: `P(A|B) = P(A ∩ B) / P(B)`.
+      Independence: `P(A ∩ B) = P(A) × P(B)`.
+      Substitute: `P(A|B) = P(A) × P(B) / P(B) = P(A)`.
+      So conditioning on `B` changes nothing. `P(A) × P(B)` is the joint probability, before dividing by `P(B)`.
 assessed:
   - "Lab 1 · Task 6"
 prerequisites:

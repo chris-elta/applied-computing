@@ -39,6 +39,11 @@ questions:
         explains: >-
           `b` describes how much smaller each subproblem is, not how many there are. The two
           are independent, which is exactly what the slide's presets demonstrate.
+    work: |-
+      `a` counts the recursive calls actually made.
+      Binary search compares with the middle and throws away one half. It recurses into only one half.
+      One call gives `a = 1`. The half size is `b = 2`, and one comparison is `d = 0`.
+      So `T(n) = T(n/2) + O(1)`.
 ---
 
 The theorem is three lines of algebra, but the thing worth building is an intuition for
