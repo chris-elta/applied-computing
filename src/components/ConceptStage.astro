@@ -20,14 +20,28 @@ const vectorSlides = import.meta.glob('../assets/slides/**/*.svg', {
   eager: true,
 }) as Record<string, string>;
 
+/**
+ * Inlined SVGs share one document, and pdftocairo numbers its glyphs, clips
+ * and masks identically in every file (`glyph0-0`, `clip1`, `mask0`, …). Left
+ * alone, the first slide's definitions win and later slides draw the wrong
+ * glyphs. Prefix every id, and every reference to one, with a per-slide key.
+ */
+function scopeIds(svg: string, key: string): string {
+  const ids = new Set([...svg.matchAll(/\bid="([^"]+)"/g)].map((m) => m[1]));
+  return svg
+    .replace(/\bid="([^"]+)"/g, (_, id) => `id="${key}-${id}"`)
+    .replace(/(href="#|url\(#)([^")]+)/g, (m, lead, id) => (ids.has(id) ? `${lead}${key}-${id}` : m));
+}
+
 /** Resolve each visual once, up front, so the markup below stays declarative. */
-const staged = visuals.map((visual) => {
+const staged = visuals.map((visual, index) => {
   let missing: string | undefined;
   let inlineSvg: string | undefined;
 
   if (visual.type === 'svg') {
     inlineSvg = vectorSlides[`../assets/slides/${visual.src}`];
     if (!inlineSvg) missing = `src/assets/slides/${visual.src}`;
+    else inlineSvg = scopeIds(inlineSvg, `s${index}-${visual.src.replace(/\W+/g, '-')}`);
   }
   if (visual.type === 'animation' && !isAnimation(visual.component)) {
     missing = `animation "${visual.component}" (register it in src/components/animations/index.ts)`;
