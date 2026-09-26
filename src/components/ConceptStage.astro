@@ -2,6 +2,7 @@
 import AnimationHost from './animations/AnimationHost';
 import { isAnimation } from './animations/index';
 import type { CollectionEntry } from 'astro:content';
+import { withBase } from '../lib/course';
 
 type Visual = CollectionEntry<'concepts'>['data']['visuals'][number];
 
@@ -11,6 +12,9 @@ interface Props {
 }
 
 const { visuals, title } = Astro.props;
+
+/** Root-relative asset paths must carry the site base (e.g. /repo on GitHub Pages). */
+const resolveSrc = (src: string) => (src.startsWith('/') && !src.startsWith('//') ? withBase(src) : src);
 
 // Vector slides are inlined rather than linked, so they scale with the stage
 // and cost no extra request. `npm run import:pdf` writes them here.
@@ -74,9 +78,9 @@ const staged = visuals.map((visual, index) => {
           ) : visual.type === 'svg' ? (
             <div class="stage__svg" set:html={inlineSvg} />
           ) : visual.type === 'image' ? (
-            <img src={visual.src} alt={visual.alt} loading="lazy" decoding="async" />
+            <img src={resolveSrc(visual.src)} alt={visual.alt} loading="lazy" decoding="async" />
           ) : (
-            <iframe src={visual.src} title={title} loading="lazy" sandbox="allow-scripts allow-same-origin" />
+            <iframe src={resolveSrc(visual.src)} title={title} loading="lazy" sandbox="allow-scripts allow-same-origin" />
           )}
         </div>
         {visual.caption && <figcaption class="stage__caption">{visual.caption}</figcaption>}
