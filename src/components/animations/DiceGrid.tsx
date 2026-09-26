@@ -13,7 +13,7 @@ const steps = [
   { caption: 'Two dice give 6 × 6 = 36 equally likely outcomes. Rows are the first die, columns the second, and each cell shows the total.' },
   { caption: 'Event A, a total of 10 or more, covers 6 of the 36 cells: (4,6), (5,5), (5,6), (6,4), (6,5), (6,6).' },
   { caption: 'Event B, the first die is a 6, is the whole bottom row: 6 of the 36 cells.' },
-  { caption: 'A and B together: only the 3 cells in the bottom row that also have a total of 10 or more.' },
+  { caption: 'A and B together: only the 3 cells in the bottom row that also have a total of 10 or more. That is 3/36 ≈ 0.08, not 0.17 × 0.17 ≈ 0.03: A and B are not independent, so the overlap is bigger.' },
   { caption: 'Given B, the world shrinks to the bottom row. Now 3 of 6 cells are in A, so the probability jumps from about 0.17 to 0.5.' },
 ];
 
