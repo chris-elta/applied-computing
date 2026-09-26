@@ -11,6 +11,9 @@ visuals:
     src: data-science/w2-probability/10.svg
   - type: svg
     src: data-science/w2-probability/11.svg
+  - type: animation
+    component: BinnedCdf
+    caption: Bins of unequal width. Each bar's probability is height × width, and the cdf adds those areas as x moves right.
 notation:
   - symbol: cdf
     reads: C-D-F, or cumulative distribution function
@@ -71,6 +74,23 @@ For the two dice, add up the bars as you move right: after 2 you have 1/36, afte
 The pdf and cdf hold **exactly the same information**. One is the integral of the other, and
 the other is its derivative. The slide's phrase is worth keeping: sum to go from pdf to cdf,
 difference to come back.
+
+### When the bars are not width 1
+
+For the dice, every bar is one unit wide, so a bar's height *is* its probability and adding
+heights works. In general a histogram's height is a **density**: probability per unit of `x`.
+The probability in a bar is its area:
+
+```
+P(bar) = height × width
+F(x)   = sum of (height × width) over every bar up to x
+```
+
+For example, bin phone prices into $100-wide bins. If the $300–$400 bar has density 0.002 per
+dollar, it holds 0.002 × 100 = 0.2 of the probability. Rebin into $50-wide bins and the
+density stays about 0.002, but each bar now holds 0.002 × 50 = 0.1. The density does not
+depend on the bin width, which is why you multiply by it. With width 1 the multiplication
+changes nothing, and you get the dice rule.
 
 ## Same information, different readability
 

@@ -14,6 +14,10 @@ export const animations: Record<string, Loader> = {
   FetchDecodeExecute: () => import('./FetchDecodeExecute'),
   CacheLocality: () => import('./CacheLocality'),
   DiceGrid: () => import('./DiceGrid'),
+  BayesScreening: () => import('./BayesScreening'),
+  DicePdf: () => import('./DicePdf'),
+  BinnedCdf: () => import('./BinnedCdf'),
+  VarianceReduction: () => import('./VarianceReduction'),
 };
 
 export const isAnimation = (name: string) => name in animations;

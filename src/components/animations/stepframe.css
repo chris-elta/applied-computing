@@ -139,3 +139,31 @@
 @media (prefers-reduced-motion: reduce) {
   .dice-cell rect, .dice-cell text, .dice-bar { transition: none; }
 }
+
+/* Bayes screening dots (BayesScreening.tsx). */
+.bay-dot { fill: var(--line-strong); opacity: 0.55; transition: fill 0.35s, opacity 0.35s; }
+.bay-dot.is-sick { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.2; opacity: 1; }
+.bay-dot.is-tp { fill: var(--accent); opacity: 1; }
+.bay-dot.is-fp { fill: var(--bad); opacity: 1; }
+.bay-dot.is-out { opacity: 0.1; }
+
+/* Histogram bars for the pdf / cdf animations (DicePdf.tsx, BinnedCdf.tsx).
+   Grow from the baseline by scaling, which transitions reliably on SVG. */
+.pdf-bar {
+  fill: var(--accent-soft);
+  stroke: var(--accent);
+  stroke-width: 1.2;
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  transition: transform 0.4s ease, fill 0.3s, opacity 0.3s;
+}
+.pdf-bar.is-now { fill: var(--accent); }
+.pdf-bar.is-sum { fill: var(--accent-soft); }
+.pdf-bar.is-idle { fill: var(--bg-raised); stroke: var(--line-strong); }
+@media (prefers-reduced-motion: reduce) {
+  .bay-dot, .pdf-bar { transition: none; }
+}
+
+/* cdf area slabs (BinnedCdf.tsx): each bin adds a trapezoid under the rising line. */
+.cdf-slab { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.2; }
+.cdf-slab.is-now { fill: var(--accent); fill-opacity: 0.55; }
