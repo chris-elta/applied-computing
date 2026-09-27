@@ -1,5 +1,6 @@
 import { Fragment, useEffect, useState, type ReactNode } from 'react';
 import { getExamBest, saveExamScore } from '../lib/progress';
+import { buildExport, downloadExport } from '../lib/exam-export';
 import { splitInline } from '../lib/inline-code';
 import './quiz.css';
 import './exam.css';
@@ -19,6 +20,9 @@ type Question = { ask: string; choices: Choice[]; work?: string; topic?: string 
 
 type Props = {
   courseId: string;
+  courseTitle: string;
+  title: string;
+  skillHref: string;
   minutes?: number;
   passMark: number;
   questions: Question[];
@@ -29,7 +33,7 @@ type Props = {
  * until the learner submits, and nothing — right, wrong, or why — is shown until
  * then. After submitting, every question is opened up for review.
  */
-export default function Exam({ courseId, minutes, passMark, questions }: Props) {
+export default function Exam({ courseId, courseTitle, title, skillHref, minutes, passMark, questions }: Props) {
   const [picked, setPicked] = useState<Record<number, number>>({});
   const [submitted, setSubmitted] = useState(false);
   const [best, setBest] = useState<number | null>(null);
@@ -62,7 +66,22 @@ export default function Exam({ courseId, minutes, passMark, questions }: Props) 
             {percent}% · {passed ? 'Passed' : `Below the ${passMark}% pass mark`}
           </p>
           {best !== null && <p className="exam__best">Best on this device: {best}%</p>}
-          <button type="button" className="btn" onClick={retake}>Retake the exam</button>
+          <div className="exam__actions">
+            <button
+              type="button"
+              className="btn btn--primary"
+              onClick={() => downloadExport(buildExport({ courseId, courseTitle, title, passMark, questions, picked }))}
+            >
+              Download results
+            </button>
+            <button type="button" className="btn" onClick={retake}>Retake the exam</button>
+          </div>
+          {score < questions.length && (
+            <p className="exam__tutor">
+              Missed some? Give the downloaded file to your coding agent along with the{' '}
+              <a href={skillHref} download="SKILL.md">review-exam-results skill</a> and it will teach you what you got wrong.
+            </p>
+          )}
         </section>
       ) : (
         <p className="exam__status">

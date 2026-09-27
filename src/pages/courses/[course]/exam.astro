@@ -2,7 +2,7 @@
 import { render } from 'astro:content';
 import Base from '../../../layouts/Base.astro';
 import Exam from '../../../components/Exam';
-import { getCourses, getExam, coursePath, type Course, type Exam as ExamEntry } from '../../../lib/course';
+import { getCourses, getExam, coursePath, withBase, type Course, type Exam as ExamEntry } from '../../../lib/course';
 
 export async function getStaticPaths() {
   const courses = await getCourses();
@@ -29,7 +29,8 @@ const { title, minutes, passMark, questions } = exam.data;
       {questions.length} questions · {passMark}% to pass{minutes && ` · about ${minutes} minutes`}
     </p>
     <div class="prose"><Content /></div>
-    <Exam client:load courseId={course.id} minutes={minutes} passMark={passMark} questions={questions} />
+    <Exam client:load courseId={course.id} courseTitle={course.data.title} title={title}
+      skillHref={withBase('/skills/review-exam-results/SKILL.md')} minutes={minutes} passMark={passMark} questions={questions} />
   </article>
 </Base>
 

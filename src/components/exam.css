@@ -40,3 +40,6 @@
 .exam__submit { margin-top: 1.5rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
 .exam__submit p { margin: 0; font-size: 0.85rem; color: var(--ink-faint); }
 .exam__submit .btn:disabled { opacity: 0.4; pointer-events: none; }
+
+.exam__actions { display: flex; justify-content: center; gap: 0.75rem; flex-wrap: wrap; }
+.exam__tutor { margin: 1rem 0 0; font-size: 0.85rem; color: var(--ink-soft); }
