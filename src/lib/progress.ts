@@ -61,3 +61,31 @@ export function resetCourse(courseId: string) {
   delete store[courseId];
   write(store);
 }
+
+const EXAM_KEY = 'exam-best-v1';
+
+function readExams(): Record<string, number> {
+  try {
+    const raw = localStorage.getItem(EXAM_KEY);
+    return raw ? (JSON.parse(raw) as Record<string, number>) : {};
+  } catch {
+    return {};
+  }
+}
+
+/** Best exam score for a course, as a percentage, or null if never sat here. */
+export function getExamBest(courseId: string): number | null {
+  return readExams()[courseId] ?? null;
+}
+
+/** Records a score and returns the best one so far. */
+export function saveExamScore(courseId: string, percent: number): number {
+  const scores = readExams();
+  const best = Math.max(percent, scores[courseId] ?? 0);
+  try {
+    localStorage.setItem(EXAM_KEY, JSON.stringify({ ...scores, [courseId]: best }));
+  } catch {
+    /* progress simply isn't remembered */
+  }
+  return best;
+}

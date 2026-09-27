@@ -127,6 +127,30 @@ Both are written by the `mark-assessed` skill (`npm run assessed:extract`, `asse
 which reads a course's `.content/<course>/quizzes` and `labs` folders and can be re-run as new
 ones arrive.
 
+### Exams
+
+A course may have one exam, at `src/content/exams/<course-id>.md` (the `course` field links it).
+It is a single paper of multiple-choice questions, and unlike a concept's knowledge check nothing
+is revealed until the learner submits; then they get a score, the right answers, an explanation for
+the option they chose, and each question's `work`. It appears at `/courses/<course-id>/exam`, with a
+button on the course page. The best score is kept in the browser only.
+
+```yaml
+---
+course: data-science
+title: Data Science · Final Exam
+minutes: 60          # suggested, not enforced
+passMark: 60         # percent
+questions:
+  - topic: Week 2 · Probability   # shown in the review
+    ask: ...
+    choices: [...]   # same shape as a concept's questions
+    work: |-
+      ...
+---
+Instructions shown above the paper (Markdown).
+```
+
 ### The four visual types
 
 | `type` | Source | Use it for |

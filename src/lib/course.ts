@@ -102,3 +102,13 @@ export function groupIntoSections(course: Course, steps: Step[]): Section[] {
 export const withBase = (path: string) => `${import.meta.env.BASE_URL.replace(/\/$/, '')}${path}`;
 export const coursePath = (courseId: string) => withBase(`/courses/${courseId}`);
 export const conceptPath = (courseId: string, number: number) => withBase(`/courses/${courseId}/${number}`);
+
+export type Exam = CollectionEntry<'exams'>;
+
+/** The course's exam, if it has one. Exam files are named after the course id. */
+export async function getExam(course: Course): Promise<Exam | undefined> {
+  const exams = await getCollection('exams', ({ data }) => data.course.id === course.id);
+  return exams[0];
+}
+
+export const examPath = (courseId: string) => withBase(`/courses/${courseId}/exam`);

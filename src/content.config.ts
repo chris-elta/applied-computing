@@ -174,4 +174,27 @@ const concepts = defineCollection({
   }),
 });
 
-export const collections = { courses, concepts };
+/**
+ * A course's exam: one file per course, the filename matching the course id.
+ * Unlike a concept's knowledge check, nothing is revealed until the learner
+ * submits, and the whole paper is scored. The body is the instructions.
+ */
+const exams = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/exams' }),
+  schema: z.object({
+    course: reference('courses'),
+    title: z.string(),
+    /** Suggested time, shown to the learner; nothing enforces it. */
+    minutes: z.number().optional(),
+    /** Score, as a percentage, at which the paper counts as a pass. */
+    passMark: z.number().min(0).max(100).default(60),
+    questions: z.array(
+      question.extend({
+        /** Which part of the course this tests — shown in the review, so a miss points back to something. */
+        topic: z.string().optional(),
+      }),
+    ).min(1),
+  }),
+});
+
+export const collections = { courses, concepts, exams };
