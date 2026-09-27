@@ -30,6 +30,12 @@ questions:
       What has been discarded, and why is that defensible?
     choices:
       - text: >-
+          The lower-order terms only — constants are preserved so implementations can be
+          compared
+        explains: >-
+          Constants are dropped too, and that is the more contentious half of the deal.
+          Comparing implementations is exactly what asymptotics cannot do.
+      - text: >-
           The constant factor and lower-order terms — they are system-dependent or
           irrelevant as `n` grows
         correct: true
@@ -44,12 +50,6 @@ questions:
       - text: The `n³` term, since only growth matters
         explains: >-
           It is the other way round: the leading term is the only thing kept.
-      - text: >-
-          The lower-order terms only — constants are preserved so implementations can be
-          compared
-        explains: >-
-          Constants are dropped too, and that is the more contentious half of the deal.
-          Comparing implementations is exactly what asymptotics cannot do.
     work: |-
       Start with `5n³ + 4n + 3`. Drop the lower-order terms `4n + 3`: at `n = 1000` they are `4003` against `5 × 10⁹`, negligible.
       Drop the constant `5`: it depends on the machine and what counts as a step.

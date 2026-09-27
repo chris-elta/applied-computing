@@ -24,18 +24,18 @@ questions:
   - ask: >-
       `V` is the sum of two fair dice. Which value has the highest probability?
     choices:
+      - text: "12, because it is the largest total"
+        explains: >-
+          12 needs a single pair, (6,6), so it is among the least likely.
+      - text: All totals are equally likely
+        explains: >-
+          The 36 *rolls* are equally likely, but different totals are produced by different
+          numbers of rolls. The distribution is a peak, not flat.
       - text: "7, because six of the 36 equally likely rolls give it"
         correct: true
         explains: >-
           The pairs (1,6), (2,5), (3,4), (4,3), (5,2), (6,1) all total 7. Other totals have
           fewer pairs, so the histogram peaks at 7 and falls away on either side.
-      - text: All totals are equally likely
-        explains: >-
-          The 36 *rolls* are equally likely, but different totals are produced by different
-          numbers of rolls. The distribution is a peak, not flat.
-      - text: "12, because it is the largest total"
-        explains: >-
-          12 needs a single pair, (6,6), so it is among the least likely.
       - text: "6, because it is the middle of the possible range"
         explains: >-
           The possible range 2–12 is centred on 7, not 6. Six pairs make 7, but only five

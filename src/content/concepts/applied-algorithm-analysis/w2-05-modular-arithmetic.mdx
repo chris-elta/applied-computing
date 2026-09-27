@@ -36,6 +36,11 @@ questions:
           The definition insists on `0 ≤ r < N`. Writing `−7 = (−3)(3) + 2` gives remainder
           2, which is in range. Negative inputs are where this convention earns its keep, and
           where most bugs in modular code come from.
+      - text: >-
+          `−7`, since it is already smaller than 3
+        explains: >-
+          The condition is `0 ≤ r`, not merely `r < N`. Negative values are reduced upwards
+          into range.
       - text: "−1"
         explains: >-
           `−7 = (−2)(3) + (−1)` is arithmetically fine but violates `0 ≤ r`. Several
@@ -44,11 +49,6 @@ questions:
         explains: >-
           Check it: `−7 − 1 = −8`, which is not a multiple of 3. The remainder must differ
           from `−7` by a multiple of 3.
-      - text: >-
-          `−7`, since it is already smaller than 3
-        explains: >-
-          The condition is `0 ≤ r`, not merely `r < N`. Negative values are reduced upwards
-          into range.
     work: |-
       Definition: `a mod N` is the `r` with `a = qN + r` and `0 ≤ r < N`.
       Try `q = −2`: `−2 · 3 = −6`, so `r = −7 − (−6) = −1`. That fails `0 ≤ r`.
@@ -56,6 +56,14 @@ questions:
       So `−7 mod 3 = 2`. Check: `−7 − 2 = −9`, a multiple of 3.
   - ask: What does `3 · 13 mod 5` mean?
     choices:
+      - text: Either — they are equal
+        explains: >-
+          They are congruent, not equal: 4 and 9 differ by 5. Only 4 lies in `0…4`, so only
+          it is the remainder.
+      - text: It is ambiguous and needs brackets
+        explains: >-
+          There is a standing convention: `mod` binds loosest. The brackets are optional, and
+          this deck omits them throughout.
       - text: "`(3 · 13) mod 5`, which is 4"
         correct: true
         explains: >-
@@ -66,14 +74,6 @@ questions:
         explains: >-
           This reads `mod` as binding tighter than `×`. It does not. The two results are
           congruent mod 5, but they are different integers, and only one is a remainder.
-      - text: Either — they are equal
-        explains: >-
-          They are congruent, not equal: 4 and 9 differ by 5. Only 4 lies in `0…4`, so only
-          it is the remainder.
-      - text: It is ambiguous and needs brackets
-        explains: >-
-          There is a standing convention: `mod` binds loosest. The brackets are optional, and
-          this deck omits them throughout.
     work: |-
       `mod` binds looser than `·`, so multiply first.
       `3 · 13 = 39`.

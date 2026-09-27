@@ -9,6 +9,14 @@ visuals:
 questions:
   - ask: A kernel reads two 4-byte floats, adds them, and writes a 4-byte result. What is its arithmetic intensity?
     choices:
+      - text: 3 FLOPs per byte
+        explains: >-
+          This inverts the ratio. Intensity is operations divided by bytes, and the
+          bytes dominate here.
+      - text: It depends on the CPU's clock speed
+        explains: >-
+          Intensity is a property of the algorithm, not the machine. The machine
+          supplies the roofline you compare it against.
       - text: About 0.08 FLOPs per byte
         correct: true
         explains: >-
@@ -19,14 +27,6 @@ questions:
         explains: >-
           That would need one operation per byte moved. Here it's one operation per
           twelve bytes.
-      - text: 3 FLOPs per byte
-        explains: >-
-          This inverts the ratio. Intensity is operations divided by bytes, and the
-          bytes dominate here.
-      - text: It depends on the CPU's clock speed
-        explains: >-
-          Intensity is a property of the algorithm, not the machine. The machine
-          supplies the roofline you compare it against.
     work: |-
       Arithmetic intensity is FLOPs divided by bytes moved.
       Bytes: read two 4-byte floats and write one 4-byte result: `4 + 4 + 4 = 12` bytes.
@@ -34,15 +34,15 @@ questions:
       `1 / 12 ≈ 0.08` FLOPs per byte. That is well below the crossover, so it is memory bound.
   - ask: Your kernel sits well under the sloped part of the roofline. What is most likely to help?
     choices:
+      - text: Using a CPU with a higher clock speed
+        explains: >-
+          Compute capacity is the flat part of the roof. You aren't touching it, so
+          raising it moves the ceiling you aren't hitting.
       - text: Improving data reuse so fewer bytes move
         correct: true
         explains: >-
           Under the slope means memory bound. Blocking or tiling for cache raises
           intensity, which moves you right along the roof towards the compute limit.
-      - text: Using a CPU with a higher clock speed
-        explains: >-
-          Compute capacity is the flat part of the roof. You aren't touching it, so
-          raising it moves the ceiling you aren't hitting.
       - text: Adding more threads
         explains: >-
           More threads generally means more demand on the same memory bandwidth. When

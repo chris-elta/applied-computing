@@ -30,6 +30,10 @@ questions:
       Addition of two `n`-bit numbers is `Θ(n)`. The `Ω(n)` half of that is a claim about
       what, exactly?
     choices:
+      - text: The best case for column addition
+        explains: >-
+          Best/average/worst is a different axis from `O`/`Ω`/`Θ`. This `Ω` is about which
+          algorithms are possible, not about which inputs are lucky.
       - text: Every possible addition algorithm, not just column addition
         correct: true
         explains: >-
@@ -37,19 +41,15 @@ questions:
           `Ω(n)` says no method whatsoever can do better, because producing a correct sum
           requires reading the input, and the input is `n` bits long. Only together do they
           give `Θ(n)`.
+      - text: The carry propagation, which cannot be parallelised
+        explains: >-
+          Carry propagation is a property of this method, and hardware does circumvent it.
+          The floor here comes from having to read the input at all.
       - text: Column addition specifically
         explains: >-
           That would make the pair of bounds far less interesting — `O` and `Ω` on the same
           algorithm just means you measured it twice. The force here is that `Ω` quantifies
           over *all* algorithms.
-      - text: The best case for column addition
-        explains: >-
-          Best/average/worst is a different axis from `O`/`Ω`/`Θ`. This `Ω` is about which
-          algorithms are possible, not about which inputs are lucky.
-      - text: The carry propagation, which cannot be parallelised
-        explains: >-
-          Carry propagation is a property of this method, and hardware does circumvent it.
-          The floor here comes from having to read the input at all.
     work: |-
       `O(n)` is a statement about one method: column addition does `n` column steps.
       `Ω(n)` is a statement about every algorithm. Any correct sum depends on all `n` bits of the input, so an algorithm that doesn't read them can't be right.

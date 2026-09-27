@@ -30,17 +30,6 @@ questions:
       The level costs form a geometric series with ratio `3/2`. Why is the total within a
       constant factor of just the **last** term?
     choices:
-      - text: >-
-          For any ratio `r > 1`, the whole sum is less than `r/(r−1)` times its last term
-        correct: true
-        explains: >-
-          With `r = 3/2` that factor is 3 — the entire tree costs at most three times its
-          bottom level, and a factor of three vanishes inside the `O`. An increasing
-          geometric series is dominated by its final term.
-      - text: Because the earlier levels do no work
-        explains: >-
-          They do real work; the root alone does `O(n)`. It is simply dwarfed by the bottom,
-          and the shrinking contributions add up to a constant factor.
       - text: Because there are `log₂ n` levels, so the largest dominates by that factor
         explains: >-
           That reasoning would multiply the largest level by `log₂ n` and invent an extra log
@@ -50,6 +39,17 @@ questions:
         explains: >-
           True, but node count alone is not the argument — what matters is that the level
           *costs* form a geometric series with ratio above 1.
+      - text: Because the earlier levels do no work
+        explains: >-
+          They do real work; the root alone does `O(n)`. It is simply dwarfed by the bottom,
+          and the shrinking contributions add up to a constant factor.
+      - text: >-
+          For any ratio `r > 1`, the whole sum is less than `r/(r−1)` times its last term
+        correct: true
+        explains: >-
+          With `r = 3/2` that factor is 3 — the entire tree costs at most three times its
+          bottom level, and a factor of three vanishes inside the `O`. An increasing
+          geometric series is dominated by its final term.
     work: |-
       Let the last term be `L`. The level costs are `L, L/r, L/r², …` going upward, with `r = 3/2`.
       Sum: `L · (1 + 1/r + 1/r² + …) < L · 1/(1 − 1/r) = L · r/(r − 1)`.

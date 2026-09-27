@@ -25,6 +25,14 @@ questions:
       The lemma says `a mod b < a/2` whenever `a ≥ b`. Why does that give at most `2n`
       rounds?
     choices:
+      - text: Because `gcd(a, b)` divides both, so the values halve
+        explains: >-
+          The size of the gcd has nothing to do with the round count — it can be 1 while the
+          algorithm runs its full length.
+      - text: Because the remainder is always smaller than `b`
+        explains: >-
+          Also true and also too weak on its own: it proves termination but gives no rate.
+          The lemma is what supplies the rate.
       - text: >-
           The larger value halves every two rounds, and an `n`-bit number can only halve `n`
           times
@@ -37,14 +45,6 @@ questions:
         explains: >-
           True, and far too weak — that bounds the rounds by the *value* of `b`, which is
           exponential in the input size.
-      - text: Because the remainder is always smaller than `b`
-        explains: >-
-          Also true and also too weak on its own: it proves termination but gives no rate.
-          The lemma is what supplies the rate.
-      - text: Because `gcd(a, b)` divides both, so the values halve
-        explains: >-
-          The size of the gcd has nothing to do with the round count — it can be 1 while the
-          algorithm runs its full length.
     work: |-
       Lemma: `a mod b < a/2` when `a ≥ b`.
       Round 1 takes `(a, b)` to `(b, r₁)` with `r₁ < a/2`. Round 2 takes `(b, r₁)` to `(r₁, r₂)`.
@@ -52,6 +52,10 @@ questions:
       An `n`-bit number can halve at most `n` times, so at most `2n` rounds. "`b` decreases by 1" only gives a bound as large as the value.
   - ask: Why are consecutive Fibonacci numbers the worst case for Euclid?
     choices:
+      - text: Because Fibonacci numbers are coprime, so the gcd is 1
+        explains: >-
+          They are coprime, but a gcd of 1 does not make the algorithm slow — plenty of
+          coprime pairs finish in two rounds.
       - text: >-
           Each remainder is a single subtraction, so the values shrink as slowly as the
           lemma permits
@@ -61,10 +65,6 @@ questions:
           and the pair creeps down the Fibonacci sequence one term per round. It is the
           slowest descent the lemma still allows — and even then, every value is under half
           the one two rows above.
-      - text: Because Fibonacci numbers are coprime, so the gcd is 1
-        explains: >-
-          They are coprime, but a gcd of 1 does not make the algorithm slow — plenty of
-          coprime pairs finish in two rounds.
       - text: Because Fibonacci numbers are large
         explains: >-
           Size sets `n`; it does not set the number of rounds *per bit*. The worst case is

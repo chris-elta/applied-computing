@@ -62,14 +62,14 @@ questions:
           That is the whole ritual: name the witnesses, then verify the inequality. The
           quantifier order is what makes it work — there *exist* `c` and `n₀` such that
           *for all* larger `n` the bound holds.
-      - text: A proof that `T(n) ≤ f(n)` for all `n`
-        explains: >-
-          Far too strong. Big-O allows any constant multiple and ignores small `n`
-          entirely — `3n` is `O(n)` even though `3n ≤ n` never holds.
       - text: A limit calculation showing `T(n)/f(n)` tends to zero
         explains: >-
           That is closer to little-o, and even there the definition is about all `c` rather
           than a limit. A ratio tending to a nonzero constant is still Big-O.
+      - text: A proof that `T(n) ≤ f(n)` for all `n`
+        explains: >-
+          Far too strong. Big-O allows any constant multiple and ignores small `n`
+          entirely — `3n` is `O(n)` even though `3n ≤ n` never holds.
       - text: A value of `n` where `T(n)` is smaller than `f(n)`
         explains: >-
           A single point proves nothing about eventual behaviour — the claim is about every

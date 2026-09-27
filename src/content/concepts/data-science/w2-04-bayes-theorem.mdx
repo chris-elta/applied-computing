@@ -41,24 +41,24 @@ questions:
       also gives a positive result for 9% of people who do not. You test positive. Roughly
       how likely is it that you have the condition?
     choices:
+      - text: About 50%
+        explains: >-
+          Nothing in the numbers points to an even split. Working it out from the counts
+          gives about 9%.
+      - text: About 90%
+        explains: >-
+          That is `P(positive | condition)`, the test's sensitivity. The question asks for the
+          reverse, `P(condition | positive)`. Confusing the two is the standard mistake.
       - text: About 9%
         correct: true
         explains: >-
           Of 10,000 people, 100 have it and 90 test positive. Of the 9,900 without it, 891
           test positive. So of 981 positives, only 90 are true: about 9%. The condition is
           rare, so false positives swamp true ones.
-      - text: About 90%
-        explains: >-
-          That is `P(positive | condition)`, the test's sensitivity. The question asks for the
-          reverse, `P(condition | positive)`. Confusing the two is the standard mistake.
       - text: About 1%
         explains: >-
           That is the prior, before the test. A positive result should raise it, and it does,
           to about 9%.
-      - text: About 50%
-        explains: >-
-          Nothing in the numbers points to an even split. Working it out from the counts
-          gives about 9%.
     work: |-
       Picture 10,000 people. 1% have the condition: 100 people.
       Of those 100, 90% test positive: `100 × 0.9 = 90` true positives.
@@ -70,20 +70,20 @@ questions:
       Which quantity must you know, besides `P(B|A)` and `P(B)`, to compute `P(A|B)` with
       Bayes' theorem?
     choices:
+      - text: "`P(A|B)` itself"
+        explains: >-
+          That is the answer you are trying to find.
       - text: "`P(A)`, the prior probability of `A`"
         correct: true
         explains: >-
           The formula multiplies by `P(A)`. Without the base rate, you cannot convert one
           direction of conditioning into the other.
-      - text: "`P(A|B)` itself"
-        explains: >-
-          That is the answer you are trying to find.
-      - text: "Nothing else"
-        explains: >-
-          The prior is essential. It is the part people forget.
       - text: "The number of observations"
         explains: >-
           The formula uses probabilities, not sample sizes.
+      - text: "Nothing else"
+        explains: >-
+          The prior is essential. It is the part people forget.
     work: |-
       Bayes' theorem: `P(A|B) = P(B|A) × P(A) / P(B)`.
       You are given `P(B|A)` and `P(B)`. The remaining piece on the right-hand side is `P(A)`, the prior or base rate.

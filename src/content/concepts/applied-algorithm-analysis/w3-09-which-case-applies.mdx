@@ -21,16 +21,16 @@ notation:
 questions:
   - ask: Why is binary search `a = 1` rather than `a = 2`?
     choices:
+      - text: Because it only needs one comparison per level
+        explains: >-
+          That is `d = 0`, the work per call. `a` is a separate knob — the number of recursive
+          calls.
       - text: It throws one half away rather than recursing into it
         correct: true
         explains: >-
           `a` counts the subproblems you actually **solve**, not the pieces you split into.
           One comparison eliminates half the array outright, so only one recursive call is
           made.
-      - text: Because it only needs one comparison per level
-        explains: >-
-          That is `d = 0`, the work per call. `a` is a separate knob — the number of recursive
-          calls.
       - text: Because the array is sorted, so one half is already done
         explains: >-
           The discarded half is not solved; it is ruled out. Either way `a` counts calls

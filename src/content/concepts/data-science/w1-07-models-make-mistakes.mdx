@@ -14,6 +14,14 @@ questions:
       An AI camera tracking the ball at a football match repeatedly follows the linesman's
       bald head. What does this example most directly illustrate?
     choices:
+      - text: That such models should never be used in live settings
+        explains: >-
+          The slide's conclusion is milder: the system must tolerate some incorrect
+          predictions and be aware of their effect, not avoid models altogether.
+      - text: That the operators failed to test the camera at all
+        explains: >-
+          Testing may well have happened. Without a spec, tests cover the cases someone
+          imagined, and this was not one of them.
       - text: >-
           Models can fail in unexpected ways that are hard to foresee, because there is no
           specification listing what to guard against
@@ -25,14 +33,6 @@ questions:
         explains: >-
           The failure is about what the model learned to recognise, not about speed. More
           hardware would repeat the same mistake faster.
-      - text: That such models should never be used in live settings
-        explains: >-
-          The slide's conclusion is milder: the system must tolerate some incorrect
-          predictions and be aware of their effect, not avoid models altogether.
-      - text: That the operators failed to test the camera at all
-        explains: >-
-          Testing may well have happened. Without a spec, tests cover the cases someone
-          imagined, and this was not one of them.
     work: |-
       The camera follows a bald head. Nobody wrote a rule against that, because nobody thought of it.
       Without a specification there is no list of failures to guard against, so surprising failures are expected.
@@ -42,6 +42,10 @@ questions:
       You evaluate a model on held-out test data and it scores well on average. What may you
       conclude?
     choices:
+      - text: That the system is safe to deploy without monitoring
+        explains: >-
+          Average performance says nothing about the rare failures that matter, or about how
+          the system's outputs will influence the world once deployed.
       - text: >-
           It works well *enough* on average on that data; nothing more precise can be
           guaranteed about individual cases
@@ -49,17 +53,13 @@ questions:
         explains: >-
           The slide's own phrasing. With no specification, "correct" cannot be defined case
           by case, so an average on test data is the evidence you have.
+      - text: That the data is free of errors
+        explains: >-
+          A good score says nothing about the quality of the test data itself.
       - text: That every individual prediction is correct
         explains: >-
           An average hides individual errors. The camera above was probably accurate on most
           frames.
-      - text: That the system is safe to deploy without monitoring
-        explains: >-
-          Average performance says nothing about the rare failures that matter, or about how
-          the system's outputs will influence the world once deployed.
-      - text: That the data is free of errors
-        explains: >-
-          A good score says nothing about the quality of the test data itself.
     work: |-
       A held-out score is an average over the test cases.
       An average hides individual errors, so it cannot show that every prediction is correct.

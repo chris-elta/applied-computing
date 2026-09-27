@@ -25,6 +25,12 @@ questions:
   - ask: >-
       In `T(n) = aT(n/b) + O(nᵈ)`, what exactly does `d` measure?
     choices:
+      - text: How many subproblems are combined at each step
+        explains: >-
+          That is `a`. `d` is the exponent on the *cost* of combining them, not their number.
+      - text: The depth of the recursion
+        explains: >-
+          Depth is `log_b n`, set by `b`. `d` is about cost per call, not about height.
       - text: >-
           The work a single call does on its own — splitting and combining — excluding its
           recursive calls
@@ -37,12 +43,6 @@ questions:
         explains: >-
           That is what you are solving *for*. If `d` were already the answer the theorem
           would have nothing to do — and note Karatsuba has `d = 1` but runs in `O(n^1.59)`.
-      - text: The depth of the recursion
-        explains: >-
-          Depth is `log_b n`, set by `b`. `d` is about cost per call, not about height.
-      - text: How many subproblems are combined at each step
-        explains: >-
-          That is `a`. `d` is the exponent on the *cost* of combining them, not their number.
     work: |-
       In `T(n) = aT(n/b) + O(nᵈ)`, the `aT(n/b)` part covers the recursive calls.
       `O(nᵈ)` is what remains: the work of one call, splitting and combining.

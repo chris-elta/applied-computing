@@ -20,6 +20,13 @@ questions:
   - ask: >-
       Why does repeating an experiment, as in k-fold cross-validation, reduce variance?
     choices:
+      - text: It guarantees the highest possible score
+        explains: >-
+          It gives a steadier estimate, not a higher one.
+      - text: It makes the model itself more accurate
+        explains: >-
+          The model is unchanged. What improves is the *reliability of your measurement* of
+          how good it is.
       - text: >-
           Averaging many results smooths out the chance effects of any single split, so the
           average is steadier than one run
@@ -27,16 +34,9 @@ questions:
         explains: >-
           Each run has its own luck. When you average several, good and bad luck partly
           cancel, leaving an estimate that varies less from one attempt to the next.
-      - text: It makes the model itself more accurate
-        explains: >-
-          The model is unchanged. What improves is the *reliability of your measurement* of
-          how good it is.
       - text: It removes the outliers from the data
         explains: >-
           Cross-validation does not delete anything. It re-uses all the data across folds.
-      - text: It guarantees the highest possible score
-        explains: >-
-          It gives a steadier estimate, not a higher one.
     work: |-
       Each split has its own luck, so one score is the true quality plus a chance error.
       Run k folds and average: good and bad luck partly cancel.

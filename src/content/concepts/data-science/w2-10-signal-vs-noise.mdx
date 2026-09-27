@@ -15,13 +15,10 @@ questions:
       A genuine 0.300 hitter bats 0.275 over a season of 500 at-bats. What is the best
       reading?
     choices:
-      - text: >-
-          Not much evidence of decline: a true 0.300 hitter would hit 0.275 or below about 11%
-          of the time by chance
-        correct: true
+      - text: Simulation cannot say anything about real players
         explains: >-
-          The slide's simulation. One season in ten is a plausible bad-luck year, so a single
-          dip is weak evidence that anything has changed.
+          Simulating a hitter of known ability shows how much a single season can wobble,
+          which is exactly what you need to judge whether an observed result is unusual.
       - text: The player has clearly lost skill
         explains: >-
           An 11% chance event happens routinely. Concluding a decline from one season would
@@ -29,10 +26,13 @@ questions:
       - text: The player is now a 0.275 hitter
         explains: >-
           One season's average is one noisy estimate of the true rate, not the rate itself.
-      - text: Simulation cannot say anything about real players
+      - text: >-
+          Not much evidence of decline: a true 0.300 hitter would hit 0.275 or below about 11%
+          of the time by chance
+        correct: true
         explains: >-
-          Simulating a hitter of known ability shows how much a single season can wobble,
-          which is exactly what you need to judge whether an observed result is unusual.
+          The slide's simulation. One season in ten is a plausible bad-luck year, so a single
+          dip is weak evidence that anything has changed.
     work: |-
       The observed drop is 0.300 to 0.275 over 500 at-bats.
       The slide's simulation of a true 0.300 hitter shows a season at or below 0.275 about 11% of the time, roughly 1 season in 9.
@@ -42,6 +42,9 @@ questions:
       Two investors have different returns this year. What must you know to say whether the
       gap reflects skill?
     choices:
+      - text: Their ages
+        explains: >-
+          Irrelevant to whether the gap is more than chance.
       - text: How much returns vary from year to year by chance alone
         correct: true
         explains: >-
@@ -51,9 +54,6 @@ questions:
         explains: >-
           The size of the difference tells you nothing until you compare it with the natural
           variation.
-      - text: Their ages
-        explains: >-
-          Irrelevant to whether the gap is more than chance.
       - text: Nothing — higher return always means more skill
         explains: >-
           That is the assumption the slide is warning against.

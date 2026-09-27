@@ -29,24 +29,24 @@ questions:
   - ask: >-
       `modexp` is `O(n³)`. Which two quantities multiply to give that?
     choices:
+      - text: "`n` calls, each one modular addition at `O(n)`"
+        explains: >-
+          The work per call is a multiplication — squaring, or multiplying by `x`. Additions
+          do not appear.
+      - text: "`y` calls, each at `O(n²)`"
+        explains: >-
+          `y` calls is the *naïve* method — and since `y` can be about `2ⁿ`, that is precisely
+          what repeated squaring exists to avoid.
       - text: "`O(n)` calls, each one modular multiplication at `O(n²)`"
         correct: true
         explains: >-
           An odd step drops `y` by 1 and the next step halves it, so `y` at least halves every
           two calls — at most `2n` calls, which is `O(n)`. Each call does one modular
           multiplication, priced at `O(n²)` on the previous page.
-      - text: "`n` calls, each one modular addition at `O(n)`"
-        explains: >-
-          The work per call is a multiplication — squaring, or multiplying by `x`. Additions
-          do not appear.
       - text: "`n²` calls, each at `O(n)`"
         explains: >-
           The call count comes from halving an `n`-bit exponent, which gives `O(n)` calls,
           not `n²`.
-      - text: "`y` calls, each at `O(n²)`"
-        explains: >-
-          `y` calls is the *naïve* method — and since `y` can be about `2ⁿ`, that is precisely
-          what repeated squaring exists to avoid.
     work: |-
       Calls: an odd `y` becomes `y − 1`, and an even `y` is halved. So `y` at least halves every two calls.
       An `n`-bit `y` can be halved `n` times, so at most `2n = O(n)` calls.
@@ -62,15 +62,15 @@ questions:
           The odd branch does not halve — it peels off one factor of `x` to make the exponent
           even. So a halving may take two calls, and an `n`-bit `y` can be halved `n` times,
           giving at most `2n` calls. Inside `O` the 2 disappears anyway.
+      - text: It is a safety margin with no particular meaning
+        explains: >-
+          It has a precise cause: the odd branch spends a call without halving.
       - text: Because both `x` and `y` have to be reduced each round
         explains: >-
           Reducing is part of the cost *per call*, not the number of calls.
       - text: Because the recursion descends and then returns
         explains: >-
           The return trip does the arithmetic but adds no new calls — each call returns once.
-      - text: It is a safety margin with no particular meaning
-        explains: >-
-          It has a precise cause: the odd branch spends a call without halving.
     work: |-
       Even `y`: one call, and `y` is halved.
       Odd `y`: one call that only subtracts 1 (peeling off a factor of `x`), giving an even `y`. Then a second call halves it.

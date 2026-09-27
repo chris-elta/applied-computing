@@ -31,10 +31,6 @@ notation:
 questions:
   - ask: In the recursion tree for `fib1(n)`, roughly how many times is `F(n-3)` computed?
     choices:
-      - text: Once — recursion computes each value once
-        explains: >-
-          That is what memoisation buys you, and `fib1` does not have it. Nothing in the
-          function records that a value has already been computed.
       - text: Three times
         correct: true
         explains: >-
@@ -49,6 +45,10 @@ questions:
         explains: >-
           Swapping the two calls changes the order the tree is walked, not its size. Every
           node still gets visited.
+      - text: Once — recursion computes each value once
+        explains: >-
+          That is what memoisation buys you, and `fib1` does not have it. Nothing in the
+          function records that a value has already been computed.
     work: |-
       Let `c(k)` be how many times `F(n−k)` is called. `F(n)` is called once, so `c(0) = 1`.
       `F(n−1)` is called only by `F(n)`, so `c(1) = 1`.

@@ -14,6 +14,18 @@ questions:
       What changes when a model gets its "specification" from data rather than from rules a
       programmer wrote?
     choices:
+      - text: Nothing changes; it is ordinary software with a different library
+        explains: >-
+          Ordinary software has a specification you can write down and test against. That
+          is the property that goes missing.
+      - text: The system needs less data, because the model fills in gaps
+        explains: >-
+          The slide says the larger the dataset, the better. That is precisely what causes
+          the scalability issues.
+      - text: The system becomes easier to test, because the data acts as the test
+        explains: >-
+          The opposite. With no specification to check against, it is unclear what "correct"
+          even means for a given input.
       - text: >-
           You move from applying rules you were given to generalising from observations, and
           there is no written statement of what the system should do
@@ -22,18 +34,6 @@ questions:
           The slide frames this as deductive reasoning giving way to inductive reasoning. The
           training data stands in for the spec, so what the system does is only as clear as
           the data behind it.
-      - text: The system becomes easier to test, because the data acts as the test
-        explains: >-
-          The opposite. With no specification to check against, it is unclear what "correct"
-          even means for a given input.
-      - text: The system needs less data, because the model fills in gaps
-        explains: >-
-          The slide says the larger the dataset, the better. That is precisely what causes
-          the scalability issues.
-      - text: Nothing changes; it is ordinary software with a different library
-        explains: >-
-          Ordinary software has a specification you can write down and test against. That
-          is the property that goes missing.
     work: |-
       Ordinary software: a programmer writes rules, and the specification says what the output should be. That is deductive.
       Learned models: the specification is the training data. The system generalises from observations, which is inductive.

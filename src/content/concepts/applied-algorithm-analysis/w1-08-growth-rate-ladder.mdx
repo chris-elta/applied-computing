@@ -41,6 +41,14 @@ questions:
       At one operation per nanosecond, an `O(n³)` algorithm on an input of a million takes
       about 32 years. Where does the practical line between usable and unusable sit?
     choices:
+      - text: Between `O(1)` and everything else
+        explains: >-
+          Constant time is lovely and rarely available. Almost all useful algorithms live
+          further down the ladder and are perfectly practical there.
+      - text: Between `n log n` and `n²`
+        explains: >-
+          A real and important engineering line, but not the categorical one. `n²` at a
+          million is 17 minutes — slow, not impossible.
       - text: >-
           Between the polynomial rows and `2ⁿ` — polynomials survive a bigger input,
           exponentials never will
@@ -49,14 +57,6 @@ questions:
           That is the line that matters. 32 years may or may not be acceptable for a given
           problem, but it scales: a smaller input brings it back. `2ⁿ` at a million is
           never, on any hardware, at any point in the future.
-      - text: Between `n log n` and `n²`
-        explains: >-
-          A real and important engineering line, but not the categorical one. `n²` at a
-          million is 17 minutes — slow, not impossible.
-      - text: Between `O(1)` and everything else
-        explains: >-
-          Constant time is lovely and rarely available. Almost all useful algorithms live
-          further down the ladder and are perfectly practical there.
       - text: >-
           There is no line — it depends entirely on hardware
         explains: >-

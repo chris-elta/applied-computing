@@ -25,6 +25,10 @@ questions:
       A share price goes from 50 to 100 one week, then back to 50 the next. Which summary
       treats the two moves symmetrically?
     choices:
+      - text: The difference in price, which gives +50 and −50
+        explains: >-
+          That is symmetric, but only in absolute terms. It ignores scale, so a move of 50 on
+          a share worth 50 is treated like one on a share worth 5,000.
       - text: The log₂ of each ratio, which gives +1 and −1
         correct: true
         explains: >-
@@ -38,10 +42,6 @@ questions:
         explains: >-
           Neither is symmetric about anything obvious: 2 is a distance of 1 from no change and
           0.5 only 0.5.
-      - text: The difference in price, which gives +50 and −50
-        explains: >-
-          That is symmetric, but only in absolute terms. It ignores scale, so a move of 50 on
-          a share worth 50 is treated like one on a share worth 5,000.
     work: |-
       Ratios: 50 → 100 is `100/50 = 2`. 100 → 50 is `50/100 = 0.5`.
       Percentages: `+100%` then `−50%`. They look unequal even though the moves cancel exactly.

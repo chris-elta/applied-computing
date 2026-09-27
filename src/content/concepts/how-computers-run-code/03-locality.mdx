@@ -10,10 +10,6 @@ visuals:
 questions:
   - ask: Why is the read at address 1 a hit, when nothing ever explicitly loaded it?
     choices:
-      - text: The cache guessed it would be needed and fetched it early
-        explains: >-
-          That's prefetching, which is a real technique — but it isn't what happened here.
-          This hit needs no prediction at all.
       - text: A miss loads a whole block, not a single word
         correct: true
         explains: >-
@@ -23,6 +19,10 @@ questions:
         explains: >-
           Registers are a separate, even smaller tier. The figure is showing cache
           behaviour — the word genuinely came from the cache.
+      - text: The cache guessed it would be needed and fetched it early
+        explains: >-
+          That's prefetching, which is a real technique — but it isn't what happened here.
+          This hit needs no prediction at all.
     work: |-
       Address 0 is a miss, so the cache fetches a whole block, not one word.
       The block holds four words: addresses 0, 1, 2 and 3.
@@ -30,14 +30,14 @@ questions:
       It isn't prefetching, and it isn't a register.
   - ask: You rewrite a loop so it reads every 16th element instead of every element. What happens?
     choices:
-      - text: Roughly the same speed — it does fewer reads, so it evens out
-        explains: >-
-          Fewer reads, but each one now pays full memory latency. Doing a quarter of the
-          work at eighty times the cost per item is not a good trade.
       - text: Faster, because it touches less data
         explains: >-
           Touching less data would help if the cost were per byte. It's per *trip to
           memory*, and you've just made every read its own trip.
+      - text: Roughly the same speed — it does fewer reads, so it evens out
+        explains: >-
+          Fewer reads, but each one now pays full memory latency. Doing a quarter of the
+          work at eighty times the cost per item is not a good trade.
       - text: Much slower per element, because every read misses
         correct: true
         explains: >-

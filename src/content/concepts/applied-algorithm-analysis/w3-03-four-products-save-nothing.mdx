@@ -18,20 +18,20 @@ questions:
       Halving the size of a multiplication makes it four times cheaper. So why does splitting
       into four half-size products save nothing?
     choices:
+      - text: Because half-size products are not actually cheaper
+        explains: >-
+          They are — quadratically so, which is the whole tension. A quarter of the cost, four
+          times over, lands back where it started.
+      - text: Because splitting the number costs too much
+        explains: >-
+          Splitting is just index arithmetic and shifting, all linear. It is nowhere near the
+          `O(n²)` that dominates.
       - text: Because the split then asks for four of them, and 4 × ¼ = 1
         correct: true
         explains: >-
           Each product is a quarter of the cost, and there are four — so the total is exactly
           what you began with. Making subproblems smaller is not by itself progress; you have
           to end up with *fewer* of them than the shrinkage pays for.
-      - text: Because splitting the number costs too much
-        explains: >-
-          Splitting is just index arithmetic and shifting, all linear. It is nowhere near the
-          `O(n²)` that dominates.
-      - text: Because half-size products are not actually cheaper
-        explains: >-
-          They are — quadratically so, which is the whole tension. A quarter of the cost, four
-          times over, lands back where it started.
       - text: Because the recombination is quadratic
         explains: >-
           Recombination is additions and shifts, so linear. If it were quadratic the split

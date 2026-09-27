@@ -25,17 +25,17 @@ questions:
           Splitting an array in half is index arithmetic, so it costs nothing worth counting.
           Every comparison mergesort performs happens while merging two sorted halves back
           together.
-      - text: Split evenly between dividing and merging
-        explains: >-
-          Dividing does no comparisons at all. It just names two ranges.
-      - text: Mostly in the recursive calls, with merging a minor cost
-        explains: >-
-          The recursive calls *are* mergesort on smaller inputs — their work is also merging,
-          all the way down. There is no other kind of work in the algorithm.
       - text: In the base case, when single elements are compared
         explains: >-
           The base case is a single element, already sorted, and does nothing. Comparisons
           begin one level up, in the first merge.
+      - text: Mostly in the recursive calls, with merging a minor cost
+        explains: >-
+          The recursive calls *are* mergesort on smaller inputs — their work is also merging,
+          all the way down. There is no other kind of work in the algorithm.
+      - text: Split evenly between dividing and merging
+        explains: >-
+          Dividing does no comparisons at all. It just names two ranges.
     work: |-
       Trace the three parts of mergesort. Splitting is index arithmetic (naming two ranges), with no comparisons.
       The base case is a single element, already sorted, so it does nothing.

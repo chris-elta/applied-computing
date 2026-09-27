@@ -25,6 +25,10 @@ questions:
   - ask: >-
       If `A` and `B` are independent, what is `P(A|B)`?
     choices:
+      - text: "`0`"
+        explains: >-
+          Zero would mean `A` cannot happen when `B` does. Independence says `B` has no
+          effect, which is a different thing.
       - text: "`P(A)` — knowing `B` changes nothing"
         correct: true
         explains: >-
@@ -32,18 +36,14 @@ questions:
           `P(A) × P(B)`, and the `P(B)` cancels. This is what the slide means by
           conditional probabilities getting interesting only when events are not
           independent.
-      - text: "`P(B)`"
-        explains: >-
-          That would be `P(B|A)` if `B` did not depend on `A`, but here we are asking about
-          `A`. The result is the probability of `A`.
-      - text: "`0`"
-        explains: >-
-          Zero would mean `A` cannot happen when `B` does. Independence says `B` has no
-          effect, which is a different thing.
       - text: "`P(A) × P(B)`"
         explains: >-
           That is the probability of *both* happening, `P(A ∩ B)`. Conditioning divides by
           `P(B)`, which removes the `P(B)` factor.
+      - text: "`P(B)`"
+        explains: >-
+          That would be `P(B|A)` if `B` did not depend on `A`, but here we are asking about
+          `A`. The result is the probability of `A`.
     work: |-
       Definition: `P(A|B) = P(A ∩ B) / P(B)`.
       Independence: `P(A ∩ B) = P(A) × P(B)`.

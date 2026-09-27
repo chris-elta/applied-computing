@@ -44,17 +44,17 @@ questions:
           The one enormous value drags the mean to about 1.05M, higher than every salary but
           one. The median depends only on the middle of the sorted list, so an outlier cannot
           distort it.
-      - text: The mean, about 1.05M
-        explains: >-
-          The mean uses every value, which is its strength for symmetric data and its
-          weakness here. A single outlier makes it unrepresentative.
-      - text: The geometric mean
-        explains: >-
-          It is meant for ratios and growth rates, not for amounts like salaries.
       - text: They are all equally good
         explains: >-
           They give 60k versus over a million on the same data, so the choice clearly
           matters.
+      - text: The geometric mean
+        explains: >-
+          It is meant for ratios and growth rates, not for amounts like salaries.
+      - text: The mean, about 1.05M
+        explains: >-
+          The mean uses every value, which is its strength for symmetric data and its
+          weakness here. A single outlier makes it unrepresentative.
     work: |-
       Mean: `(50 + 50 + 60 + 70 + 5000) / 5 = 5230 / 5 = 1046`, about 1.05M.
       That is higher than four of the five salaries, so it is not typical.
@@ -63,6 +63,16 @@ questions:
   - ask: >-
       A stock rises 50% one year and falls 50% the next. What is its average yearly change?
     choices:
+      - text: +25%
+        explains: >-
+          This ignores that the fall applies to a bigger base than the rise. Percentages on
+          different bases cannot simply be averaged.
+      - text: 0%, the arithmetic mean of +50% and −50%
+        explains: >-
+          If it were 0% a year you would end where you began, but you end at 75.
+      - text: −50%
+        explains: >-
+          That is the second year alone. Averaging must cover both.
       - text: >-
           About −13% a year: 1.5 × 0.5 = 0.75, and the geometric mean of the two factors is
           the square root of 0.75, about 0.87
@@ -71,16 +81,6 @@ questions:
           Starting at 100 you reach 150 and then 75, a loss overall. The arithmetic mean says
           0%, which claims no change and is wrong. Growth compounds by multiplication, so the
           geometric mean is right.
-      - text: 0%, the arithmetic mean of +50% and −50%
-        explains: >-
-          If it were 0% a year you would end where you began, but you end at 75.
-      - text: +25%
-        explains: >-
-          This ignores that the fall applies to a bigger base than the rise. Percentages on
-          different bases cannot simply be averaged.
-      - text: −50%
-        explains: >-
-          That is the second year alone. Averaging must cover both.
     work: |-
       Convert each change to a factor: +50% is `1.5`, −50% is `0.5`.
       Start at 100. After year one: `100 × 1.5 = 150`. After year two: `150 × 0.5 = 75`.

@@ -19,10 +19,6 @@ questions:
           17 ns. The memory read alone is around 80 ns. Even with a fairly arithmetic-heavy
           loop, the wait dominates — which is why the access pattern usually matters more
           than the operation count.
-      - text: Mostly the arithmetic — 50 operations per element is a lot
-        explains: >-
-          It sounds like a lot, but 50 operations is roughly 17 ns of work against an
-          80 ns memory read. Arithmetic is cheap enough that it rarely dominates.
       - text: Split roughly evenly
         explains: >-
           Close to even would need several hundred operations per element. At 50, memory
@@ -32,6 +28,10 @@ questions:
           Clock speed changes the arithmetic side but barely moves memory latency — that
           is exactly the gap that has been widening for thirty years. Faster clocks make
           the imbalance worse, not better.
+      - text: Mostly the arithmetic — 50 operations per element is a lot
+        explains: >-
+          It sounds like a lot, but 50 operations is roughly 17 ns of work against an
+          80 ns memory read. Arithmetic is cheap enough that it rarely dominates.
     work: |-
       Compute time: 50 operations at about one per cycle on a 3 GHz core is `50 / 3×10⁹ ≈ 17 ns`.
       Memory time: one read from main memory is about 80 ns.

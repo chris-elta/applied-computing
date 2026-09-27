@@ -30,20 +30,20 @@ questions:
       `fib3` makes the same recursive calls that `fib1` does, and yet it runs in linear
       time. Why?
     choices:
+      - text: It computes smaller values first, so nothing is repeated
+        explains: >-
+          That describes `fib2`, the bottom-up version. `fib3` still starts at `n` and
+          works downwards — it just refuses to redo work.
+      - text: Recursion is optimised into a loop by the compiler
+        explains: >-
+          No compiler transformation is doing this. Remove the memo and the same code is
+          exponential again, on the same compiler.
       - text: Each subproblem is computed once; every later call returns from the memo
         correct: true
         explains: >-
           Right. The call *tree* is the same shape, but only the first visit to each value
           does any work — the other visits hit the memo and return immediately. There are
           `n` distinct subproblems, so there is `O(n)` real work.
-      - text: Recursion is optimised into a loop by the compiler
-        explains: >-
-          No compiler transformation is doing this. Remove the memo and the same code is
-          exponential again, on the same compiler.
-      - text: It computes smaller values first, so nothing is repeated
-        explains: >-
-          That describes `fib2`, the bottom-up version. `fib3` still starts at `n` and
-          works downwards — it just refuses to redo work.
       - text: The recursion depth is only `log n`
         explains: >-
           The depth is `n`, not `log n` — which is exactly why `fib3` risks a stack

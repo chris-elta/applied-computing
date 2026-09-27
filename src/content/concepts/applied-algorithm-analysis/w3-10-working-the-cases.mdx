@@ -17,12 +17,10 @@ notation:
 questions:
   - ask: Which of these solve to `O(n log n)`?
     choices:
-      - text: "`2T(n/2) + O(n)` and `3T(n/3) + O(n)`"
-        correct: true
+      - text: "`3T(n/3) + O(n)` and `2T(n/2) + O(n²)`"
         explains: >-
-          Both are balanced with `d = 1`. For (a), `log₂2 = 1 = d`; for (c), `log₃3 = 1 = d`.
-          Three subproblems of a third the size is the *same balance* as two of a half,
-          because both logs come to 1.
+          (d) is root-dominated: `log₂2 = 1 < 2 = d`, so the combine step swamps everything
+          and the answer is `O(n²)` with no log.
       - text: "`2T(n/2) + O(n)` and `4T(n/2) + O(n²)`"
         explains: >-
           (b) is balanced too, but with `d = 2` — so it picks up its log factor on `n²`,
@@ -31,10 +29,12 @@ questions:
         explains: >-
           (c) also lands there. It is easy to assume three subproblems must be worse than
           two, but they are a third the size rather than a half.
-      - text: "`3T(n/3) + O(n)` and `2T(n/2) + O(n²)`"
+      - text: "`2T(n/2) + O(n)` and `3T(n/3) + O(n)`"
+        correct: true
         explains: >-
-          (d) is root-dominated: `log₂2 = 1 < 2 = d`, so the combine step swamps everything
-          and the answer is `O(n²)` with no log.
+          Both are balanced with `d = 1`. For (a), `log₂2 = 1 = d`; for (c), `log₃3 = 1 = d`.
+          Three subproblems of a third the size is the *same balance* as two of a half,
+          because both logs come to 1.
     work: |-
       Compare `d` with `log_b a` for each recurrence.
       (a) `2T(n/2) + O(n)`: `log₂ 2 = 1 = d`, balanced, so `O(n log n)`.
@@ -52,14 +52,14 @@ questions:
           Balanced means `d = log_b a`, and the answer is `O(nᵈ log n)`. With `d = 1` that is
           `O(n log n)`; with `d = 2` it is `O(n² log n)`. Being balanced fixes the *shape* of
           the answer, not the exponent.
-      - text: The number of subproblems
-        explains: >-
-          (a) has 2, (b) has 4, (c) has 3 — and (a) and (c) agree while (b) differs. The
-          subproblem count is not what separates them.
       - text: Whether `b` divides `a` evenly
         explains: >-
           No such condition appears anywhere in the theorem. Only `d` against `log_b a`
           matters.
+      - text: The number of subproblems
+        explains: >-
+          (a) has 2, (b) has 4, (c) has 3 — and (a) and (c) agree while (b) differs. The
+          subproblem count is not what separates them.
       - text: The height of the recursion tree
         explains: >-
           Height is `log_b n` in all of them, and it is the same log factor each picks up.

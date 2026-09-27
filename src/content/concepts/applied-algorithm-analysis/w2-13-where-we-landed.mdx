@@ -22,24 +22,24 @@ questions:
   - ask: >-
       `fib3` makes the same pattern of recursive calls as `fib1`. Why is it linear anyway?
     choices:
+      - text: The memo makes the recursion depth logarithmic
+        explains: >-
+          The depth is still `n`, which is why `fib3` can overflow the stack where `fib2`
+          cannot. Depth is not what changed.
+      - text: Because addition is `O(1)`
+        explains: >-
+          Both versions assume that, and `fib1` is exponential regardless. This week has in
+          any case shown that assumption to be false for large numbers.
+      - text: It makes strictly fewer calls than `fib1`
+        explains: >-
+          It makes the same calls — that is the premise. What changed is how much work each
+          one does.
       - text: Each memo entry is computed once; every repeated call returns in `O(1)`
         correct: true
         explains: >-
           There are only `n` distinct subproblems. The first visit to each does the work and
           every later visit is a lookup, so the subtrees under an already-computed value
           never run.
-      - text: The memo makes the recursion depth logarithmic
-        explains: >-
-          The depth is still `n`, which is why `fib3` can overflow the stack where `fib2`
-          cannot. Depth is not what changed.
-      - text: It makes strictly fewer calls than `fib1`
-        explains: >-
-          It makes the same calls — that is the premise. What changed is how much work each
-          one does.
-      - text: Because addition is `O(1)`
-        explains: >-
-          Both versions assume that, and `fib1` is exponential regardless. This week has in
-          any case shown that assumption to be false for large numbers.
     work: |-
       `fib3` makes the same calls as `fib1`, so look at work per call.
       There are `n` distinct subproblems. The first visit to each does `O(1)` work, and repeats return from the memo.
@@ -49,6 +49,10 @@ questions:
       An algorithm is both `O(n)` and `Ω(n)`. What is the one-symbol conclusion — and what
       does that symbol still not tell you?
     choices:
+      - text: "`O(n)`, since the upper bound is what matters"
+        explains: >-
+          When both bounds hold, `Θ` is the stronger and more honest statement. Reporting
+          only `O` discards what you proved.
       - text: "`Θ(n)`; it says nothing about best vs worst case, or about constants"
         correct: true
         explains: >-
@@ -59,10 +63,6 @@ questions:
         explains: >-
           `Θ` pins the growth *order* only. Two `Θ(n)` algorithms can differ by a factor of
           100 in practice.
-      - text: "`O(n)`, since the upper bound is what matters"
-        explains: >-
-          When both bounds hold, `Θ` is the stronger and more honest statement. Reporting
-          only `O` discards what you proved.
       - text: Nothing — the two bounds contradict each other
         explains: >-
           They are complementary. Holding simultaneously is exactly the definition of `Θ`.
@@ -75,24 +75,24 @@ questions:
       Euclid's algorithm runs on two 100-digit numbers. Taking `n` as the bit length of the
       larger one, is `n` about 100, 200, 332, or 10¹⁰⁰?
     choices:
-      - text: About 332
-        correct: true
-        explains: >-
-          One 100-digit number is `100 × log₂ 10 ≈ 332` bits. `n` is set by the **larger
-          number alone**, not by the two of them added together.
       - text: About 664
         explains: >-
           This is the trap: it adds both numbers' digits together. `n` is the bit length of
           the larger input, so 332 — doubling it would double every cost in the table for no
           reason.
-      - text: "100"
-        explains: >-
-          That is the decimal digit count of one number. Converting to bits multiplies by
-          `log₂ 10 ≈ 3.32`.
       - text: "10¹⁰⁰"
         explains: >-
           That is roughly the *value*, and using it as the size is exactly the mistake this
           week exists to remove — it would make Euclid look impossibly slow.
+      - text: About 332
+        correct: true
+        explains: >-
+          One 100-digit number is `100 × log₂ 10 ≈ 332` bits. `n` is set by the **larger
+          number alone**, not by the two of them added together.
+      - text: "100"
+        explains: >-
+          That is the decimal digit count of one number. Converting to bits multiplies by
+          `log₂ 10 ≈ 3.32`.
     work: |-
       Input size is the bit length of the larger number.
       One decimal digit needs `log₂ 10 ≈ 3.32` bits.

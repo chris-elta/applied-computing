@@ -20,6 +20,14 @@ questions:
       Selection sort swaps at most once per pass — four times in total on the slide's input —
       yet it still counts 28 comparisons. What does that tell you?
     choices:
+      - text: The input was already partly sorted
+        explains: >-
+          That helps insertion sort, which gets 19 here rather than its usual worst case. It
+          does not help selection sort, which always does the same 28.
+      - text: Selection sort is more efficient than the other two
+        explains: >-
+          It does fewer *moves* — four against fourteen — which can matter when moving is
+          expensive. Its comparison count, and so its asymptotic cost, is no better.
       - text: >-
           Comparisons, not moves, are what the quadratic exponent counts
         correct: true
@@ -27,14 +35,6 @@ questions:
           Selection sort barely moves anything and is still `O(n²)`, because each pass sweeps
           the whole unsorted remainder looking for the minimum. The nested sweep is the cost,
           regardless of how little gets rearranged.
-      - text: Selection sort is more efficient than the other two
-        explains: >-
-          It does fewer *moves* — four against fourteen — which can matter when moving is
-          expensive. Its comparison count, and so its asymptotic cost, is no better.
-      - text: The input was already partly sorted
-        explains: >-
-          That helps insertion sort, which gets 19 here rather than its usual worst case. It
-          does not help selection sort, which always does the same 28.
       - text: Swaps are free, so only comparisons have a cost
         explains: >-
           Swaps are not free — they are just not what the quadratic count comes from here.

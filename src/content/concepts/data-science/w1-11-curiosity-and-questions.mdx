@@ -15,6 +15,14 @@ questions:
   - ask: >-
       Which of these is closest to the questions the lecture wants a data scientist to ask?
     choices:
+      - text: How can I make this dataset smaller?
+        explains: >-
+          Size may matter for practical reasons, but it is not the question of what the data
+          could tell you.
+      - text: Which model gives the highest accuracy on this dataset?
+        explains: >-
+          A modelling question, and a legitimate one later. But it comes after deciding what
+          is worth finding out, which is what the slide is about.
       - text: >-
           What might I learn from this dataset, what do the people whose data it is really
           want to know, and what other data would get us there?
@@ -22,22 +30,14 @@ questions:
         explains: >-
           These are the three prompts from the slide. They start from curiosity and from the
           people involved, then work towards data and methods.
-      - text: Which model gives the highest accuracy on this dataset?
-        explains: >-
-          A modelling question, and a legitimate one later. But it comes after deciding what
-          is worth finding out, which is what the slide is about.
       - text: What did my manager tell me to compute?
         explains: >-
           The slide contrasts developers, who are not encouraged to ask questions, with data
           scientists, who are. Waiting for instructions is the habit to avoid.
-      - text: How can I make this dataset smaller?
-        explains: >-
-          Size may matter for practical reasons, but it is not the question of what the data
-          could tell you.
     work: |-
       The slide gives three prompts: what might I learn from this dataset, what do the people whose data it is really want to know, what other data would help.
       Compare each option against those. Highest accuracy is a later modelling question. "What did my manager tell me to compute" is the wait-for-instructions habit the slide warns against. Shrinking the dataset is a practical concern, not a question of what to learn.
-      Only the first option matches the three prompts.
+      Only the option about what to learn from the data matches the three prompts.
 assessed:
   - "Lab 1 · Task 1"
 prerequisites:

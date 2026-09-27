@@ -23,6 +23,14 @@ questions:
       Karatsuba is `O(n^1.59)` and schoolbook is `O(n²)`. Why do real libraries still use
       schoolbook for small inputs?
     choices:
+      - text: Because Karatsuba is only correct for `n` a power of 2
+        explains: >-
+          The power-of-2 assumption is for convenience in the analysis. The algorithm handles
+          any `n` with ceilings and floors.
+      - text: Because recursion is always slower than iteration
+        explains: >-
+          Too broad, and not the reason. The cost is in the extra arithmetic per level, not
+          in the mechanics of recursive calls.
       - text: >-
           Karatsuba pays a larger constant per bit, and below a few hundred bits that
           outweighs the better exponent
@@ -32,18 +40,10 @@ questions:
           way back — all hidden inside the `O`. At 64 bits schoolbook does about 4,100
           operations against Karatsuba's 8,700, and the curves do not cross until roughly 512
           bits.
-      - text: Because Karatsuba is only correct for `n` a power of 2
-        explains: >-
-          The power-of-2 assumption is for convenience in the analysis. The algorithm handles
-          any `n` with ceilings and floors.
       - text: Because the master theorem does not apply to Karatsuba
         explains: >-
           It applies exactly — `a = 3, b = 2, d = 1`. The issue is what asymptotic notation
           deliberately discards.
-      - text: Because recursion is always slower than iteration
-        explains: >-
-          Too broad, and not the reason. The cost is in the extra arithmetic per level, not
-          in the mechanics of recursive calls.
     work: |-
       Asymptotics hide constants. Karatsuba's `O(n^1.59)` hides splitting, three calls, and shifts and subtractions on the way back.
       At 64 bits: schoolbook about `64² ≈ 4,100` operations against Karatsuba's about `8,700`, so schoolbook wins.

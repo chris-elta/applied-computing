@@ -24,17 +24,17 @@ questions:
       "Quicksort is `O(n²)` in the worst case and `Θ(n log n)` on average." Is that one
       consistent sentence?
     choices:
+      - text: No — an algorithm cannot be both `O(n²)` and `Θ(n log n)`
+        explains: >-
+          It can, because the two clauses are about different cases. Even for a single
+          case, `Θ(n log n)` implies `O(n²)` — a tight bound always implies looser upper
+          bounds.
       - text: Yes — bound type and case are independent axes
         correct: true
         explains: >-
           `O`/`Ω`/`Θ` say how tight the bound is; worst/average/best say which input you
           are bounding. You need one choice from each axis for the statement to mean
           anything, and this sentence makes two perfectly compatible ones.
-      - text: No — an algorithm cannot be both `O(n²)` and `Θ(n log n)`
-        explains: >-
-          It can, because the two clauses are about different cases. Even for a single
-          case, `Θ(n log n)` implies `O(n²)` — a tight bound always implies looser upper
-          bounds.
       - text: No — `Θ` is only for average case and `O` only for worst case
         explains: >-
           There is no such rule. You can give a `Θ` bound on the worst case, or an `O`

@@ -34,18 +34,18 @@ questions:
         explains: >-
           The test is whether `P(A ∩ B)` equals `P(A) × P(B)`. Here it does not, so knowing
           one event changes what you expect of the other.
-      - text: Yes, because each event has probability 0.5
+      - text: No, because independence needs the events to have different probabilities
         explains: >-
-          Equal probabilities say nothing about independence. What matters is whether the
-          joint probability equals the product.
+          Independent events can have any probabilities, equal or not.
       - text: Yes, because 0.30 is close to 0.25
         explains: >-
           "Close" is not the test. In real data the numbers rarely match exactly, so the
           gap's size relative to sampling noise is what you would examine. As posed, they
           differ and the events are not independent.
-      - text: No, because independence needs the events to have different probabilities
+      - text: Yes, because each event has probability 0.5
         explains: >-
-          Independent events can have any probabilities, equal or not.
+          Equal probabilities say nothing about independence. What matters is whether the
+          joint probability equals the product.
     work: |-
       Test: `A` and `B` are independent only if `P(A ∩ B) = P(A) × P(B)`.
       Product: `0.5 × 0.5 = 0.25`.
@@ -55,11 +55,9 @@ questions:
       You assume two features in your data are independent and multiply their probabilities
       to estimate how often both occur. When does this most likely give a poor estimate?
     choices:
-      - text: When the features are actually related, so one tells you something about the other
-        correct: true
+      - text: Never — the product rule is always valid
         explains: >-
-          The product rule holds only under independence. Related features make the true
-          joint probability differ from the product, sometimes by a lot.
+          It is valid only for independent events. That is the whole point of the definition.
       - text: When the features have small probabilities
         explains: >-
           Size is not the issue. Independent events with tiny probabilities still multiply
@@ -68,9 +66,11 @@ questions:
         explains: >-
           More data helps you *measure* the joint frequency; it does not make a false
           independence assumption true.
-      - text: Never — the product rule is always valid
+      - text: When the features are actually related, so one tells you something about the other
+        correct: true
         explains: >-
-          It is valid only for independent events. That is the whole point of the definition.
+          The product rule holds only under independence. Related features make the true
+          joint probability differ from the product, sometimes by a lot.
     work: |-
       Multiplying probabilities gives `P(A ∩ B)` only when the events are independent.
       If the features are related, the true joint probability differs from `P(A) × P(B)`, so the estimate is off.

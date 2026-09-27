@@ -37,17 +37,17 @@ questions:
           The recursive work is already accounted for by the `4T(n/2)`. The `O(n)` is the
           shifting and adding this one call performs on its own. Reading it as the whole
           algorithm's cost makes every recurrence come out wrong.
-      - text: The total cost of the algorithm at this size
+      - text: The number of bits in the answer
         explains: >-
-          That is `T(n)` itself, the left-hand side. Putting the total on the right as well
-          would make the equation circular.
+          The answer has about `2n` bits, but the term counts *work*, not output size.
       - text: The cost of the four recursive multiplications
         explains: >-
           Those are the `4T(n/2)` term. The two parts of the right-hand side are deliberately
           separate.
-      - text: The number of bits in the answer
+      - text: The total cost of the algorithm at this size
         explains: >-
-          The answer has about `2n` bits, but the term counts *work*, not output size.
+          That is `T(n)` itself, the left-hand side. Putting the total on the right as well
+          would make the equation circular.
     work: |-
       Read `T(n) = 4T(n/2) + O(n)` term by term. `T(n)` is the total cost at size `n`.
       `4T(n/2)` is the cost of the four half-size recursive calls. That covers everything the children do.

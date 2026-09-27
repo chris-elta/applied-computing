@@ -25,6 +25,18 @@ questions:
       Merging two sorted lists of total length `k + l` takes at most `k + l − 1` comparisons.
       Why one fewer than the number of elements?
     choices:
+      - text: Because the lists are already sorted
+        explains: >-
+          That is what makes the merge linear at all, but it does not explain the specific
+          "minus one". The saving is at the end, when one side runs out.
+      - text: Because the first element needs no comparison
+        explains: >-
+          The first output *does* require a comparison — the two fronts must be compared to
+          see which is smaller. It is the tail that comes free.
+      - text: Because the last two elements are compared together
+        explains: >-
+          Each comparison involves exactly two elements and emits one. There is no paired
+          final step.
       - text: >-
           Every comparison writes one element, but the final run is copied across with
           nothing left to compare against
@@ -33,18 +45,6 @@ questions:
           Each comparison outputs exactly one element and shortens one input. Once one list
           empties, the remainder of the other is copied straight out — no comparisons needed.
           With `k = l = 4` the bound is 7, and the traced merge takes exactly 7.
-      - text: Because the first element needs no comparison
-        explains: >-
-          The first output *does* require a comparison — the two fronts must be compared to
-          see which is smaller. It is the tail that comes free.
-      - text: Because the lists are already sorted
-        explains: >-
-          That is what makes the merge linear at all, but it does not explain the specific
-          "minus one". The saving is at the end, when one side runs out.
-      - text: Because the last two elements are compared together
-        explains: >-
-          Each comparison involves exactly two elements and emits one. There is no paired
-          final step.
     work: |-
       Each comparison compares the two fronts and outputs one element.
       So after `k + l − 1` comparisons, `k + l − 1` elements are out.
@@ -52,6 +52,10 @@ questions:
       At best one element remains at that point, so at most `k + l − 1` comparisons. With `k = l = 4`, that is 7.
   - ask: What is the *best* case for merging two sorted lists of four?
     choices:
+      - text: Zero — sorted inputs need no comparisons
+        explains: >-
+          The two lists are each sorted, but nothing says how they relate to one another.
+          That is what the comparisons discover.
       - text: Four comparisons — when every element of one list is smaller than all of the other
         correct: true
         explains: >-
@@ -64,10 +68,6 @@ questions:
       - text: Seven — merging always costs the same
         explains: >-
           Seven is the worst case. The count varies with how the values interleave.
-      - text: Zero — sorted inputs need no comparisons
-        explains: >-
-          The two lists are each sorted, but nothing says how they relate to one another.
-          That is what the comparisons discover.
     work: |-
       Best case: all of one list is smaller than all of the other, say `x` below `y`.
       Each comparison outputs an `x` element, and there are four. After four comparisons `x` is empty.

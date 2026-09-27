@@ -22,23 +22,23 @@ questions:
   - ask: >-
       Which reading of a logarithm is doing the work in both fast exponentiation and Euclid?
     choices:
+      - text: Height — the depth of a binary tree with `N` leaves
+        explains: >-
+          That is the divide-and-conquer reading, and it arrives next week with recurrences.
+          Neither algorithm builds a branching tree.
+      - text: Digits — how many digits the number takes to write
+        explains: >-
+          That reading gives the *input size*, which is what each round costs. It is the
+          other half of the analysis, not the round count.
+      - text: All three, since they are the same number
+        explains: >-
+          Same number, different mechanisms. Knowing *which* one is in play is what tells you
+          whether an analysis generalises.
       - text: Halvings — how many times you can halve before reaching 1
         correct: true
         explains: >-
           Both shrink their quantity by a constant factor each round, so the round count is a
           halving count. Binary search is the third member of the same family.
-      - text: Digits — how many digits the number takes to write
-        explains: >-
-          That reading gives the *input size*, which is what each round costs. It is the
-          other half of the analysis, not the round count.
-      - text: Height — the depth of a binary tree with `N` leaves
-        explains: >-
-          That is the divide-and-conquer reading, and it arrives next week with recurrences.
-          Neither algorithm builds a branching tree.
-      - text: All three, since they are the same number
-        explains: >-
-          Same number, different mechanisms. Knowing *which* one is in play is what tells you
-          whether an analysis generalises.
     work: |-
       Fast exponentiation halves `y` each round. Euclid's larger value halves every two rounds.
       Both shrink their quantity by a constant factor per round, so the number of rounds is how many times you can halve before reaching 1: about `log₂` of the size.

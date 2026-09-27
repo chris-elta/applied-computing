@@ -14,13 +14,13 @@ questions:
         explains: >-
           L = λW = 200 × 0.05 = 10. That's your required concurrency: fewer than 10
           workers and arrivals queue up regardless of how fast each one is.
+      - text: "250"
+        explains: >-
+          This divides rather than multiplies. Little's Law is L = λW, a product.
       - text: "4"
         explains: >-
           That's 200 divided by 50 — but the units don't line up. W has to be in seconds
           to cancel against a per-second arrival rate.
-      - text: "250"
-        explains: >-
-          This divides rather than multiplies. Little's Law is L = λW, a product.
       - text: Not enough information — it depends on the arrival distribution
         correct: false
         explains: >-

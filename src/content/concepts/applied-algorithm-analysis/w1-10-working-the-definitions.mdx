@@ -71,24 +71,24 @@ questions:
       An algorithm runs two phases in sequence, costing `f(n)` and `g(n)`. What is its
       total cost?
     choices:
+      - text: "`Θ(f(n) · g(n))`"
+        explains: >-
+          Multiplication is for nesting, not sequencing. Phases run one after the other,
+          so their costs add.
+      - text: It cannot be simplified without knowing `f` and `g`
+        explains: >-
+          It can, and that is the value of the theorem: the bound holds for any nonnegative
+          `f` and `g` whatsoever.
       - text: "`Θ(f(n) + g(n))`, which equals `Θ` of the slower phase"
         correct: true
         explains: >-
           Since `max(f,g) ≤ f+g ≤ 2·max(f,g)`, the sum and the maximum are the same up to
           a constant. So you may drop the faster phase from the analysis entirely — which
           is why nobody writes `O(n log n + n)`.
-      - text: "`Θ(f(n) · g(n))`"
-        explains: >-
-          Multiplication is for nesting, not sequencing. Phases run one after the other,
-          so their costs add.
       - text: "`Θ(min(f(n), g(n)))`"
         explains: >-
           The total cannot be less than either phase — you have to pay for both. It is the
           larger that dominates.
-      - text: It cannot be simplified without knowing `f` and `g`
-        explains: >-
-          It can, and that is the value of the theorem: the bound holds for any nonnegative
-          `f` and `g` whatsoever.
     work: |-
       The phases run one after the other, so add: `f(n) + g(n)`.
       Let `m = max(f, g)`. Then `m ≤ f + g ≤ 2m`.

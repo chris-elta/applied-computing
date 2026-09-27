@@ -26,23 +26,23 @@ questions:
       Wealth in a group runs from about 10³ dollars for most people to 10¹¹ for one. Why take
       logs before computing a correlation or a mean?
     choices:
+      - text: Logs remove the outlier from the data
+        explains: >-
+          Nothing is removed. Every point stays; only the scale changes, so the outlier is
+          brought closer rather than deleted.
+      - text: Logs are only useful for probabilities
+        explains: >-
+          Probabilities are one use, from the earlier concept. Here the point is skewed
+          quantities.
       - text: The log compresses the tail so one extreme value no longer dominates the calculation
         correct: true
         explains: >-
           On the log scale the values become 3 to 11, a range where the outlier is only a few
           steps from everyone else, and the distribution looks far more like a traditional one.
-      - text: Logs remove the outlier from the data
-        explains: >-
-          Nothing is removed. Every point stays; only the scale changes, so the outlier is
-          brought closer rather than deleted.
       - text: Logs make all the values equal
         explains: >-
           Order and relative differences in proportion are preserved. What changes is that
           equal multiples become equal distances.
-      - text: Logs are only useful for probabilities
-        explains: >-
-          Probabilities are one use, from the earlier concept. Here the point is skewed
-          quantities.
     work: |-
       Wealth runs from `10³` to `10¹¹`, so the biggest is `10⁸ = 100,000,000` times the smallest.
       Take `log₁₀`: the values go from 3 to 11.

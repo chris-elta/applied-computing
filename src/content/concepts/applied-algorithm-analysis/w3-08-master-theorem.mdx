@@ -40,14 +40,14 @@ questions:
         explains: >-
           Those are not comparable quantities. The test is about how level *costs* change as
           you descend.
-      - text: Whether the algorithm is faster than `O(n log n)`
-        explains: >-
-          `O(n log n)` is one possible answer, not the dividing line. The line is where the
-          cost sits in the tree.
       - text: Whether the recursion terminates
         explains: >-
           It terminates whenever `b > 1`, in all three cases. The theorem is about cost, not
           termination.
+      - text: Whether the algorithm is faster than `O(n log n)`
+        explains: >-
+          `O(n log n)` is one possible answer, not the dividing line. The line is where the
+          cost sits in the tree.
     work: |-
       Level `k` has `aᵏ` nodes, each of size `n/bᵏ`, so each costs `(n/bᵏ)ᵈ`.
       Level cost: `aᵏ · (n/bᵏ)ᵈ = nᵈ · (a/bᵈ)ᵏ`.
@@ -56,6 +56,10 @@ questions:
   - ask: >-
       Why does the balanced case pick up a `log n` factor that the other two do not?
     choices:
+      - text: Because logarithms always appear when `a = b`
+        explains: >-
+          `a = b` is neither necessary nor sufficient — binary search has `a = 1, b = 2` and
+          is balanced, because what matters is `a` against `bᵈ`.
       - text: >-
           Every level costs the same, so the total is that cost multiplied by the number of
           levels
@@ -64,10 +68,6 @@ questions:
           With ratio exactly 1, all `log_b n + 1` terms are equal to `O(nᵈ)` — so the sum is
           `O(nᵈ log n)`. In the other two cases the series is geometric and collapses to one
           end, which is why no log appears there.
-      - text: Because logarithms always appear when `a = b`
-        explains: >-
-          `a = b` is neither necessary nor sufficient — binary search has `a = 1, b = 2` and
-          is balanced, because what matters is `a` against `bᵈ`.
       - text: Because the tree is deeper in the balanced case
         explains: >-
           The height is `log_b n` in every case. What differs is how the level costs behave

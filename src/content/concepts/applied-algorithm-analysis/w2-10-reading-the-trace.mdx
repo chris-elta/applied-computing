@@ -23,21 +23,21 @@ notation:
 questions:
   - ask: Why does the trace for exponent 13 need only six rows?
     choices:
+      - text: Because the table skips rows that reduce to 1
+        explains: >-
+          Nothing is skipped. `3⁶` and `3¹²` both reduce to 1 and both appear.
       - text: Because each even step halves the exponent, so the descent is short
         correct: true
         explains: >-
           The descent is `13 → 12 → 6 → 3 → 2 → 1 → 0`. Odd steps subtract 1, even steps
           halve, so the exponent collapses in about `log₂ 13` halvings rather than 13 steps.
+      - text: Because 13 is prime
+        explains: >-
+          Primality plays no part. The same short descent happens for 12 or 14.
       - text: Because only six powers of 3 are distinct mod 7
         explains: >-
           There are only six non-zero residues mod 7, which is true and unrelated — the row
           count comes from the descent, not from the modulus.
-      - text: Because the table skips rows that reduce to 1
-        explains: >-
-          Nothing is skipped. `3⁶` and `3¹²` both reduce to 1 and both appear.
-      - text: Because 13 is prime
-        explains: >-
-          Primality plays no part. The same short descent happens for 12 or 14.
     work: |-
       Trace the exponent: odd subtracts 1, even halves.
       `13` (odd) → `12` → `6` (halve) → `3` → `2` (odd, minus 1) → `1` (halve) → `0` (odd, minus 1).
@@ -47,20 +47,20 @@ questions:
       In the trace, the largest number that ever appears is 36, while `3¹³` is 1,594,323.
       What keeps it small?
     choices:
+      - text: 3 and 7 happen to be small
+        explains: >-
+          The bound is structural, not luck: intermediates stay below `N²` for any `N`, which
+          is what keeps every operation on `n`-bit numbers.
+      - text: The recursion never multiplies, only squares
+        explains: >-
+          It does both — squaring on even steps, multiplying by `x` on odd ones. Either way
+          the result is reduced immediately.
       - text: Reducing mod 7 after every step, so nothing ever exceeds 6²
         correct: true
         explains: >-
           Every intermediate is dragged back below 7, so the biggest value the algorithm ever
           holds is a product of two such numbers — at most 36. That is the "reduce as you go"
           payoff made visible.
-      - text: The recursion never multiplies, only squares
-        explains: >-
-          It does both — squaring on even steps, multiplying by `x` on odd ones. Either way
-          the result is reduced immediately.
-      - text: 3 and 7 happen to be small
-        explains: >-
-          The bound is structural, not luck: intermediates stay below `N²` for any `N`, which
-          is what keeps every operation on `n`-bit numbers.
       - text: The table only shows the reduced column
         explains: >-
           The middle column shows the unreduced arithmetic too — `36` is visible there, and

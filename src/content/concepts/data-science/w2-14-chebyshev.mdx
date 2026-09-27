@@ -49,6 +49,10 @@ questions:
       A dataset has mean 100 and standard deviation 10, with an unknown shape. At least what
       fraction of the values lie between 80 and 120?
     choices:
+      - text: "95%"
+        explains: >-
+          95% is roughly what a normal distribution gives at two sigma. Chebyshev must cover
+          any shape, so its guarantee is weaker: 75%.
       - text: "75%, because 80 to 120 is two sigma either side, so `1 − 1/4`"
         correct: true
         explains: >-
@@ -59,10 +63,6 @@ questions:
         explains: >-
           That would be the bound for a much narrower interval. With `k = 2` the guarantee is
           75%.
-      - text: "95%"
-        explains: >-
-          95% is roughly what a normal distribution gives at two sigma. Chebyshev must cover
-          any shape, so its guarantee is weaker: 75%.
       - text: "Nothing can be said without knowing the shape"
         explains: >-
           The remarkable thing about the inequality is that it holds regardless of shape.
@@ -75,21 +75,21 @@ questions:
       Using the bound, at least what fraction lies within three standard deviations of the
       mean?
     choices:
+      - text: "99.7%"
+        explains: >-
+          That is the figure for a normal distribution. The general guarantee is much
+          weaker.
+      - text: "67%"
+        explains: >-
+          Not what the formula gives; `1 − 1/k²` with `k = 3` is about 0.889.
       - text: "About 89%, since `1 − 1/9 ≈ 0.889`"
         correct: true
         explains: >-
           Substitute `k = 3`. Note how the guarantee grows with `k`: 0% at `k = 1`, 75% at 2,
           89% at 3.
-      - text: "99.7%"
-        explains: >-
-          That is the figure for a normal distribution. The general guarantee is much
-          weaker.
       - text: "75%"
         explains: >-
           That is `k = 2`. For `k = 3` the interval is wider and so is the guarantee.
-      - text: "67%"
-        explains: >-
-          Not what the formula gives; `1 − 1/k²` with `k = 3` is about 0.889.
     work: |-
       Set `k = 3`.
       Bound: `1 − 1/3² = 1 − 1/9 = 8/9 ≈ 0.889`, about 89%.

@@ -29,6 +29,17 @@ questions:
       The proof of Euclid's rule shows the two pairs have the same **set** of common
       divisors, rather than reasoning about the greatest one directly. Why is that easier?
     choices:
+      - text: Because sets of divisors are always finite
+        explains: >-
+          True, and not the point. The argument would work the same way regardless.
+      - text: Because the two pairs have the same greatest element by definition
+        explains: >-
+          That is the conclusion, not an assumption — it is exactly what the two directions
+          establish.
+      - text: Because the greatest common divisor is hard to compute
+        explains: >-
+          Computing it is what the algorithm does. The proof is about why the *rule* is
+          valid, which is a separate question from how to compute anything.
       - text: >-
           Sets can be compared by checking both directions, and equal sets must have equal
           largest members
@@ -37,17 +48,6 @@ questions:
           Each direction is one line of ordinary divisibility: if `d` divides `a` and `b` it
           divides `a − qb = r`, and conversely. Reasoning about a maximum directly would need
           you to handle "greatest" throughout; this way it appears only in the last sentence.
-      - text: Because the greatest common divisor is hard to compute
-        explains: >-
-          Computing it is what the algorithm does. The proof is about why the *rule* is
-          valid, which is a separate question from how to compute anything.
-      - text: Because the two pairs have the same greatest element by definition
-        explains: >-
-          That is the conclusion, not an assumption — it is exactly what the two directions
-          establish.
-      - text: Because sets of divisors are always finite
-        explains: >-
-          True, and not the point. The argument would work the same way regardless.
     work: |-
       Claim: `(a, b)` and `(b, r)` with `r = a mod b` have the same common divisors.
       Forward: if `d | a` and `d | b`, then `d | a − qb = r`.
@@ -60,17 +60,17 @@ questions:
         explains: >-
           The second argument becomes `a mod b`, which is strictly smaller than `b` and
           non-negative. A strictly decreasing sequence of non-negative integers must reach 0.
-      - text: Because `a mod b` eventually equals `a`
-        explains: >-
-          It never does — the remainder is always strictly below `b`, which is at most `a`.
-      - text: Because the gcd is reached after `log b` steps
-        explains: >-
-          That is a statement about *speed*, and it needs the halving lemma on the next page.
-          Termination follows from decrease alone.
       - text: Because both arguments shrink every round
         explains: >-
           Only the second is guaranteed to shrink; `a` takes the old value of `b`. That is
           enough.
+      - text: Because the gcd is reached after `log b` steps
+        explains: >-
+          That is a statement about *speed*, and it needs the halving lemma on the next page.
+          Termination follows from decrease alone.
+      - text: Because `a mod b` eventually equals `a`
+        explains: >-
+          It never does — the remainder is always strictly below `b`, which is at most `a`.
     work: |-
       Each call replaces `(a, b)` by `(b, a mod b)`.
       The new second argument `a mod b` satisfies `0 ≤ a mod b < b`, so it is strictly smaller than the old `b` and non-negative.

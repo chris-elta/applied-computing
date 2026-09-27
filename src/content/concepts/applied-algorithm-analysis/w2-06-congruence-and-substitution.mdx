@@ -32,14 +32,14 @@ questions:
         explains: >-
           `−3 − 9 = −12`, a multiple of 12. And `−3 mod 12 = 9`, matching `9 mod 12 = 9`.
           Both readings of congruence agree, as they always must.
-      - text: No, because `−3 mod 12` is `−3`
-        explains: >-
-          Reduction lands in `0…11`, so `−3 mod 12 = 9`. This is the same trap as `−7 mod 3`,
-          and it is where people trip most often.
       - text: No — congruence is only defined for non-negative integers
         explains: >-
           Congruence is defined on all integers, and allowing negatives is much of the point:
           it is what folds the whole number line into `N` classes.
+      - text: No, because `−3 mod 12` is `−3`
+        explains: >-
+          Reduction lands in `0…11`, so `−3 mod 12 = 9`. This is the same trap as `−7 mod 3`,
+          and it is where people trip most often.
       - text: Only if 12 is prime
         explains: >-
           Primality matters later, for inverses and division. Congruence itself works for any
@@ -52,6 +52,10 @@ questions:
   - ask: >-
       `a mod N` and `x ≡ y (mod N)` both contain the word "mod". What is the difference?
     choices:
+      - text: The first works on integers, the second on equivalence classes
+        explains: >-
+          Both are about integers. The difference is operation versus assertion, not what
+          they range over.
       - text: >-
           The first is an **operation** returning a number in `0…N−1`; the second is a
           **statement** that is true or false
@@ -64,10 +68,6 @@ questions:
         explains: >-
           They are different kinds of thing entirely — a value versus a claim. You can put
           `a mod N` on the right of an equals sign; you cannot do that with a congruence.
-      - text: The first works on integers, the second on equivalence classes
-        explains: >-
-          Both are about integers. The difference is operation versus assertion, not what
-          they range over.
       - text: The second requires `x` and `y` to be reduced already
         explains: >-
           It does not — that is the whole convenience. `17 ≡ 5 (mod 12)` is a perfectly good

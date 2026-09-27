@@ -9,16 +9,16 @@ visuals:
 questions:
   - ask: A program spends 20% of its time in code that cannot be parallelised. What is the best possible speedup, with unlimited cores?
     choices:
+      - text: 20×
+        explains: >-
+          That would be the answer if 95% were parallel, not 80%. The cap is one over
+          the *serial* fraction — here 1 / 0.2.
       - text: 5×
         correct: true
         explains: >-
           With p = 0.8, the parallel part shrinks towards zero and you are left with the
           serial 20%. One divided by 0.2 is 5. More cores cannot help with work that
           must happen in sequence.
-      - text: 20×
-        explains: >-
-          That would be the answer if 95% were parallel, not 80%. The cap is one over
-          the *serial* fraction — here 1 / 0.2.
       - text: 80×
         explains: >-
           The parallel fraction isn't the speedup. It's the part that can be divided up;

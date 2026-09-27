@@ -25,14 +25,10 @@ questions:
       The middle term `xL·yR + xR·yL` is recovered as `P3 − P1 − P2`. Why does that cost no
       extra multiplication?
     choices:
-      - text: >-
-          `P1` and `P2` were already needed for the outer terms, so only `P3` is new — and
-          subtraction is linear
-        correct: true
+      - text: Because `xL·yR` and `xR·yL` are equal
         explains: >-
-          `xL·yL` and `xR·yR` appear in the answer anyway. The one genuinely new product is
-          `(xL+xR)(yL+yR)`, and peeling the two known ones off it is subtraction, which is
-          `O(n)`. Three products total instead of four.
+          They are different products in general. The identity recovers their **sum**, which
+          is all the formula needs.
       - text: Because subtraction of large numbers is free
         explains: >-
           It is not free — it is `O(n)`. But that is cheap beside a multiplication, which is
@@ -41,10 +37,14 @@ questions:
         explains: >-
           It does not cancel; it is the coefficient of `2^(n/2)` in the result. It has to be
           computed, just not with its own multiplication.
-      - text: Because `xL·yR` and `xR·yL` are equal
+      - text: >-
+          `P1` and `P2` were already needed for the outer terms, so only `P3` is new — and
+          subtraction is linear
+        correct: true
         explains: >-
-          They are different products in general. The identity recovers their **sum**, which
-          is all the formula needs.
+          `xL·yL` and `xR·yR` appear in the answer anyway. The one genuinely new product is
+          `(xL+xR)(yL+yR)`, and peeling the two known ones off it is subtraction, which is
+          `O(n)`. Three products total instead of four.
     work: |-
       The product is `xL·yL · 2ⁿ + (xL·yR + xR·yL) · 2^(n/2) + xR·yR`.
       `P1 = xL·yL` and `P2 = xR·yR` are already needed for the outer terms.

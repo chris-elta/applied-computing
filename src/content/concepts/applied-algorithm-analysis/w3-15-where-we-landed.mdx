@@ -23,12 +23,6 @@ questions:
       Karatsuba does three multiplications instead of four and gets `O(n^1.59)`. If some
       further trick got it down to **two**, what would the running time be?
     choices:
-      - text: "`O(n log n)`"
-        correct: true
-        explains: >-
-          Two subproblems gives `T(n) = 2T(n/2) + O(n)`, so `a = 2, b = 2, d = 1` and
-          `log₂2 = 1 = d` — the balanced case. Dropping from three subproblems to two moves
-          it from leaf-dominated all the way to balanced.
       - text: "`O(n)`"
         explains: >-
           That would need the recursion to vanish. Even balanced, the `log₂ n` levels each
@@ -37,6 +31,12 @@ questions:
         explains: >-
           `log₂2 = 1`, not 1.26. And with `d = log_b a` the leaves no longer dominate, so the
           `n^log_b a` line does not apply.
+      - text: "`O(n log n)`"
+        correct: true
+        explains: >-
+          Two subproblems gives `T(n) = 2T(n/2) + O(n)`, so `a = 2, b = 2, d = 1` and
+          `log₂2 = 1 = d` — the balanced case. Dropping from three subproblems to two moves
+          it from leaf-dominated all the way to balanced.
       - text: "`O(n²)` — fewer subproblems means more work each"
         explains: >-
           The subproblems stay half-size; only their number changes. Fewer of them cannot
@@ -50,16 +50,16 @@ questions:
       Mergesort is `T(n) = 2T(n/2) + O(n)`. If merging two sorted halves cost `O(n²)` instead
       of `O(n)`, what would sorting cost?
     choices:
+      - text: "`O(n² log n)`"
+        explains: >-
+          That is the *balanced* answer, which needs `d = log_b a`. Here `d = 2` exceeds
+          `log₂2 = 1`, so the root dominates and no log appears.
       - text: "`O(n²)` — the recursion would have bought nothing"
         correct: true
         explains: >-
           Now `a = 2, b = 2, d = 2`, and `log₂2 = 1 < 2`. The root dominates: the top-level
           merge alone costs `O(n²)` and everything below is a constant factor. All the
           dividing and recursing would be wasted effort.
-      - text: "`O(n² log n)`"
-        explains: >-
-          That is the *balanced* answer, which needs `d = log_b a`. Here `d = 2` exceeds
-          `log₂2 = 1`, so the root dominates and no log appears.
       - text: "`O(n log n)` still — the recursion structure is unchanged"
         explains: >-
           The structure is unchanged but the per-call cost is not, and `d` is exactly what
@@ -77,22 +77,22 @@ questions:
       `T(n) = T(n/2) + O(1)` is the balanced case. How much work is there per level, and how
       many levels?
     choices:
+      - text: "`O(n)` per level across `log₂ n` levels"
+        explains: >-
+          That would be mergesort's profile. Here `d = 0`, so each call does constant work,
+          and there is only one call per level.
+      - text: "`O(log n)` per level across `log₂ n` levels"
+        explains: >-
+          That double-counts the log. The per-level cost is `O(n⁰) = O(1)`.
+      - text: "`O(1)` per level across `n` levels"
+        explains: >-
+          The size halves each call, so the depth is `log₂ n`, not `n`.
       - text: "`O(1)` per level, across `log₂ n` levels — so `O(log n)`"
         correct: true
         explains: >-
           One subproblem per call means one node per level, each doing constant work. Halving
           gives `log₂ n` levels. Multiply and you get binary search's `O(log n)`, derived
           rather than recalled.
-      - text: "`O(n)` per level across `log₂ n` levels"
-        explains: >-
-          That would be mergesort's profile. Here `d = 0`, so each call does constant work,
-          and there is only one call per level.
-      - text: "`O(1)` per level across `n` levels"
-        explains: >-
-          The size halves each call, so the depth is `log₂ n`, not `n`.
-      - text: "`O(log n)` per level across `log₂ n` levels"
-        explains: >-
-          That double-counts the log. The per-level cost is `O(n⁰) = O(1)`.
     work: |-
       `T(n) = T(n/2) + O(1)`: `a = 1`, `b = 2`, `d = 0`.
       Nodes per level: `aᵏ = 1`. Cost per node: `O(1)`. So `O(1)` per level.

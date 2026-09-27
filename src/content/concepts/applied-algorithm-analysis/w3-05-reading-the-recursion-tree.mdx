@@ -34,6 +34,9 @@ questions:
       At depth `k` the tree holds `3ᵏ` nodes of size `n/2ᵏ`. Why does the work per level come
       out as `(3/2)ᵏ × O(n)`?
     choices:
+      - text: Because the combine step costs `3/2` per bit
+        explains: >-
+          The combine step is linear per node. The ratio is not a per-node cost at all.
       - text: >-
           Each node does linear work, so it is `3ᵏ × O(n/2ᵏ)` — and the `n` comes out, leaving
           the `k`s as one ratio
@@ -50,9 +53,6 @@ questions:
         explains: >-
           Every node has exactly three children. The 2 comes from the halving of input size,
           which is a separate axis entirely.
-      - text: Because the combine step costs `3/2` per bit
-        explains: >-
-          The combine step is linear per node. The ratio is not a per-node cost at all.
     work: |-
       At depth `k` there are `3ᵏ` nodes, each of size `n/2ᵏ`.
       Each node does linear work, so a node costs `O(n/2ᵏ)`.

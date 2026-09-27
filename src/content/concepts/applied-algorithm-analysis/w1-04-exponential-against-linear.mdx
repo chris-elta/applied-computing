@@ -36,24 +36,24 @@ questions:
       `fib1` at n = 50 takes about 41 seconds. You buy a machine twice as fast. Roughly
       what `n` now takes 41 seconds?
     choices:
+      - text: About 75
+        explains: >-
+          Halving the work does not halve the exponent. You gain roughly 1.4 in `n`, not
+          half of 50.
       - text: About 51
         correct: true
         explains: >-
           Each extra `n` multiplies the work by `φ ≈ 1.618`, so doubling the speed buys
           `log_φ 2 ≈ 1.44` extra values of `n`. Twice the hardware moves you about one and
           a half steps along — and this is the entire argument of the prologue.
-      - text: About 100
-        explains: >-
-          That would be true if the cost were linear in `n`. It is exponential, so
-          doubling the speed does not double the reachable input.
       - text: About 60
         explains: >-
           That would need each extra `n` to cost only about 7% more. The real factor is
           about 62% more per step.
-      - text: About 75
+      - text: About 100
         explains: >-
-          Halving the work does not halve the exponent. You gain roughly 1.4 in `n`, not
-          half of 50.
+          That would be true if the cost were linear in `n`. It is exponential, so
+          doubling the speed does not double the reachable input.
     work: |-
       Each increase of `n` by 1 multiplies the work by `φ ≈ 1.618`.
       A machine twice as fast lets you do double the work in 41 seconds. Find `Δ` with `φ^Δ = 2`.

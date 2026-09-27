@@ -31,14 +31,14 @@ questions:
           On `n`-bit numbers addition is `O(n)` and multiplication `O(n²)`, so swapping a
           multiplication for a couple of additions is already a win. The real force comes
           later: applied recursively, dropping one of four subproblems changes the exponent.
-      - text: Because three is fewer than four, so less work is always done
-        explains: >-
-          Not on its own — you also added two extra additions. The trade is only a win
-          because the two sides have different costs.
       - text: Because it avoids complex arithmetic entirely
         explains: >-
           The identity is stated for complex numbers but is pure algebra. The same rearranging
           works on integers, which is exactly where the next section takes it.
+      - text: Because three is fewer than four, so less work is always done
+        explains: >-
+          Not on its own — you also added two extra additions. The trade is only a win
+          because the two sides have different costs.
       - text: Because the result is exact rather than approximate
         explains: >-
           Both sides are exact. Nothing here involves approximation.

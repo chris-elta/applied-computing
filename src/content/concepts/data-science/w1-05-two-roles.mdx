@@ -15,13 +15,10 @@ questions:
       updated. Which reading of the two roles explains why the data scientist had not
       thought about it?
     choices:
-      - text: >-
-          Data scientists usually work on a fixed dataset and focus on accuracy, so model
-          size and updateability typically do not matter to them
-        correct: true
+      - text: Model size never matters to any real project
         explains: >-
-          That is the slide's description. It is not carelessness; it is what the role
-          rewards. The engineer has to run and maintain the thing.
+          It matters a great deal to whoever must deploy and maintain the model. That is
+          exactly the engineer's concern.
       - text: Data scientists are less skilled than software engineers
         explains: >-
           The slide compares priorities, not ability. Data scientists are the experts in
@@ -30,10 +27,13 @@ questions:
         explains: >-
           Prototyping in notebooks is typical, but the point is what they optimise for, not
           a limit on what they can do.
-      - text: Model size never matters to any real project
+      - text: >-
+          Data scientists usually work on a fixed dataset and focus on accuracy, so model
+          size and updateability typically do not matter to them
+        correct: true
         explains: >-
-          It matters a great deal to whoever must deploy and maintain the model. That is
-          exactly the engineer's concern.
+          That is the slide's description. It is not carelessness; it is what the role
+          rewards. The engineer has to run and maintain the thing.
     work: |-
       The question asks why the data scientist had not thought about model size or updates.
       The slide's description: data scientists usually work on a fixed dataset and are rewarded for accuracy. Size and updateability are not part of that job.

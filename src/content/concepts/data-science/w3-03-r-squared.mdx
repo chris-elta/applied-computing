@@ -47,23 +47,23 @@ questions:
       Two features correlate with a target at `r = 0.4` and `r = 0.8`. How do their predictive
       values compare?
     choices:
+      - text: The first explains 40% and the second 80%
+        explains: >-
+          Reading `r` as a percentage is the common slip. 40% of the variance needs
+          `r ≈ 0.63`.
+      - text: The second explains twice as much
+        explains: >-
+          That would be true if `r` itself were the fraction explained. It is `r²` that
+          measures that, so the gap is fourfold.
       - text: The second explains about four times as much variance (0.64 against 0.16)
         correct: true
         explains: >-
           Squaring gives 0.16 and 0.64. Doubling `r` quadruples the variance explained, which
           is what the slide means by predictive value changing quadratically with `r`.
-      - text: The second explains twice as much
-        explains: >-
-          That would be true if `r` itself were the fraction explained. It is `r²` that
-          measures that, so the gap is fourfold.
       - text: Both explain the same, since both are positive correlations
         explains: >-
           Sign does not set strength. The size of `r` does, and variance explained grows with
           its square.
-      - text: The first explains 40% and the second 80%
-        explains: >-
-          Reading `r` as a percentage is the common slip. 40% of the variance needs
-          `r ≈ 0.63`.
     work: |-
       Variance explained is `r²`.
       First feature: `0.4² = 0.16`, so 16%.

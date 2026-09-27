@@ -37,6 +37,18 @@ questions:
       `fib4` keeps only two variables, so its space is often quoted as `Θ(1)`. What does
       that claim quietly assume?
     choices:
+      - text: That addition takes constant time
+        explains: >-
+          That is a related simplification, and also false for large numbers — but it is a
+          claim about *time*. The `Θ(1)` here is a claim about space.
+      - text: That the input `n` is small
+        explains: >-
+          The claim is about how space grows with `n`, so small `n` is not the assumption
+          being made. The assumption is about what a single variable costs.
+      - text: That the compiler keeps both variables in registers
+        explains: >-
+          Register allocation changes constants, not the asymptotic count. The issue is
+          the size of each value, not where it is stored.
       - text: That we are counting words, not bits
         correct: true
         explains: >-
@@ -44,18 +56,6 @@ questions:
           costs `Θ(n)` bits. Two *words* is constant only if a word is assumed to hold any
           value — which is the same simplification that will make multiplication look free
           later, and it is not free.
-      - text: That the input `n` is small
-        explains: >-
-          The claim is about how space grows with `n`, so small `n` is not the assumption
-          being made. The assumption is about what a single variable costs.
-      - text: That addition takes constant time
-        explains: >-
-          That is a related simplification, and also false for large numbers — but it is a
-          claim about *time*. The `Θ(1)` here is a claim about space.
-      - text: That the compiler keeps both variables in registers
-        explains: >-
-          Register allocation changes constants, not the asymptotic count. The issue is
-          the size of each value, not where it is stored.
     work: |-
       Two variables is constant space only if each variable has constant size.
       How big is `F(n)`? About `φⁿ/√5`, so `log₂ F(n) ≈ n · log₂ φ = 0.694n` bits.

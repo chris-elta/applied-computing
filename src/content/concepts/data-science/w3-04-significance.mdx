@@ -34,24 +34,24 @@ questions:
       A study with 100,000 records finds `r = 0.03` between two variables, and the result is
       statistically significant. What is the fair reading?
     choices:
+      - text: The relationship is strong, because significance is high
+        explains: >-
+          Significance answers "is it real?", not "is it big?". A huge sample can make a
+          trivial effect significant.
       - text: There is probably a real relationship, but it is tiny and explains almost none of the variance
         correct: true
         explains: >-
           With that many points, even a very weak correlation is unlikely to be chance. Here
           `r² ≈ 0.0009`, under a tenth of one percent of the variance, so it is not useful on
           its own.
-      - text: The relationship is strong, because significance is high
-        explains: >-
-          Significance answers "is it real?", not "is it big?". A huge sample can make a
-          trivial effect significant.
-      - text: The result must be a fluke, since 0.03 is so small
-        explains: >-
-          Size alone does not make a result chance. With enough data, small values are
-          detectable and repeatable.
       - text: A significant result guarantees the model will predict well
         explains: >-
           Prediction depends on effect size. This one leaves 99.9% of the variance
           unexplained.
+      - text: The result must be a fluke, since 0.03 is so small
+        explains: >-
+          Size alone does not make a result chance. With enough data, small values are
+          detectable and repeatable.
     work: |-
       Is it real? The t statistic for a correlation is `t = r · √(n − 2) / √(1 − r²)`. With `n = 100,000` and `r = 0.03`: `t = 0.03 · √99,998 / √(1 − 0.0009) ≈ 0.03 · 316.2 / 0.9995 ≈ 9.49`.
       The cutoff for a 0.05 test with this many points is about 1.96. Since 9.49 is far above 1.96, chance alone would almost never give this, so the relationship is very probably real.

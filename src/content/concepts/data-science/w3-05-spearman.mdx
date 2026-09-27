@@ -33,11 +33,10 @@ questions:
   - ask: >-
       `y = x³` for `x = 1, 2, …, 10`. What are the Spearman and Pearson correlations?
     choices:
-      - text: Spearman is exactly 1; Pearson is a little below 1
-        correct: true
+      - text: Spearman is 0, because the relationship is not linear
         explains: >-
-          `y` rises whenever `x` does, so the two rankings are identical and every `dᵢ` is 0.
-          The curve is not a straight line, so Pearson falls short of 1.
+          That describes Pearson's blind spot in the opposite direction. Spearman detects any
+          consistent ordering, linear or not.
       - text: Both are exactly 1
         explains: >-
           Pearson only reaches 1 for points exactly on a line. `x³` curves, so it scores lower.
@@ -45,10 +44,11 @@ questions:
         explains: >-
           Spearman does not care about the shape, only the order. Any strictly increasing
           relationship gives it 1.
-      - text: Spearman is 0, because the relationship is not linear
+      - text: Spearman is exactly 1; Pearson is a little below 1
+        correct: true
         explains: >-
-          That describes Pearson's blind spot in the opposite direction. Spearman detects any
-          consistent ordering, linear or not.
+          `y` rises whenever `x` does, so the two rankings are identical and every `dᵢ` is 0.
+          The curve is not a straight line, so Pearson falls short of 1.
     work: |-
       Rank the values. `x = 1…10` gives ranks 1…10. `y = x³` is increasing, so it gives the same ranks.
       Each difference `dᵢ = 0`, so Spearman = `1 − 6Σdᵢ² / (n(n² − 1)) = 1 − 0 = 1`.
