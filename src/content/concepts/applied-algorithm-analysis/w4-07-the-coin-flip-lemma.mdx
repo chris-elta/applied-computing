@@ -1,0 +1,142 @@
+---
+course: applied-algorithm-analysis
+section: w4-selection
+order: 610
+title: The Coin-Flip Lemma
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week4.html?hash=true#/16/0
+    caption: Slides 18–20 of 50 — the lemma, its proof, and the algebra that finishes it.
+notation:
+  - symbol: "X"
+    reads: X
+    means: >-
+      The number of coin tosses up to and including the first head. A **random variable** —
+      its value depends on chance, so it makes sense to ask about its average.
+  - symbol: "E[X]"
+    reads: expected value of X
+    means: >-
+      The long-run average of `X` over many repetitions of the experiment — here, the average
+      number of tosses needed before a head appears.
+  - symbol: "X′"
+    reads: X prime
+    means: >-
+      Tosses counted afresh starting from toss 2, until a head appears. The coin has no
+      memory, so `X′` has exactly the same distribution as `X` — that equality in
+      *distribution*, not in value, is what licenses `E[X′] = E[X]`.
+questions:
+  - ask: >-
+      A random pivot is good with probability ½ — exactly a coin flip. The lemma says a fair
+      coin needs 2 tosses on average before a head. Where in the proof does the number 2
+      actually come from?
+    choices:
+      - text: >-
+          It's assumed at the start, since a fair coin is "obviously" 2 tosses on average
+        explains: >-
+          Nothing is assumed — the value 2 is *derived* from the equation
+          `E = 1 + ½E`, which itself follows from splitting on the first toss.
+      - text: >-
+          From solving `E = 1 + ½E`, which comes from: the first toss always costs 1, and half
+          the time an entire fresh trial (worth `E` more) follows
+        correct: true
+        explains: >-
+          Law of total expectation: `E = ½·1 + ½·(1+E)`. Expand: `E = 1 + ½E`. Subtract `½E`
+          from both sides: `½E = 1`, so `E = 2`. The "2" is the fixed point of that equation,
+          not a fact plugged in from outside.
+      - text: From counting that there are 2 possible outcomes, heads and tails
+        explains: >-
+          There being 2 outcomes is why each has probability ½ — but that alone doesn't say
+          how many tosses are needed on average; the recursive structure of retrying is what
+          produces the specific number 2.
+      - text: >-
+          From `1/p` where `p` is the probability of the event most people want to memorize,
+          without needing to see why it's true
+        explains: >-
+          `1/p = 1/(1/2) = 2` is the right shortcut for future use, but this question is asking
+          where the 2 comes from *inside this proof* — from solving the equation, not from
+          quoting the general formula.
+    work: |-
+      E[X] = P(head)·E[X | 1st is head] + P(tail)·E[X | 1st is tail]
+           = 1/2 · 1 + 1/2 · (1 + E[X])      [since E[X | 1st is tail] = 1 + E[X'] = 1 + E[X]]
+           = 1 + (1/2)E[X]
+      Subtract (1/2)E[X] from both sides: (1/2)E[X] = 1, so E[X] = 2.
+  - ask: >-
+      The step `E[X′] = E[X]` is the heart of the proof. What exactly is being claimed about
+      `X′`, the number of tosses counted fresh from toss 2?
+    choices:
+      - text: That `X′` is always equal to `X`, toss for toss
+        explains: >-
+          Not toss for toss — a run of "tail, head" (`X=2`) and a run of "tail, tail, head"
+          (`X=3`) give different `X` values but both have `X′ = X − 1` computed from a fresh
+          start; the claim is about the two variables' *distributions*, not that they're the
+          same number every time.
+      - text: >-
+          That `X′` has the same probability distribution as `X`, because the coin has no
+          memory of the first toss
+        correct: true
+        explains: >-
+          Each toss is independent and identically distributed, so "count tosses until a head,
+          starting now" is the same experiment whether "now" is toss 1 or toss 2. Same
+          distribution means same expected value: `E[X′] = E[X]`.
+      - text: That `X′` is always 1 less than `X`
+        explains: >-
+          `X = 1 + X′` is true given that the first toss was a tail — that's a statement about
+          one run of the experiment. `E[X′] = E[X]` is a separate, stronger claim about the
+          *whole* distribution, and it's what makes the equation solvable.
+      - text: That the second toss is more likely to be a head than the first
+        explains: >-
+          Every toss has the same probability of being a head — that's exactly the
+          "no memory" property, and it's why `X′` and `X` share a distribution rather than one
+          being biased relative to the other.
+    work: |-
+      Tosses are independent and identically distributed. "Number of tosses from toss 2 onward
+      until a head" is the exact same random experiment as "number of tosses from toss 1
+      onward until a head" — neither the coin nor the counting rule changed.
+      Same experiment => same distribution => same expectation: E[X'] = E[X].
+      This is what turns "you're back where you started" from a figure of speech into the
+      equation E[X | 1st is tail] = 1 + E[X].
+---
+
+> **Lemma.** On average, a fair coin needs to be tossed **two** times before a head is seen.
+
+A pivot is good with probability ½, so "how many picks until a good pivot?" is exactly "how
+many tosses until a head?"
+
+## Proof
+
+Let `X` be the number of tosses up to and including the first head, and `E[X]` its **expected
+value** — the long-run average of `X` over many repetitions.
+
+The tool is the **law of total expectation**: split on the result of the first toss.
+
+```
+E[X] = P(head)·E[X ∣ 1st is head] + P(tail)·E[X ∣ 1st is tail]
+```
+
+**Case 1 — the first toss is a head (probability ½).** The head has arrived on toss 1, so
+`X = 1`, and therefore `E[X ∣ 1st is head] = 1`.
+
+**Case 2 — the first toss is a tail (probability ½).** One toss is spent with no head, so the
+tossing goes on. Write `X′` for the tosses counted afresh from toss 2 until a head appears:
+`X = 1 + X′`. The tosses are independent — the coin has no memory — so counting from toss 2 is
+the *same experiment* as counting from toss 1. So `X′` has the same distribution as `X`,
+giving `E[X′] = E[X]` and `E[X ∣ 1st is tail] = 1 + E[X′] = 1 + E[X]`.
+
+## Substitute and solve
+
+Write `E` for `E[X]`. Putting the two cases into the law of total expectation:
+
+```
+E = ½·1 + ½(1 + E) = 1 + ½E
+```
+
+Subtract `½E` from both sides, so that `½E = 1`, and
+
+```
+E[X] = 2   ∎
+```
+
+**Why that subtraction is allowed.** It is arithmetic on a number, so `E[X]` has to be finite
+before it may be done — and `E[X] = ∞` satisfies the same equation too. It is finite: `X > k`
+only if the first `k` tosses are all tails, so `P(X > k) = 2⁻ᵏ`, which dies away
+geometrically fast, ruling out an infinite average.

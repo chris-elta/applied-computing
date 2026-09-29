@@ -1,0 +1,109 @@
+---
+course: applied-algorithm-analysis
+section: w4-matrix
+order: 650
+title: "Block Multiplication: Eight Products Buy Nothing"
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week4.html?hash=true#/23/0
+    caption: Slides 27–28 of 50 — the block formula, then what it costs.
+notation:
+  - symbol: "A, B, C, D, E, F, G, H"
+    reads: A through H
+    means: >-
+      The four `n/2 × n/2` quadrants of `X` (`A, B, C, D`) and of `Y` (`E, F, G, H`). Block
+      multiplication treats each quadrant as a single unit, so ordinary matrix-multiplication
+      rules apply to them exactly as they would to numbers.
+questions:
+  - ask: >-
+      Splitting into blocks and multiplying gives `T(n) = 8T(n/2) + O(n²)` — 8 half-size
+      products plus quadratic combining. What does the master theorem say this costs, and how
+      does that compare to computing the product from the definition directly?
+    choices:
+      - text: >-
+          `O(n^2.81)`, the same improvement Strassen's identity will later achieve
+        explains: >-
+          That's the result of a *different* recurrence, `7T(n/2) + O(n²)`, coming up next.
+          Eight products, not seven, is what's being analysed here.
+      - text: >-
+          `O(n³)` — exactly the same as the direct definition; splitting into blocks bought
+          nothing
+        correct: true
+        explains: >-
+          `a=8, b=2, d=2`. `log₂8 = 3 > 2 = d`, so the leaves dominate:
+          `T(n) = O(n^log₂8) = O(n³)`. Cutting the matrix into quadrants and recursing did not
+          change the exponent at all.
+      - text: "`O(n² log n)`, since 8 recursive calls each contribute a log factor"
+        explains: >-
+          That would be the balanced case, which needs `d = log_b a`. Here `d = 2 < log₂8 = 3`,
+          so the recursion is leaf-dominated, not balanced, and no `log n` factor appears.
+      - text: "`O(n⁴)`, since 8 subproblems is more than the 4 a naive integer split used"
+        explains: >-
+          More subproblems doesn't automatically mean a worse exponent — it depends on how
+          that count compares to `bᵈ`. Here it works out to exactly `n³`, not worse.
+    work: |-
+      T(n) = 8T(n/2) + O(n^2): a=8, b=2, d=2.
+      log_2 8 = 3 > 2 = d, so case 3 (leaves pay): T(n) = O(n^{log_2 8}) = O(n^3).
+      Same exponent as the direct O(n^3) definition -- the block split changed nothing.
+  - ask: >-
+      A previous week found that splitting an integer multiplication naively into 4 half-size
+      products also bought nothing (`4T(n/2) + O(n) → O(n²)`, no better than the schoolbook
+      method). What do that recurrence and this matrix one, `8T(n/2) + O(n²)`, have in common
+      that explains why *both* fail to improve on the baseline?
+    choices:
+      - text: They don't actually have anything in common — it's a coincidence that both fail
+        explains: >-
+          It isn't a coincidence — both recurrences land exactly on the "leaves pay, no
+          improvement" boundary for a shared, checkable reason.
+      - text: >-
+          In both cases, the ratio (subproblem count) / (baseline's own branching factor at
+          that same `d`) works out to exactly 2 — the same "no gain" ratio either way
+        correct: true
+        explains: >-
+          Integers: 4 products of half-size, combined at `O(n)` — ratio `4/2¹ = 2`. Matrices: 8
+          products of half-size, combined at `O(n²)` — ratio `8/2² = 2`. Same number, same
+          conclusion: dividing a problem into pieces you still have to multiply out in full is
+          not, by itself, a saving.
+      - text: Both problems have the same asymptotic running time to begin with
+        explains: >-
+          They don't — integer multiplication is `O(n²)` at baseline and matrix multiplication
+          is `O(n³)`. What's shared is the *ratio* that decides whether splitting helps, not the
+          absolute running time.
+      - text: Both use exactly the same number of recursive subproblems
+        explains: >-
+          4 versus 8 — the *counts* differ. What matches is the ratio of that count to `bᵈ`,
+          which happens to be 2 in both cases.
+    work: |-
+      Naive integer split: 4T(n/2) + O(n). Ratio a/b^d = 4/2^1 = 2. No improvement over O(n^2).
+      Block matrix split: 8T(n/2) + O(n^2). Ratio a/b^d = 8/2^2 = 2. No improvement over O(n^3).
+      Both hit the exact boundary a/b^d = 2 > 1: the leaves-pay case, giving back the same
+      exponent the naive method already had. This is precisely why Karatsuba needed a
+      three-product identity, and precisely why Strassen needs a seven-product one next.
+---
+
+Cut each matrix into four `n/2 × n/2` blocks. The product obeys the same rule, one block at a
+time:
+
+```
+X = [A B]   Y = [E F]   XY = [AE+BG  AF+BH]
+    [C D]       [G H]        [CE+DG  CF+DH]
+```
+
+Eight products of half-size matrices, plus `O(n²)` work to add the results together:
+
+```
+T(n) = 8 T(n/2) + O(n²)
+```
+
+Master theorem: `a=8, b=2, d=2`. Since `log₂8 = 3 > 2 = d`, the leaves pay:
+
+```
+T(n) = O(n^log₂8) = O(n³)
+```
+
+**Exactly the cost of the definition.** Splitting a problem up is not, by itself, a saving —
+the same lesson landed when four half-size integer products came to `O(n²)` again, with no
+improvement over the schoolbook method. The parallel is exact: the naive integer split had
+ratio `4/2¹ = 2`; this block split has ratio `8/2² = 2`. Same number, both times, and it's
+exactly why Karatsuba needed a three-product identity to make integer multiplication faster —
+and exactly what motivates the search for a seven-product identity here.

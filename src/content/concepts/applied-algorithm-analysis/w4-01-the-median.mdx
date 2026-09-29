@@ -1,0 +1,81 @@
+---
+course: applied-algorithm-analysis
+section: w4-medians
+order: 550
+title: The Median, and Why It Beats the Mean
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week4.html?hash=true#/3
+    caption: Slides 4–5 of 50 — the definition, then the mean's one weak spot.
+notation:
+  - symbol: "⌊∣S∣/2⌋"
+    reads: floor of the size of S over 2
+    means: >-
+      The position of the median once `S` is sorted, counting from 0. For an even-length
+      list this convention picks the **smaller** of the two middle values, so the median is
+      always a single, well-defined element rather than an average of two.
+  - symbol: "S"
+    reads: S
+    means: A finite list of numbers — the dataset the median or mean is computed from.
+questions:
+  - ask: >-
+      A list of 100 ones has median 1 and mean 1. One value is changed to 10,000. What
+      happens to each?
+    choices:
+      - text: Both jump to roughly 100
+        explains: >-
+          Only the mean is an average of every value — the median does not care how large the
+          outlier is, only where it sits in the order.
+      - text: The median jumps to roughly 100, the mean stays at 1
+        explains: >-
+          This is backwards. Sorting still puts the changed value at one end of the list, so
+          the middle position is untouched.
+      - text: The median stays at 1, the mean jumps to roughly 100
+        correct: true
+        explains: >-
+          The changed value is now the largest, so after sorting it sits at the far end — the
+          middle position, and the value there, does not move. The mean, being a sum divided
+          by count, moves by the size of the change divided by 100: `(1×99 + 10000)/100 ≈ 101`.
+      - text: Neither changes, since only one value out of 100 was touched
+        explains: >-
+          True for the median, not for the mean — the mean has no notion of "only one value,"
+          it just adds everything up and divides.
+    work: |-
+      Before: 100 ones. Median = 1 (the value at position 50). Mean = 100/100 = 1.
+      After changing one 1 to 10,000: sorted, the 10,000 sits at the very end, so position 50
+      still holds a 1. Median stays 1.
+      Mean = (99×1 + 10000)/100 = 10099/100 = 100.99 — moved by two orders of magnitude from
+      a single changed value.
+---
+
+**Purpose.** A median summarises a dataset with one typical value, the same job a mean does —
+but by a different rule.
+
+**Definition.** The median is the 50th percentile: sort the list, and it is the value with as
+many numbers above it as below. For an even-length list there are two middle values; this
+course's convention is to take the **smaller** one, so the median is always
+`⌊∣S∣/2⌋`-th smallest — one well-defined element, not an average of two.
+
+## Median vs. mean
+
+The mean is used more often, but the median is frequently the more representative number,
+for a structural reason: the median is (almost) always one of the data values, and it barely
+notices an outlier.
+
+Take a list of 100 ones. Median 1, mean 1 — they agree. Now change a single value to 10,000.
+The median doesn't move: sorting still puts that value at one end of the list, so the middle
+position holds a 1 exactly as before. The mean moves to `100.99` — a hundredfold jump from
+changing one one-hundredth of the data.
+
+The reason is about how each statistic *counts*. The mean gives every element a vote weighted
+by its size, so one huge value can drag it anywhere. The median gives every element one vote
+about which side of the middle it falls on — and a value's vote doesn't get louder just
+because the value itself is large.
+
+## Why this matters for what's next
+
+Nothing in this observation is specific to the median: it generalises immediately to *any*
+question of the form "what is the `k`-th smallest element of a list?" The median is the case
+`k = ⌊∣S∣/2⌋`, but the same question with `k = 1` asks for the minimum, and with `k = ∣S∣` asks
+for the maximum. That generalisation — the **selection problem** — is where the rest of this
+week goes.

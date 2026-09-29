@@ -1,0 +1,115 @@
+---
+course: applied-algorithm-analysis
+section: w4-selection
+order: 630
+title: Three Things This Result Does Not Say
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week4.html?hash=true#/19
+    caption: Slides 23–24 of 50 — the misconceptions to avoid, then a practice problem.
+questions:
+  - ask: >-
+      The randomised selection algorithm runs in `O(n)` **on average**. Can an adversary who
+      knows the algorithm's code still construct an input that makes it run in `Θ(n²)`?
+    choices:
+      - text: >-
+          No — the `O(n)` average-case guarantee rules out any input ever taking `Θ(n²)`
+        explains: >-
+          The average-case bound is exactly that — an average. It says nothing about the worst
+          single run; an unlucky sequence of pivot choices still produces `Θ(n²)` behaviour
+          on *some* run, for *any* input.
+      - text: >-
+          Yes — by choosing an input where the median happens to be unusually large
+        explains: >-
+          The `Θ(n²)` case doesn't depend on any property of the *values* in the array at
+          all — it depends only on which random pivots the algorithm's own coin happens to
+          pick, and no adversary controls that coin.
+      - text: >-
+          No — an adversary cannot force it, because the randomness lives in the algorithm's
+          own coin flips, not in the data; but bad luck can still produce it on any input
+        correct: true
+        explains: >-
+          This is the precise distinction: an adversary chooses the *input* in advance, before
+          the algorithm's random pivots are drawn. Since the pivots are random regardless of
+          which input was chosen, no adversary can raise the probability of the bad case above
+          what it already is for a random run — but that probability is never exactly zero.
+      - text: >-
+          Yes — by repeatedly running the algorithm on the same input until an unlucky run
+          occurs
+        explains: >-
+          Repeating the run doesn't "construct an input" in the sense the question means; it
+          just demonstrates the same underlying fact — bad luck is possible, not that it can
+          be forced by the choice of data.
+    work: |-
+      The O(n) bound averages over the algorithm's internal coin flips, for a fixed but
+      arbitrary input. No input makes bad pivots more likely, because pivots are drawn
+      uniformly at random regardless of what's in the array.
+      So: no adversary can force Theta(n^2) by choosing a clever input. But any single run,
+      on any input, can still draw an unlucky sequence of pivots and land in Theta(n^2) --
+      that's what "average" means: it happens, just rarely enough not to dominate the average.
+  - ask: >-
+      Sorting solves selection by computing the answer for every rank `k` at once, then
+      reading off position `k`. Why isn't this randomised algorithm just "the same idea, but
+      stopping partway through"?
+    choices:
+      - text: >-
+          It is exactly that — quickselect is quicksort that gives up early once it finds
+          position `k`
+        explains: >-
+          The similarity is only in the first two steps (pivot, partition). The recursive
+          structure is genuinely different, not a truncated version of the same recursion.
+      - text: >-
+          Because sorting recurses into both `S_L` and `S_R` every time, while selection
+          recurses into only one of them — that single change is where the `log n` factor
+          disappears from the running time
+        correct: true
+        explains: >-
+          Recursing into one side instead of two turns the recurrence from
+          `T(n) = 2T(n/2) + O(n)` (mergesort's shape, `O(n log n)`) into
+          `T(n) ≤ T(3n/4) + O(n)` (root-pays, `O(n)`). It's not a shortcut taken partway
+          through a sort — it's a structurally different recursion from the first call onward.
+      - text: >-
+          Because selection never partitions the array, unlike sorting
+        explains: >-
+          Selection partitions on every call, exactly like QuickSort's partition step — that
+          part is identical between them.
+      - text: >-
+          Because selection uses a different definition of "good pivot" than any sorting
+          algorithm would
+        explains: >-
+          The "good pivot" percentile argument is a property of random pivots in general; it
+          could equally well be used to analyse randomised QuickSort's average case.
+    work: |-
+      Sorting: T(n) = 2T(n/2) + O(n) -- recurses into BOTH halves, since every position needs
+      to end up correct. Master theorem: a=2,b=2,d=1, log_2 2 = 1 = d, balanced case, O(n log n).
+      Selection: T(n) <= T(3n/4) + O(n) -- recurses into only ONE piece, since only one rank is
+      wanted. a=1 effectively (one recursive call), root-pays case, O(n).
+      The log n in sorting comes precisely from multiplying a per-level cost by log n levels
+      when every level does equal work -- and that only happens because both halves need visiting.
+---
+
+Three claims worth being precise about, now that the algorithm and its analysis are both on
+the table.
+
+**1 · It is not a worst-case bound.** An unlucky run of pivots still gives `Θ(n²)`. The
+randomness is in the algorithm's own coin, not in the input, so no adversary can *force* the
+bad case by choosing a clever list — but chance can still deal it, on any input, on any run.
+
+**2 · ¾ is not special.** Any shrink factor strictly below 1 gives a linear algorithm, because
+`∑ rᵏ = 1/(1−r)` is a constant whenever `∣r∣ < 1`. A pivot guaranteed to land in only the
+25th–75th percentile happened to give `¾`; a weaker guarantee — say, landing in the
+10th–90th percentile, shrinking to `9/10` of the list — would still be linear, just with a
+much larger constant (`1/(1 − 9/10) = 10`, ten passes instead of four).
+
+**3 · Selection is not sorting-minus-a-step.** Sorting answers the question for every `k` at
+once, at a cost of `O(n log n)`. Selection answers it for one `k`, and the entire saving comes
+from recursing into **one** sublist instead of two. That single structural change — one
+recursive call, not two — is exactly where the `log n` factor goes missing from the running
+time.
+
+## Practice
+
+**LeetCode 215 · Kth Largest Element in an Array.** Note the word *largest*: the `k`-th
+largest of `n` elements is the `(n − k + 1)`-th smallest, so this algorithm solves it with one
+change of index. Most accepted solutions reach for a heap, which runs in `O(n log k)` —
+quickselect, the algorithm built across this module, is the `O(n)`-average alternative.

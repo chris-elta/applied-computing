@@ -1,0 +1,123 @@
+---
+course: applied-algorithm-analysis
+section: w4-selection
+order: 600
+title: From Best and Worst Case to a Good Pivot
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week4.html?hash=true#/13
+    caption: >-
+      Slides 15–17 of 50 — the ideal case, the worst case, and a definition that sits
+      between them.
+notation:
+  - symbol: "d vs log_b a"
+    reads: d versus log base b of a
+    means: >-
+      The master theorem's comparison. For the ideal-pivot recurrence `T(n) = T(n/2) + O(n)`,
+      `a=1, b=2, d=1` and `log₂1 = 0 < 1` — the first case, the root pays.
+questions:
+  - ask: >-
+      If every pivot split the array exactly in half, the recurrence would be
+      `T(n) = T(n/2) + O(n)` — `a=1, b=2, d=1`, master-theorem case 1. Why is this the "root
+      pays" case rather than "leaves pay" or "every level pays the same," given that
+      `a = 1` looks like the *smallest* possible branching factor?
+    choices:
+      - text: >-
+          Because there is only one leaf, so of course the one node that exists is the root
+        explains: >-
+          There isn't only one node total — there's one node *per level*, all the way down to
+          a leaf. The question is where the total cost concentrates, not how many nodes exist.
+      - text: >-
+          Because each level's cost shrinks geometrically (`n`, `n/2`, `n/4`, …), so the sum
+          is dominated by the very first, largest term
+        correct: true
+        explains: >-
+          `a/bᵈ = 1/2 < 1`: level costs form a decreasing geometric series, and a decreasing
+          geometric series is within a constant factor of its first term. The root's `O(n)`
+          work is (up to a constant) the whole running time — `n + n/2 + n/4 + ⋯ = 2n`.
+      - text: Because the recursion never reaches the leaves
+        explains: >-
+          It does — `log₂ n` levels down, exactly as in mergesort or binary search. What
+          differs is how much of the total cost sits there.
+      - text: Because `a = 1` means there is no recursion at all
+        explains: >-
+          `a = 1` means one recursive call per level, not zero. Selection genuinely recurses;
+          it just recurses into a single, shrinking piece each time.
+    work: |-
+      T(n) = T(n/2) + O(n): a=1, b=2, d=1. log₂1 = 0 < 1 = d, so case 1 applies: T(n) = O(nᵈ) = O(n).
+      Level costs: n, n/2, n/4, ... — ratio a/bᵈ = 1/2 < 1, a shrinking geometric series.
+      Sum: n(1 + 1/2 + 1/4 + ...) = 2n = O(n). The root's own O(n) work accounts for essentially
+      everything; the rest of the tree adds only a constant factor on top.
+  - ask: >-
+      A pivot is called "good" if it lies within the 25th to 75th percentile of the array.
+      What fraction of a list's elements are guaranteed to be good pivots, and why does that
+      number not depend on what the list contains?
+    choices:
+      - text: "About 1/4, since a percentile range spans 25 points"
+        explains: >-
+          The range spans from the 25th to the 75th percentile — that's a 50-point-wide band,
+          not 25.
+      - text: >-
+          Exactly 1/2 — the 25th-to-75th-percentile band always contains half of any sorted
+          list, by definition of percentile
+        correct: true
+        explains: >-
+          Percentiles are defined by position in the sorted order, not by value. Whatever the
+          data looks like, positions 25%–75% through the sorted list are always exactly half
+          of the list's `∣S∣` elements — so a uniformly random pick lands there with
+          probability exactly `1/2`, with no assumption about the input needed.
+      - text: >-
+          It depends on the spread of the data — a tightly clustered list has more good
+          pivots than a spread-out one
+        explains: >-
+          Percentiles are about rank, not about how close values are to each other, so
+          "spread" doesn't change the count of good pivots.
+      - text: >-
+          Only 2 elements are guaranteed good, no matter how large the list is (the median and
+          its neighbours)
+        explains: >-
+          The whole middle half of the sorted list counts as good, not a fixed small number of
+          elements — the guaranteed *count* scales with `∣S∣`.
+    work: |-
+      "Good" is defined purely by rank in sorted order: positions from the 25th to the 75th
+      percentile. By definition of percentile, that band is always exactly half of the sorted
+      list, whatever the values are.
+      So a uniformly random element is good with probability exactly 1/2 — a guarantee about
+      the algorithm's coin, not an assumption about the data.
+---
+
+## The ideal case
+
+If a pivot always split `S` into two halves of roughly equal size, `∣S_L∣, ∣S_R∣ ≈ ∣S∣/2`, the
+recurrence would be
+
+```
+T(n) = T(n/2) + O(n)
+```
+
+Master theorem: `a=1, b=2, d=1`, and `log₂1 = 0 < 1` — the first case, the root pays,
+`T(n) = O(n)`. The recursion's own levels only add a constant factor: `n + n/2 + n/4 + ⋯ = 2n`.
+
+## The worst case
+
+In the worst case, the pivot is always the largest or smallest element of the array, and each
+split removes exactly one element:
+
+```
+n + (n−1) + (n−2) + ⋯ + 1 = n(n+1)/2 = Θ(n²)
+```
+
+Both the ideal case and the worst case are rare. So the real question, in the spectrum from
+`O(n)` to `O(n²)`, is: **what is the average running time?**
+
+## Defining a good pivot
+
+Call `v` **good** if it lies within the 25th to 75th percentile of the array it's chosen from.
+A good `v` guarantees `∣S_L∣` and `∣S_R∣` are each at most **¾ the size of `S`** — nowhere near
+the ideal half, but enough to guarantee real shrinkage every time.
+
+Good values are plentiful for a structural reason, not a lucky one: half the elements of *any*
+list fall between the 25th and 75th percentile, because percentile is a statement about
+position in sorted order, not about the values themselves. Pick any element of the middle
+half and both `S_L` and `S_R` come out at most ¾ of `S`. So a uniformly random pivot is good
+with probability exactly **½**, whatever the list looks like.

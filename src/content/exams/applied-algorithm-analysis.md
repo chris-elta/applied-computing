@@ -1,7 +1,7 @@
 ---
 course: applied-algorithm-analysis
 title: "Applied Algorithm Analysis · Final Exam"
-minutes: 60
+minutes: 80
 passMark: 60
 questions:
   - topic: "Week 1 · Big-O and growth"
@@ -650,8 +650,227 @@ questions:
       Karatsuba splits its input, makes three recursive calls, then shifts and subtracts on the way up.
       Below a few hundred bits that overhead outweighs its smaller exponent: at 64 bits about 8,700 operations against schoolbook's 4,100.
       The curves do not cross until roughly 512 bits, so libraries stop recursing early.
+  - topic: "Week 4 · Selection, matrices and the FFT"
+    ask: "S has 8 elements. Using this course's convention — for an even-length list, the median is the smaller of the two middle values — what value of k = ⌊∣S∣/2⌋ gives the median?"
+    choices:
+      - text: "4"
+        correct: true
+        explains: "Right. ⌊8/2⌋ = 4: 3 elements below it, 4 above — the smaller of the two middle values."
+      - text: "3"
+        explains: "That leaves only 2 below and 5 above. Not the middle."
+      - text: "5"
+        explains: "That is the larger of the two middle values. This course's convention takes the smaller one, position 4."
+      - text: "8"
+        explains: "That is k = ∣S∣, the maximum, not the median."
+    work: |-
+      Median position: `⌊∣S∣/2⌋ = ⌊8/2⌋ = 4`.
+      Sorted, position 4 has 3 elements below it and 4 above — the two "middle" positions are 4 and 5,
+      and the convention keeps the smaller, position 4.
+  - topic: "Week 4 · Selection, matrices and the FFT"
+    ask: "Solving selection by sorting S first (O(n log n)) and reading off position k (O(1)) answers only one query, k. What is that O(n log n) actually paying for?"
+    choices:
+      - text: "The correct answer to selection for every possible value of k from 1 to ∣S∣ at once, not just the one asked about"
+        correct: true
+        explains: "Right. A sorted array answers every rank simultaneously; the sort is spent computing ∣S∣ − 1 answers nobody asked for."
+      - text: "A guarantee that S contains no duplicate values"
+        explains: "Sorting says nothing about duplicates either way."
+      - text: "Finding both the minimum and the maximum of S"
+        explains: "Those are two of the ∣S∣ answers sorting happens to compute, not the whole story."
+      - text: "The extra cost of a stable sort, which selection specifically requires"
+        explains: "Selection does not require stability; any comparison sort would do."
+    work: |-
+      Sort: O(n log n). Read S[k]: O(1). Total O(n log n).
+      That total buys the answer for every possible k, from 1 to n, since the full order is now known —
+      far more than the single rank actually asked about.
+  - topic: "Week 4 · Selection, matrices and the FFT"
+    ask: "A pivot is called good if it falls in the 25th-to-75th percentile of the array. Picking a pivot uniformly at random from a 1000-element list, how many of those elements count as good, and what is the resulting probability of a good pick?"
+    choices:
+      - text: "500 elements are good; probability 1/2"
+        correct: true
+        explains: "Right. The 25th-to-75th-percentile band is always exactly half of any sorted list, whatever the data — 500 of 1000, so probability exactly 1/2."
+      - text: "250 elements are good; probability 1/4"
+        explains: "That is the width of one 25-point band, not the 50-point band from the 25th to the 75th percentile."
+      - text: "750 elements are good; probability 3/4"
+        explains: "That would be the band from the 0th to the 75th percentile — this one starts at the 25th."
+      - text: "It depends on how spread out the 1000 values are"
+        explains: "Percentile is a statement about rank in sorted order, not about how close values are to each other."
+    work: |-
+      Percentiles are defined by position, not value: the 25th-to-75th-percentile band always
+      contains exactly half of any sorted list. For 1000 elements, that is 500 — so a uniformly
+      random pick is good with probability exactly 1/2, regardless of what the data looks like.
+  - topic: "Week 4 · Selection, matrices and the FFT"
+    ask: "A good pivot is found with probability 1/2 on each independent try. What is the expected number of tries needed, and how does that number follow from the probability rather than being recalled from '1/p'?"
+    choices:
+      - text: "2 tries, from solving E = 1 + (1/2)E, which splits on whether the first try succeeds"
+        correct: true
+        explains: "Right. E = (1/2)(1) + (1/2)(1+E) = 1 + (1/2)E. Subtract (1/2)E from both sides: (1/2)E = 1, so E = 2."
+      - text: "1.5 tries, the midpoint between succeeding immediately and never succeeding"
+        explains: "There is no reason to average those two extremes; the actual value comes from solving the equation."
+      - text: "4 tries, since (1/2)² = 1/4 is the chance of needing two failures first"
+        explains: "That is a probability of one specific outcome, not the expected number of tries overall."
+      - text: "0.5 tries, the probability of success itself"
+        explains: "A probability and an expected count are different quantities; confusing them here gives a number below 1, which cannot be a valid expected count of tries."
+    work: |-
+      E = P(success)·1 + P(failure)·(1 + E) = (1/2)(1) + (1/2)(1+E) = 1 + (1/2)E.
+      (1/2)E = 1, so E = 2.
+      The "2" comes from solving this equation, not from a memorised shortcut.
+  - topic: "Week 4 · Selection, matrices and the FFT"
+    ask: "Randomised selection's average running time satisfies T(n) ≤ T(3n/4) + O(n). Which master theorem case applies, and what does that make T(n)?"
+    choices:
+      - text: "Root pays: a=1, b=4/3, d=1, and log_(4/3) 1 = 0 < 1, giving T(n) = O(n)"
+        correct: true
+        explains: "Right. One recursive call on 3/4 of the input, linear work outside it — the root dominates."
+      - text: "Balanced, giving T(n) = O(n log n)"
+        explains: "Balanced needs d = log_b a exactly. Here log_(4/3) 1 = 0, well below d = 1."
+      - text: "Leaves pay, giving T(n) = O(n^(log_(4/3) 1))"
+        explains: "n^0 = 1, which cannot be right for an algorithm that examines every element. The comparison points the other way: root pays."
+      - text: "The master theorem cannot be applied, since b = 4/3 is not an integer"
+        explains: "The theorem's statement only requires a > 0, b > 1, d ≥ 0 — b need not be an integer."
+    work: |-
+      a=1 (one recursive call), b=4/3 (subproblem size n/b = 3n/4), d=1.
+      log_(4/3) 1 = 0 < 1 = d: root pays.
+      T(n) = O(n^d) = O(n).
+  - topic: "Week 4 · Selection, matrices and the FFT"
+    ask: "Randomised selection runs in O(n) on average. Can an adversary who has read the algorithm's source code in advance choose an array that forces Θ(n²) behaviour on every single run?"
+    choices:
+      - text: "No — the pivots are drawn at random independent of which array was chosen, so no input raises the chance of a bad run; but an unlucky run remains possible on any input"
+        correct: true
+        explains: "Right. The randomness lives in the algorithm's coin, not the data. No adversary controls that coin, but it can still come up badly."
+      - text: "Yes, by choosing an array with many repeated values"
+        explains: "Duplicates are handled by the equal-to-pivot pile in one step; they do not bias which pivots get drawn."
+      - text: "Yes, by choosing an array that is already sorted"
+        explains: "Sortedness has no effect on a uniformly random pivot choice."
+      - text: "No, because Θ(n²) becomes mathematically impossible once pivots are randomised"
+        explains: "It remains possible, just increasingly unlikely — that is exactly what 'average case' means."
+    work: |-
+      The O(n) bound averages over the algorithm's own random choices, for any fixed input.
+      No input makes bad pivots more likely, since pivots are uniform regardless of the data.
+      So no adversary can force the bad case — but any single run, on any input, can still draw
+      an unlucky sequence of pivots.
+  - topic: "Week 4 · Selection, matrices and the FFT"
+    ask: "Cutting an n×n matrix product into 8 half-size block products plus O(n²) combining gives T(n) = 8T(n/2) + O(n²). What is T(n), compared to the O(n³) direct definition?"
+    choices:
+      - text: "O(n³) — no improvement at all: a=8, b=2, d=2, and log₂8 = 3 > 2, so the leaves pay"
+        correct: true
+        explains: "Right. Splitting into blocks changed nothing: the exponent is exactly the same as computing the product entry by entry."
+      - text: "O(n^2.81)"
+        explains: "That is Strassen's result, from 7 products, not 8."
+      - text: "O(n² log n)"
+        explains: "That would need d = log_b a exactly. Here d=2 is strictly below log₂8=3."
+      - text: "O(n⁴)"
+        explains: "More subproblems does not automatically mean a worse exponent; here it comes out to exactly n³, matching the direct definition."
+    work: |-
+      a=8, b=2, d=2. log₂8 = 3 > 2 = d: leaves pay.
+      T(n) = O(n^(log₂8)) = O(n³) — identical to the O(n³) baseline.
+  - topic: "Week 4 · Selection, matrices and the FFT"
+    ask: "Strassen's identity replaces those 8 block products with 7: T(n) = 7T(n/2) + O(n²). What does the master theorem give for T(n)?"
+    choices:
+      - text: "O(n^(log₂7)) ≈ O(n^2.81)"
+        correct: true
+        explains: "Right. log₂7 ≈ 2.807, still above d=2, so the leaves still pay — but with a smaller exponent than the 8-product method's 3."
+      - text: "O(n^2.5)"
+        explains: "The exponent is log₂7 ≈ 2.807, not a rounded midpoint between 2 and 3."
+      - text: "O(n²)"
+        explains: "That would require log₂7 ≤ 2, i.e. a=4 or fewer. 7 is well above that."
+      - text: "O(n³), since one fewer product out of eight is too small a change to matter"
+        explains: "It matters: in the leaves-pay case the exponent is log₂a directly, so dropping a from 8 to 7 moves it, even by one."
+    work: |-
+      a=7, b=2, d=2. log₂7 = 2.807... > 2 = d: still leaves pay.
+      T(n) = O(n^(log₂7)) ≈ O(n^2.81) — lower than the 8-product method's exact n³.
+  - topic: "Week 4 · Selection, matrices and the FFT"
+    ask: "Two vectors of length n=5 are convolved by listing every a_i·b_j and grouping by i+j. How many multiplications does that take, and how many coordinates does the result have?"
+    choices:
+      - text: "25 multiplications; 9 output coordinates"
+        correct: true
+        explains: "Right. n² = 25 products, grouped into 2n−1 = 9 anti-diagonals, one per output coordinate."
+      - text: "25 multiplications; 5 output coordinates"
+        explains: "The output has 2n−1 coordinates, not n — it is longer than either input."
+      - text: "10 multiplications; 9 output coordinates"
+        explains: "The grid has n² = 25 cells, one multiplication per cell — 10 is far too few."
+      - text: "9 multiplications; 25 output coordinates"
+        explains: "This swaps the two counts: 9 is the number of outputs, 25 the number of products."
+    work: |-
+      n×n grid of products: n² = 5² = 25.
+      Grouped by i+j into anti-diagonals: 2n−1 = 9 distinct sums, one per output coordinate.
+  - topic: "Week 4 · Selection, matrices and the FFT"
+    ask: "a=(1,1) and b=(1,1) represent the polynomials 1+x and 1+x. What is a*b, and does it match (1+x)² expanded?"
+    choices:
+      - text: "a*b = (1, 2, 1), matching 1 + 2x + x²"
+        correct: true
+        explains: "Right. c₀=1·1=1, c₁=1·1+1·1=2, c₂=1·1=1 — and (1+x)² = 1+2x+x² by direct expansion."
+      - text: "a*b = (1, 1, 1)"
+        explains: "The middle coordinate collects two pairs, (a₀,b₁) and (a₁,b₀), not one: 1+1=2, not 1."
+      - text: "a*b = (2, 2)"
+        explains: "The convolution of two length-2 vectors has length 2n−1=3, not 2."
+      - text: "a*b = (1, 0, 1)"
+        explains: "The middle coordinate is a sum of products, both equal to 1 here, not a difference — it does not cancel to 0."
+    work: |-
+      c_0 = a_0*b_0 = 1. c_1 = a_0*b_1 + a_1*b_0 = 1+1 = 2. c_2 = a_1*b_1 = 1.
+      a*b = (1,2,1) <-> 1+2x+x^2. Direct: (1+x)^2 = 1+2x+x^2. Matches.
+  - topic: "Week 4 · Selection, matrices and the FFT"
+    ask: "Two degree-(n−1) polynomials have already been evaluated at the same 2n points. What does multiplying them cost in that value form, compared to O(n²) in coefficient form?"
+    choices:
+      - text: "O(n) — multiply the values pointwise, one multiplication per shared point"
+        correct: true
+        explains: "Right. (AB)(x_i) = A(x_i)·B(x_i) for each of the shared points, so 2n multiplications suffice: O(n)."
+      - text: "O(n log n), since an FFT step is still required even once the values are known"
+        explains: "No further transform is needed to multiply already-evaluated values; the FFT is only needed to get into or out of value form."
+      - text: "O(n²), the same cost either way"
+        explains: "That is the coefficient-form cost. Value form is specifically the cheap representation for multiplication."
+      - text: "O(1), since evaluation already did all the work"
+        explains: "Evaluation is a separate, earlier cost; multiplying the resulting 2n pairs of values still takes work proportional to n."
+    work: |-
+      (AB)(x_i) = A(x_i) * B(x_i), for each shared point x_i.
+      2n shared points, one multiplication each: O(n) total.
+  - topic: "Week 4 · Selection, matrices and the FFT"
+    ask: "Among the 8th roots of unity, squaring the root sitting at angle 135° lands on which point of the unit circle?"
+    choices:
+      - text: "The root at angle 270°"
+        correct: true
+        explains: "Right. Squaring doubles the angle: 135° × 2 = 270°."
+      - text: "The root at angle 67.5°"
+        explains: "That would be halving the angle, not squaring — squaring doubles it."
+      - text: "The root at angle 45°"
+        explains: "135° doubled is 270°, not 45°."
+      - text: "The root at angle 180°"
+        explains: "180° would come from doubling 90°, not 135°."
+    work: |-
+      Squaring a point on the unit circle doubles its angle: 135 * 2 = 270 degrees.
+  - topic: "Week 4 · Selection, matrices and the FFT"
+    ask: "The FFT's recurrence is T(n) = 2T(n/2) + O(n). Which master theorem case is this, and why does the O(n) combining step balance exactly against the branching here, when Strassen's O(n²) combining step did not balance against its branching?"
+    choices:
+      - text: "Balanced — log₂2 = 1 equals d = 1 exactly, whereas Strassen's d = 2 stayed below log₂7 ≈ 2.81"
+        correct: true
+        explains: "Right. Balance requires the comparison to land on equality. Here it does; for Strassen, combining was cheap relative to its branching factor, so the leaves dominated instead."
+      - text: "Leaves pay, because 2 recursive calls already dominates a linear combine step"
+        explains: "log₂2=1 equals d=1 exactly here — that is the defining condition for the balanced case, not the leaves-pay case."
+      - text: "Root pays, since only two subproblems are created"
+        explains: "Root-pays needs d > log_b a. Here d = log_b a exactly, which is balance, not root-dominance."
+      - text: "It cannot be determined without knowing n"
+        explains: "The master theorem's case depends only on a, b and d — all known constants here — not on the specific value of n."
+    work: |-
+      FFT: a=2, b=2, d=1. log₂2 = 1 = d: balanced. T(n) = O(n log n).
+      Strassen: a=7, b=2, d=2. log₂7 ≈ 2.81 > 2 = d: leaves pay instead, because the O(n²)
+      combining cost was cheap relative to the branching factor, in log terms.
+  - topic: "Week 4 · Selection, matrices and the FFT"
+    ask: "This week produced three different master-theorem outcomes: selection (root pays), the FFT (every level pays the same), and Strassen's matrix multiplication (leaves pay). What single comparison decides which of the three a given recurrence falls into?"
+    choices:
+      - text: "Comparing d against log_b a"
+        correct: true
+        explains: "Right. Below, equal to, or above — that one comparison is the whole content of the master theorem's three cases."
+      - text: "Comparing a against b directly"
+        explains: "Neither a nor b alone decides the case; only their combination through log_b a, compared against d, does."
+      - text: "Comparing the number of recursive calls against the size of the input"
+        explains: "The number of recursive calls (a) matters only via log_b a, not by direct comparison to n."
+      - text: "Comparing how many levels the recursion tree has"
+        explains: "Every one of these recurrences has log_b n levels; the level count does not vary by case, only where the cost concentrates does."
+    work: |-
+      Selection: a=1,b=4/3,d=1. log_(4/3)1=0 < 1: root pays, O(n).
+      FFT: a=2,b=2,d=1. log_2 2=1=1: balanced, O(n log n).
+      Strassen: a=7,b=2,d=2. log_2 7~2.81 > 2: leaves pay, O(n^2.81).
+      One comparison, d vs log_b a, reproduces all three outcomes.
 ---
-38 multiple-choice questions across all three weeks. Nothing is revealed until you submit: pick an
+52 multiple-choice questions across all four weeks. Nothing is revealed until you submit: pick an
 answer for each question (you can change it as often as you like), then submit to see your score, the
 correct answer, an explanation for the one you chose, and a worked solution.
 

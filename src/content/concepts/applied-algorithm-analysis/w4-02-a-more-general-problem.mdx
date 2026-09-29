@@ -1,0 +1,79 @@
+---
+course: applied-algorithm-analysis
+section: w4-selection
+order: 560
+title: A More General Problem
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week4.html?hash=true#/6
+    caption: Slides 7–8 of 50 — the definition, then the obvious solution and its price.
+notation:
+  - symbol: "k"
+    reads: k
+    means: >-
+      Which rank is being asked for. `k = 1` asks for the smallest element, `k = ∣S∣` the
+      largest, and `k = ⌊∣S∣/2⌋` the median — one parameter covers all three questions.
+  - symbol: "O(n log n)"
+    reads: big-oh of n log n
+    means: >-
+      The cost of solving selection by sorting first: `O(n log n)` to sort with mergesort,
+      plus `O(1)` to read off position `k` — the sort dominates.
+questions:
+  - ask: >-
+      Selection asks for the `k`-th smallest element of a list. What does sorting the list
+      first actually buy you, beyond the one answer you asked for?
+    choices:
+      - text: Nothing extra — sorting only ever answers the one `k` you asked about
+        explains: >-
+          The opposite: a sorted array answers *every* value of `k` at once, since the
+          smallest, the median and the largest are all sitting there for free once it's sorted.
+      - text: >-
+          The answer to selection for every possible value of `k`, from 1 to `∣S∣`, in one
+          pass
+        correct: true
+        explains: >-
+          That is exactly the waste this module exploits: the question asked for one rank, and
+          sorting pays `O(n log n)` to answer all `n` of them.
+      - text: A guarantee that the input contains no duplicate values
+        explains: >-
+          Sorting says nothing about duplicates one way or the other; it only fixes an order.
+      - text: The ability to binary search the list afterwards
+        explains: >-
+          True, but irrelevant to selection — once sorted, reading off the `k`-th element is
+          already `O(1)` by direct indexing, no search needed.
+    work: |-
+      Selection(S, k) wants one number: the k-th smallest of S.
+      Sort S: O(n log n) with mergesort. Now S[k] is the answer for *any* k, not just this one.
+      Read off position k: O(1). Total: O(n log n) + O(1) = O(n log n).
+      The O(n log n) was spent answering all n possible questions "what's the k-th smallest?"
+      when only one was asked.
+---
+
+Selection generalises the median. Instead of fixing `k = ⌊∣S∣/2⌋`, let `k` be any rank:
+
+> **Selection.** *Input:* a list of numbers `S`; an integer `k`. *Output:* the `k`-th smallest
+> element of `S`.
+
+Two boundary cases are already-familiar algorithms in disguise: `k = 1` asks for the minimum
+of `S`, and `k = ∣S∣` asks for the maximum — both obviously solvable in one linear pass, no
+sorting required. `k = ⌊∣S∣/2⌋` is the median from the previous concept, and it is the hard
+case: there is no one-pass trick for reading off the middle of an unsorted list. The rest of
+this module builds an algorithm that handles every `k`, median included, in the same amount of
+time a single linear pass takes.
+
+## How to solve it?
+
+The obvious approach: sort the array, then read off position `k`.
+
+```
+O(n log n)  [mergesort]  +  O(1)  [index]  =  O(n log n)
+```
+
+That works, but it is worth being precise about *why* it feels wasteful. Sorting the whole
+array does not just answer the question for the `k` you asked about — it produces the correct
+answer for every value of `k` from 1 to `∣S∣` simultaneously, since the entire order is now
+sitting there. If the question only ever asks for one rank, `O(n log n)` is the price of
+computing 999,999 answers nobody wanted, for an input of size a million.
+
+That is the opening this module works: **can selection be solved in less time than sorting,
+by refusing to produce the answers nobody asked for?**

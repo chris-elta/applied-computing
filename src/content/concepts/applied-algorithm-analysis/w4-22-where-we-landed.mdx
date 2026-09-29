@@ -1,0 +1,171 @@
+---
+course: applied-algorithm-analysis
+section: w4-review
+order: 760
+title: Where We Landed
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week4.html?hash=true#/42
+    caption: Slides 48–50 of 50 — the summary table, the self-check, and the reading.
+notation:
+  - symbol: "d vs log_b a"
+    reads: d versus log base b of a
+    means: >-
+      The single comparison the master theorem performs, read off three different ways this
+      week: at the root (selection), spread evenly (the FFT), or at the leaves (Strassen and
+      the block matrix product).
+  - symbol: "closure under squaring"
+    reads: closure under squaring
+    means: >-
+      The property that made the FFT's evaluation points fast: squaring an `n`-th root of
+      unity lands on an `(n/2)`-th root of unity. Arbitrary points do not have this property,
+      which is why evaluating at arbitrary points stays `O(n²)`.
+questions:
+  - ask: >-
+      Selection's recurrence is `T(n) ≤ T(3n/4) + O(n)`. Why can the master theorem be used on
+      it, when the worst-case recurrence `T(n) = T(n−1) + O(n)` cannot?
+    choices:
+      - text: >-
+          It can't actually be used here either — the `≤` makes it an inequality, not a true
+          recurrence, and the master theorem only applies to equalities
+        explains: >-
+          The master theorem is regularly applied to inequalities of this shape, giving an
+          upper bound on `T(n)` — that's standard practice, not the obstacle here.
+      - text: >-
+          Because `3n/4` is `n/b` for the constant `b = 4/3`, while `n−1` is not `n/b` for any
+          constant `b` at all — there is no `b` to put in the formula
+          
+        correct: true
+        explains: >-
+          The master theorem's form requires the subproblem size to shrink by a constant
+          *factor*, `n/b`. `3n/4 = n/(4/3)` fits that shape with `b=4/3`. `n−1` shrinks by a
+          constant *amount* instead of a constant factor, which is a different recursive shape
+          the master theorem simply doesn't cover.
+      - text: >-
+          Because `3n/4` is smaller than `n−1` for large `n`, so it's the "easier" case
+        explains: >-
+          Which one is numerically smaller doesn't determine which recurrence family the
+          master theorem applies to — the applicability is about the *shape* (`n/b` versus
+          `n−1`), not the size of the resulting subproblem.
+      - text: >-
+          Because selection is randomised and QuickSort's worst case is deterministic
+        explains: >-
+          The master theorem doesn't distinguish randomised from deterministic recurrences —
+          it only cares about the algebraic shape of the recurrence itself.
+    work: |-
+      Master theorem form: T(n) = aT(n/b) + O(n^d), requiring subproblem size n/b for a
+      CONSTANT b.
+      T(n) <= T(3n/4) + O(n): subproblem size is 3n/4 = n/(4/3), so b=4/3, a constant. Fits.
+      T(n) = T(n-1) + O(n): subproblem size is n-1, which is not n/b for any constant b (it
+      shrinks by a fixed amount, not a fixed factor). Does not fit the master theorem's shape
+      at all -- a different technique (unrolling directly) is needed there instead.
+  - ask: >-
+      Strassen uses 7 products and gets `O(n^2.81)`. If some further identity used only
+      **six** products instead, what would the resulting running time be?
+    choices:
+      - text: "`O(n²)`"
+        explains: >-
+          That would require `log₂6 ≤ 2`, i.e. the balanced or root-pays case. `log₂6 ≈ 2.585`,
+          still comfortably above `d=2`, so this stays a leaves-pay case with an exponent
+          above 2.
+      - text: "`O(n^2.59)`, since `log₂6 ≈ 2.585`"
+        correct: true
+        explains: >-
+          `T(n) = 6T(n/2) + O(n²)`: `a=6, b=2, d=2`. `log₂6 ≈ 2.585 > 2 = d`, still leaves-pay,
+          giving `T(n) = O(n^log₂6) ≈ O(n^2.59)` — a further, smaller improvement over
+          Strassen's `2.81`, following exactly the same pattern as dropping from 8 to 7.
+      - text: "`O(n^2.5)`"
+        explains: >-
+          `2.5` isn't `log₂6` — the actual value is `log₂6 ≈ 2.585`, computed the same way
+          `log₂7 ≈ 2.807` was for Strassen's own bound.
+      - text: "`O(n log n)`"
+        explains: >-
+          That's the FFT's balanced-case answer, which needs `d = log_b a` exactly. Matrix
+          combining stays `O(n²)` (`d=2`), which `log₂6` still exceeds — nowhere near balanced.
+    work: |-
+      T(n) = 6T(n/2) + O(n^2): a=6, b=2, d=2.
+      log_2 6 = 2.585 > 2 = d, so leaves-pay case: T(n) = O(n^{log_2 6}) ~= O(n^2.59).
+      Following the same pattern as 8 -> 7 products (O(n^3) -> O(n^2.81)): each product removed
+      lowers a, which lowers log_2(a), which lowers the exponent directly in this case.
+  - ask: >-
+      The FFT evaluates polynomials at the roots of unity rather than at the simpler-looking
+      points `1, 2, …, n`. What exactly goes wrong if `1, 2, …, n` were used instead?
+    choices:
+      - text: >-
+          Nothing goes wrong — `1, 2, …, n` would work exactly as well and is simpler to
+          compute with
+        explains: >-
+          The whole recursive speedup depends on squaring collapsing the point set in half;
+          `1, 2, …, n` doesn't have that property, so this substitution would break the
+          algorithm's running time entirely, even though it would still be mathematically
+          valid as a set of evaluation points.
+      - text: >-
+          Squaring `1, 2, …, n` gives `1, 4, 9, …, n²` — `n` *distinct* values, so the two
+          half-size polynomials would still need `n` evaluations each, and nothing would be
+          shared between them
+          
+        correct: true
+        explains: >-
+          The entire saving in the recursive step came from `ω^{2k}` repeating only `n/2`
+          distinct values as `k` ranged over `n` values. `1², 2², …, n²` are all different from
+          each other, so there is no repetition to exploit — the recursion would cost exactly
+          as much as evaluating at `n` arbitrary points, `O(n²)`.
+      - text: >-
+          `1, 2, …, n` aren't valid points to evaluate a polynomial at
+        explains: >-
+          Any real (or complex) numbers are valid points to evaluate a polynomial at — the
+          issue isn't validity, it's whether squaring them produces the repetition the
+          recursion needs.
+      - text: >-
+          The interpolation step would fail, since `1, 2, …, n` aren't evenly spaced
+        explains: >-
+          Interpolation from `n` distinct points works regardless of spacing — even spacing
+          isn't what interpolation needs; it's what the *recursive evaluation* needs, to make
+          each level's point set collapse in half.
+    work: |-
+      omega^{2k} for the n-th roots of unity: exactly n/2 distinct values as k ranges 0..n-1,
+      each hit twice -- because squaring an n-th root of unity lands on an (n/2)-th root.
+      1,2,...,n squared: 1,4,9,...,n^2 -- n DISTINCT values, no repeats at all.
+      Without repeats, A_even and A_odd would each need to be evaluated at n distinct points
+      (not n/2), so the recurrence would be T(n) = 2T(n) + O(n) -- not even a valid
+      divide-and-conquer recursion, since the subproblems wouldn't have shrunk at all.
+---
+
+One shape, one comparison, one picture — read three different ways this week.
+
+## The shape
+
+Every running time this week had the form `T(n) = aT(n/b) + O(nᵈ)`, and the master theorem
+does exactly one thing: **compare `d` with `log_b a`.**
+
+| Algorithm | Recurrence | `a, b, d` | Case | Running time |
+| --- | --- | --- | --- | --- |
+| Selection, random pivot | `T(n) ≤ T(3n/4)+O(n)` | 1, 4/3, 1 | root pays | `O(n)` |
+| Fast Fourier transform | `2T(n/2)+O(n)` | 2, 2, 1 | every level | `O(n log n)` |
+| Block matrix product | `8T(n/2)+O(n²)` | 8, 2, 2 | leaves pay | `O(n³)` |
+| Strassen | `7T(n/2)+O(n²)` | 7, 2, 2 | leaves pay | `O(n^2.81)` |
+
+All three cases of the master theorem, in one lecture, read off the same two numbers each
+time.
+
+## The picture underneath
+
+Selection's saving came from recursing into **one** side of a split instead of two — the
+opposite of mergesort's shape, which pulled the recurrence's root above its leaves. The FFT's
+saving came from choosing evaluation points that are **closed under squaring**, so the two
+half-size recursive calls could share their evaluation points instead of needing fresh ones —
+the same halving trick, applied to a totally different kind of problem. Strassen's saving was
+the smallest and the most surgical: one fewer product, moving the exponent along the same
+leaves-pay case rather than into a different one.
+
+## Reading
+
+- Dasgupta, Papadimitriou & Vazirani, *Algorithms* — §2.4 medians and selection, §2.5 matrix
+  multiplication, §2.6 the fast Fourier transform.
+- Kleinberg & Tardos, *Algorithm Design* — §5.5 Strassen, §5.6 convolution and the FFT.
+- Roughgarden, *Algorithms Illuminated, Part 1* — chapter 6 for randomised selection and its
+  analysis.
+- Practice: LeetCode 215.
+
+That closes divide and conquer: module 3 was integer multiplication, the master theorem and
+mergesort; module 4 was selection, matrices and the Fourier transform.

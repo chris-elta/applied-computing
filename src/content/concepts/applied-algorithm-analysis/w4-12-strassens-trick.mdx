@@ -1,0 +1,142 @@
+---
+course: applied-algorithm-analysis
+section: w4-matrix
+order: 660
+title: "Strassen's Trick: Seven Products"
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week4.html?hash=true#/24
+    caption: Slides 29–30 of 50 — the seven-product identity, then what it buys.
+notation:
+  - symbol: "P₁, …, P₇"
+    reads: P one through P seven
+    means: >-
+      Seven specific products of sums and differences of the quadrants — `P₁ = A(F−H)`,
+      `P₂ = (A+B)H`, and so on — chosen so that the four output quadrants can each be
+      recovered from combinations of these seven, without ever needing an eighth product.
+questions:
+  - ask: >-
+      Strassen's identity computes the same product using `T(n) = 7T(n/2) + O(n²)` instead of
+      `8T(n/2) + O(n²)`. What running time does the master theorem give, and why does dropping
+      just one product out of eight change the exponent at all?
+    choices:
+      - text: >-
+          `O(n³)` still — one fewer product out of eight is too small a change to matter
+        explains: >-
+          It's not too small to matter: the master theorem's leaf-dominated exponent is
+          `log_b a`, and `a` moved from 8 to 7. `log₂7 ≈ 2.807`, strictly less than `log₂8 = 3`.
+      - text: >-
+          `O(n^log₂7) ≈ O(n^2.81)`, because the leaf-dominated case's exponent is `log_b a`
+          directly, and lowering `a` by even 1 lowers that exponent
+          
+        correct: true
+        explains: >-
+          `a=7, b=2, d=2`; `log₂7 = 2.807… > 2 = d`, still the leaves-pay case, so
+          `T(n) = O(n^log₂7) ≈ O(n^2.81)`. Because this case's exponent depends on `a`
+          continuously (through a logarithm), any reduction in the number of recursive
+          subproblems moves the exponent down — even by one.
+      - text: >-
+          `O(n^2.5)`, splitting the difference evenly between `n²` and `n³`
+        explains: >-
+          The exponent isn't an average of the old and new cost — it's computed from `log₂7`
+          directly, which happens to land close to 2.81, not 2.5.
+      - text: >-
+          `O(n² log n)` — the balanced case, since 7 is close to `2² = 4`... actually not close
+          at all, but the reasoning would apply if it were
+        explains: >-
+          Balanced requires `d = log_b a` exactly. `log₂7 ≈ 2.807` is not `2`, so this stays a
+          leaves-pay case, not a balanced one.
+    work: |-
+      T(n) = 7T(n/2) + O(n^2): a=7, b=2, d=2.
+      log_2 7 = 2.807... > 2 = d, so case 3 (leaves pay): T(n) = O(n^{log_2 7}) ~= O(n^2.81).
+      Compare to 8 products: log_2 8 = 3 exactly. Losing one product out of eight moved the
+      exponent from 3 down to about 2.81 -- because in this case the exponent IS log_2(a),
+      and a dropped by exactly 1.
+  - ask: >-
+      Strassen's identity needs more additions and subtractions than the eight-product block
+      method does, to build the seven products and recombine them. Why doesn't that extra
+      addition work show up anywhere in the final `O(n^2.81)` answer?
+    choices:
+      - text: It does show up — the true running time is actually worse than `O(n^2.81)`
+        explains: >-
+          It's accounted for correctly, not hidden: the `O(n²)` term in
+          `T(n) = 7T(n/2) + O(n²)` already includes every addition and subtraction needed to
+          build the seven products and recombine them.
+      - text: >-
+          Because addition on `n×n` matrices costs `O(n²)`, and `O(n²)` is dominated by the
+          recursive term whenever `d < log_b a` — extra additions are absorbed without
+          changing the recurrence's asymptotic solution
+          
+        correct: true
+        explains: >-
+          The recurrence already *is* `7T(n/2) + O(n²)` — the `O(n²)` covers all the addition
+          work, however many extra additions Strassen's identity needs relative to the simpler
+          block method. Since `d=2 < log₂7`, the leaves dominate regardless of that constant,
+          exactly the trade Gauss's trick made with complex numbers back in week 3.
+      - text: >-
+          Because matrix addition is actually free, costing `O(1)`
+        explains: >-
+          Adding two `n×n` matrices touches every one of the `n²` entries, so it costs `O(n²)`,
+          not `O(1)` — it just doesn't change which master-theorem case applies.
+      - text: >-
+          The extra additions are only needed once, outside the recursion, so they don't
+          accumulate
+        explains: >-
+          They're needed at *every* level of the recursion, on every recursive call — but
+          since each level's additions are dominated by the leaves' cost regardless, the total
+          still comes out to `O(n^2.81)`.
+    work: |-
+      Recurrence already accounts for it: T(n) = 7T(n/2) + O(n^2), where the O(n^2) is exactly
+      the cost of every addition/subtraction needed to form the seven products and recombine
+      them into the four output quadrants.
+      Since log_2 7 > d = 2 (leaves-pay case), the O(n^2) combining term never dominates the
+      sum regardless of its constant -- extra additions raise the hidden constant, not the
+      exponent. Same trade as Gauss's identity: buy a cheaper multiplication with extra cheap
+      additions.
+---
+
+Strassen's identity computes the same four output blocks from **seven** products instead of
+eight:
+
+```
+XY = [P5+P4−P2+P6   P1+P2      ]
+     [P3+P4         P1+P5−P3−P7]
+```
+
+where
+
+```
+P1 = A(F−H)          P5 = (A+D)(E+H)
+P2 = (A+B)H          P6 = (B−D)(G+H)
+P3 = (C+D)E          P7 = (A−C)(E+F)
+P4 = D(G−E)
+```
+
+Nobody derives these seven by staring at the block formula — Strassen found them in 1969, and
+the search for identities with even fewer products is still an open area of research. What
+matters here is only that the count drops from 8 to 7.
+
+## Seven products, and the exponent moves
+
+```
+T(n) = 7 T(n/2) + O(n²)
+```
+
+Master theorem: `a=7, b=2, d=2`. Since `log₂7 = 2.807… > 2`, the leaves still pay, but with a
+smaller exponent:
+
+```
+T(n) = O(n^log₂7) = O(n^2.81)
+```
+
+| Method | Recurrence | `a, b, d` | Running time |
+| --- | --- | --- | --- |
+| Definition, entry by entry | — | — | `O(n³)` |
+| Block, eight products | `8T(n/2)+O(n²)` | 8, 2, 2 | `O(n³)` |
+| Strassen, seven products | `7T(n/2)+O(n²)` | 7, 2, 2 | `O(n^2.81)` |
+
+One product fewer out of eight, and the exponent falls from 3 to about 2.81 — because in the
+leaf-dominated case the exponent *is* `log_b a`, so any drop in `a` moves it, however small
+the drop looks. The extra additions Strassen's identity needs are `O(n²)` too, so they never
+show up in the final answer — the same trade Gauss made trading a multiplication for two
+additions on complex numbers, one level of the master theorem up.

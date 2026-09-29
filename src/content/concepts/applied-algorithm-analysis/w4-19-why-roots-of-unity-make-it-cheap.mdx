@@ -1,0 +1,103 @@
+---
+course: applied-algorithm-analysis
+section: w4-algorithm
+order: 730
+title: Why the Roots of Unity Make It Cheap
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week4.html?hash=true#/39
+    caption: Slide 45 of 50 — the same identity, evaluated at every n-th root at once.
+questions:
+  - ask: >-
+      Evaluating `A` at all `n` of the `n`-th roots of unity requires evaluating `A_even` and
+      `A_odd` — but at how many *distinct* points, and why is that number smaller than `n`?
+    choices:
+      - text: >-
+          At `n` distinct points each, the same as `A` itself — no saving happens at this step
+        explains: >-
+          There is a saving: as `k` runs over `n` values, `ω^{2k}` (the argument passed to
+          `A_even` and `A_odd`) only takes `n/2` distinct values, each one twice.
+      - text: >-
+          At `n/2` distinct points, because `ω^{2k}` runs over the `(n/2)`-th roots of unity as
+          `k` ranges over `0, …, n−1`, each value hit exactly twice
+          
+        correct: true
+        explains: >-
+          This is the halving property from the convolution module, applied directly:
+          squaring the `n`-th roots lands on the `(n/2)`-th roots, with every one hit twice.
+          So the two half-size polynomials never need more than `n/2` evaluations each.
+      - text: >-
+          At `2n` distinct points, since two polynomials (`A_even` and `A_odd`) are each being
+          evaluated separately
+        explains: >-
+          Having two polynomials to evaluate doesn't multiply the point *count* by their
+          number — each needs only `n/2` points, not `2n` between them, thanks to the repeated
+          values of `ω^{2k}`.
+      - text: >-
+          It depends on whether `n` is even or odd
+        explains: >-
+          The construction assumes `n` is a power of 2 throughout (padding with zero
+          coefficients if necessary), so this halving always applies cleanly.
+      - text: >-
+          At `log₂ n` distinct points
+        explains: >-
+          That would be far too few — `A_even` is itself a degree-`(n/2 − 1)` polynomial and
+          needs `n/2` points to be fully determined, not `log₂ n`.
+    work: |-
+      A(omega^k) = A_even(omega^{2k}) + omega^k * A_odd(omega^{2k}).
+      As k ranges 0..n-1, omega^{2k} ranges over the (n/2)-th roots of unity, each value hit
+      by exactly 2 values of k (k and k+n/2 give the same omega^{2k}, by the squaring
+      property).
+      So A_even and A_odd each only need to be evaluated at n/2 distinct points to answer all
+      n queries -- not n points each.
+  - ask: >-
+      Once `A_even` and `A_odd` have been evaluated at the necessary points, combining those
+      results into all `n` values of `A(ωᵏ)` costs `O(n)`. Where does that `O(n)` come from?
+    choices:
+      - text: >-
+          From sorting the `n` combined values afterward
+        explains: >-
+          No sorting is involved — the values are produced directly, one per `k`, with no
+          reordering step needed.
+      - text: >-
+          From doing one multiplication (`ωᵏ · A_odd(ω^{2k})`) and one addition per value of
+          `k`, across all `n` values of `k`
+          
+        correct: true
+        explains: >-
+          `A(ωᵏ) = A_even(ω^{2k}) + ωᵏ · A_odd(ω^{2k})` is one multiply-and-add per `k`, and
+          there are `n` values of `k` to produce — `n` constant-time combines is `O(n)` total.
+      - text: >-
+          From recomputing `A_even` and `A_odd` from scratch for each `k`
+        explains: >-
+          They're computed once (recursively) and their *values* are reused across the
+          combine step — recomputing them per `k` would be far more expensive than `O(n)`.
+      - text: >-
+          It doesn't actually cost `O(n)` — this step is free
+        explains: >-
+          It isn't free: `n` multiply-and-add operations, however cheap each one is
+          individually, still sum to `O(n)` total work, and that term is exactly what appears
+          in the recurrence next.
+    work: |-
+      For each of the n values of k, computing A(omega^k) from the already-known
+      A_even(omega^{2k}) and A_odd(omega^{2k}) takes one multiplication (by omega^k) and one
+      addition. n values of k, O(1) work each: O(n) total.
+---
+
+Evaluate `A` at the `n`-th roots of unity, all `n` of them. For each `ωᵏ`:
+
+```
+A(ωᵏ) = A_even(ω^{2k}) + ωᵏ A_odd(ω^{2k})
+```
+
+As `k` runs over `0, …, n−1`, the value `ω^{2k}` runs over the `(n/2)`-th roots of unity —
+**each one twice**. So the two half-size polynomials only ever need to be evaluated at `n/2`
+points, not `n`. Combining the two answers takes one multiplication and one addition per `k`:
+`O(n)` in total.
+
+Two subproblems of half the size, linear combining. This is mergesort's recurrence, on
+polynomials.
+
+One practical point worth flagging before implementing it: the halving only closes cleanly if
+`n` is a power of two, so an implementation pads the coefficient list with zeros up to the
+next one first. Padding changes no coefficient and costs `O(n)`.

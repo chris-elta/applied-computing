@@ -1,0 +1,106 @@
+---
+course: applied-algorithm-analysis
+section: w4-algorithm
+order: 740
+title: "The Recurrence, and O(n log n)"
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week4.html?hash=true#/40
+    caption: Slide 46 of 50 — the master theorem applied, and the whole convolution priced.
+notation:
+  - symbol: "ω⁻¹"
+    reads: omega inverse
+    means: >-
+      Used to run the FFT backwards for interpolation: evaluating at `ω⁻¹, ω⁻², …` instead of
+      `ω, ω², …`, followed by dividing every result by `n`, recovers the coefficients from the
+      values.
+questions:
+  - ask: >-
+      `T(n) = 2T(n/2) + O(n)` gives `a=2, b=2, d=1`, and `log₂2 = 1 = d` — the *balanced* case
+      of the master theorem. Why is this recurrence balanced when the matrix-multiplication
+      recurrences earlier this week (`a=7` or `a=8`, both with `b=2, d=2`) were not?
+    choices:
+      - text: >-
+          Because `2` happens to be a smaller number than `7` or `8`
+        explains: >-
+          The comparison that decides the case is `log_b a` against `d`, not the raw size of
+          `a` — a recurrence with a large `a` but a correspondingly large `d` can still balance.
+      - text: >-
+          Because here `d=1` matches `log₂2=1` exactly, whereas for the matrix recurrences
+          `d=2` was smaller than `log₂7` or `log₂8` — the FFT's combining step is exactly
+          proportional to its branching factor, in log terms, where the matrix ones weren't
+          
+        correct: true
+        explains: >-
+          Balance requires the *comparison* `d` vs `log_b a` to land exactly on equality. For
+          matrices, combining (`O(n²)`, so `d=2`) was cheaper relative to `a` than the
+          branching factor demanded, so the leaves dominated instead. Here, splitting into 2
+          half-size problems with `O(n)` combining lines up exactly.
+      - text: >-
+          Because the FFT only has one recursive call, not two
+        explains: >-
+          It has two recursive calls (`A_even` and `A_odd`), giving `a=2` — the same as
+          mergesort's shape, not the one-call shape selection used.
+      - text: >-
+          It isn't actually balanced — this is another leaves-pay case, coincidentally giving
+          the same-looking exponent
+        explains: >-
+          It genuinely is the balanced case: `log₂2 = 1` equals `d = 1` exactly, which is the
+          defining condition, not a coincidence in the final exponent.
+    work: |-
+      FFT: T(n) = 2T(n/2) + O(n). a=2, b=2, d=1. log_2 2 = 1 = d -> balanced case, T(n) = O(n log n).
+      Block matrix mult: 8T(n/2)+O(n^2). a=8,b=2,d=2. log_2 8=3 > 2=d -> leaves pay, O(n^3).
+      Strassen: 7T(n/2)+O(n^2). a=7,b=2,d=2. log_2 7~2.81 > 2=d -> leaves pay, O(n^2.81).
+      Only the FFT's combining cost (O(n), i.e. d=1) is exactly proportional -- in log terms --
+      to its branching factor (a=2) for the split size (b=2) used.
+  - ask: >-
+      Evaluation costs `O(n log n)`, pointwise multiplication `O(n)`, and interpolation
+      (evaluation run backwards) `O(n log n)`. What is the total cost of convolving two
+      length-`n` vectors this way, and how does it compare to the direct `O(n²)` sum from
+      earlier?
+    choices:
+      - text: "`O(n² log n)`, since all three steps multiply together"
+        explains: >-
+          The three steps happen one after another, not nested inside each other — their costs
+          *add*, they don't multiply.
+      - text: >-
+          `O(n log n)`, strictly better than `O(n²)` for large `n`
+        correct: true
+        explains: >-
+          `O(n log n) + O(n) + O(n log n) = O(n log n)`, since the `O(n)` term is dominated by
+          the two `O(n log n)` terms. For large `n`, `n log n` grows far more slowly than `n²`.
+      - text: "`O(n²)`, the same as before — the detour changed nothing"
+        explains: >-
+          The detour changed the answer substantially: `n log n` is asymptotically smaller than
+          `n²`, which is exactly why this whole module was worth building.
+      - text: "`O(n)`, since the middle step alone is linear"
+        explains: >-
+          The middle step being linear doesn't erase the two `O(n log n)` steps bracketing it —
+          the total is the sum of all three, not just the cheapest one.
+    work: |-
+      Total = O(n log n) [evaluate] + O(n) [multiply pointwise] + O(n log n) [interpolate]
+            = O(n log n), since O(n) is dominated by O(n log n).
+      Versus O(n^2) for the direct convolution sum: n log n < n^2 for all n > 1, and the gap
+      widens as n grows -- the entire payoff of reading the vectors as polynomials and taking
+      the scenic route through the roots of unity.
+---
+
+```
+T(n) = 2 T(n/2) + O(n)
+```
+
+Master theorem with `a=2, b=2, d=1`, and `log₂2 = 1 = d` — every level pays the same:
+
+```
+T(n) = O(n log n)
+```
+
+Interpolation is the same algorithm run backwards, with `ω` replaced by `ω⁻¹` and a division
+by `n` at the end, so it costs `O(n log n)` too.
+
+> **The whole convolution.** `O(n log n)` to evaluate, `O(n)` to multiply pointwise,
+> `O(n log n)` to interpolate — against `O(n²)` for the direct sum.
+
+A previous module's table had exactly this row for mergesort. The fast Fourier transform is
+the same recurrence reached by a completely different route, which is the best argument for
+having done the master theorem properly the first time around.

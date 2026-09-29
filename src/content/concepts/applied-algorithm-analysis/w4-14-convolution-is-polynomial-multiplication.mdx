@@ -1,0 +1,105 @@
+---
+course: applied-algorithm-analysis
+section: w4-convolution
+order: 680
+title: Convolution Is Polynomial Multiplication
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week4.html?hash=true#/29/0
+    caption: Slides 34–35 of 50 — the recognition, then why it's worth making.
+questions:
+  - ask: >-
+      Read `a = (1, 2)` and `b = (1, 3)` as the coefficient lists of `1 + 2x` and `1 + 3x`.
+      What is `a * b`, and does it match `(1+2x)(1+3x)` multiplied out?
+    choices:
+      - text: "`a * b = (1, 5, 6)`, matching `1 + 5x + 6x²`"
+        correct: true
+        explains: >-
+          `c_0 = a_0b_0 = 1`. `c_1 = a_0b_1 + a_1b_0 = 1·3 + 2·1 = 5`. `c_2 = a_1b_1 = 2·3 = 6`.
+          And directly: `(1+2x)(1+3x) = 1 + 3x + 2x + 6x² = 1 + 5x + 6x²` — the same three
+          numbers, in the same order.
+      - text: "`a * b = (1, 6, 5)`"
+        explains: >-
+          The middle and last coefficients are swapped here — `c_1` (the `x¹` coefficient)
+          collects `a_0b_1 + a_1b_0 = 3+2=5`, and `c_2` (the `x²` coefficient) is
+          `a_1b_1=2·3=6`, not the other way around.
+      - text: "`a * b = (2, 6)`, since convolving length-2 vectors gives a length-2 result"
+        explains: >-
+          A convolution of two length-`n` vectors has length `2n−1`, not `n` — here
+          `2(2)−1 = 3` coordinates, matching a degree-2 polynomial product.
+      - text: "`a * b` can't be compared to a polynomial product; they're unrelated operations"
+        explains: >-
+          That's exactly the claim this concept overturns — convolving coefficient vectors and
+          multiplying the polynomials they represent are the same computation, coordinate for
+          coordinate.
+    work: |-
+      a=(1,2) <-> 1+2x. b=(1,3) <-> 1+3x.
+      c_0 = a_0*b_0 = 1*1 = 1.
+      c_1 = a_0*b_1 + a_1*b_0 = 1*3 + 2*1 = 3+2 = 5.
+      c_2 = a_1*b_1 = 2*3 = 6.
+      a*b = (1,5,6) <-> 1 + 5x + 6x^2.
+      Direct expansion: (1+2x)(1+3x) = 1 + 3x + 2x + 6x^2 = 1 + 5x + 6x^2. Matches.
+  - ask: >-
+      Two degree-2 polynomials multiply to a degree-4 polynomial, needing 5 coefficients to
+      write down. How does that number, 5, relate to the convolution of their two length-3
+      coefficient vectors?
+    choices:
+      - text: >-
+          It's unrelated — 5 comes from counting terms in the expansion, and `2n−1` comes from
+          a different formula entirely
+        explains: >-
+          They're the same count arrived at two ways: a degree-`d` polynomial has `d+1`
+          coefficients, and two degree-2 polynomials (`n=3` coefficients each) convolve to
+          length `2n−1 = 5` — both count the same thing.
+      - text: >-
+          They match exactly: `2n − 1` with `n=3` (three coefficients each) gives `5`, the same
+          as `(degree 2) + (degree 2) + 1 = 5` coefficients needed for the degree-4 product
+          
+        correct: true
+        explains: >-
+          Multiplying degree `d₁` by degree `d₂` gives degree `d₁+d₂`, needing `d₁+d₂+1`
+          coefficients. With `n = d+1` coefficients per input, that's exactly
+          `(n₁−1)+(n₂−1)+1 = n₁+n₂−1`, which for equal-length inputs is `2n−1` — the
+          convolution length.
+      - text: >-
+          `5` is a coincidence specific to degree-2 polynomials; the formulas diverge for
+          higher degrees
+        explains: >-
+          The match holds at every degree — it's an algebraic identity (`d_1+d_2+1 = n_1+n_2-1`
+          when `n_i = d_i+1`), not a coincidence that happens to work out at degree 2.
+      - text: >-
+          `5` only counts the *nonzero* coefficients, which happens to differ from `2n−1` in
+          general
+        explains: >-
+          `2n−1` counts all coefficient *positions*, whether or not their value happens to be
+          zero — that's why it matches "how many coefficients are needed to write the product
+          down," regardless of the specific numbers involved.
+    work: |-
+      Degree-2 polynomial has 3 coefficients (n=3): a_0 + a_1 x + a_2 x^2.
+      Product of two degree-2 polynomials has degree 2+2=4, needing 4+1=5 coefficients.
+      Convolution length for two length-n=3 vectors: 2n-1 = 2(3)-1 = 5. Matches exactly.
+---
+
+Take `a = (1, 2, 3)` and `b = (4, 5, 6)` and convolve them:
+
+```
+a * b = (4, 13, 28, 27, 18)
+```
+
+Read each vector as the coefficient list of a polynomial and multiply:
+
+```
+(1+2x+3x²)(4+5x+6x²) = 4 + 13x + 28x² + 27x³ + 18x⁴
+```
+
+Same five numbers. Read a vector as the coefficient list of a polynomial and convolution is
+exactly the product, because both collect every `a_i b_j` with `i+j=k` into coordinate `k`.
+
+> **Why this reframing helps.** A polynomial can be written down in two ways: by its
+> **coefficients**, or by its **values** at enough points. Multiplying is slow in one
+> representation and trivial in the other.
+
+Degree check: two degree-2 polynomials give degree 4, which needs 5 coefficients — the same
+`2n − 1` as the convolution length, for `n = 3` coefficients per input. Nothing about the
+numbers changed by relabelling the problem; what changed is that it's now a problem about
+polynomials, and polynomials have a second representation worth exploring.

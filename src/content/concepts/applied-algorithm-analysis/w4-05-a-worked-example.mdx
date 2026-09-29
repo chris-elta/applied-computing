@@ -1,0 +1,78 @@
+---
+course: applied-algorithm-analysis
+section: w4-selection
+order: 590
+title: A Worked Example
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week4.html?hash=true#/12/0
+    caption: Slides 13–14 of 50 — the question, then the answer for three values of k.
+questions:
+  - ask: >-
+      Using the same split — `S_L = [2,4,1]`, `S_v = [5,5]`, `S_R = [36,21,8,13,11,20]` — what
+      does `selection(S, 1)` return?
+    choices:
+      - text: "5, the pivot"
+        explains: >-
+          The pivot branch fires when `∣S_L∣ < k ≤ ∣S_L∣+∣S_v∣`, i.e. `3 < k ≤ 5`. `k = 1` is
+          below that.
+      - text: "`selection(S_L, 1) = 1`"
+        correct: true
+        explains: >-
+          `k = 1 ≤ ∣S_L∣ = 3`, so the recursion lands in `S_L` unchanged. Sorted, `S_L` is
+          `[1,2,4]`, whose 1st element is 1 — matching the smallest element of the whole
+          11-element list.
+      - text: "`selection(S_R, 1) = 8`"
+        explains: >-
+          `k = 1` doesn't exceed `∣S_L∣+∣S_v∣`, so the recursion never reaches `S_R` at all.
+      - text: "2, the second element of `S_L`"
+        explains: >-
+          `selection` returns the `k`-th smallest, not the `k`-th element in whatever order
+          `S_L` happens to be listed in — `S_L` isn't sorted yet.
+    work: |-
+      k = 1 ≤ |S_L| = 3, so recurse: selection(S_L, 1).
+      S_L = [2,4,1], sorted = [1,2,4]. Its 1st smallest is 1.
+      Checks out: the full sorted list is [1,2,4,5,5,8,11,13,20,21,36], and its 1st element is 1.
+  - ask: >-
+      Same split. What does `selection(S, 11)` return — the largest element of the whole
+      11-element list?
+    choices:
+      - text: "36, via `selection(S_R, 6)`"
+        correct: true
+        explains: >-
+          `k = 11 > ∣S_L∣+∣S_v∣ = 5`, so recurse into `S_R` with rank `11 − 3 − 2 = 6`. `S_R`
+          has exactly 6 elements, so this asks for the *largest* element of `S_R` — sorted,
+          `[8,11,13,20,21,36]`, whose 6th element is 36.
+      - text: "20, since it looks like the largest value listed in `S_R`"
+        explains: >-
+          `S_R` isn't sorted as written; scanning for "the biggest-looking number" isn't how
+          the recursion works, and it also happens to be wrong here — 36 is larger than 20.
+      - text: "`selection(S_R, 11)`, unadjusted"
+        explains: >-
+          `S_R` only has 6 elements — there is no 11th smallest inside it. The rank has to be
+          reduced by the 5 elements that were shown to be smaller and set aside.
+      - text: "5, the pivot"
+        explains: >-
+          The pivot branch only covers `3 < k ≤ 5`. `k = 11` is well past that range.
+    work: |-
+      k = 11 > |S_L|+|S_v| = 5, so recurse: selection(S_R, 11-3-2) = selection(S_R, 6).
+      S_R = [36,21,8,13,11,20], 6 elements — k=6 asks for the largest.
+      Sorted S_R = [8,11,13,20,21,36]. 6th smallest = 36 = the max.
+---
+
+With `S_L = [2, 4, 1]`, `S_v = [5, 5]` and `S_R = [36, 21, 8, 13, 11, 20]` from the split on
+the previous concept, trace `k = 3`, `k = 5` and `k = 7`:
+
+| `k` | test | branch | result |
+| --- | --- | --- | --- |
+| 3 | `3 ≤ 3` | `selection(S_L, 3)` | **4** |
+| 5 | `3 < 5 ≤ 5` | the pivot itself | **5** |
+| 7 | `7 > 5` | `selection(S_R, 7−3−2) = selection(S_R, 2)` | **11** |
+
+Check against the sorted list: `[1, 2, 4, 5, 5, 8, 11, 13, 20, 21, 36]`. The 3rd element is 4,
+the 5th is 5, the 7th is 11 — all three match.
+
+The subtraction `k − ∣S_L∣ − ∣S_v∣` is the entire trick behind recursing right: every element
+that got thrown into `S_L` or `S_v` was smaller than everything in `S_R`, so the rank being
+searched for drops by exactly how many elements were set aside. Nothing about `S_R`'s own
+internal order needs to be known yet — that's what the recursive call figures out.

@@ -1,0 +1,65 @@
+---
+course: applied-algorithm-analysis
+section: w4-selection
+order: 570
+title: From QuickSort to Selection
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week4.html?hash=true#/8
+    caption: Slides 9–10 of 50 — QuickSort's template, then selection's version of it.
+questions:
+  - ask: >-
+      QuickSort and this selection algorithm share the same first two steps — choose a pivot,
+      partition around it. What is the one structural difference between them?
+    choices:
+      - text: Selection uses a random pivot and QuickSort does not
+        explains: >-
+          Either algorithm can choose its pivot randomly; that choice is orthogonal to the
+          difference that actually matters here.
+      - text: >-
+          QuickSort recurses into both sides of the partition; selection recurses into only
+          one
+        correct: true
+        explains: >-
+          Sorting needs both halves in order, so QuickSort pays for both recursive calls.
+          Selection only wants one rank, and that rank lives entirely on one side of the
+          pivot — so only that side needs to be examined again.
+      - text: Selection does not partition the array, only QuickSort does
+        explains: >-
+          Both partition around the pivot in the same way; that step is identical between them.
+      - text: QuickSort is deterministic and selection is randomised
+        explains: >-
+          Both can use the same randomised pivot choice. Determinism isn't the distinguishing
+          feature.
+    work: |-
+      QuickSort(S): choose pivot, partition, QuickSort(left) AND QuickSort(right), concatenate.
+      Selection(S, k): choose pivot, partition, recurse into WHICHEVER side contains rank k.
+      Same first two steps. The difference is exactly one recursive call versus two — and that
+      single word "appropriately" (which side, and with what adjusted k) is the whole content
+      of the next concept.
+---
+
+QuickSort is a divide-and-conquer sorting algorithm built on one idea:
+
+- choose a **pivot** — an element of the array (how? — that question is worth holding on to);
+- **partition** the array so everything smaller than the pivot goes left, everything larger
+  goes right;
+- recursively QuickSort the left and right subarrays;
+- combine — free, since the pieces are already in the right order relative to each other.
+
+## The selection algorithm
+
+A linear-time selection algorithm follows almost the same template:
+
+1. choose a **random** pivot element;
+2. **partition** the input array around the pivot;
+3. recurse **appropriately**.
+
+Two words in that list are doing all the work. **Random** is what will make the running-time
+analysis possible — not because randomness is needed for correctness, but because it is what
+lets an average-case argument be made about *any* input, without assuming anything about the
+data itself. **Appropriately** is the payoff: QuickSort recurses into both halves, because
+sorting needs the whole array in order. Selection only wants one rank, `k`, and that rank sits
+entirely inside one half of the partition — so only one recursive call is needed, not two.
+That single difference, one call instead of two, is worth an entire exponent by the time the
+master theorem is applied to it.

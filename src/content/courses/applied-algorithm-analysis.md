@@ -49,4 +49,27 @@ sections:
     summary: The canonical divide-and-conquer algorithm, and where its comparisons go.
   - id: w3-review
     title: Week 3 · Where we landed
+  - id: w4-medians
+    title: Week 4 · Medians
+    summary: The number in the middle, and why you would want it.
+  - id: w4-selection
+    title: Week 4 · The selection problem
+    summary: >-
+      A random pivot, a coin-flip lemma, and a divide-and-conquer algorithm that recurses
+      into one side instead of two.
+  - id: w4-matrix
+    title: Week 4 · Matrix multiplication
+    summary: Seven products where eight were expected, and the exponent moves.
+  - id: w4-convolution
+    title: Week 4 · Convolution and polynomials
+    summary: >-
+      A polynomial written two ways — coefficients or values — and why multiplying is
+      quadratic in one and linear in the other.
+  - id: w4-algorithm
+    title: Week 4 · The fast Fourier transform
+    summary: >-
+      Splitting the coefficients by parity, and why evaluating at the roots of unity halves
+      into itself.
+  - id: w4-review
+    title: Week 4 · Where we landed
 ---

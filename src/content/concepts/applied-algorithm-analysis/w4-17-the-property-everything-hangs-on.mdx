@@ -1,0 +1,97 @@
+---
+course: applied-algorithm-analysis
+section: w4-convolution
+order: 710
+title: The Property Everything Hangs On
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week4.html?hash=true#/35
+    caption: Slide 41 of 50 — squaring the 2n-th roots lands exactly on the n-th roots.
+questions:
+  - ask: >-
+      Squaring every `2n`-th root of unity produces exactly the `n` distinct `n`-th roots of
+      unity, each one hit by exactly two of the `2n` inputs. Why exactly two, and not some
+      other number?
+    choices:
+      - text: >-
+          Because `ω^{k+n} = −ω^k` for a `2n`-th root `ω` — two inputs differing only by a
+          sign square to the same value, since squaring erases the sign
+          
+        correct: true
+        explains: >-
+          `ω^{k+n} = ω^k · ω^n`, and `ω^n = −1` for a `2n`-th root of unity (halfway around the
+          circle). So `ω^k` and `ω^{k+n} = −ω^k` are a matched pair differing only by sign —
+          and `(−x)² = x²` for any `x`, so both square to the same result.
+      - text: >-
+          Because the `2n`-th roots happen to repeat with period `n` around the circle
+        explains: >-
+          They don't repeat — all `2n` of them are distinct points. What repeats is the
+          *squared* value, not the roots themselves.
+      - text: >-
+          Because only even-indexed `2n`-th roots square to `n`-th roots; the odd-indexed ones
+          square to something else
+        explains: >-
+          Every one of the `2n` roots squares to *some* `n`-th root of unity — none are left
+          out, and none land anywhere else.
+      - text: >-
+          It's a coincidence specific to `n` being even
+        explains: >-
+          It holds for every `n` — the pairing `ω^k` and `ω^{k+n} = −ω^k` is an algebraic
+          identity, not something that depends on `n`'s parity.
+    work: |-
+      Let omega be a primitive 2n-th root of unity, so omega^(2n) = 1, meaning omega^n
+      satisfies (omega^n)^2 = 1, so omega^n = +-1; since omega has order exactly 2n (not n),
+      omega^n = -1.
+      omega^(k+n) = omega^k * omega^n = omega^k * (-1) = -omega^k.
+      Squaring: (omega^(k+n))^2 = (-omega^k)^2 = (omega^k)^2. Same square, from two different
+      2n-th roots exactly n apart -- so each of the n possible squared values is hit by exactly
+      2 of the 2n inputs.
+  - ask: >-
+      The 8th roots of unity, squared, give the 4th roots of unity (each hit twice). Which two
+      of the 8 roots square to `i`?
+    choices:
+      - text: "The root at 0° and the root at 180°"
+        explains: >-
+          Those square to `1`, not `i` — angle 0 squares to angle 0, and angle 180 squares to
+          angle 360 = 0.
+      - text: "The root at 45° and the root at 225°"
+        correct: true
+        explains: >-
+          Squaring doubles the angle. `45°×2 = 90°`, which is `i`; and `225° = 45°+180°` is the
+          paired root `n=4` steps away, squaring to `225°×2 = 450° = 90°` too (mod 360°) — the
+          same point, `i`.
+      - text: "The root at 90° and the root at 270°"
+        explains: >-
+          Those square to `180°` (`= −1`) and `540° = 180°` respectively — both land on `−1`,
+          not `i`.
+      - text: "Only one root squares to `i`; the pairing only applies to real values"
+        explains: >-
+          The pairing applies to every one of the 8 roots, real or not — each of the 4
+          4th-roots-of-unity values (`1, i, −1, −i`) is hit by exactly two of the eight.
+    work: |-
+      8th roots of unity sit at angles 0,45,90,...,315 degrees. Squaring doubles the angle.
+      i sits at angle 90 degrees. Need 2*theta = 90 (mod 360): theta = 45 or theta = 45+180 = 225.
+      So the roots at 45 degrees and 225 degrees both square to i -- exactly the pair n=4 apart,
+      as the general argument predicts.
+---
+
+Square every `2n`-th root of unity and you land on the `n`-th roots — each one hit by exactly
+two of the `2n` inputs. Algebraically:
+
+```
+(e^{2πik/2n})² = e^{2πik/n}
+```
+
+The reason is `ω^{k+n} = −ω^k` for a `2n`-th root `ω`: `ω^k` and the root exactly `n` steps
+away differ only by a sign, and squaring erases sign. That redundancy — two different inputs
+squaring to the same output — is precisely what the fast Fourier transform exploits.
+
+## Why this is worth the detour
+
+The applications go well beyond this course — signal processing, image processing, data
+compression, solving partial differential equations, audio and video analysis all lean on
+this same halving trick, applied not once but recursively down to a base case. It's widely
+considered one of the most important numerical algorithms of the twentieth century, for
+exactly that combination: breadth of application, and an efficiency gain that comes from one
+clean piece of algebra rather than a bag of special cases. The next module turns this single
+observation — half the evaluation points are secretly redundant — into a recurrence.

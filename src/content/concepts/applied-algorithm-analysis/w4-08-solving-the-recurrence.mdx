@@ -1,0 +1,123 @@
+---
+course: applied-algorithm-analysis
+section: w4-selection
+order: 620
+title: "Solving the Recurrence: Linear Time"
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week4.html?hash=true#/17
+    caption: Slides 21–22 of 50 — the two-phase argument, then the conclusion.
+questions:
+  - ask: >-
+      One call to selection does two things in order: (1) keep picking pivots until a good
+      one turns up, re-splitting each time, and (2) recurse into the surviving piece. Why do
+      the two phases' costs simply *add*, rather than needing something more careful?
+    choices:
+      - text: >-
+          They don't really add — the `2n` and the `T(3n/4)` are actually the same cost
+          counted twice
+        explains: >-
+          They're genuinely different costs: phase 1 is the (random number of) partitioning
+          passes before a good pivot appears; phase 2 is everything the recursive call on the
+          surviving `3n/4`-sized piece does. Nothing is double-counted.
+      - text: >-
+          Because phase 1 happens entirely before phase 2 starts — one finishes, then the
+          other begins, so their running times are sequential and just sum
+          
+        correct: true
+        explains: >-
+          This is the ordinary rule for sequential steps: if step A takes time `t_A` and step B
+          happens strictly afterward and takes `t_B`, the whole thing takes `t_A + t_B`. Phase 1
+          (splitting until good) fully resolves — producing a `≤3n/4`-sized survivor — before
+          phase 2 (the recursive call) is even invoked.
+      - text: >-
+          Because both phases are recursive, so their costs multiply, not add, and "add" is
+          shorthand for that
+        explains: >-
+          Only phase 2 is recursive. Phase 1 is a loop of plain partitioning passes with no
+          recursive call inside it.
+      - text: It's only an approximation that happens to be close enough
+        explains: >-
+          It's exact, not an approximation — two things that happen one after another
+          contribute their times additively by definition of "running time."
+    work: |-
+      Phase 1: repeatedly pick a random pivot and split, until a good one appears. Each split
+      is one pass over at most n elements; the coin-flip lemma says this takes 2 passes on
+      average. Cost: at most 2n, on average.
+      Phase 2: recurse into whichever piece survived, of size at most 3n/4 (guaranteed by a
+      good pivot). Cost: T(3n/4).
+      Phase 1 completes and hands off a concrete, smaller list before phase 2 is called — so
+      T(n) <= 2n + T(3n/4), by ordinary addition of sequential running times.
+  - ask: >-
+      Solving `T(n) = T(3n/4) + O(n)` gives the series `n + ¾n + (¾)²n + ⋯ = 4n`. A different
+      module used almost the same series for Karatsuba's ratio `3/2` and got a *divergent*
+      sum instead. What's different here that makes this series converge?
+    choices:
+      - text: Nothing — both series actually diverge, and the `4n` is only an upper bound
+        explains: >-
+          `¾ < 1` makes this a genuinely convergent geometric series with an exact closed
+          form, `n/(1−¾) = 4n` — not merely bounded from above.
+      - text: >-
+          The ratio here, `¾`, is less than 1, so the terms shrink and the geometric series
+          sums to a finite value; Karatsuba's ratio `3/2` is greater than 1, so its terms grow
+          
+        correct: true
+        explains: >-
+          A geometric series `∑rᵏ` converges to `1/(1−r)` exactly when `∣r∣ < 1`. Selection's
+          shrink factor is `¾ < 1` — the levels get cheaper going down, so the *root* dominates
+          and the sum is a small constant times `n`. Karatsuba's `3/2 > 1` makes the levels get
+          *more expensive* going down, so the *leaves* dominate and the count of leaves (not a
+          convergent sum) sets the answer.
+      - text: Selection has fewer recursive levels than Karatsuba
+        explains: >-
+          Both have `Θ(log n)` levels — what differs is whether the per-level cost is growing
+          or shrinking as you descend, not how many levels exist.
+      - text: >-
+          Selection's series happens to be geometric, and Karatsuba's is a different kind of
+          series entirely
+        explains: >-
+          Both are geometric series with the same shape, `n·rᵏ` summed over `k`; only the
+          value of `r` differs, and that value is exactly what decides convergence.
+    work: |-
+      Selection: T(n) <= T(3n/4) + O(n). Ratio r = 3/4 < 1 (root-pays regime).
+      Series: n(1 + 3/4 + (3/4)^2 + ...) = n / (1 - 3/4) = 4n. Finite, and root-dominated.
+      Karatsuba: T(n) = 3T(n/2) + O(n). Ratio a/b^d = 3/2 > 1 (leaves-pay regime).
+      There the level costs grow going down, so the sum is dominated by the last level (the
+      leaves), giving O(n^log2 3) rather than a small multiple of n.
+---
+
+Write `T(n)` for the **average** running time on a list of `n` elements. One call to selection
+does two things, in order:
+
+**1 · Wait for a good pivot.** Pick a random pivot and split. If it isn't good, pick again
+from the surviving pile and split again, until a good pivot turns up. The list only ever
+shrinks, so each split is one pass over at most `n` elements — and the coin-flip lemma says a
+good pivot arrives after 2 picks on average. So this phase costs at most 2 passes over `n`, on
+average.
+
+**2 · Recurse.** A good pivot leaves a pile of at most `3n/4` elements, and running selection
+on that pile costs `T(3n/4)` — at most, since a longer list can't be quicker.
+
+The two phases happen one after the other, so their costs add:
+
+```
+T(n) ≤ 2n  +  T(3n/4)
+```
+
+## The conclusion
+
+```
+T(n) ≤ T(3n/4) + O(n)   ⟹   T(n) = O(n)
+```
+
+On any input, on average, the divide-and-conquer selection algorithm is **linear**.
+
+> **Where the constant comes from.** `n + ¾n + (¾)²n + ⋯ = n/(1−¾) = 4n` — the whole recursion
+> costs about four passes over the input.
+
+That series is worth double-checking against the `2n` bound on phase 1: multiplying `2n`
+through the same series gives `8n`, not `4n`, and both are legitimate upper bounds — `8n` is
+the safe one, `4n` the tighter headline number the deck reports, since the bad pivots wasted
+inside phase 1 are themselves shrinking the list rather than doing nothing. Either way, four
+or eight passes against `n log n`: at a million elements that is single-digit millions of
+operations, not tens of millions — and the gap only widens as `n` grows.

@@ -1,0 +1,111 @@
+---
+course: applied-algorithm-analysis
+section: w4-selection
+order: 580
+title: Splitting the List, and Recursing
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week4.html?hash=true#/10
+    caption: Slides 11–12 of 50 — the three-way split, then the recurrence that reads it off.
+notation:
+  - symbol: "S_L"
+    reads: S sub L
+    means: The elements of `S` strictly smaller than the chosen pivot `v`.
+  - symbol: "S_v"
+    reads: S sub v
+    means: >-
+      The elements of `S` equal to `v` — every duplicate of the pivot, not just the pivot
+      itself.
+  - symbol: "S_R"
+    reads: S sub R
+    means: The elements of `S` strictly greater than `v`.
+questions:
+  - ask: >-
+      Why does the split use **three** piles — smaller, equal, greater — instead of the usual
+      two (smaller, greater-or-equal) that QuickSort's partition uses?
+    choices:
+      - text: Three piles are needed to keep the algorithm correct on sorted input
+        explains: >-
+          Sortedness isn't the issue; the split behaves the same regardless of the input's
+          existing order.
+      - text: >-
+          So that a run of values equal to the pivot is disposed of in one step, instead of
+          being recursed into
+        correct: true
+        explains: >-
+          If `k` lands inside `S_v`, the answer is `v` itself — no recursion needed at all.
+          With only two piles, duplicates of the pivot would get folded into one side and
+          revisited by the recursion for no reason.
+      - text: It makes the three subproblems exactly equal in size
+        explains: >-
+          Nothing guarantees that; a pivot can produce a tiny `S_v` and two very unequal
+          `S_L`, `S_R`.
+      - text: It is required so that `∣S_L∣ + ∣S_v∣ + ∣S_R∣` sums to `∣S∣`
+        explains: >-
+          That sum holds with any partition scheme that accounts for every element exactly
+          once — it isn't a special property of using three piles.
+    work: |-
+      With S_v separated out, "k lands on the pivot value" is detected directly: |S_L| < k ≤
+      |S_L| + |S_v|, answer v, no further work. A two-way split would instead place all
+      pivot-equal elements on one side, and the recursion would have to rediscover that they're
+      all equal to v — wasted comparisons on every recursive call that hits a duplicate run.
+  - ask: >-
+      `S` has 11 elements. A pivot splits it into `∣S_L∣ = 3`, `∣S_v∣ = 2`, `∣S_R∣ = 6`. To
+      find the 9th smallest element (`k = 9`), which recursive call is made?
+    choices:
+      - text: "`selection(S_L, 9)`"
+        explains: >-
+          `S_L` only has 3 elements — there is no 9th smallest element inside it. The branch
+          condition `k ≤ ∣S_L∣` fails here (`9 ≤ 3` is false).
+      - text: The pivot `v` itself
+        explains: >-
+          That branch applies when `∣S_L∣ < k ≤ ∣S_L∣ + ∣S_v∣`, i.e. `3 < k ≤ 5`. `k = 9` is
+          past that range.
+      - text: "`selection(S_R, 4)`"
+        correct: true
+        explains: >-
+          `k = 9 > ∣S_L∣ + ∣S_v∣ = 5`, so the answer is in `S_R`. Its rank there is
+          `k − ∣S_L∣ − ∣S_v∣ = 9 − 3 − 2 = 4`: the 3 elements of `S_L` and the 2 of `S_v` are
+          all smaller than everything in `S_R`, so they don't count against `S_R`'s own ranks.
+      - text: "`selection(S_R, 9)`"
+        explains: >-
+          Recursing into `S_R` is right, but the rank must be adjusted — `9` counts elements
+          that are no longer in the list being searched.
+    work: |-
+      |S_L| + |S_v| = 3 + 2 = 5. Since k = 9 > 5, recurse into S_R.
+      New rank: k - |S_L| - |S_v| = 9 - 3 - 2 = 4.
+      selection(S_R, 4) — the 4th smallest of the 6 elements in S_R.
+---
+
+Take any pivot `v` and split `S` into three piles by comparison, in one linear pass:
+
+- `S_L` — elements smaller than `v`;
+- `S_v` — elements equal to `v`, duplicates included;
+- `S_R` — elements greater than `v`.
+
+On `S = [2, 36, 5, 21, 8, 13, 11, 20, 5, 4, 1]` with `v = 5`: `S_L = [2, 4, 1]` (3 of 11),
+`S_v = [5, 5]` (2 of 11), `S_R = [36, 21, 8, 13, 11, 20]` (6 of 11) — every one of the 11
+elements lands in exactly one pile.
+
+## Which pile do you recurse into?
+
+```
+selection(S, k) = selection(S_L, k)                     if k ≤ ∣S_L∣
+                = v                                       if ∣S_L∣ < k ≤ ∣S_L∣+∣S_v∣
+                = selection(S_R, k − ∣S_L∣ − ∣S_v∣)       if k > ∣S_L∣+∣S_v∣
+```
+
+Three things make this work:
+
+- `S_L`, `S_v` and `S_R` are all computed from `S` in one linear pass;
+- recursion is applied to **one** of the three sublists only, never two;
+- the split shrinks the problem from `∣S∣` elements to at most `max{∣S_L∣, ∣S_R∣}`.
+
+That last point is the structural payoff of module 3's "recurse into one side" observation: a
+recursive call on `S_L` or `S_R` is strictly smaller than `S`, so the recursion makes real
+progress every time it fires — unless `v` itself is the answer, in which case there's no
+recursion left to do.
+
+Contrast this with mergesort, where `a = 2`. Here `a = 1`: there is exactly one recursive
+call, which is why the running time will come out linear rather than `O(n log n)` once the
+master theorem is applied.

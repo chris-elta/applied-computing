@@ -1,0 +1,101 @@
+---
+course: applied-algorithm-analysis
+section: w4-convolution
+order: 690
+title: Two Ways to Write a Polynomial
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week4.html?hash=true#/30
+    caption: Slides 36–37 of 50 — interpolation's uniqueness, then the two representations.
+questions:
+  - ask: >-
+      Two distinct points determine exactly one straight line (a degree-1 polynomial). What
+      does that generalise to for a degree-`n` polynomial?
+    choices:
+      - text: >-
+          Any `n` distinct points determine it uniquely
+        explains: >-
+          A degree-`n` polynomial has `n+1` coefficients (`a_0` through `a_n`), so `n` points
+          alone underdetermine it — there are infinitely many degree-`n` polynomials through
+          any `n` points.
+      - text: >-
+          Any `n+1` distinct points determine it uniquely
+        correct: true
+        explains: >-
+          A degree-`n` polynomial has `n+1` unknown coefficients, and each point gives one
+          equation relating them — `n+1` points, `n+1` equations, one solution. Two points
+          (`n=1`) determining a line is the smallest case of exactly this pattern.
+      - text: >-
+          Any `2n` distinct points determine it uniquely
+        explains: >-
+          That's twice as many as needed — `n+1` points already pin the polynomial down
+          uniquely; more points beyond that don't change the answer, they're just redundant
+          (and would need to be consistent with the unique polynomial already determined).
+      - text: >-
+          No fixed number of points works — it depends on the coefficients' values
+        explains: >-
+          The *count* needed is fixed at `n+1` and depends only on the degree, not on what the
+          coefficients happen to be.
+    work: |-
+      Degree-1 (a line): 2 points, since a line has 2 coefficients (slope, intercept). n=1 -> n+1=2.
+      Generalizing: degree-n has n+1 coefficients, so n+1 points pin it down: n+1 equations,
+      n+1 unknowns, one solution -- provided the points are distinct.
+  - ask: >-
+      In value form, multiplying two polynomials costs `O(n)` — just multiply the values
+      pointwise, one point at a time. What has to be true about the two lists of points for
+      that pointwise trick to actually work?
+    choices:
+      - text: >-
+          Nothing extra — any two lists of values can be multiplied pointwise regardless of
+          which points they were evaluated at
+        explains: >-
+          If the two polynomials were evaluated at *different* points, multiplying value
+          number 3 from one list by value number 3 from the other doesn't mean anything — the
+          points have to line up.
+      - text: >-
+          Both polynomials must be evaluated at exactly the same set of points, in the same
+          order, so that `A(x_i)·B(x_i)` gives the value of the product `AB` at that same `x_i`
+          
+        correct: true
+        explains: >-
+          `(AB)(x_i) = A(x_i)·B(x_i)` holds pointwise only when both sides are evaluated at the
+          *same* `x_i` — value-form multiplication is cheap precisely because it reduces to `m`
+          independent single-number multiplications, one per shared point.
+      - text: >-
+          The points must be the roots of unity specifically
+        explains: >-
+          The pointwise-multiplication trick works for *any* shared set of evaluation points —
+          the roots of unity turn out to be a specially efficient choice, which is the next
+          concept, but they aren't required for this trick alone.
+      - text: >-
+          There must be exactly as many points as the degree of the smaller polynomial
+        explains: >-
+          The point count has to be large enough to *interpolate the product back* afterward —
+          at least `(product's degree) + 1` points — not tied to the smaller of the two
+          original degrees.
+    work: |-
+      (AB)(x) = A(x) * B(x) for any x, since that's just what polynomial multiplication means
+      pointwise. So if A and B are BOTH evaluated at the same x_i, then A(x_i)*B(x_i) directly
+      gives (AB)(x_i) -- one multiplication per shared point, m points total.
+      If the two lists came from different point sets, there'd be no shared x_i to combine at.
+---
+
+**Polynomial interpolation** finds a polynomial that passes through a given set of data
+points. For `n+1` points, the unique interpolating polynomial has degree `n` — the smallest
+case is familiar: two distinct points determine exactly one straight line, a degree-1
+polynomial. Rephrased: **a degree-`n` polynomial is uniquely characterised by its values at
+any `n+1` distinct points.**
+
+## Two ways to write down a polynomial
+
+| | Coefficient form | Value form |
+| --- | --- | --- |
+| what you store | `a_0, a_1, …, a_{n-1}` | `A(x_0), …, A(x_{m-1})` at `m` chosen points |
+| evaluating at one point | `O(n)` | free, if it's one of the chosen points |
+| multiplying two of them | `O(n²)` | `O(n)` — multiply the values pointwise |
+
+Multiplication is quadratic in one form and linear in the other. So the question is what it
+costs to **change form** — and how many points are enough. Careful with the degree: the
+product of two degree-`(n−1)` polynomials has degree `2n−2`, so it needs `2n−1` values to be
+recoverable. Taking `m = 2n` points is a clean choice that covers that requirement with room
+to spare.

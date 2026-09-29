@@ -1,0 +1,68 @@
+---
+course: applied-algorithm-analysis
+section: w4-matrix
+order: 640
+title: Matrix Multiplication, by Definition
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week4.html?hash=true#/22
+    caption: Slide 26 of 50 — one output cell, one row times one column.
+notation:
+  - symbol: "n"
+    reads: n
+    means: >-
+      The **side length** of the (square) matrices, not the number of entries. An `n × n`
+      matrix already holds `n²` numbers, so this section's input size is `O(n²)`.
+  - symbol: "Z_ij"
+    reads: Z sub i j
+    means: >-
+      The entry in row `i`, column `j` of the product `Z = XY` — the dot product of row `i` of
+      `X` with column `j` of `Y`.
+questions:
+  - ask: >-
+      Computing `Z = XY` directly from the definition costs `O(n³)`. Given that the input
+      itself already has `O(n²)` numbers in it, how much *more* work is that than simply
+      reading the input?
+    choices:
+      - text: >-
+          The same amount of work, since `O(n³)` and `O(n²)` are both polynomial
+        explains: >-
+          "Both polynomial" doesn't mean equal — `n³` grows strictly faster than `n²`, and the
+          question is by how much.
+      - text: About a factor of `n` more work than reading the input
+        correct: true
+        explains: >-
+          `n³ / n² = n`. Each of the `n²` output entries costs `O(n)` work (a sum of `n`
+          products), so the total is `n` times the size of the input — one full row-times-column
+          pass per output cell.
+      - text: >-
+          About a factor of `n²` more work, since there are `n²` entries in the output matrix
+        explains: >-
+          That overcounts: the number of *entries* is `n²`, but each one only costs `O(n)`
+          work, not `O(n²)` — multiplying those gives `n³`, i.e. a factor of `n`, not `n²`,
+          over the input size.
+      - text: A constant factor more, independent of `n`
+        explains: >-
+          It genuinely grows with `n` — an `n×n` matrix product takes proportionally longer to
+          compute (relative to its input size) as `n` increases, unlike, say, addition.
+    work: |-
+      Input size: two n x n matrices = O(n^2) numbers total.
+      Output: Z has n^2 entries. Each Z_ij = sum_{k=1}^{n} X_ik * Y_kj costs O(n) multiplications.
+      Total: n^2 entries * O(n) each = O(n^3).
+      Ratio to input size: O(n^3) / O(n^2) = O(n) -- one extra factor of n, the side length.
+---
+
+The product of two `n × n` matrices is defined entry by entry:
+
+```
+Z_ij = ∑_{k=1}^{n} X_ik · Y_kj
+```
+
+`n²` entries, each a sum of `n` products, so the definition itself is `T(n) = O(n³)`. It's
+worth being careful about what `n` counts here: it's the **side** of the matrix, not the
+number of entries — the input is already `n²` numbers, so `O(n³)` is only a factor of `n`
+above the input size, the same relationship a single row-times-column dot product has to a
+single output cell, multiplied across all `n²` of them.
+
+That `O(n³)` baseline is the target the rest of this section tries to beat — not by finding a
+smarter way to compute each dot product, but by finding a way to compute fewer of them.

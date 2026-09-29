@@ -1,0 +1,104 @@
+---
+course: applied-algorithm-analysis
+section: w4-convolution
+order: 670
+title: Convolution, and Why It's Expensive
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week4.html?hash=true#/27
+    caption: Slides 32–33 of 50 — the definition, then every product it involves.
+notation:
+  - symbol: "a * b"
+    reads: a convolved with b
+    means: >-
+      The convolution of two length-`n` vectors: a new vector `c` of length `2n − 1`.
+  - symbol: "c_k"
+    reads: c sub k
+    means: >-
+      The `k`-th coordinate of the convolution: the sum of every product `a_i · b_j` where
+      `i + j = k`, treating any index outside `[0, n−1]` as contributing zero.
+questions:
+  - ask: >-
+      For `a = (2, 3)` and `b = (5, 7)`, what is `c_1` (the middle coordinate of the
+      convolution), and which pairs `(a_i, b_j)` contribute to it?
+    choices:
+      - text: "`c_1 = 15`, from the pair `(a_0, b_1)` only"
+        explains: >-
+          `a_0·b_1 = 2·7 = 14`, not 15 — and it's not the only pair with `i+j=1`.
+      - text: "`c_1 = 29`, from both `(a_0, b_1)` and `(a_1, b_0)`"
+        correct: true
+        explains: >-
+          Every pair with `i+j=1` contributes: `(i,j)=(0,1)` gives `a_0·b_1 = 2·7=14`, and
+          `(i,j)=(1,0)` gives `a_1·b_0 = 3·5=15`. Sum: `14+15=29`.
+      - text: "`c_1 = 21`, from `(a_1, b_0)` only"
+        explains: >-
+          `a_1·b_0 = 3·5 = 15`, not 21 — and `(a_0,b_1)` also satisfies `i+j=1` and must be
+          included too.
+      - text: "`c_1` doesn't exist, since indices only run from 0 to `n−1 = 1`"
+        explains: >-
+          `c_1` is a perfectly valid coordinate — the convolution has length `2n−1 = 3`, so
+          valid indices for `c` run from 0 to 2, and `k=1` is the middle one.
+    work: |-
+      c_k = sum over all (i,j) with i+j=k of a_i * b_j.
+      c_1: pairs with i+j=1 are (i,j)=(0,1) and (1,0).
+      a_0*b_1 = 2*7 = 14. a_1*b_0 = 3*5 = 15. c_1 = 14+15 = 29.
+  - ask: >-
+      Computing a convolution by listing every `a_i · b_j` pair and sorting them by `i+j`
+      costs `n²` multiplications for two length-`n` vectors. Why isn't that already the best
+      possible, given that the output itself has `2n − 1` coordinates?
+    choices:
+      - text: >-
+          It already is the best possible — `n²` products is unavoidable for `2n−1` outputs
+        explains: >-
+          That's exactly the assumption the rest of this module sets out to overturn: the
+          number of *outputs* doesn't force the number of *multiplications* to be quadratic.
+      - text: >-
+          Because `n²` products are being computed to fill only `2n−1` output slots — most of
+          the work is repeated structure (each diagonal reuses the *idea* of a sum, not fresh
+          information), which hints that a cleverer method might not need every product
+          
+        correct: true
+        explains: >-
+          `n²` individual multiplications collapsing into `2n−1` sums is exactly the kind of
+          redundancy that a smarter representation might sidestep — which is the motivation
+          for reframing convolution as something else entirely in the next concept.
+      - text: >-
+          It isn't more expensive than necessary — `n²` and `2n−1` are actually the same size
+          up to constants
+        explains: >-
+          `n²` grows quadratically and `2n−1` grows linearly; for even moderately large `n`
+          they are very different quantities.
+      - text: >-
+          The grid picture is misleading; the real cost is only `2n−1`, one multiplication per
+          output
+        explains: >-
+          Each output `c_k` is a *sum* of potentially several products (all pairs with
+          `i+j=k`), not a single one — the grid's `n²` cells are the genuine count of products
+          needed by this direct method.
+    work: |-
+      n x n grid of products a_i*b_j: n^2 cells total.
+      Grouped into anti-diagonals by i+j=k: exactly 2n-1 diagonals, one per output c_k.
+      n^2 multiplications collapsing into 2n-1 sums is a lot of structure for not many outputs
+      -- suggesting that a representation exploiting that structure might avoid computing all
+      n^2 products individually. That's the opening the rest of the module works.
+---
+
+Take two vectors of length `n`, `a = (a_0, …, a_{n−1})` and `b = (b_0, …, b_{n−1})`. Their
+**convolution** `c = a * b` is a new vector of length `2n − 1`, one coordinate at a time:
+
+```
+c_k = ∑_{i=0}^{k} a_i · b_{k−i},   0 ≤ k ≤ 2n − 2
+```
+
+Terms with indices outside `[0, n−1]` are taken to be zero. So `c_k` is the total contribution
+of every pair `(a_i, b_j)` with `i + j = k`.
+
+## Every product, sorted by `i + j`
+
+Lay out all `n²` products `a_i · b_j` in a grid, then group them by anti-diagonal: every cell
+on the same anti-diagonal shares the same value of `i + j`, and that shared value is exactly
+which output `c_k` the cell contributes to. For `n = 4` that's `n² = 16` products collapsing
+into `2n − 1 = 7` outputs.
+
+Computing the convolution straight from this grid costs `n²` multiplications. The rest of this
+module is about not paying that.

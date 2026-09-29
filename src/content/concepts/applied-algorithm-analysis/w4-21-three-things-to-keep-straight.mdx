@@ -1,0 +1,119 @@
+---
+course: applied-algorithm-analysis
+section: w4-algorithm
+order: 750
+title: Three Things to Keep Straight
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week4.html?hash=true#/41
+    caption: Slide 47 of 50 — three claims this week's results do not make.
+questions:
+  - ask: >-
+      "The speed is not in the Fourier part." What does that claim actually mean, given that
+      complex numbers and roots of unity are all over this module?
+    choices:
+      - text: >-
+          It means complex numbers are unnecessary — the same speedup works with real numbers
+          too
+        explains: >-
+          The specific mechanism used here — points closed under squaring, all the way down —
+          relies on the roots of unity's algebraic structure; the claim isn't about avoiding
+          complex numbers.
+      - text: >-
+          It means evaluating at `n` *arbitrary* points is still `O(n²)` — the saving comes
+          entirely from choosing points that are closed under squaring, so the two half-size
+          subproblems can share their evaluation work
+          
+        correct: true
+        explains: >-
+          Nothing about "Fourier" or complex exponentials by itself makes evaluation fast — a
+          module earlier established that evaluating at arbitrary points costs `O(n²)`
+          regardless. The roots of unity are fast specifically *because* squaring the `n`-th
+          roots lands back on the `(n/2)`-th roots, letting the recursion reuse work; a
+          different set of `n` points without that closure property would not speed anything up.
+      - text: >-
+          It means the `O(n log n)` bound only applies to signal-processing applications, not
+          to plain polynomial multiplication
+        explains: >-
+          The `O(n log n)` bound is a statement about polynomial (and hence integer vector)
+          multiplication in general — it doesn't depend on what the numbers are later used for.
+      - text: >-
+          It means the pointwise-multiplication step, not the evaluation step, is where all
+          the time is actually spent
+        explains: >-
+          The pointwise step is the *cheap* one, `O(n)` — the two expensive steps are
+          evaluation and interpolation, both `O(n log n)`, and both depend on the clever choice
+          of points to be that fast rather than `O(n²)`.
+    work: |-
+      Evaluating a degree-n polynomial at n arbitrary points: O(n^2), regardless of whether
+      those points involve complex numbers or not.
+      Evaluating at the n-th roots of unity specifically: O(n log n), because squaring them
+      lands exactly on the (n/2)-th roots, letting the recursive evaluation of A_even and
+      A_odd share n/2 points instead of needing n each.
+      The saving is the closure-under-squaring property of THIS particular point set, not
+      anything intrinsic to complex numbers or "Fourier" as a name.
+  - ask: >-
+      Strassen's `O(n^2.81)` matrix multiplication has, in practice, mostly lost out to
+      well-tuned `O(n³)` code for the matrix sizes people actually multiply. Given that
+      `n^2.81` is asymptotically smaller than `n³`, what does that tell you about the
+      relationship between an asymptotic bound and which program to actually run?
+    choices:
+      - text: >-
+          It means the `O(n^2.81)` bound must be wrong, since a smaller exponent should always
+          win
+        explains: >-
+          The bound is correct — it describes behaviour as `n → ∞`. It says nothing about
+          which algorithm wins at the matrix sizes that come up in ordinary use, where the
+          hidden constant and memory-access patterns can dominate.
+      - text: >-
+          Asymptotic notation describes how cost *grows* as `n` gets large, not which concrete
+          program is faster at the sizes actually encountered — a smaller exponent can still
+          lose to a larger one with a much smaller constant, well within practical ranges
+          
+        correct: true
+        explains: >-
+          This is the same crossover caution that applied to Karatsuba earlier in the course:
+          a better exponent guarantees a better asymptote, not a better runtime at every `n`.
+          Strassen's recursive overhead and worse cache behaviour keep it behind tuned `O(n³)`
+          code except at sizes far larger than routine use, and the search for a smaller
+          exponent than Strassen's remains mostly a theoretical pursuit for exactly this reason.
+      - text: >-
+          It means Strassen's algorithm is only faster for matrices of prime size
+        explains: >-
+          Size divisibility isn't the obstacle here — even at sizes where the recursion divides
+          cleanly, constant-factor and memory-locality costs are what keep tuned `O(n³)` ahead
+          in practice.
+      - text: >-
+          It means `O(n^2.81)` and `O(n³)` are actually the same rate of growth
+        explains: >-
+          They are genuinely different growth rates — `n^2.81` grows strictly more slowly than
+          `n³` as `n → ∞`. The point is that "grows more slowly eventually" and "is faster for
+          the `n` you actually have" are different claims.
+    work: |-
+      Asymptotic notation compares growth rates as n -> infinity: n^2.81 < n^3 eventually,
+      guaranteed.
+      But "eventually" can be a very large n. At the matrix sizes ordinary code multiplies,
+      Strassen's larger hidden constant (more additions, worse cache locality from the
+      recursive block structure) outweighs its better exponent.
+      Same lesson as Karatsuba's crossover point: a smaller exponent is a guarantee about
+      trend, not a guarantee about which program wins today.
+---
+
+Three claims worth being precise about, now that all three algorithms this week share the
+same underlying theorem.
+
+**1 · The speed is not in the Fourier part.** Evaluating at `n` *arbitrary* points is still
+`O(n²)`. The saving comes from choosing points that are closed under squaring, so the
+subproblems share their work — a different set of `n` points, without that closure property,
+would buy nothing.
+
+**2 · Strassen and the FFT are not the same trick.** Strassen lowers `a` from 8 to 7 and moves
+the exponent within the same *leaves-pay* case. The FFT changes the **problem** into one whose
+recurrence is already balanced. Both are read off the same theorem, but one moves along a
+case, and the other moves into a different case entirely.
+
+**3 · `O(n^2.81)` is not the end of the story.** Strassen was 1969; the exponent has been
+pushed lower since, and the current theoretical record is not practical. For matrices people
+actually multiply, tuned `O(n³)` code usually wins — the same crossover caution that applied
+to Karatsuba back in module 3: asymptotics tell you how cost grows, not which program to run
+today.
