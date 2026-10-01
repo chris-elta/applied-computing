@@ -683,8 +683,250 @@ questions:
       Distance to the student: `6 − 3 = 3` steps up.
       Distance to the billionaire: `11 − 6 = 5` steps down.
       Power-law data spans orders of magnitude, so analyse it on a log scale, where equal ratios are equal distances.
+  - topic: "Week 4 · Assembling data sets"
+    ask: "A cleaning script truncates every name to 20 characters before a merge, and long names from one source stop matching. In the lecture's terms, what is this?"
+    choices:
+      - text: "An error: information was fundamentally lost at acquisition"
+        explains: "The full names existed in the source. The loss happened afterwards, in processing."
+      - text: "An artifact: a systematic problem arising from processing done to the data"
+        correct: true
+        explains: "Right. It is systematic, it was introduced by a step in the pipeline, and fixing the step removes it. It will not announce itself, which is why the sniff test matters."
+      - text: "An outlier, to be deleted before fitting"
+        explains: "Outliers are extreme values. This is a systematic loss of matches."
+      - text: "Imputed data"
+        explains: "Nothing was estimated. Records were wrongly treated as different."
+    work: |-
+      Error: information lost at acquisition, which stays lost.
+      Artifact: a systematic problem caused by processing.
+      The names were intact in the source and the truncation step damaged them, so this is an artifact.
+  - topic: "Week 4 · Assembling data sets"
+    ask: "A histogram of first-publication years has a smooth decline except for one tall isolated spike in a single year. What is the best first move?"
+    choices:
+      - text: "Report the spike as a finding about that year"
+        explains: "Nothing in the world usually produces one isolated spike. Doubt the data before theorizing."
+      - text: "Delete that year as an outlier"
+        explains: "Deleting hides the cause and biases the rest. Find out why it is there."
+      - text: "Look for a change in how the data was recorded or processed at that date"
+        correct: true
+        explains: "Right. In the lecture's example the database began using full first names in 2002, so the same authors looked new. The result should have been compared with a preconception of its shape first."
+      - text: "Collect a larger sample of the same data"
+        explains: "More of the same artifact gives the same spike."
+    work: |-
+      State what the distribution should look like: a smooth decline.
+      The isolated spike disagrees, so treat it as a bug until shown otherwise.
+      An abrupt change at one date suggests a change in recording. PubMed switched to full first names in 2002, so F Riahi and Fatemeh Riahi were counted as different people.
+  - topic: "Week 4 · Assembling data sets"
+    ask: "A report on mutual funds averages the 10-year returns of every fund that exists today and concludes that funds do very well. Which bias is the main concern?"
+    choices:
+      - text: "Survivor bias: funds that failed and closed are missing from the sample"
+        correct: true
+        explains: "Right. Selecting at the end undersamples those that exited early, so the average looks better than the experience of someone who bought a fund ten years ago."
+      - text: "Dunning-Kruger: fund managers overrate their skill"
+        explains: "That concerns self-assessment of skill, not who is in the sample."
+      - text: "Confirmation bias: the data was cherry-picked after seeing the result"
+        explains: "Possible, but nothing in the description says this. The structural problem is which funds are included."
+      - text: "None: ten years of data is plenty"
+        explains: "Length of history does not cure a sample that excludes the failures."
+    work: |-
+      The sample is funds that exist today, after ten years.
+      Funds that performed badly were closed, so they are absent.
+      The average of the survivors overstates what a buyer ten years ago experienced.
+  - topic: "Week 4 · Assembling data sets"
+    ask: "You emailed a survey to every customer who completed a purchase last month, and use it to estimate why customers choose your site. Which problem is most likely?"
+    choices:
+      - text: "Selection bias: people who left before buying, or never arrived, are under-sampled"
+        correct: true
+        explains: "Right. The sample is limited to those who got to the end, so reasons for abandoning or not visiting are missing. A large sample does not repair this."
+      - text: "A measurement error in the survey tool"
+        explains: "Nothing suggests the tool is faulty. The problem is who is in the sample."
+      - text: "Normalization: the answers need z-scores"
+        explains: "Z-scores make numeric variables comparable. They do not fix who was sampled."
+      - text: "Imputation: some customers did not answer"
+        explains: "Non-response is a related issue, but the first problem is the population that could be surveyed at all."
+    work: |-
+      The target population is people who might choose the site.
+      The sample is only people who completed a purchase.
+      Groups that did not buy are under-sampled, which is selection bias, and survivor bias in the sense of selecting at the end.
+  - topic: "Week 4 · Assembling data sets"
+    ask: "An analyst runs a test, gets the result they predicted, and stops. When the earlier run showed the opposite, they spent a week looking for bugs. What is this?"
+    choices:
+      - text: "Survivor bias"
+        explains: "That is about who is missing from the sample, not how long you keep checking."
+      - text: "Confirmation bias: stopping the analysis once results match expectation"
+        correct: true
+        explains: "Right. Surprising results get scrutiny and expected ones do not, so bugs that agree with you survive."
+      - text: "The Dunning-Kruger effect"
+        explains: "That concerns poor performers overrating their performance, not an uneven stopping rule."
+      - text: "Selection bias"
+        explains: "The sample is not described as skewed. The problem is the asymmetry in checking."
+    work: |-
+      Unexpected result: a week of checking.
+      Expected result: no checking.
+      Stopping when the answer confirms expectation is confirmation bias. The defence is to check expected results as hard as surprising ones.
+  - topic: "Week 4 · Assembling data sets"
+    ask: "Student A scores 78 on a test with mean 70 and standard deviation 4. Student B scores 85 on a test with mean 80 and standard deviation 10. Which statement is correct?"
+    choices:
+      - text: "B did better, because 85 is higher than 78"
+        explains: "The raw scores are on different tests with different spreads."
+      - text: "B did better, because B beat the mean by 5 and A only by 8 over a smaller scale"
+        explains: "A beat the mean by 8 points, which is more than 5, and A's test also has the smaller spread."
+      - text: "A did better relative to their test: z = 2 against z = 0.5"
+        correct: true
+        explains: "Right. A is two standard deviations above the mean, B only half of one. Z-scores let you compare across scales."
+      - text: "They cannot be compared because the tests differ"
+        explains: "That is the problem z-scores solve: they are dimensionless."
+    work: |-
+      `Z = (X − X̄) / σ`
+      A: `(78 − 70) / 4 = 2`.
+      B: `(85 − 80) / 10 = 0.5`.
+      A is further above their mean in standard-deviation units.
+  - topic: "Week 4 · Assembling data sets"
+    ask: "A column of z-scores is computed from heights measured in centimetres. The heights are then converted to metres and the z-scores recomputed. What happens to the z-scores?"
+    choices:
+      - text: "They shrink by a factor of 100"
+        explains: "The deviations shrink by 100, but so does the standard deviation they are divided by."
+      - text: "They are unchanged"
+        correct: true
+        explains: "Right. A unit change rescales the values, the mean and σ by the same factor, which cancels. This is why z-scores are dimensionless."
+      - text: "They grow by a factor of 100"
+        explains: "That would require dividing by something that did not change, and σ does change."
+      - text: "Their mean changes from 0 to 1"
+        explains: "Z-scores always have mean 0 and standard deviation 1."
+    work: |-
+      Converting cm to m divides every height by 100.
+      The mean and `σ` are divided by 100 too.
+      `(X/100 − X̄/100) / (σ/100) = (X − X̄) / σ`, so each z-score is the same.
+  - topic: "Week 4 · Assembling data sets"
+    ask: "After merging two data sets, a histogram of building heights has two separate humps, the second at roughly 3.3 times the first. What should you suspect?"
+    choices:
+      - text: "Two sources using different units, such as metres and feet"
+        correct: true
+        explains: "Right. A bimodal distribution can indicate trouble, and 3.3 is about the feet-per-metre ratio. This is the kind of problem that destroyed the Mars Climate Orbiter."
+      - text: "The data is normally distributed"
+        explains: "A normal distribution has one hump."
+      - text: "Missing values were set to zero"
+        explains: "That would produce a spike at zero, not a second hump at a conversion ratio."
+      - text: "A watermark in the data"
+        explains: "Watermarks are about recognizing generated content, not distribution shape."
+    work: |-
+      Two humps in one variable suggest two populations.
+      The ratio of about 3.3 matches converting metres to feet (1 m ≈ 3.28 ft).
+      Check the units in each source and convert before merging.
+  - topic: "Week 4 · Assembling data sets"
+    ask: "Names with accents and non-Latin letters turn into rows of question marks when you read a file. Which action addresses the cause?"
+    choices:
+      - text: "Normalize the numeric columns"
+        explains: "Normalization is for numeric variables."
+      - text: "Impute the missing text"
+        explains: "The text is not missing. It was decoded with the wrong character code."
+      - text: "Delete the affected rows"
+        explains: "That loses real records, and the cause remains."
+      - text: "Read the file with the encoding it was written in, and use UTF-8 for everything you write"
+        correct: true
+        explains: "Right. A single-byte code such as ISO 8859-1 cannot represent every character, and reading one encoding as another garbles text. UTF-8 covers all of Unicode."
+    work: |-
+      Question marks mean the text was decoded or encoded with a code that cannot represent the characters.
+      ISO 8859-1 is single byte; UTF-8 is multibyte and covers all Unicode.
+      Read with the true encoding and standardize on UTF-8.
+  - topic: "Week 4 · Assembling data sets"
+    ask: "You tighten a name-matching rule so that only exact matches count. What happens?"
+    choices:
+      - text: "Fewer false positives and more false negatives: one person may be split into several"
+        correct: true
+        explains: "Right. A strict rule rarely merges different people but misses variants like Steve and Stephen. Loosening reverses the trade."
+      - text: "Fewer false negatives and more false positives"
+        explains: "That is the effect of loosening the rule."
+      - text: "Neither kind of error changes"
+        explains: "Any change to the rule moves the balance."
+      - text: "Both kinds of error fall"
+        explains: "There is a tradeoff, so a rule cannot remove both at once."
+    work: |-
+      Strict matching: different people almost never merged (few false positives), but spelling variants of one person are not recognized (many false negatives).
+      Loose matching, such as phonetic hashing, does the opposite.
+      Choose by which mistake costs less.
+  - topic: "Week 4 · Assembling data sets"
+    ask: "A stock goes from $10 to $11 and another from $200 to $210 on the same day. Which statement fits the lecture's advice on financial data?"
+    choices:
+      - text: "The second moved more, because $10 is more than $1"
+        explains: "Absolute changes depend on the price level."
+      - text: "They moved by the same amount"
+        explains: "Not in percentage terms."
+      - text: "The first moved more: returns are +10% against +5%"
+        correct: true
+        explains: "Right. Use returns, the percentage change, instead of absolute price changes, so stocks of different prices are comparable."
+      - text: "Neither can be compared until converted to euros"
+        explains: "Both are in the same currency, so no conversion is needed."
+    work: |-
+      First: `(11 − 10) / 10 = 10%`.
+      Second: `(210 − 200) / 200 = 5%`.
+      Compare returns, not dollar changes.
+  - topic: "Week 4 · Assembling data sets"
+    ask: "A table of people has a blank death year for those still alive. A teammate fills the blanks with 0 so the column is numeric. What is the problem?"
+    choices:
+      - text: "Zero claims a measured value and will distort every average and comparison; use a real missing-value marker, or deliberately impute"
+        correct: true
+        explains: "Right. The lecture says setting such values to zero is generally wrong. A blank means not known, not zero."
+      - text: "Nothing: zero is the neutral value"
+        explains: "A death year of 0 is not neutral. It pulls statistics toward it."
+      - text: "The column should be dropped because it has blanks"
+        explains: "Dropping loses information. The values can be represented or imputed."
+      - text: "Zero is fine for years but not for counts"
+        explains: "For counts, an unobserved event also should not be set to zero just because it was not seen."
+    work: |-
+      Living people have no death year yet, so the value is unknown.
+      Setting it to 0 makes it look like a measurement, and means, correlations and z-scores will use it.
+      Use NaN or NULL, or impute on purpose, for example birth year + 80.
+  - topic: "Week 4 · Assembling data sets"
+    ask: "Observed ages are 20, 30 and 40, and one age is missing. You fill the gap with the mean imputation. What is true afterwards?"
+    choices:
+      - text: "The mean is still 30, and the spread is smaller than before"
+        correct: true
+        explains: "Right. Adding a copy of the mean cannot move the mean, and the extra identical value pulls the standard deviation down."
+      - text: "The mean rises above 30"
+        explains: "A value equal to the mean cannot raise it."
+      - text: "The mean is unchanged and so is the spread"
+        explains: "The extra value sits at the centre, so the spread falls."
+      - text: "The data now has no uncertainty"
+        explains: "The filled value is a guess. Random imputation can show how much it matters."
+    work: |-
+      Observed mean: `(20 + 30 + 40) / 3 = 30`.
+      Fill the gap with 30: values 20, 30, 40, 30, and the mean is still `120 / 4 = 30`.
+      The new value has zero deviation, so it adds nothing to the sum of squared deviations but increases the count, shrinking the spread.
+  - topic: "Week 4 · Assembling data sets"
+    ask: "A linear model fits most points well, but five points lie far from the line. Which action does the lecture support?"
+    choices:
+      - text: "Delete the five points, since the model does not explain them"
+        explains: "The lecture warns that this can give a worse model: you are removing the evidence against your simple model."
+      - text: "Find out why they are far away, and remove or fix them only if they are measurement error"
+        correct: true
+        explains: "Right. Fix why you have an outlier, don't just delete. Remove on evidence about the measurement, not on how badly the model fits."
+      - text: "Keep them and never question the model"
+        explains: "They may be telling you the relationship is not a line."
+      - text: "Replace them with zero"
+        explains: "That invents values and creates new outliers."
+    work: |-
+      Deleting outliers can improve a model when they are measurement error.
+      It can worsen it when you are just deleting what your simple model cannot explain.
+      So investigate each point: a faulty sensor justifies removal; a poor fit does not.
+  - topic: "Week 4 · Assembling data sets"
+    ask: "You want data from a website with no obvious download. Which order of steps follows the lecture?"
+    choices:
+      - text: "Write a scraper immediately, since public pages are free to use"
+        explains: "Terms of service limit what you can legally do."
+      - text: "Check for an API and for an existing scraper, read the terms of service, then scrape if allowed"
+        correct: true
+        explains: "Right. An API or existing code saves effort and is less fragile, and the terms decide what is legal."
+      - text: "Buy the data from Amazon Turk"
+        explains: "Crowdsourcing platforms pay people to annotate or gather data. They are not a way to get a site's data."
+      - text: "File a Freedom of Information request"
+        explains: "FOI applies to government data, not to a private website."
+    work: |-
+      Search for an API: structured, intended for use.
+      Search for an existing scraper.
+      Read the terms of service.
+      Only then use BeautifulSoup or Selenium, within what is permitted.
 ---
-40 multiple-choice questions across all three weeks. Nothing is revealed until you submit: pick an answer for
+55 multiple-choice questions across all four weeks. Nothing is revealed until you submit: pick an answer for
 each question (you can change it as often as you like), then submit to see your score, the correct answer,
 an explanation for the one you chose, and a worked solution.
 

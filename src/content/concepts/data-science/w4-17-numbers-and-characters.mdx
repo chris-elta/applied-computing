@@ -1,0 +1,96 @@
+---
+course: data-science
+section: w4-compat
+order: 560
+title: Number and Character Representations
+visuals:
+  - type: svg
+    src: data-science/w4-wrangling/32.svg
+    caption: Slide 32 of 43 — Ariane 5, and what type each kind of quantity should have.
+  - type: svg
+    src: data-science/w4-wrangling/33.svg
+    caption: Slide 33 of 43 — the same text in UTF-8 and read as something else.
+notation:
+  - symbol: "ISO 8859-1"
+    reads: I S O eighty-eight fifty-nine dash one
+    means: A single-byte character code, covering ASCII and some accented Latin letters.
+  - symbol: "UTF-8"
+    reads: U T F eight
+    means: >-
+      A multibyte encoding that can represent every Unicode character, including Chinese,
+      Arabic and emoji.
+  - symbol: "(q, r)"
+    reads: quotient and remainder
+    means: >-
+      A fractional quantity stored as two parts, like (pounds, ounces) or (feet, inches),
+      instead of one decimal number.
+questions:
+  - ask: A weight is recorded as the pair (5 lb, 8 oz). Which representation does the lecture recommend for analysis?
+    choices:
+      - text: A single decimal number in one unit, such as 5.5 lb
+        correct: true
+        explains: >-
+          Fractional quantities should be decimal, not two-part values. A single number can
+          be averaged, compared and normalized.
+      - text: Keep the pair; it is more precise
+        explains: >-
+          The pair holds the same information but you cannot take a mean of it directly.
+      - text: Store it as text so nothing is lost
+        explains: >-
+          Text cannot be added or compared numerically. Measurements should be numbers.
+      - text: Round to the nearest pound
+        explains: >-
+          That discards information that conversion would keep.
+  - ask: Accented and non-Latin text appears as rows of question marks after merging two files. What is the likely cause?
+    choices:
+      - text: The files use different character encodings, and one was read as the other
+        correct: true
+        explains: >-
+          A multibyte UTF-8 file read as a single-byte code (or the reverse) loses or
+          garbles characters. Unify the encoding when reading.
+      - text: The data is missing
+        explains: >-
+          The text was there. The reader could not decode it.
+      - text: The columns are in a different order
+        explains: >-
+          Column order would swap fields, not turn letters into question marks.
+      - text: Z-scores were not applied
+        explains: >-
+          Normalization is for numeric variables and has nothing to do with text.
+---
+
+Two cleaning problems come from how values are *stored*, not from what they mean.
+
+## Numbers
+
+The lecture's example: the **Ariane 5 rocket exploded in 1996 due to a bad conversion from a
+64-bit float to a 16-bit integer.** The value did not fit the smaller type, so the number the
+software acted on was not the number it measured.
+
+Three rules from the slide:
+
+- **Measurements should be decimal numbers.**
+- **Counts should be integers.**
+- **Fractional quantities should be decimal**, not (q, r) pairs like (pounds, ounces) or
+  (feet, inches).
+
+The first two make sure the type can represent the quantity. The third is for analysis: you
+cannot average (5 lb, 8 oz) without first converting it to one number, so convert once, at
+the start, to one unit.
+
+## Characters
+
+The slide calls **unifying character code representations a particularly nasty cleaning issue
+in textual data.** Two encodings it names:
+
+- **ISO 8859-1**: a single-byte code for ASCII.
+- **UTF-8**: a multibyte encoding for all Unicode characters.
+
+Text in one, read as the other, comes out as question marks or nonsense. The slide's
+illustration shows Chinese, French, Thai, Japanese, German, Russian and Arabic lines intact in
+one column and as rows of "?" in the other. The Simpsons joke on the slide, "I will study
+encodings and properly use UTF-8," is the practical advice: **pick UTF-8, and state the
+encoding whenever you read or write a file.**
+
+> The same bytes can mean different things. Decide what each column's type and each file's
+> encoding is, and convert at the door.

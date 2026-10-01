@@ -2,6 +2,7 @@
 import { render } from 'astro:content';
 import Base from '../../../layouts/Base.astro';
 import Exam from '../../../components/Exam';
+import { shuffleChoices } from '../../../lib/shuffle-choices';
 import { getCourses, getExam, coursePath, withBase, type Course, type Exam as ExamEntry } from '../../../lib/course';
 
 export async function getStaticPaths() {
@@ -30,7 +31,7 @@ const { title, minutes, passMark, questions } = exam.data;
     </p>
     <div class="prose"><Content /></div>
     <Exam client:load courseId={course.id} courseTitle={course.data.title} title={title}
-      skillHref={withBase('/skills/review-exam-results/SKILL.md')} minutes={minutes} passMark={passMark} questions={questions} />
+      skillHref={withBase('/skills/review-exam-results/SKILL.md')} minutes={minutes} passMark={passMark} questions={shuffleChoices(questions)} />
   </article>
 </Base>
 

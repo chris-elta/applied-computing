@@ -1,0 +1,78 @@
+---
+course: data-science
+section: w4-compat
+order: 580
+title: Time and Date Unification
+visuals:
+  - type: svg
+    src: data-science/w4-wrangling/35.svg
+    caption: Slide 35 of 43 — UTC, and the calendar that skips from the 2nd to the 14th.
+notation:
+  - symbol: "UTC"
+    reads: U T C, or Coordinated Universal Time
+    means: >-
+      The modern standard time reference that subsumes GMT. Store timestamps in it and
+      convert to local time only for display.
+questions:
+  - ask: Two systems log events with timestamps in different local time zones. What does the lecture recommend before aligning them?
+    choices:
+      - text: Convert both to UTC
+        correct: true
+        explains: >-
+          A single reference time removes the offsets, so "same moment" means the same value.
+      - text: Convert both to the time zone of the larger data set
+        explains: >-
+          That works until daylight saving or a third source appears. UTC does not change.
+      - text: Drop the time and keep only the date
+        explains: >-
+          That throws away information and still leaves date boundaries differing by zone.
+      - text: Sort each by timestamp and match row by row
+        explains: >-
+          Matching by position assumes the events line up, which is the thing you are trying
+          to establish.
+  - ask: Why is correlating daily stock prices with daily temperatures awkward?
+    choices:
+      - text: Markets close on weekends and holidays while temperature is recorded every day, so the series have different days
+        correct: true
+        explains: >-
+          The slide's point: the calendars do not match, so you must decide how to align them,
+          for example by dropping or filling days.
+      - text: Prices are in dollars and temperatures are in degrees
+        explains: >-
+          Different units are handled by z-scores. The alignment problem is about which days
+          exist.
+      - text: Stock prices do not change daily
+        explains: >-
+          They change on trading days, which is exactly the point: there are no values on the
+          others.
+      - text: UTC cannot represent weekends
+        explains: >-
+          UTC represents every day. The gap is in the data.
+---
+
+Aligning events from different data sets and systems can be problematic. A timestamp that
+reads 09:00 means nothing until you know *where* and *under which calendar*.
+
+## Use UTC
+
+The slide's recommendation is **Coordinated Universal Time (UTC), a modern standard
+subsuming GMT.** Store everything in one reference time, so that equal timestamps mean
+simultaneous events whichever system recorded them.
+
+## Calendars with gaps
+
+**Financial time series are tricky because of weekends and holidays.** Markets have no prices
+on days they are closed, while temperature has a value every day. So the slide asks: *how do
+you correlate stock prices and temperatures?* Options include comparing only trading days,
+or carrying the last price forward; each choice is a decision that belongs in the pipeline,
+written down.
+
+## The September 1752 calendar
+
+The slide shows the calendar for September 1752, which has a 2nd followed immediately by the
+14th. Dates in the lecture's calendar jump by 11 days that month, a reminder that the
+calendar itself has changed over history. Few projects reach back that far, but any
+long-range data set can contain a date convention that is not today's.
+
+> Choose one time standard at the start, and make every alignment of calendars an explicit
+> step rather than an accident of how the files were joined.

@@ -1,0 +1,110 @@
+---
+course: data-science
+section: w4-compat
+order: 550
+title: Normalization and Z-scores
+visuals:
+  - type: svg
+    src: data-science/w4-wrangling/30.svg
+    caption: Slide 30 of 43 — the z-score formula, and why unnormalized variables are the biggest sin.
+  - type: svg
+    src: data-science/w4-wrangling/31.svg
+    caption: Slide 31 of 43 — a worked column of z-scores.
+notation:
+  - symbol: "Z_i"
+    reads: Z sub i, or the z-score of the i-th value
+    means: >-
+      How many standard deviations value `i` lies from the mean. The subscript numbers the
+      items; it does not multiply.
+  - symbol: "X_i"
+    reads: X sub i
+    means: The i-th raw value of the variable.
+  - symbol: "X̄"
+    reads: X bar
+    means: The mean of all the values of `X`.
+  - symbol: "σ"
+    reads: sigma
+    means: The standard deviation of `X`, a measure of how spread out the values are.
+  - symbol: "μ(B)"
+    reads: mu of B, or the mean of B
+    means: The mean of the variable `B`. The slide uses `μ` and `X̄` for the same thing.
+questions:
+  - ask: The same people's heights are recorded once in inches and once in miles. How do the z-scores of the two columns compare?
+    choices:
+      - text: They are identical
+        correct: true
+        explains: >-
+          Changing units multiplies both the deviations and `σ` by the same factor, which
+          cancels. That is why z-scores make variables with different units comparable.
+      - text: The inch column has larger z-scores because the numbers are larger
+        explains: >-
+          The raw numbers are larger, but so is the standard deviation they are divided by.
+      - text: The mile column has larger z-scores because its units are bigger
+        explains: >-
+          A bigger unit shrinks the deviations and `σ` together. The ratio is unchanged.
+      - text: They cannot be compared because the units differ
+        explains: >-
+          Z-scores are dimensionless, so the units drop out.
+  - ask: >-
+      A variable has mean 21.9 and standard deviation 1.92. What is the z-score of the value 24?
+    choices:
+      - text: "1.09"
+        correct: true
+        explains: >-
+          24 is 2.1 above the mean, and 2.1 ÷ 1.92 ≈ 1.09, matching the slide's table.
+      - text: "2.1"
+        explains: >-
+          That is the raw distance from the mean. You still have to divide by `σ` to count
+          it in standard deviations.
+      - text: "−1.09"
+        explains: >-
+          The sign says above or below the mean. 24 is above 21.9, so the z-score is
+          positive.
+      - text: "0.05"
+        explains: >-
+          That is the slide's z-score for 22, which is only 0.1 above the mean.
+    work: |-
+      `Z = (X − X̄) / σ`
+      `Z = (24 − 21.9) / 1.92 = 2.1 / 1.92 ≈ 1.09`
+      Positive, because 24 is above the mean.
+---
+
+Suppose you want to compare how unusual a person's height is with how unusual their income
+is. Inches and dollars cannot be put on one scale directly. The slide's rule: **it is
+critical to normalize different variables to make their range and distribution comparable.**
+It adds that *your biggest analysis sins will come in using unnormalized variables.*
+
+## The z-score
+
+Subtract the mean, then divide by the standard deviation:
+
+`Z_i = (X_i − X̄) / σ`
+
+The numerator is how far value `i` is from the average, in the variable's own units. Dividing
+by `σ` re-counts that distance in standard deviations, so the units cancel.
+
+## The slide's example
+
+Ten values of `B` have mean `μ(B) = 21.9` and standard deviation `σ(B) = 1.92`.
+
+| B | 19 | 22 | 24 | 20 | 23 | 19 | 21 | 24 | 24 | 23 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Z | −1.51 | 0.05 | 1.09 | −0.98 | 0.57 | −1.51 | −0.46 | 1.09 | 1.09 | 0.57 |
+
+Three things to read off it:
+
+- **Z-scores have mean 0 and standard deviation 1**, whatever the original variable was.
+- So **z-scores of different variables are of comparable magnitude.**
+- **The sign says above or below the mean.** 19 is below, so −1.51; 24 is above, so 1.09.
+
+## Why the units vanish
+
+Z-scores of height in inches are the same as of height in miles. Converting units multiplies
+every value, the mean, and `σ` by the same factor, and the factor cancels in the division.
+
+This is the tool for the problem in the previous concept, and the cure for combining
+variables on very different scales into one analysis, where the one with the biggest numbers
+would otherwise dominate.
+
+> A z-score answers "how unusual is this, for this variable?" That question has no units,
+> which is why it can be asked of anything.

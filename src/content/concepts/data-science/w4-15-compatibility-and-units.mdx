@@ -1,0 +1,68 @@
+---
+course: data-science
+section: w4-compat
+order: 540
+title: Compatibility and Unit Conversions
+visuals:
+  - type: svg
+    src: data-science/w4-wrangling/28.svg
+    caption: Slide 28 of 43 — the five kinds of "apple to apple" unification.
+  - type: svg
+    src: data-science/w4-wrangling/29.svg
+    caption: Slide 29 of 43 — the Mars Climate Orbiter, and units that agree in name only.
+notation:
+  - symbol: "bimodal"
+    reads: bye-modal
+    means: >-
+      A distribution with two humps instead of one. In merged data it can mean two sources
+      using different units for the same quantity.
+questions:
+  - ask: You merge two data sets of building heights and the histogram has two humps, one near 3 and one near 10. Which explanation should you check first?
+    choices:
+      - text: One source records heights in metres and the other in feet
+        correct: true
+        explains: >-
+          3 m is about 10 ft. Two humps whose ratio looks like a unit conversion are a classic
+          sign of a mix of units.
+      - text: The buildings really fall into exactly two height groups
+        explains: >-
+          It is possible, but a coincidence with a unit ratio should be ruled out first,
+          because it is the cheaper mistake to have made.
+      - text: The sample is too small
+        explains: >-
+          Small samples are noisy but do not produce two clean humps at a conversion factor.
+      - text: Outliers; delete the smaller hump
+        explains: >-
+          Deleting half your data because of a unit problem makes the result wrong in a
+          different way. Convert instead.
+---
+
+Data from different places has to be **massaged to make "apple to apple" comparisons**. The
+slide lists five areas, which the next concepts take in turn:
+
+- unit conversions,
+- number and character code representations,
+- name unification,
+- time and date unification,
+- financial unification.
+
+## Units
+
+The lecture's example is expensive: NASA's **Mars Climate Orbiter exploded in 1999 due to a
+metric-to-English conversion issue.** One system produced numbers in one set of units and
+another consumed them as if they were in a different set. Neither number was wrong; they were
+in different units.
+
+Three notes from the slide:
+
+- **Even sticking to metric has inconsistencies:** centimetres, metres and kilometres.
+- **Bimodal distributions can indicate trouble.** Two sources in different units show up as
+  two humps.
+- **Z-scores are dimensionless quantities.** Normalizing, which the next concept explains,
+  removes units from the comparison.
+
+The habit that catches these is the one from the artifacts concepts: look at the distribution
+of every variable after merging, and ask whether it has the shape you would expect.
+
+> Vigilance in data integration is essential. A column called "height" does not say what the
+> numbers are measured in.

@@ -1,0 +1,80 @@
+---
+course: data-science
+section: w4-missing
+order: 600
+title: Representing Missing Data
+visuals:
+  - type: svg
+    src: data-science/w4-wrangling/37.svg
+    caption: Slide 37 of 43 — three kinds of absence, and why zero is the wrong answer.
+notation:
+  - symbol: "missing value"
+    reads: missing value
+    means: >-
+      A field with no usable value: blank, absent, or filled with an obviously made-up
+      placeholder. It is not a zero.
+questions:
+  - ask: In a people table, the "year of death" field is blank for someone still alive. Why is replacing blanks with 0 wrong?
+    choices:
+      - text: Zero is a real value that would be read as a death in year 0, and it distorts every average and comparison
+        correct: true
+        explains: >-
+          The blank means "no value yet", which is not the same as a value of zero. Treating
+          it as zero invents data that pulls every statistic toward it.
+      - text: Zero cannot be stored in a year field
+        explains: >-
+          It can be stored, which is the danger: nothing flags it as fake.
+      - text: Blanks are always better because computers handle them faster
+        explains: >-
+          Speed is not the argument. The argument is that a placeholder must not look like
+          data.
+      - text: The person might actually have died in year 0
+        explains: >-
+          Implausible, and not the reason. The reason is that zero is claiming a measurement
+          that was never made.
+  - ask: A count of rare events shows 0 for a species in your sample. What does the slide's third bullet ("the frequency of events too rare to see") warn you about?
+    choices:
+      - text: Zero observed does not mean zero in the world; the event may be too rare to appear in a sample of this size
+        correct: true
+        explains: >-
+          Absence from the sample is missing information about the true frequency, not
+          evidence of none.
+      - text: You should delete the species from the table
+        explains: >-
+          Deleting it hides the information that you looked and saw none.
+      - text: Zero is always the right value for an unobserved event
+        explains: >-
+          The slide says the opposite: setting such values to zero is generally wrong.
+      - text: The count is an outlier
+        explains: >-
+          Outliers are large departures. A missing count is a different issue.
+---
+
+A table cell can be empty for different reasons, and the lecture asks you to represent them
+properly. Three of its examples:
+
+- **What is the year of death of a living person?** There is no such year yet.
+- **What about a field left blank or filled with an obviously outlandish value?** Someone
+  typed 9999, or −1, or "N/A", to mean "I don't know".
+- **What is the frequency of events too rare to see?** Nothing was observed, but that does
+  not mean it never happens.
+
+The slide's verdict: **setting such values to zero is generally wrong.**
+
+## Why zero is the trap
+
+A zero is a measurement. It says "we looked and the answer was nothing". A blank says "we
+don't know". Mixing them in a table means every later mean, correlation and z-score treats
+unknowns as real data.
+
+A placeholder like 9999 is worse, because it looks like a legitimate value and can become the
+largest number in the data set. That is how an outlier gets created by a data entry habit.
+
+## What to do instead
+
+Use the data type's real marker for "no value" (`NaN`, `NULL` or `None`, depending on the
+tool), find out why each blank exists, and decide deliberately what to do with it. The next
+concept covers one of those choices.
+
+> Missing is not zero. Keep the difference visible in the data, and decide what to do about
+> it where you can see it.

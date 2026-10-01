@@ -4,6 +4,7 @@ import Base from '../../../layouts/Base.astro';
 import ConceptStage from '../../../components/ConceptStage.astro';
 import Quiz from '../../../components/Quiz';
 import NotationKey from '../../../components/NotationKey.astro';
+import { shuffleChoices } from '../../../lib/shuffle-choices';
 import Prerequisites from '../../../components/Prerequisites.astro';
 import { getCourses, getSteps, conceptPath, coursePath, type Step } from '../../../lib/course';
 
@@ -91,7 +92,7 @@ const percent = Math.round((number / total) * 100);
 
     {concept.data.questions.length > 0 && (
       <div class="concept__quiz">
-        <Quiz client:visible courseId={course.id} conceptNumber={number} questions={concept.data.questions} />
+        <Quiz client:visible courseId={course.id} conceptNumber={number} questions={shuffleChoices(concept.data.questions)} />
       </div>
     )}
 

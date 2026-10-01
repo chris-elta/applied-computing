@@ -1,0 +1,81 @@
+---
+course: data-science
+section: w4-compat
+order: 590
+title: Financial Unification
+visuals:
+  - type: svg
+    src: data-science/w4-wrangling/36.svg
+    caption: Slide 36 of 43 — currency, splits, returns and inflation.
+notation:
+  - symbol: "return"
+    reads: return
+    means: >-
+      The percentage change in a price over a period, such as +2% for a day. Unlike an
+      absolute price change, it is comparable across stocks of different prices.
+  - symbol: "stock split"
+    reads: stock split
+    means: >-
+      A company replaces each share with several, dividing the price accordingly. The
+      company is worth the same; the quoted price has dropped.
+questions:
+  - ask: Stock and oil prices both rise over 30 years, and the correlation is high. What does the lecture's list of financial corrections warn you about?
+    choices:
+      - text: Both series are in nominal money, so inflation alone makes both rise together; adjust for it before comparing
+        correct: true
+        explains: >-
+          Two quantities that both grow because the currency loses value will correlate
+          without any relation. Correct for the time value of money first.
+      - text: Stocks and oil are causally linked
+        explains: >-
+          The slide's question is posed to make you doubt exactly that. Common drift is a
+          cheaper explanation.
+      - text: Oil prices need a currency conversion into euros
+        explains: >-
+          Conversion matters across countries, but it does not explain a shared 30-year trend.
+      - text: The correlation must be spurious because 30 years is too short
+        explains: >-
+          Length of the series is not the issue. What is wrong is comparing money from
+          different years as if it were the same.
+  - ask: A stock quote drops from $100 to $50 overnight, with no news. Which correction does the lecture suggest checking?
+    choices:
+      - text: A stock split — correct the prices for splits so the series is continuous
+        correct: true
+        explains: >-
+          A 2-for-1 split halves the quoted price without any loss of value. Uncorrected, it
+          looks like a 50% crash.
+      - text: Inflation
+        explains: >-
+          Inflation moves prices slowly over years, not by half overnight.
+      - text: An exchange-rate change
+        explains: >-
+          Not at a fall of exactly half in one night, in the same currency.
+      - text: A bimodal distribution
+        explains: >-
+          That is a diagnostic for mixed units in a data set, not an explanation of one
+          price move.
+---
+
+Money looks like the easiest quantity to compare, and it is full of traps. The slide lists
+four corrections to apply before comparing financial data.
+
+| Problem | Correction |
+| --- | --- |
+| Different currencies | Convert with exchange rates |
+| Splits and dividends change the quoted price | Correct stock prices for splits and dividends |
+| Absolute price changes depend on the price level | Use returns, the percentage change |
+| A dollar in 1990 is not a dollar today | Correct for inflation (the time value of money) |
+
+## Why each matters
+
+A **stock split** makes a share cheaper without changing the company's value. A series that
+is not corrected shows the split as a crash. **Returns** put a $5 move in a $10 stock and a
+$5 move in a $500 stock on their own scales, +50% and +1%.
+
+**Inflation** is the one behind the slide's question: **why do stock and oil prices correlate
+over 30 years?** Both are quoted in a currency that loses value, so both drift up together in
+raw dollars. This is the same trap as the correlation-and-causation concepts from week 3: two
+series with a shared trend correlate without being related.
+
+> Before correlating anything measured in money, ask which currency, which year, and whether
+> the price was corrected for events that change the number but not the value.

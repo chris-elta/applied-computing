@@ -1,0 +1,73 @@
+---
+course: data-science
+section: w4-workflow
+order: 400
+title: Data Munging
+visuals:
+  - type: svg
+    src: data-science/w4-wrangling/02.svg
+    caption: Slide 2 of 43 — what munging is, and where the time goes.
+  - type: svg
+    src: data-science/w4-wrangling/03.svg
+    caption: Slide 3 of 43 — the languages data scientists reach for.
+notation:
+  - symbol: "munging, wrangling"
+    reads: munging, wrangling
+    means: >-
+      Two names for the same job: getting data and preparing it so it can be analysed.
+      "Cleaning" is one part of it.
+questions:
+  - ask: A data scientist says they spent the week "mostly cleaning data". What does the lecture say about that?
+    choices:
+      - text: It is normal — most of a good data scientist's time goes on acquiring, cleaning and formatting data
+        correct: true
+        explains: >-
+          The slide's point is that this is the job, not a detour from it. Modelling is the
+          smaller share.
+      - text: It means the data was unusually bad, and a better source would avoid it
+        explains: >-
+          Some sources are worse than others, but the lecture treats the effort as the
+          standing cost of real data, not a sign of a bad week.
+      - text: It means they were not doing analysis yet, so the week was wasted
+        explains: >-
+          Preparation is what makes analysis trustworthy. Everything later in this week is
+          about what goes wrong when it is skipped.
+      - text: Cleaning is only needed when data comes from the web
+        explains: >-
+          Every source in this week — government, academic, sensor, internal — needs it.
+---
+
+Before any model, chart or correlation, somebody has to get the data and make it usable.
+That work is called **data munging** or **data wrangling**: *the art of acquiring data and
+preparing it for analysis.*
+
+The lecture opens with a joke that is also a measurement. Good data scientists spend most of
+their time cleaning and formatting data. The rest spend most of their time complaining that
+there is no data available. Both halves point at the same fact: **the data is rarely handed to
+you in a usable state, or at all.**
+
+## Tools
+
+No single language does everything, and the lecture lists what each is known for:
+
+| Tool | What it is good at |
+| --- | --- |
+| Python | Libraries and features, such as regular expressions, that make munging easier |
+| R | The statisticians' language |
+| Matlab | Fast, efficient matrix operations |
+| Java / C | Big Data systems |
+| Mathematica / Wolfram Alpha | Symbolic maths |
+| Excel | The bread-and-butter tool for exploration |
+
+The course leans on Python, but the table is the useful part: choose by what the job needs,
+not by habit. Excel is on the list on purpose — for a first look at a small table it is often
+the fastest thing there is.
+
+## What this week covers
+
+The rest of the week follows the work in order: where to **find** data, how to spot when
+processing has **damaged** it, how to make data from different places **compatible**, and what
+to do about **missing** values and **outliers**.
+
+> Wrangling is not preparation for the real work. It is a large part of the real work, and
+> the quality of every later result depends on it.

@@ -1,0 +1,98 @@
+---
+course: data-science
+section: w4-artifacts
+order: 500
+title: Errors Versus Artifacts
+visuals:
+  - type: svg
+    src: data-science/w4-wrangling/18.svg
+    caption: Slide 18 of 43 — the five cleaning issues this week covers.
+  - type: svg
+    src: data-science/w4-wrangling/19.svg
+    caption: Slide 19 of 43 — errors, artifacts and the sniff test.
+notation:
+  - symbol: "artifact"
+    reads: artifact
+    means: >-
+      A systematic problem in the data caused by the processing done to it. Not a fact about
+      the world.
+  - symbol: "sniff test"
+    reads: sniff test
+    means: >-
+      Looking at a result closely enough to get a whiff that something is wrong, before
+      believing it.
+  - symbol: "garbage in, garbage out"
+    reads: garbage in, garbage out
+    means: Analysis of bad data gives bad results, however good the analysis.
+questions:
+  - ask: A merge step silently drops every record whose name contains an accent. Is this an error or an artifact?
+    choices:
+      - text: An artifact — the information was fine at acquisition and the processing damaged it
+        correct: true
+        explains: >-
+          The accents were in the source. The problem is systematic and was introduced
+          afterwards, so it can in principle be undone by fixing the step.
+      - text: An error — any missing record is an error
+        explains: >-
+          Errors are information fundamentally lost at acquisition. Here it was acquired and
+          then lost in processing.
+      - text: Neither; it is just missing data
+        explains: >-
+          It is missing, but the useful distinction is why. Systematic loss from processing
+          is the definition of an artifact.
+      - text: Both, because it affects accuracy
+        explains: >-
+          They are alternatives distinguished by where the problem arose, not overlapping
+          labels.
+  - ask: Why does the lecture say the key to detecting artifacts is the sniff test?
+    choices:
+      - text: Artifacts are systematic, so they show up as something odd in the product if you look closely and know roughly what to expect
+        correct: true
+        explains: >-
+          No automatic check knows what is plausible in your field. A person who has a
+          preconception of the result can notice when it is off.
+      - text: Artifacts always produce an error message
+        explains: >-
+          They do not. The processing runs fine and gives wrong output without complaint.
+      - text: Artifacts can be found by deleting outliers
+        explains: >-
+          Outliers are a separate topic, and deleting them hides problems rather than
+          diagnosing them.
+      - text: Artifacts only affect text data
+        explains: >-
+          Any processed data can carry artifacts, as the next concept shows with a plot.
+---
+
+"Garbage in, garbage out" is the heading of the lecture's cleaning section. It lists five
+problems that make field data hard to analyse sensibly:
+
+1. distinguishing errors from artifacts,
+2. data compatibility and unification,
+3. imputing missing values,
+4. estimating unobserved (zero) counts,
+5. outlier detection.
+
+The first is the one that organizes the rest.
+
+## Two kinds of wrong
+
+| | What it is | Where it comes from |
+| --- | --- | --- |
+| **Error** | Information that is fundamentally lost | Acquisition — the measurement or record was never right |
+| **Artifact** | A systematic problem | Processing done to the data |
+
+The difference matters because they call for different responses. Lost information stays
+lost; the best you can do is estimate or flag it. An artifact can be removed, but only if you
+notice it.
+
+## The sniff test
+
+Artifacts do not announce themselves. The code runs, the table has rows and the plot draws.
+The lecture's remedy is the **sniff test**: examine the product closely enough to get a whiff
+of something bad.
+
+That depends on knowing roughly what a correct answer looks like, which is why the next
+concept starts with a question about the *shape* of a result before showing it.
+
+> Before you trust an output, ask what it should look like. A surprise is either a discovery
+> or an artifact, and artifacts are far more common.

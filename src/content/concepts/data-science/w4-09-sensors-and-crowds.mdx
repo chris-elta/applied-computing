@@ -1,0 +1,69 @@
+---
+course: data-science
+section: w4-sources
+order: 480
+title: Sensors and Crowdsourcing
+visuals:
+  - type: svg
+    src: data-science/w4-wrangling/15.svg
+    caption: Slide 15 of 43 — the Internet of Things as a data source.
+  - type: svg
+    src: data-science/w4-wrangling/16.svg
+    caption: Slide 16 of 43 — data built up, or bought, from many people.
+notation:
+  - symbol: "crowdsourcing"
+    reads: crowd-sourcing
+    means: >-
+      Getting a large group of people to contribute data or labels, whether for free, like
+      Wikipedia, or for pay, like Amazon Turk.
+  - symbol: "annotation"
+    reads: annotation
+    means: A person attaching a label to a data item, such as marking what an image shows.
+questions:
+  - ask: Which of these is an example of crowdsourcing data, as the lecture describes it?
+    choices:
+      - text: Paying many people on Amazon Turk to annotate images
+        correct: true
+        explains: >-
+          The slide names paid platforms as a way to gather data, such as human annotation.
+      - text: Measuring earthquakes with phone accelerometers
+        explains: >-
+          That is sensor data: the phones record automatically. Nobody is deliberately
+          contributing labels.
+      - text: Downloading a data set from Data.gov
+        explains: >-
+          That is a government source, produced by an organization, not assembled by a crowd.
+      - text: Typing 1,000 records in from a PDF yourself
+        explains: >-
+          That is sweat equity, the last source on the list.
+---
+
+Two sources the lecture treats as ways to build data rather than find it.
+
+## Sensor data
+
+The "Internet of Things" can do surprising things with data it was not built to collect:
+
+- images and video, such as measuring weather from Flickr photos;
+- accelerometers in cell phones used to measure earthquakes;
+- GPS on taxis used to identify traffic flows.
+
+The lecture's advice is to **build logging systems: storage is cheap.** Recording what a
+system does costs little now, and you cannot go back for data you did not keep. The question
+you want answered next year may not be the one you had today.
+
+## Crowdsourcing
+
+Many open data resources were built by teams of contributors. Wikipedia and WikiData are the
+slide's examples, along with IMDB.
+
+You can also **buy** a crowd. Platforms like **Amazon Turk** let you pay armies of people to
+help gather data, such as **human annotation** — people labelling items that a program cannot
+yet label.
+
+The two ideas are alike in one respect: neither data set was collected to answer *your*
+question, and each reflects whoever happened to contribute or be sensed. The bias concepts
+later this week return to that.
+
+> Log everything you can afford to. And when you need labels, a crowd can be a data source
+> you pay for.

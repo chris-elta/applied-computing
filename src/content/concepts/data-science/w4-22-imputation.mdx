@@ -1,0 +1,91 @@
+---
+course: data-science
+section: w4-missing
+order: 610
+title: Imputing Missing Values
+visuals:
+  - type: svg
+    src: data-science/w4-wrangling/38.svg
+    caption: Slide 38 of 43 — drop the records, or estimate the gap.
+  - type: svg
+    src: data-science/w4-wrangling/39.svg
+    caption: Slide 39 of 43 — three imputation methods.
+notation:
+  - symbol: "impute"
+    reads: im-pewt
+    means: >-
+      To fill in a missing value with an estimate, rather than leaving it blank or dropping
+      the record.
+  - symbol: "interpolation"
+    reads: inter-po-lay-shun
+    means: >-
+      Predicting a missing value from the other fields in the same record, here using linear
+      regression.
+questions:
+  - ask: Which is the lecture's reason for imputing rather than dropping records with missing fields?
+    choices:
+      - text: You may want to use the model on new records that have missing fields, so it must cope with them
+        correct: true
+        explains: >-
+          With enough training data you could drop them, but the live data will still have
+          gaps, so the pipeline needs a way to handle them.
+      - text: Dropping records is not allowed
+        explains: >-
+          Dropping is a legitimate choice when there is enough data. The slide gives a reason
+          it is sometimes not enough.
+      - text: Imputed values are more accurate than real ones
+        explains: >-
+          They are estimates. The slide says only that an estimate is often better than a
+          blank.
+      - text: Imputation removes bias from the data
+        explains: >-
+          It can add bias if done carelessly. It is a modelling choice, not a cure.
+  - ask: You fill every missing age with the mean age. What is the lecture's description of this method?
+    choices:
+      - text: Mean value imputation, which leaves the mean the same
+        correct: true
+        explains: >-
+          Adding copies of the mean cannot change it. Be aware that it also shrinks the
+          spread, since the filled values are all identical.
+      - text: Random value imputation, which allows statistical evaluation
+        explains: >-
+          That draws random values repeatedly. Using one fixed value, the mean, is the other
+          method.
+      - text: Imputation by interpolation, using regression
+        explains: >-
+          That predicts each gap from the other fields in its record, which is more involved
+          than a single constant.
+      - text: Deletion, which keeps the mean the same
+        explains: >-
+          Deleting records is not imputation, and may change the mean.
+---
+
+The previous concept said not to use zero. What *should* you put in a gap?
+
+With enough training data, one might **drop all records with missing values**. But we may want
+to use the model on records with missing fields, and then throwing away the model's input is
+not an option. The lecture's position: **often it is better to estimate, or impute, missing
+values instead of leaving them blank.**
+
+The slide's example: a good guess for your year of death is birth + 80. It is wrong for any
+individual and reasonable as a placeholder.
+
+## Three methods
+
+| Method | What it does | What the slide says about it |
+| --- | --- | --- |
+| **Mean value** | Replace each gap with the mean of the field | Leaves the mean the same |
+| **Random value** | Fill gaps with randomly chosen values, repeatedly | Allows statistical evaluation of the impact of imputation |
+| **Interpolation** | Predict the value from the record's other fields, using linear regression | Works well if few fields are missing per record |
+
+## Choosing
+
+- **Mean** is the simplest. It keeps the average and shrinks the spread, because the filled-in
+  values are all identical.
+- **Random** values, drawn many times, let you ask how much your conclusion depends on the
+  guesses: if the answer changes a lot between runs, the missing data matters.
+- **Interpolation** uses more information, and so does better when most of the record is
+  present. If many fields are missing there is little to predict from.
+
+> Imputed numbers are guesses. Use them to keep the pipeline running, and check how much the
+> result moves when the guesses change.

@@ -1,0 +1,57 @@
+---
+course: data-science
+section: w4-sources
+order: 490
+title: Sweat Equity
+visuals:
+  - type: svg
+    src: data-science/w4-wrangling/17.svg
+    caption: Slide 17 of 43 — when the only route is doing the work yourself.
+notation:
+  - symbol: "sweat equity"
+    reads: sweat equity
+    means: >-
+      Value you add by your own labour, here the effort of typing up or curating data by
+      hand, rather than by buying or downloading it.
+questions:
+  - ask: Entering one record per minute, roughly how long does it take to enter 1,000 records, and what does that suggest?
+    choices:
+      - text: About two working days — large enough to plan around, small enough that doing it by hand can be the right choice
+        correct: true
+        explains: >-
+          1,000 minutes is about 16.7 hours, a bit over two 8-hour days, which is the
+          slide's figure. Hand entry is a real option for modest data sets.
+      - text: About 17 minutes, so hand entry is trivial
+        explains: >-
+          That divides by 60 twice. 1,000 records at one a minute is 1,000 minutes.
+      - text: About two weeks, so hand entry is never worthwhile
+        explains: >-
+          That overstates it by a factor of five. 1,000 minutes is around 17 hours.
+      - text: About two hours, so one session will do
+        explains: >-
+          Two hours would be 120 records at this rate.
+    work: |-
+      One record per minute, so 1,000 records take `1,000 minutes`.
+      `1,000 ÷ 60 ≈ 16.7 hours`.
+      At 8 hours a day that is a little over two working days.
+---
+
+The last route is the least glamorous. The lecture's framing: *sometimes you must work for
+your data instead of stealing it.*
+
+Much historical data still exists only on paper or in PDFs. Getting it into a table needs
+manual entry and curation, and no scraper can do that for you.
+
+## Doing the sum
+
+Before deciding it is too much, estimate it. At one record per minute, 1,000 records take
+1,000 minutes, a little under 17 hours — **about two working days**. A hundred thousand would
+be well over a year of full-time effort, so at some size you need a crowd instead, which is
+the previous concept.
+
+The slide's conclusion is: *often projects require sweat equity.* Finding the right data set
+is the critical issue, and sometimes the right data set does not exist until someone makes
+it.
+
+> Estimate the cost of doing it by hand before ruling it out. A small, correct data set you
+> built yourself can beat a large one you cannot use.

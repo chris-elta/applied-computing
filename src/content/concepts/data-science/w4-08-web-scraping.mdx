@@ -1,0 +1,53 @@
+---
+course: data-science
+section: w4-sources
+order: 470
+title: Web Scraping
+visuals:
+  - type: svg
+    src: data-science/w4-wrangling/14.svg
+    caption: Slide 14 of 43 — scraping, the libraries, and the questions to ask first.
+notation:
+  - symbol: "scraping"
+    reads: scraping
+    means: Pulling text or data out of a web page's content with a program.
+  - symbol: "terms of service"
+    reads: terms of service
+    means: >-
+      The conditions a site sets for using it. The lecture says these limit what you can
+      legally do.
+questions:
+  - ask: You want data from a site. According to the lecture, what should you check before writing a scraper?
+    choices:
+      - text: Whether the source offers an API, whether someone has already written a scraper, and what the terms of service allow
+        correct: true
+        explains: >-
+          Those are the slide's three cautions. An API or an existing scraper saves the work,
+          and the terms decide what is legal.
+      - text: Whether BeautifulSoup is installed
+        explains: >-
+          It is one of the libraries named, but installing a tool is not the question to ask
+          first.
+      - text: Whether the site uses JavaScript
+        explains: >-
+          That affects which tool you need, not whether you should scrape at all.
+      - text: Nothing; public pages can be scraped freely
+        explains: >-
+          The slide says terms of service limit what you can legally do.
+---
+
+**Scraping** is the fine art of stripping text and data from a web page. Python has libraries
+for it — **BeautifulSoup** parses a page's HTML, and **Selenium** drives a real browser for
+pages that need it.
+
+The lecture's advice is to search before you scrape:
+
+1. **Are APIs available from the source?** An API returns structured data on purpose and is
+   far less fragile than parsing a layout that can change tomorrow.
+2. **Did someone previously write a scraper?** Reusing one saves the work and the bugs.
+
+Then comes the constraint: **terms of service limit what you can legally do.** Being able to
+fetch a page does not mean you are allowed to collect it.
+
+> Scraping is the last resort among the web options, not the first. Look for an API, then
+> for existing code, then read the terms.

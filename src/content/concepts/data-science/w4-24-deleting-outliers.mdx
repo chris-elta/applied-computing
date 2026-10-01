@@ -1,0 +1,90 @@
+---
+course: data-science
+section: w4-outliers
+order: 630
+title: Should You Delete Outliers Before Fitting?
+visuals:
+  - type: svg
+    src: data-science/w4-wrangling/42.svg
+    caption: Slide 42 of 43 — deletion can give a better or a worse model.
+notation:
+  - symbol: "fitting"
+    reads: fitting
+    means: Choosing a model's parameters so that it matches the data as closely as it can.
+  - symbol: "measurement error"
+    reads: measurement error
+    means: A point that is wrong because the instrument or the recording was wrong, not because the world is unusual.
+questions:
+  - ask: A point lies far from the line your simple model predicts. When is deleting it before fitting justified?
+    choices:
+      - text: When you have evidence the point is a measurement error
+        correct: true
+        explains: >-
+          The slide's "better model" case: a point that is wrong at the source only adds
+          noise, so removing it improves the fit to reality.
+      - text: Whenever it is more than two standard deviations out
+        explains: >-
+          Distance alone does not tell you the point is wrong. Real, rare points are far out
+          too.
+      - text: Whenever the model fits better without it
+        explains: >-
+          That is the failure the slide describes: deleting points your model does not
+          explain, then crediting the model.
+      - text: Never; deleting data is always wrong
+        explains: >-
+          The slide says deletion can yield a better model when the points are measurement
+          error.
+  - ask: >-
+      You delete the 5 points your straight-line model fits worst, and the fit improves. What
+      should you suspect?
+    choices:
+      - text: The model is too simple, and you removed the evidence of that
+        correct: true
+        explains: >-
+          Points a simple model cannot explain may be telling you the relationship is not a
+          line. Deleting them makes the model look better while making it less true.
+      - text: The model is now correct
+        explains: >-
+          It fits the remaining points. It no longer describes the points you removed, which
+          are still part of the real world.
+      - text: The points were measurement error
+        explains: >-
+          Perhaps, but you decided that because the model disliked them, not from evidence
+          about how they were measured.
+      - text: Nothing; a better fit always means a better model
+        explains: >-
+          A better fit to a curated sample is not a better description of the world.
+---
+
+Once you have found an outlier, the tempting move is to delete it and refit. The lecture gives
+both sides.
+
+## When it helps
+
+**Deleting outliers prior to fitting can yield better models, e.g. if these points correspond
+to measurement error.** A reading that is wrong at the source adds noise and can drag a fit
+toward it. Removing it, with evidence that it is wrong, moves the model nearer the truth.
+
+## When it hurts
+
+**It can also yield worse models, e.g. if you are simply deleting points which are not
+explained by your simple model.**
+
+Suppose the data follows a gentle curve and you fit a straight line. A few points sit far from
+the line. If you delete them, the line fits the rest well, and you have not improved the
+model: you have cut the data down until it agreed with your assumption. The outliers were the
+curve's evidence.
+
+| | Reason for deleting | Verdict |
+| --- | --- | --- |
+| Good | The measurement is known or shown to be wrong | Remove or fix it, and record why |
+| Bad | The model cannot explain it | Keep it, and question the model |
+
+## The test to apply
+
+Ask what you know about the *point* that has nothing to do with the *model*. If the answer is
+"the sensor was faulty that day", that is evidence. If it is "the line misses it", that is a
+sign about the line.
+
+> Delete a point because of what you know about how it was measured, never because of how
+> badly your model fits it.

@@ -1,0 +1,89 @@
+---
+course: data-science
+section: w4-workflow
+order: 410
+title: Notebooks and Pipelines
+visuals:
+  - type: svg
+    src: data-science/w4-wrangling/04.svg
+    caption: Slide 4 of 43 — a notebook mixing code, a plot and the explanation of it.
+  - type: svg
+    src: data-science/w4-wrangling/05.svg
+    caption: Slide 5 of 43 — a pipeline is the whole sequence, start to finish.
+notation:
+  - symbol: "pipeline"
+    reads: data pipeline
+    means: >-
+      The ordered sequence of processing steps that takes raw data to a final result.
+      Fetch, clean, join, model and plot are each a stage.
+questions:
+  - ask: Why does the lecture say to "expect to have to redo your analysis from scratch"?
+    choices:
+      - text: Data gets corrected, new data arrives and mistakes turn up, so the pipeline should be re-runnable end to end
+        correct: true
+        explains: >-
+          Redoing is the normal case. A pipeline that can be re-run in one go turns a
+          disaster into a coffee break.
+      - text: Notebooks lose your results when you close them
+        explains: >-
+          Notebooks keep results. The point is about the analysis changing, not the tool
+          failing.
+      - text: Because Python is slow and must be restarted
+        explains: >-
+          Speed is not the issue. The issue is that inputs and decisions change.
+      - text: Because the first analysis is always wrong
+        explains: >-
+          Not always. But you cannot know in advance which one is, so you build for the
+          possibility.
+  - ask: >-
+      Your analysis has twelve manual steps in a spreadsheet, and a colleague corrects the raw
+      file. What does that tell you about the process?
+    choices:
+      - text: It is not reproducible — the steps should be code that can be run again on the corrected file
+        correct: true
+        explains: >-
+          Each manual step is something you must remember and repeat exactly. Code records
+          the steps and replays them.
+      - text: Nothing; spreadsheets are fine as long as you save a copy
+        explains: >-
+          A saved copy preserves the old result, not the process. You still cannot regenerate
+          it from the corrected input.
+      - text: The raw file should never be corrected
+        explains: >-
+          Corrections are normal and desirable. The process has to be able to absorb them.
+      - text: Only the final chart needs to be reproducible
+        explains: >-
+          The chart is the last stage of the pipeline. If earlier stages cannot be re-run, it
+          cannot be regenerated either.
+---
+
+Suppose you spend a week on an analysis and then someone tells you one of the input files had
+a bad month in it. How much of the week do you lose?
+
+If the work lived in a pile of manual edits, nearly all of it. If it lived in a script that
+runs from raw file to final plot, you fix the file and run it again.
+
+## Notebooks
+
+A **notebook** (Jupyter is the common one) mixes code, data, computed results and prose in one
+document. The lecture says this mixing is essential for a project to be:
+
+- **reproducible** — someone else, or you in six months, can run it and get the same results;
+- **tweakable** — change a parameter and see what happens;
+- **documented** — the explanation sits beside the code it explains.
+
+The slide's example is a sweep over polynomial degree, with the plot and its interpretation in
+the same place as the code that made them.
+
+## Pipelines
+
+A **data pipeline** is the sequence of processing steps from start to finish. Notebooks make
+pipelines easier to maintain because every step is visible and ordered.
+
+The instruction attached to this is blunt: **expect to have to redo your analysis from
+scratch, so build your code to make it possible.** Data is corrected, new data arrives, a
+cleaning decision turns out to be wrong. Redoing is not a failure of planning; it is the
+normal case.
+
+> Treat the analysis as a program, not a series of clicks. If you cannot rerun it from raw
+> input, you cannot fix it.

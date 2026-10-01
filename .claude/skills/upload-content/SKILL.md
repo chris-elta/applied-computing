@@ -1,6 +1,6 @@
 ---
 name: upload-content
-description: Turn source material into concepts in a course on this site — a PDF of slides, a self-contained HTML/reveal.js deck, a zip of either, or images. Use whenever someone supplies lecture slides or a deck and wants it imported, uploaded, added to a course, or turned into concepts, explanations and quizzes; also for adding a new week to an existing course. Accepts topics to highlight, so named ideas get deeper treatment and a key-concept badge.
+description: Turn source material into concepts in a course on this site — a PDF of slides, a self-contained HTML/reveal.js deck, a zip of either, or images. Use whenever someone supplies lecture slides or a deck and wants it imported, uploaded, added to a course, or turned into concepts, explanations and quizzes, and extending the course's exam to match; also for adding a new week to an existing course. Accepts topics to highlight, so named ideas get deeper treatment and a key-concept badge.
 ---
 
 # Uploading content
@@ -151,13 +151,45 @@ the house style for explanations, the notation-key rules and the quiz rules.
 To edit an existing concept's prose without disturbing its questions, splice rather than
 rewrite the whole file.
 
-## 6 · Verify
+## 6 · Update the exam
+
+If the course has an exam (`src/content/exams/<course-id>.md`), extend it with the new
+material. If you are unsure whether one exists, check; if not, skip this step and do not
+create one unprompted.
+
+Read the existing exam first and match it: frontmatter, `topic` label style, `work` format,
+and how many questions each earlier week got (roughly one per 1–2 concepts, so a 24-concept
+week gives about 15). Then:
+
+- **Write new scenarios, not copies** of the concept pages' knowledge checks. The exam tests
+  whether the idea transfers; a learner who has just done the concept quiz should meet a
+  different case.
+- **Prefer application over recall** — a small calculation, a described situation to diagnose,
+  a choice to justify. Cover every section of the new material at least once, weighting
+  towards the misconceptions the concepts target.
+- **One correct answer per question**, every wrong option with an `explains`, and a `work`
+  block that shows the reasoning or arithmetic. Check the arithmetic.
+- Set `topic` to one label for the whole week, in the same form as the others
+  (`Week 4 · Assembling data sets`), so the review groups it.
+- Append after the last question, **before** the closing `---`, so the instructions body stays
+  intact. Then update the question count and week count in that body text.
+- Reconsider `minutes`; raise it if the paper has grown substantially.
+- Quote every YAML scalar that contains a colon. Validate by parsing the frontmatter, then
+  run the build.
+
+Draft with a script in the scratchpad that parses the new YAML, asserts exactly one
+`correct: true` per question, and inserts it before the closing fence — splicing rather than
+retyping the existing questions.
+
+## 7 · Verify
 
 ```sh
 npx astro check          # schema + types; catches every frontmatter mistake
 npm run build            # must succeed
 npm run content:status <course-id>   # nothing outstanding
 ```
+
+The build also validates the exam. Check that its question count text is right.
 
 Then look at it. Start the dev server in background mode per `CLAUDE.md`
 (`astro dev --background`), and check at least one concept page:

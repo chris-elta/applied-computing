@@ -1,0 +1,69 @@
+---
+course: data-science
+section: w4-workflow
+order: 420
+title: Standard Data Formats
+visuals:
+  - type: svg
+    src: data-science/w4-wrangling/06.svg
+    caption: Slide 6 of 43 — five accepted standards and what each is for.
+notation:
+  - symbol: "CSV"
+    reads: C S V, or comma-separated values
+    means: A plain-text table, one row per line, columns separated by commas.
+  - symbol: "XML"
+    reads: X M L
+    means: A text format of nested tagged elements, for structured data that is not a table.
+  - symbol: "JSON"
+    reads: jay-son
+    means: >-
+      JavaScript Object Notation. Nested key–value data written as text; the usual format
+      for web APIs.
+  - symbol: "SQL"
+    reads: S Q L, or sequel
+    means: The query language of relational databases, which hold several tables linked to each other.
+  - symbol: "Pickle"
+    reads: pickle
+    means: Python's way of saving a data structure to a file so Python can load it back.
+questions:
+  - ask: Match the data to the format. A customer table linked to an orders table, which are queried together.
+    choices:
+      - text: An SQL database
+        correct: true
+        explains: >-
+          "Multiple related tables" is the slide's description of SQL databases.
+      - text: A single CSV file
+        explains: >-
+          A CSV is one flat table. Related tables would have to be duplicated or joined by
+          hand.
+      - text: Pickle
+        explains: >-
+          Pickle saves Python objects. It is for Python to read back, not for sharing
+          related tables with other tools.
+      - text: XML
+        explains: >-
+          XML suits nested, non-tabular data, not tables linked by key.
+---
+
+The lecture starts with a joke: historically, computer scientists would rather share a
+toothbrush than a data format. The cost of that attitude is that every data set seems to come
+in its own way. Accepted standards now exist, and knowing them saves a lot of parsing.
+
+| Format | Use it for |
+| --- | --- |
+| **CSV** | Tables, like spreadsheets |
+| **XML** | Structured but non-tabular data |
+| **JSON** | Data from APIs |
+| **SQL databases** | Multiple related tables |
+| **Pickle** | Serializing data structures in Python |
+
+## Reading the table
+
+The choice follows the shape of the data. A single flat table is a CSV. Data with nesting —
+an item containing a list containing records — is XML or JSON, and JSON is what most web
+APIs give you. Several tables linked by a shared key belong in a database. Pickle is
+different in kind: it exists to save and reload Python's own objects, so it is convenient
+inside a Python project and a poor choice for handing data to someone else.
+
+> Look at the shape of the data first. Tabular, nested, relational or "just my own Python
+> objects" each already has a standard answer.

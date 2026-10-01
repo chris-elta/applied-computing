@@ -1,0 +1,66 @@
+---
+course: data-science
+section: w4-compat
+order: 570
+title: Name Unification
+visuals:
+  - type: svg
+    src: data-science/w4-wrangling/34.svg
+    caption: Slide 34 of 43 — one person, many spellings, and the trade-off in matching them.
+notation:
+  - symbol: "Soundex, Metaphone"
+    reads: sound-ex, meta-phone
+    means: >-
+      Phonetic hashing: algorithms that turn a name into a code based on how it sounds, so
+      names that sound alike get the same code.
+  - symbol: "false positive"
+    reads: false positive
+    means: Two different people wrongly treated as the same one.
+  - symbol: "false negative"
+    reads: false negative
+    means: One person wrongly treated as two, because their names did not match.
+questions:
+  - ask: You loosen a name-matching rule so that "Skiena", "Skeina" and "Skienna" are merged. What is the risk you take on?
+    choices:
+      - text: More false positives — different people with similar names get merged
+        correct: true
+        explains: >-
+          Looser matching catches more variants of one person, but also more collisions
+          between different people. The slide's tradeoff is exactly this.
+      - text: More false negatives — real matches are missed
+        explains: >-
+          Loosening reduces missed matches. Tightening the rule is what increases them.
+      - text: No risk; unifying names always improves the data
+        explains: >-
+          Every rule makes errors of one kind or the other. You choose which kind is cheaper.
+      - text: Names will no longer be case-sensitive
+        explains: >-
+          Case handling is a separate simple transformation, and not a consequence of
+          fuzzy matching.
+---
+
+The lecturer's own name appears on the web as **(Steve | Steven | Stephen | S.) (S. | Sol | _)
+(Skiena | Skeina | Skienna)**. A system that compares strings exactly sees dozens of different
+people. The PubMed spike from earlier came from the same problem in a milder form: "F Riahi"
+and "Fatemeh Riahi".
+
+## Two kinds of tool
+
+- **Simple transformations**: lower-casing, removing middle names, and similar rules.
+- **Phonetic hashing**: **Soundex** and **Metaphone** assign names a code by sound, so
+  spelling variants that sound alike get one code.
+
+## The tradeoff
+
+**There is a tradeoff between false positives and false negatives.**
+
+| Matching rule | Effect |
+| --- | --- |
+| Strict | Few false positives, many false negatives — one person split into several |
+| Loose | Few false negatives, more false positives — different people merged |
+
+There is no setting with neither. The right place to sit depends on the cost of each
+mistake: if the next step is counting distinct authors, merging two people changes a count
+by one in the other direction from splitting one.
+
+> Every name-matching rule makes mistakes. Pick the direction of the mistakes deliberately.

@@ -1,0 +1,64 @@
+---
+course: data-science
+section: w4-sources
+order: 440
+title: Proprietary Data and Shrinking Public Data
+visuals:
+  - type: svg
+    src: data-science/w4-wrangling/09.svg
+    caption: Slide 9 of 43 — the richest data is usually locked up.
+  - type: svg
+    src: data-science/w4-wrangling/10.svg
+    caption: Slide 10 of 43 — LLMs have made open providers tighten access.
+notation:
+  - symbol: "API"
+    reads: A P I
+    means: >-
+      A defined way for a program to ask a service for data. "Rate-limited" means it only
+      answers so many requests per minute or day.
+questions:
+  - ask: Why have providers like Twitter and Reddit tightened access to data they once released openly?
+    choices:
+      - text: Large language models made the data commercially valuable as training material
+        correct: true
+        explains: >-
+          That is the slide's explanation. Once text can be turned into a product, giving it
+          away stops making sense to the owner.
+      - text: Privacy law forbids releasing social-media data
+        explains: >-
+          Privacy matters elsewhere in the week, but the slide ties this change to the
+          commercial promise of LLMs.
+      - text: Their data stopped being accurate
+        explains: >-
+          Accuracy is not what changed. Its value to others did.
+      - text: Python removed support for their APIs
+        explains: >-
+          Nothing to do with tooling. The providers chose to restrict access.
+---
+
+Facebook, Google, Amazon and Blue Cross hold exactly the data a data scientist would like:
+users, transactions, logs. Most organizations have, or should have, internal data sets that
+matter to their own business. That is the **proprietary** route.
+
+The lecture is plain about the limit: **getting outside access is usually impossible.** What
+companies do sometimes release is a rate-limited API, as Twitter and Google have. You get a
+trickle through a narrow door.
+
+If you work for the organization, the position is reversed: internal data is the best place to
+start, and the lecture suggests every organization should be collecting it.
+
+## Real public data is decreasing
+
+There are two pressures on open data, both from large language models.
+
+- **Providers tighten up.** The commercial promise of LLMs has made once-open sources, such
+  as Twitter and Reddit, restrict access to their text.
+- **The web fills with generated content.** AI-generated text and images online make it
+  harder to train *improved* models, since new data is increasingly produced by earlier
+  models rather than by people.
+
+The first makes data harder to get. The second makes the data you can get less trustworthy
+as a record of the world.
+
+> Assume the richest data belongs to someone who will not share it, and plan your project
+> around what you can legitimately obtain.

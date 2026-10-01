@@ -1,0 +1,94 @@
+---
+course: data-science
+section: w4-outliers
+order: 620
+title: Detecting Outliers
+visuals:
+  - type: svg
+    src: data-science/w4-wrangling/40.svg
+    caption: Slide 40 of 43 — the dinosaur vertebra, and what to do about outliers.
+  - type: svg
+    src: data-science/w4-wrangling/41.svg
+    caption: Slide 41 of 43 — detection as an unsupervised learning problem.
+notation:
+  - symbol: "outlier"
+    reads: out-lier
+    means: >-
+      A value far from the rest of the data. It may be a recording mistake, or it may be real
+      and rare.
+  - symbol: "k σ"
+    reads: k sigma
+    means: >-
+      A distance of `k` standard deviations from the mean. In normally distributed data,
+      points far past a few sigma should be very rare.
+  - symbol: "clustering"
+    reads: clustering
+    means: >-
+      Grouping data points by similarity without being told the groups in advance, an
+      example of unsupervised learning.
+questions:
+  - ask: Which first step does the lecture give for finding outliers?
+    choices:
+      - text: Look critically at the maximum and minimum values of every variable
+        correct: true
+        explains: >-
+          Extremes are where outliers live. A glance at min and max catches many unit errors
+          and typos before any modelling.
+      - text: Delete every value more than one standard deviation from the mean
+        explains: >-
+          About a third of normal data lies that far out, so you would delete real data.
+          Also, the slide says to understand the outlier before removing it.
+      - text: Fit a model and see which points it cannot explain
+        explains: >-
+          That is circular, and the next concept explains why deleting what a simple model
+          fails to explain can give a worse model.
+      - text: Plot the data in as many dimensions as possible
+        explains: >-
+          The slide says visual detection works only in low-dimensional spaces.
+  - ask: Your data has 200 variables per record. Why is checking for outliers by eye a poor plan?
+    choices:
+      - text: Visual detection works only in low dimensional spaces, so you need something like distance from a cluster centre
+        correct: true
+        explains: >-
+          You cannot plot 200 dimensions. Treating outlier detection as clustering gives an
+          automatic score: how far a point is from its cluster's centre.
+      - text: Outliers do not occur in high dimensions
+        explains: >-
+          They occur there too, and are harder to see.
+      - text: Plots are always misleading
+        explains: >-
+          Plots are very good in two or three dimensions. The limit is dimensionality.
+      - text: High-dimensional data has no centre
+        explains: >-
+          It has one. Clusters have centres in any number of dimensions.
+---
+
+The slide opens with a story: **the largest reported dinosaur vertebra is 50% larger than all
+the others, presumably a data error.** One number far from the rest is a reason to look, not
+yet a reason to act.
+
+## Finding them
+
+- **Look critically at the maximum and minimum values for all variables.** A height of 7,000 cm
+  or an age of −3 shows up immediately.
+- **Normally distributed data should not have large outliers, `k σ` from the mean.** For
+  large `k`, a point is so improbable under the normal assumption that a mistake is the more
+  likely explanation. This is where the z-scores from earlier come in: a z-score of 8 is an
+  alarm.
+
+## When you cannot just look
+
+**Visually, it is easy to detect outliers, but only in low dimensional spaces.** With many
+variables you cannot plot the data. The slide's answer: **think of it as an unsupervised
+learning problem, like clustering.** Group the points, and **points far from their cluster
+centre are good candidates for outliers.**
+
+## Detecting is not deleting
+
+The slide's red line is: **fix why you have an outlier. Don't just delete.** An outlier is a
+symptom. It may come from a unit mix-up, a placeholder like 9999, a real rare event or a
+different population. Finding out which tells you whether to fix it, flag it or keep it. The
+next concept covers when deletion helps and when it hurts.
+
+> An outlier is a question: why is this value here? Answer it before you decide what to do
+> with the value.

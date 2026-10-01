@@ -1,0 +1,71 @@
+---
+course: data-science
+section: w4-bias
+order: 530
+title: Confirmation Bias and the Dunning-Kruger Effect
+visuals:
+  - type: svg
+    src: data-science/w4-wrangling/25.svg
+    caption: Slide 25 of 43 — confirmation bias and Dunning-Kruger, with the plot of perceived against actual score.
+notation:
+  - symbol: "confirmation bias"
+    reads: confirmation bias
+    means: >-
+      Stopping the search for data, or the checking of results, once you find what you
+      expected.
+  - symbol: "Dunning-Kruger effect"
+    reads: Dunning-Kruger effect
+    means: >-
+      Poor performers over-estimate how well they are doing. In the slide's plot, perceived
+      score sits above actual score at the low end and the two meet at the top.
+questions:
+  - ask: You run an analysis, get the pattern you predicted, and stop checking. What is the problem?
+    choices:
+      - text: Confirmation bias — you only kept looking until the result matched your expectation
+        correct: true
+        explains: >-
+          A surprising result gets another look; an expected one gets a pass. That asymmetry
+          is how wrong answers survive.
+      - text: Survivor bias — you only saw the successful runs
+        explains: >-
+          Survivor bias is about who is missing from the sample. Here the issue is when you
+          stopped.
+      - text: Selection bias — your sample was too small
+        explains: >-
+          Sample size is not the point; the stopping rule is.
+      - text: None; matching the prediction proves the analysis correct
+        explains: >-
+          An analysis with a bug can match a prediction too. Expected results need the same
+          scrutiny as unexpected ones.
+---
+
+Two further biases from the same slide. These live in the people doing the analysis rather
+than in the sampling.
+
+## Confirmation bias
+
+**People stop sampling or analysing when the results confirm expectation.** The mechanism is
+a stopping rule. If a surprising result prompts another look and an expected one does not,
+errors that happen to agree with you are never found.
+
+The previous section's PubMed example shows the defence. The authors stated what the plot
+should look like first, so a mismatch was visible. A result that matched without checking
+could still have been an artifact.
+
+## Dunning-Kruger effect
+
+**Poor performers overestimate their level of performance.** The slide's plot has competence
+group on the horizontal axis and score on the vertical, with two lines: actual and perceived.
+At low competence the perceived line sits well above the actual one. They converge as
+competence rises.
+
+For data work the practical reading is about *you*. When you are new to a field, your
+confidence in an analysis is least reliable, because you do not yet know what can go wrong.
+Get a second reader, and be more suspicious when the work seems easy.
+
+| Bias | Where it acts | Defence |
+| --- | --- | --- |
+| Confirmation | When you stop looking | Check expected results as hard as surprising ones |
+| Dunning-Kruger | In your estimate of your own skill | Outside review |
+
+> Your own certainty is not evidence. Build checks that do not depend on how sure you feel.

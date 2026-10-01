@@ -1,0 +1,78 @@
+---
+course: data-science
+section: w4-artifacts
+order: 510
+title: A Worked Artifact — First-Time Authors
+visuals:
+  - type: svg
+    src: data-science/w4-wrangling/20.svg
+    caption: Slide 20 of 43 — the question, asked before showing the result.
+  - type: svg
+    src: data-science/w4-wrangling/21.svg
+    caption: Slide 21 of 43 — the histogram with its spike around 2002.
+  - type: svg
+    src: data-science/w4-wrangling/22.svg
+    caption: Slide 22 of 43 — the same histogram after the names are unified.
+notation:
+  - symbol: "F Riahi → Fatemeh Riahi"
+    reads: F Riahi became Fatemeh Riahi
+    means: >-
+      The same author recorded with an initial in older records and a full first name from
+      2002. A matcher that compares names exactly sees two different people.
+questions:
+  - ask: A study finds a huge spike in "first-time top authors" in 2002 and a normal-looking decline elsewhere. What explains it, and what should you do?
+    choices:
+      - text: The database began recording full first names in 2002, so existing authors looked new; unify the names and recount
+        correct: true
+        explains: >-
+          Authors recorded as "F Riahi" before 2002 and "Fatemeh Riahi" afterwards were
+          counted as new people when the format changed. Normalizing names removes the spike.
+      - text: A real surge of new top authors appeared that year; investigate the cause
+        explains: >-
+          A one-year spike in an otherwise smooth distribution is the shape that should make
+          you doubt the data before you theorize about the world.
+      - text: The data for 2002 is an outlier and should be deleted
+        explains: >-
+          Deleting it would hide the problem and bias the rest. The right move is to find out
+          why it exists.
+      - text: Publication counts always spike once in a series
+        explains: >-
+          Nothing in the lecture says that, and the corrected plot has no spike.
+---
+
+The lecture builds an example around a bibliographic study. Using PubMed data, the team
+identified the **year of first publication for the 100,000 most frequently cited authors**,
+then plotted how many top authors started in each year.
+
+Before showing the plot, the slide asks: **what *should* the distribution look like?** The
+lesson is stated outright: *it is important to have a preconception of any result to help
+detect anomalies.*
+
+## What the plot showed
+
+The histogram has a tall peak in the mid-1960s and a long decline after it. That much is plausible. But there is also a **sharp isolated spike around
+2002**, with almost nothing around it. The lecturer's remark: a student once tried to foist
+this off on them.
+
+Real careers do not do that. Nothing happened in 2002 to make thousands of scientists publish
+for the first time in one year, so the spike looks like an artifact. The slide asks what
+artifacts you see and what could cause them.
+
+## The cause
+
+PubMed **began using authors' first names in 2002.** Before that an author was "F Riahi"; from
+2002 they were "Fatemeh Riahi". A program matching exact names concluded that every author
+whose name changed form was a new person appearing in 2002.
+
+After unifying the names the spike is gone, and the distribution is the smooth decline you
+would have predicted. The slide's summary: *data cleaning gets rid of such artifacts.*
+
+## The method
+
+1. State what the result ought to look like.
+2. Compare with what you got.
+3. Treat any mismatch as a bug until shown otherwise.
+4. Look for a change in how the data was *recorded* at the date of the anomaly.
+
+> The error was not in anyone's science. A change in record format created a feature that
+> looked like a finding.

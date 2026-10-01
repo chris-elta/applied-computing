@@ -1,0 +1,62 @@
+---
+course: data-science
+section: w4-sources
+order: 450
+title: Recognizing Generated Text and Images
+visuals:
+  - type: svg
+    src: data-science/w4-wrangling/11.svg
+    caption: Slide 11 of 43 — watermarking, and why it is fragile.
+notation:
+  - symbol: "watermark"
+    reads: watermark
+    means: >-
+      A hidden signal added to an object, so that its origin can be recognized later. A
+      banknote's watermark is the familiar physical version.
+  - symbol: "low-order bits"
+    reads: low-order bits
+    means: >-
+      The least significant bits of a number. Changing them barely alters a pixel's colour,
+      so a pattern can be hidden there.
+questions:
+  - ask: Why is watermarking by low-order bit patterns a weak defence against generated images being passed off as real?
+    choices:
+      - text: The pattern can be easily masked away
+        correct: true
+        explains: >-
+          The slide says exactly this. Because the hidden bits barely affect the image,
+          resaving or altering it can wipe them out without anyone noticing.
+      - text: The pattern makes the image visibly worse
+        explains: >-
+          The opposite: it is designed to be invisible. That is why it is subliminal.
+      - text: Computers cannot read the low-order bits
+        explains: >-
+          They can. That is how the pattern is detected when it survives.
+      - text: Only text can be watermarked
+        explains: >-
+          The slide discusses both. The bit-pattern idea is given for images, and a
+          pseudo-random method for text.
+---
+
+If generated content fills the web, a data scientist wants some way to tell it from the real
+thing. The lecture's answer is **watermarking**: adding subliminal data to an object so that
+it can be recognized as original.
+
+## Two sketches
+
+- **Low-order bit patterns.** Hide a pattern in the least significant bits of an image. The
+  picture looks the same, but the pattern is there for a detector to find. The lecture's
+  warning is that this **can be easily masked away.**
+- **Text.** The slide says ChatGPT *may* watermark text by using a pseudo-random generator
+  for decoding. The word "may" is the lecturer's: this is a possibility, not a guarantee you
+  can rely on.
+
+## What to take from it
+
+Watermarking is a partial tool. It helps only when the generator cooperated in marking its
+output, and only until someone removes the mark. For data collection the practical
+consequence is the previous concept's second point: you cannot assume that recent web text or
+images were made by people.
+
+> A missing watermark is not evidence that content is real, and a present one can be
+> removed. Provenance of your data is something to establish, not assume.

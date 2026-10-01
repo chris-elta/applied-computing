@@ -1,0 +1,68 @@
+---
+course: data-science
+section: w4-sources
+order: 430
+title: Finding the Right Data Set
+visuals:
+  - type: svg
+    src: data-science/w4-wrangling/07.svg
+    caption: Slide 7 of 43 — the critical issue, and metadata.
+  - type: svg
+    src: data-science/w4-wrangling/08.svg
+    caption: Slide 8 of 43 — the seven kinds of source this week walks through.
+notation:
+  - symbol: "metadata"
+    reads: meta-data
+    means: >-
+      Data about the data: the title of a book, the caption on an image, the edit history of
+      a Wikipedia page. It often arrives free with a large data set.
+questions:
+  - ask: What does "repurposing metadata requires imagination" mean?
+    choices:
+      - text: The labels attached to a data set, such as captions or edit histories, can answer questions they were never collected for
+        correct: true
+        explains: >-
+          Image captions were written to describe images, but they are also a large labelled
+          text data set. The value is in seeing the second use.
+      - text: You should invent metadata when the data set has none
+        explains: >-
+          Inventing labels would be fabrication. The slide is about reusing what is already
+          there.
+      - text: Metadata is only useful to the people who collected it
+        explains: >-
+          The opposite. The slide's point is that others can find new uses for it.
+      - text: Metadata is less trustworthy than the data itself
+        explains: >-
+          The slide says nothing about trust. It says metadata is valuable and underused.
+---
+
+The lecture says the critical issue in any modelling project is **finding the right data
+set**, and adds that this will certainly be the case for your projects. A good model on the
+wrong data answers the wrong question.
+
+## Metadata
+
+Large data sets often arrive with valuable **metadata**: book titles, image captions,
+Wikipedia edit history. That information was recorded for its own purposes, but it can be
+turned to others. A caption written to describe a photo is also a human label for what the
+photo contains; an edit history is a record of which topics people argue about.
+
+The lecture's phrase is that **repurposing metadata requires imagination.** Ask what else the
+labels around the data could tell you.
+
+## The map for the rest of the week
+
+The next concepts walk through the seven sources on the slide:
+
+1. Proprietary data sources
+2. Government data sets
+3. Academic data sets
+4. Web search (scraping)
+5. Sensor data
+6. Crowdsourcing
+7. Sweat equity
+
+The slide also points to Google's dataset search as a place to start looking.
+
+> Before choosing a model, ask which data set would answer the question, and which of these
+> seven routes could get it.

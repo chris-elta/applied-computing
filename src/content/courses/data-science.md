@@ -59,4 +59,32 @@ sections:
     title: Week 3 · Logarithms
     summary: >-
       Logs for stable products, symmetric ratios and skewed data.
+  - id: w4-workflow
+    title: Week 4 · Munging and tools
+    summary: >-
+      What data wrangling is, the environments it happens in, and the formats data arrives in.
+  - id: w4-sources
+    title: Week 4 · Where data comes from
+    summary: >-
+      Proprietary, public, scraped, sensed, crowdsourced and hand-entered data, and what each costs you.
+  - id: w4-artifacts
+    title: Week 4 · Errors and artifacts
+    summary: >-
+      Telling lost information from damage done by processing, using a worked mystery.
+  - id: w4-bias
+    title: Week 4 · Biases in sampling and analysis
+    summary: >-
+      Selection, survivor, confirmation and Dunning-Kruger.
+  - id: w4-compat
+    title: Week 4 · Making data compatible
+    summary: >-
+      Units, normalization, encodings, names, dates and money.
+  - id: w4-missing
+    title: Week 4 · Missing data
+    summary: >-
+      Representing absence honestly, and imputing when you must.
+  - id: w4-outliers
+    title: Week 4 · Outliers
+    summary: >-
+      Finding extreme points, and when removing them helps or hurts.
 ---

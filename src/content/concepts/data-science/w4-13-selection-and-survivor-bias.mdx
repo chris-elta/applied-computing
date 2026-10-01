@@ -1,0 +1,97 @@
+---
+course: data-science
+section: w4-bias
+order: 520
+title: Selection Bias and Survivor Bias
+visuals:
+  - type: svg
+    src: data-science/w4-wrangling/24.svg
+    caption: Slide 24 of 43 — where biases arise — gathering, analysis and application.
+  - type: svg
+    src: data-science/w4-wrangling/25.svg
+    caption: Slide 25 of 43 — the four classic biases, with the bomber diagram.
+notation:
+  - symbol: "bias"
+    reads: bias
+    means: >-
+      A systematic tilt in the data or the analysis that makes it misrepresent the
+      population you care about. More data does not fix it.
+  - symbol: "selection bias"
+    reads: selection bias
+    means: Over- or under-sampling certain groups, so the sample is not the population.
+  - symbol: "survivor bias"
+    reads: survivor bias
+    means: >-
+      Selecting at the end of a process, so those who dropped out early are missing from
+      your data.
+questions:
+  - ask: Returning bombers show bullet holes across wings and tail but few in the engines. What does survivor bias say you should conclude?
+    choices:
+      - text: Armor the engines — planes hit there did not come back to be counted
+        correct: true
+        explains: >-
+          You only see the survivors. Missing damage in a place is evidence that damage
+          there is fatal, not that it never happens.
+      - text: Armor the wings and tail, where the holes are
+        explains: >-
+          That reads the sample as if it were all planes. Hits in those places were survivable
+          by construction.
+      - text: Engines are rarely hit, so no extra armor is needed
+        explains: >-
+          They may be hit just as often. The planes hit there are missing from the sample.
+      - text: Collect a larger sample of returning bombers
+        explains: >-
+          More survivors give the same biased picture. The fix is to account for the ones
+          that did not return.
+  - ask: A survey about job satisfaction is emailed to current employees only. Which bias is the clearest risk?
+    choices:
+      - text: Survivor bias — people who left because they were unhappy are not in the sample
+        correct: true
+        explains: >-
+          Sampling at the end of the process (still employed) under-samples those who exited
+          early, so satisfaction looks higher than it is.
+      - text: Confirmation bias — the survey will confirm what the company hopes
+        explains: >-
+          That is a risk in how results are read, but the structural problem is who was
+          selected to answer.
+      - text: Dunning-Kruger — employees overrate their ability
+        explains: >-
+          That is about self-assessment of skill, not about who is in the sample.
+      - text: No bias; the sample is large
+        explains: >-
+          Size does not cure bias. A large sample from the wrong group is a confident wrong
+          answer.
+---
+
+The slide says **data bias occurs when data is inaccurate, incomplete or missing, which can
+lead to an inaccurate representation of a population.** And: **the best way to clean data is
+to eliminate systematic biases in data collection.** It is cheaper to avoid the problem at
+collection than to repair it afterwards.
+
+The lecture's diagram sorts biases by where they enter — in **gathering** data, in
+**analysing** it, and in **applying** the result. This concept covers the two that happen at
+gathering time.
+
+## Selection bias
+
+**Selection bias** is over- or under-sampling certain groups. If a phone poll only reaches
+people who answer calls from unknown numbers, the sample is those people, whatever the
+population is.
+
+## Survivor bias
+
+**Survivor bias** arises when you select at the end: *by selecting at the end, you
+undersample who exits early.*
+
+The slide's picture is a bomber covered in marks where returning planes were hit. The tempting
+reading is to armor the marked areas. But these are the planes that came back. The planes
+hit in the unmarked areas, the engines, did not return to be counted. The gaps are the
+information.
+
+| Observation | Tempting reading | Correct reading |
+| --- | --- | --- |
+| Few holes in the engine area | Engines rarely get hit | Hits there are fatal |
+| Successful companies share a trait | The trait causes success | Failed companies with it are not in your list |
+
+> Ask who is *not* in your data and why. The missing records often say more than the
+> present ones.
