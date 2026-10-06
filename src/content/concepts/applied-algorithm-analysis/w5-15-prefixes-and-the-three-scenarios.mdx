@@ -1,0 +1,141 @@
+---
+course: applied-algorithm-analysis
+section: w5-edit
+order: 910
+title: Prefixes and the Three Scenarios
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week5.html?hash=true#/48
+    caption: Slides 49–51 of 63 — the subproblem, the three possible last columns, and the recurrence with its base cases.
+notation:
+  - symbol: "x, y"
+    reads: x and y
+    means: >-
+      The two strings. `x` has length `m` and `y` has length `n`.
+  - symbol: "x[1…i]"
+    reads: x from one to i
+    means: >-
+      The first `i` characters of `x` — a prefix. Characters are numbered from 1 here, so
+      that `x[1…0]` can stand for the empty string.
+  - symbol: "E(i, j)"
+    reads: E of i, j
+    means: >-
+      The edit distance between the first `i` characters of `x` and the first `j`
+      characters of `y`.
+  - symbol: "diff(i, j)"
+    reads: diff of i, j
+    means: >-
+      0 if `x[i]` and `y[j]` are the same letter, 1 if they are not. The cost of putting
+      one over the other.
+  - symbol: "min{a, b, c}"
+    reads: the min of a, b and c
+    means: >-
+      The smallest of the three values.
+questions:
+  - ask: >-
+      The best alignment of `x[1…i]` with `y[1…j]` ends in the column `x[i]` over a gap.
+      What is `E(i, j)`?
+    choices:
+      - text: "`1 + E(i−1, j)`"
+        correct: true
+        explains: >-
+          The column uses up `x[i]` and nothing from `y`, and costs 1 because a gap always
+          differs. What remains is `x[1…i−1]` against all of `y[1…j]`.
+      - text: "`1 + E(i, j−1)`"
+        explains: >-
+          That is the column with a gap on top and `y[j]` below — an insertion. It uses up
+          a letter of `y`, not of `x`.
+      - text: "`diff(i, j) + E(i−1, j−1)`"
+        explains: >-
+          That is letter over letter, which uses up one character from each string. A
+          gap column uses up only one.
+      - text: "`E(i−1, j)`"
+        explains: >-
+          The right subproblem, but the column itself is not free. A letter over a gap is
+          a deletion and costs 1.
+    work: |-
+      Last column: `x[i]` / `−`. Cost 1.
+      Letters still to align: `x[1…i−1]` and `y[1…j]` — that is `E(i−1, j)`.
+      Total: `1 + E(i−1, j)`. This is Scenario 1, a deletion.
+  - ask: >-
+      For `x` = FLAW and `y` = LAWN, how many subproblems `E(i, j)` are there, and what is
+      `E(4, 0)`?
+    choices:
+      - text: 25 subproblems; `E(4, 0) = 4`
+        correct: true
+        explains: >-
+          `i` and `j` each run from 0 to 4, giving 5 × 5. And turning FLAW into the empty
+          string takes four deletions.
+      - text: 16 subproblems; `E(4, 0) = 4`
+        explains: >-
+          4 × 4 leaves out the empty prefixes. `i = 0` and `j = 0` are real subproblems —
+          they are the base cases everything else is built on.
+      - text: 25 subproblems; `E(4, 0) = 0`
+        explains: >-
+          `E(4, 0)` compares FLAW with the empty string. They are not the same string, so
+          the distance is not 0; all four letters must be deleted.
+      - text: 8 subproblems; `E(4, 0) = 4`
+        explains: >-
+          That adds the lengths. There is a subproblem for every *pair* of prefixes, so
+          the counts multiply.
+    work: |-
+      `m = 4`, `n = 4`. Subproblems: `(m + 1)(n + 1) = 5 × 5 = 25`.
+      `E(4, 0)`: FLAW → "" by deleting F, L, A, W. Base case `E(i, 0) = i` gives 4.
+---
+
+The previous concept ended with an observation: strip the last column from an alignment and
+what remains aligns a prefix of one string with a prefix of the other. That observation is
+most of the dynamic program. This concept writes it out with the recipe.
+
+## Step 1 — the subproblem
+
+Call the strings `x` and `y`, with lengths `m` and `n`. A **prefix** is a starting piece:
+SNO is a prefix of SNOWY.
+
+> `E(i, j)` = the edit distance between `x[1…i]` and `y[1…j]`.
+
+There are `(m + 1)(n + 1)` of these — the "+ 1" because `i` and `j` may be 0, meaning the
+empty prefix — and the answer wanted is `E(m, n)`. One index was enough to name a
+subproblem for the LIS. Here it takes a pair, because there are two strings to cut.
+
+## Step 2 — what the rightmost column can be
+
+Consider the best alignment of `x[1…i]` with `y[1…j]` and look only at its last column.
+
+| Scenario | Column | Meaning | Cost |
+| --- | --- | --- | --- |
+| 1 | `x[i]` over `−` | delete `x[i]` | `1 + E(i−1, j)` |
+| 2 | `−` over `y[j]` | insert `y[j]` | `1 + E(i, j−1)` |
+| 3 | `x[i]` over `y[j]` | match or substitute | `diff(i, j) + E(i−1, j−1)` |
+
+where `diff(i, j)` is 0 if `x[i] = y[j]` and 1 otherwise.
+
+Read each cost as "this column, plus the best way to align whatever is left". In scenario
+1 the column used up one letter of `x` and none of `y`, so what is left is `x[1…i−1]`
+against `y[1…j]`.
+
+**Is there a fourth scenario?** Try to think of one. The only remaining possibility is a gap
+over a gap, and a column like that aligns nothing with nothing — delete it and you have the
+same alignment. So the three are exhaustive: the best alignment ends in one of them, and the
+recurrence takes the cheapest.
+
+```
+E(i, j) = min{ 1 + E(i−1, j),  1 + E(i, j−1),  diff(i, j) + E(i−1, j−1) }
+```
+
+This is where "exactly" comes from. The three-edit example for kitten showed one possibility;
+the `min` covers all of them, because every alignment has a last column and every last
+column is in the table.
+
+## Step 3 — the base cases
+
+```
+E(i, 0) = i        E(0, j) = j
+```
+
+Where do these come from? They are the only subproblems with nothing smaller underneath.
+Turning a prefix of length `i` into the empty string takes `i` deletions. Building a prefix
+of length `j` from the empty string takes `j` insertions.
+
+> For problems about two strings, cut both down to prefixes and index the subproblem by the
+> pair of lengths. Then ask what the last column — the last decision — could have been.

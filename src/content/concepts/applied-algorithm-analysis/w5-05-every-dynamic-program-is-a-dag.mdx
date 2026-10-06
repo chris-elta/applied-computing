@@ -1,0 +1,88 @@
+---
+course: applied-algorithm-analysis
+section: w5-dags
+order: 810
+title: Every Dynamic Program Is a Dag
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week5.html?hash=true#/20
+    caption: Slides 21–22 of 63 — why the dag algorithm is the whole idea, then a grid to practise on.
+notation:
+  - symbol: dependency
+    reads: dependency
+    means: >-
+      Subproblem `v` depends on subproblem `u` when computing `v`'s answer reads `u`'s.
+      Drawn as an edge `u → v`.
+  - symbol: "(i, j)"
+    reads: i comma j
+    means: >-
+      A cell of a grid: row `i`, column `j`. Rows count downward and columns count to the
+      right.
+questions:
+  - ask: >-
+      In a grid problem, each cell `(i, j)` depends only on the cell above it and the cell to
+      its left. Which fill order is **not** valid?
+    choices:
+      - text: Row by row from the top, each row right to left
+        correct: true
+        explains: >-
+          Going right to left, a cell is computed before its left neighbour, which it
+          needs. That edge points against the order, so this is not a linearization.
+      - text: Row by row from the top, each row left to right
+        explains: >-
+          Valid. The cell above is in an earlier row and the cell to the left was computed
+          just before.
+      - text: Column by column from the left, each column top to bottom
+        explains: >-
+          Valid. The cell to the left is in an earlier column and the cell above was
+          computed just before. A dag usually has more than one linearization.
+      - text: Diagonal by diagonal, starting from the top-left corner
+        explains: >-
+          Valid. Both neighbours a cell needs lie on the previous diagonal, which is
+          already complete.
+    work: |-
+      Edges into `(i, j)`: from `(i−1, j)` and from `(i, j−1)`.
+      An order is valid when both sources come before `(i, j)`.
+      Right-to-left puts `(i, j−1)` after `(i, j)`. The other three put it before.
+---
+
+The shortest-path loop from the previous concept did not solve one problem. It solved six:
+`dist(S)`, `dist(C)`, `dist(A)` and so on, one per node. It began with the smallest,
+`dist(S) = 0`, which is known immediately, and worked towards larger ones — where "large"
+means "depends on many others being solved first". It filled a table in a chosen order.
+
+That is a bottom-up dynamic program. And the reason it worked is worth separating from the
+graph it happened to be about.
+
+## Subproblems have a dag of their own
+
+Take any dynamic program. Draw one dot for each subproblem. Draw an arrow `u → v` whenever
+computing `v` reads the answer to `u`. The picture you get is a dag — it cannot contain a
+cycle, because a cycle would mean a subproblem that needs its own answer before it can be
+computed.
+
+| In the picture | In the dynamic program |
+| --- | --- |
+| a node | a subproblem |
+| an edge `u → v` | `v` depends on `u` |
+| a linearization | a valid order to fill the table |
+
+For Fibonacci the nodes are `F(0), F(1), …, F(n)`, the edges into `F(i)` come from `F(i−1)`
+and `F(i−2)`, and the order `0, 1, 2, …` is a linearization. For the shortest-path problem
+the dag of subproblems was the road map itself, which is why that problem shows the idea so
+plainly.
+
+This is what "choose an order" in step 3 of the recipe means. An order is correct exactly
+when every arrow points forward in it. Top-down memoization finds such an order for you by
+following the arrows backwards from the answer; bottom-up tabulation makes you name one.
+
+## A grid is a dag
+
+A good first exercise is LeetCode 64, *Minimum Path Sum*: a grid of numbers, moves only
+right or down, and you want the cheapest route from the top-left to the bottom-right. Each
+cell depends only on the cell above and the cell to the left. That is a dag with two edges
+into most nodes, and row by row is one way to linearize it. Before opening an editor, say
+the subproblem out loud — what does the number stored in a cell mean?
+
+> Nodes are subproblems, edges are dependencies, and the order is a linearization. Solve the
+> subproblems in that order and every answer you need is already there when you need it.

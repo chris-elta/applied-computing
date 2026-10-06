@@ -1,0 +1,132 @@
+---
+course: applied-algorithm-analysis
+section: w5-lis
+order: 830
+title: "Choosing the State: Ending at i"
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week5.html?hash=true#/26
+    caption: Slides 27–28 of 63 — the subproblem, then the recurrence, initialization and answer.
+notation:
+  - symbol: "dp[i]"
+    reads: d p of i
+    means: >-
+      For this problem: the length of the longest increasing subsequence that **ends at**
+      position `i`, so its last number is `nums[i]`.
+  - symbol: "max{ … : condition }"
+    reads: the max of … over all j such that …
+    means: >-
+      The largest value among those that pass the condition after the colon. In
+      `max{dp[j] : j < i, nums[j] < nums[i]}`, look at every earlier position `j` holding a
+      smaller number and take the biggest `dp[j]`.
+  - symbol: "j < i"
+    reads: j less than i
+    means: >-
+      Position `j` is earlier in the array than position `i`.
+questions:
+  - ask: >-
+      Why is "`dp[i]` = the length of the LIS among the first `i` elements" a poor choice of
+      state for this problem?
+    choices:
+      - text: >-
+          It does not say what number that subsequence ends with, so you cannot tell whether
+          `nums[i]` may be added to it
+        correct: true
+        explains: >-
+          To extend a subsequence you must know its last number. "Ending at `i`" fixes it:
+          the last number is `nums[i]`. "Among the first `i`" leaves it unknown.
+      - text: It would need a two-dimensional table
+        explains: >-
+          It is still one number per position. The trouble is what the number fails to
+          tell you, not how many of them there are.
+      - text: It makes the table take `O(n²)` space
+        explains: >-
+          Either definition gives a table of `n` cells.
+      - text: It is the same definition in different words
+        explains: >-
+          They differ. For `[1, 2, 3, 0]` the LIS among all four elements is 3, but the LIS
+          ending at the last position is 1.
+    work: |-
+      Suppose the best among the first four elements has length 3 and the next number is 7.
+      Can 7 extend it? Only if that subsequence ends below 7 — which the state does not record.
+      With "ending at `j`", the last number is `nums[j]`, and the test is just `nums[j] < 7`.
+  - ask: >-
+      With `dp[i]` = the LIS ending at `i`, the table for `[1, 2, 3, 0]` is `[1, 2, 3, 1]`.
+      What is the LIS, and where is it read from?
+    choices:
+      - text: 3 — the maximum over the whole table
+        correct: true
+        explains: >-
+          The best subsequence, `1, 2, 3`, ends at position 2, not at the last position.
+          Since each cell is about one particular ending, the answer is the best over all
+          endings.
+      - text: 1 — the last cell, `dp[n−1]`
+        explains: >-
+          The last cell answers "what is the longest increasing subsequence ending with the
+          0?", which is just `[0]`. The answer is the last cell only when the state
+          describes a whole prefix.
+      - text: 7 — the sum of the table
+        explains: >-
+          The cells are lengths of different, overlapping subsequences. Adding them counts
+          the same elements many times.
+      - text: 4 — the number of cells
+        explains: >-
+          That would be right only if the whole array were increasing. The final 0 breaks
+          it.
+    work: |-
+      `dp[0] = 1` (`[1]`), `dp[1] = 2` (`[1, 2]`), `dp[2] = 3` (`[1, 2, 3]`).
+      `dp[3]`: no earlier number is below 0, so `dp[3] = 1`.
+      `max{1, 2, 3, 1} = 3`, found at position 2. `dp[n−1] = 1`.
+---
+
+Ask a room for a subproblem and most people offer "the length of the LIS among the first `i`
+elements". It sounds right, and it is the definition that makes the answer sit neatly in the
+last cell. It also does not work, and seeing why is the most useful thing in this module.
+
+## What the state has to carry
+
+Say you know the longest increasing subsequence among the first five numbers has length 3,
+and the sixth number is 7. Can you extend it to length 4?
+
+It depends on whether that subsequence ends in something smaller than 7. And the state does
+not say. A length alone is not enough information to take the next step.
+
+The fix is to put the missing information into the definition:
+
+> `dp[i]` = the length of the longest increasing subsequence **ending at index `i`**.
+
+Now the last number is known — it is `nums[i]` — and the question "can I extend this?" has
+an answer.
+
+## Step 2 — the transition
+
+A subsequence ending at `i` is `nums[i]` on its own, or `nums[i]` added to some increasing
+subsequence that ends earlier with a smaller number. Take the longest of those:
+
+```
+dp[i] = 1 + max{ dp[j] : j < i, nums[j] < nums[i] }
+```
+
+If no such `j` exists, `dp[i] = 1`.
+
+This is the longest-path sweep from the previous concept, written down: the edges into node
+`i` come from every earlier `j` with a smaller number, and `max` replaces `min`.
+
+## Step 3 — initialize, then read the answer
+
+Start with `dp[i] = 1` for every `i`: each element alone is an increasing subsequence of
+length 1. Fill left to right.
+
+Then:
+
+```
+LIS = max{ dp[0], dp[1], …, dp[n−1] }
+```
+
+**The answer is not `dp[n−1]`.** That cell is about subsequences ending at the last element,
+and the best one need not end there. Why? Because of the definition you chose. You bought
+the ability to write a recurrence by making each cell about one particular ending, and the
+price is that no single cell is about the whole array.
+
+> A state has to carry enough information to take the next step. When it does, check what
+> each cell now means before deciding where the answer is.

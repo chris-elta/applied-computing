@@ -1,0 +1,131 @@
+---
+course: applied-algorithm-analysis
+section: w5-lis
+order: 880
+title: Recovering the Subsequence with prev
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week5.html?hash=true#/36
+    caption: Slides 37–39 of 63 — the question, the one extra array, and the walk back along it.
+notation:
+  - symbol: "prev[i]"
+    reads: prev of i
+    means: >-
+      The position `j` whose `dp[j]` gave `dp[i]` its value — the element that comes just
+      before `nums[i]` in the best subsequence ending at `i`.
+  - symbol: "−1"
+    reads: minus one
+    means: >-
+      A marker meaning "nothing comes before". It is used because no real position is
+      negative.
+  - symbol: "6 → 5 → 3"
+    reads: six, then five, then three
+    means: >-
+      A chain of positions followed through `prev`: `prev[6]` is 5 and `prev[5]` is 3.
+questions:
+  - ask: >-
+      For `nums = [2, 6, 3, 4, 1, 5]` the tables are `dp = [1, 2, 2, 3, 1, 4]` and
+      `prev = [−1, 0, 0, 2, −1, 3]`. What does the walk back return?
+    choices:
+      - text: "`[2, 3, 4, 5]`"
+        correct: true
+        explains: >-
+          Start at the largest `dp`, index 5. Follow `prev`: 5 → 3 → 2 → 0 → −1, meeting
+          5, 4, 3, 2. Reverse.
+      - text: "`[5, 4, 3, 2]`"
+        explains: >-
+          Those are the right numbers in the order the walk meets them, last to first. The
+          final step is to reverse.
+      - text: "`[1, 5]`"
+        explains: >-
+          That follows the array backwards one position at a time from the end. The walk
+          follows `prev`, and `prev[5]` is 3, not 4.
+      - text: "`[2, 6]`"
+        explains: >-
+          That starts from the front. The walk has to start where `dp` is largest — index
+          5 — because that is where the longest subsequence ends.
+    work: |-
+      Largest `dp` is 4, at `i = 5` (the number 5).
+      `prev[5] = 3` → number 4. `prev[3] = 2` → number 3. `prev[2] = 0` → number 2. `prev[0] = −1` → stop.
+      Met: 5, 4, 3, 2. Reversed: `[2, 3, 4, 5]`.
+  - ask: >-
+      In the loop, the test `dp[j] + 1 > dp[i]` is changed to `dp[j] + 1 ≥ dp[i]`. On
+      `[10, 9, 2, 5, 3, 7, 101, 18]`, what changes?
+    choices:
+      - text: >-
+          The `dp` values stay the same, but ties now go to the later `j`, so the walk
+          returns a different, equally long subsequence
+        correct: true
+        explains: >-
+          With `>`, `prev[5]` is 3 (the 5) because it is met first. With `≥`, the tie at
+          `j = 4` overwrites it, and the walk from index 6 gives `[2, 3, 7, 101]`. Both
+          have length 4.
+      - text: The `dp` values get larger, so the reported length is wrong
+        explains: >-
+          The update still sets `dp[i]` to `dp[j] + 1`, and only when that is at least the
+          current value. No cell can end up above the true maximum.
+      - text: Nothing at all changes
+        explains: >-
+          The lengths do not change, but `prev` does wherever two candidates tie — here at
+          `i = 5`, where `dp[3]` and `dp[4]` are both 2.
+      - text: The walk no longer returns an increasing subsequence
+        explains: >-
+          Every `prev[i]` still points to an earlier, smaller number with the right `dp`.
+          Any tied winner is a valid one.
+    work: |-
+      At `i = 5` (the 7): candidates `j = 2, 3, 4` with `dp = 1, 2, 2`.
+      With `>`: `j = 3` sets `dp[5] = 3`; `j = 4` gives 3, not greater, so `prev[5]` stays 3.
+      With `≥`: `j = 4` gives 3 ≥ 3, so `prev[5]` becomes 4.
+      Walk from 6: 6 → 5 → 4 → 2 → −1: 101, 7, 3, 2 → `[2, 3, 7, 101]`.
+---
+
+Both LIS methods so far return a number. What if the question asks for the subsequence
+itself? Pause on that for the table method before reading on: `dp[i]` is a length, and a
+length does not say which elements produced it.
+
+## One extra array
+
+When the loop computes `dp[i]`, it tries every earlier `j` and keeps the best. At that
+moment it knows *which* `j` was best — and then throws that away. Keep it instead:
+
+> `prev[i]` = the index `j` that gave `dp[i]` its value. If no `j` was used,
+> `prev[i] = −1`: `nums[i]` is the first number of its subsequence.
+
+```
+for i = 0 … n−1:
+    dp[i] = 1; prev[i] = −1              ← new
+    for j = 0 … i−1:
+        if nums[j] < nums[i] and dp[j] + 1 > dp[i]:
+            dp[i] = dp[j] + 1
+            prev[i] = j                  ← new: write down the winner
+```
+
+Nothing about the `dp` values changes. The loops are the same, so the time is still `O(n²)`;
+the extra array costs `O(n)` space.
+
+## Walk back along it
+
+| `i` | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `nums[i]` | 10 | 9 | 2 | 5 | 3 | 7 | 101 | 18 |
+| `dp[i]` | 1 | 1 | 1 | 2 | 2 | 3 | 4 | 4 |
+| `prev[i]` | −1 | −1 | −1 | 2 | 2 | 3 | 5 | 5 |
+
+1. **Start where `dp` is largest**: `i = 6`, with `dp = 4`.
+2. **Follow `prev`**: 6 → 5 → 3 → 2 → −1. The numbers met are 101, 7, 5, 2.
+3. **Reverse**, because the walk went from the last number to the first: `[2, 5, 7, 101]`.
+
+## More than one right answer
+
+The previous table concept offered `[2, 3, 7, 101]` as the LIS; this walk gives
+`[2, 5, 7, 101]`. Both have length 4 and both are correct. They differ because `dp[3]` and
+`dp[4]` tie at 2 when the 7 is being computed, and the loop — which only updates on a strict
+improvement — keeps the first one it meets, so `prev[5] = 3` rather than 4. Starting the
+walk at `i = 7` instead gives `[2, 5, 7, 18]`, a third correct answer.
+
+The problem asks for *a* longest increasing subsequence. Which one you get is decided by
+tie-breaking details of the loop, not by anything in the mathematics.
+
+> A table of costs forgets the decisions that produced it. To recover the solution, record
+> each winning decision as it is made, then follow the records backwards from the answer.
+> The same idea returns for edit distance.

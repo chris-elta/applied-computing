@@ -1,0 +1,93 @@
+---
+course: applied-algorithm-analysis
+section: w5-review
+order: 950
+title: Three Things That Go Wrong
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week5.html?hash=true#/61
+    caption: Slide 62 of 63 — three statements that sound right and are not.
+questions:
+  - ask: >-
+      A student solves the LIS with `dp[i] = dp[i−1] + 1` if `nums[i] > nums[i−1]`, else
+      `dp[i] = dp[i−1]`, starting from `dp[0] = 1`, and returns the last cell. It gives 4
+      on the lecture's `[10, 9, 2, 5, 3, 7, 101, 18]`, which is correct. On `[2, 3, 1, 2]`
+      it gives 3; the true answer is 2. What went wrong?
+    choices:
+      - text: >-
+          The state does not carry enough information — it never records what number the
+          subsequence ends with — and one passing example hid that
+        correct: true
+        explains: >-
+          On `[2, 3, 1, 2]` it adds the final 2 to a subsequence ending in 3, because all
+          it compared was the neighbour, 1. The student could not have said in one
+          sentence what `dp[i]` means and justified the `+ 1` from it.
+      - text: It should return the maximum of the table rather than the last cell
+        explains: >-
+          This table never decreases, so its last cell already is its maximum. Changing
+          where the answer is read does not repair a recurrence that is wrong.
+      - text: It should have used memoization rather than tabulation
+        explains: >-
+          Those are two orders for evaluating the same recurrence. A wrong recurrence
+          gives the same wrong numbers either way.
+      - text: The base case `dp[0] = 1` is wrong
+        explains: >-
+          A single element is an increasing subsequence of length 1 under any sensible
+          definition. The fault is in the transition.
+    work: |-
+      Lecture input: 1, 1, 1, 2, 2, 3, 4, 4 → returns 4. Correct, by coincidence.
+      `[2, 3, 1, 2]`: `dp = 1, 2, 2, 3` → returns 3.
+      True LIS: `2, 3` or `1, 2` → 2.
+      The method counts "rises between neighbours" plus one: 2→3 and 1→2 are two rises.
+      Correct state, ending at `i`: `dp = 1, 2, 1, 2`, maximum 2.
+---
+
+Three statements that are easy to believe by the end of this week. Each has a true idea
+inside it, which is what makes it tempting.
+
+## 1 · "The answer is `dp[n−1]`."
+
+Only when the subproblem is about the **whole prefix**. For edit distance, `E(i, j)`
+compares two complete prefixes, so `E(m, n)` compares the two complete strings and is the
+answer. For the LIS the state is *ending at `i`*, so each cell speaks for one ending only
+and the answer is a `max` over the entire array.
+
+There is no rule to memorise here. Read your own definition from step 1, and ask which
+cell — or which combination of cells — that sentence makes into the answer.
+
+## 2 · "Memoization and tabulation are different algorithms."
+
+They have the same subproblems, the same recurrence and the same asymptotic cost. What
+differs:
+
+| | Differs? |
+| --- | --- |
+| Subproblems | no |
+| Recurrence | no |
+| Growth rate | no |
+| Order of evaluation | yes |
+| Constants | yes |
+| Call-stack usage | yes |
+| Whether unneeded subproblems get solved | yes |
+
+Choosing between them is an engineering choice. If a solution is wrong, switching from one
+to the other will reproduce the same wrong answer.
+
+## 3 · "My recurrence passes the examples, so the state is right."
+
+This is the one that costs marks. A state that does not carry enough information can still
+fit small cases. The LIS is the standing example: "the best among the first `i` elements"
+sounds like a subproblem, and a recurrence can be written on top of it that gets the
+lecture's own example right — while having no way of knowing whether the next number may
+legally be added.
+
+The test is not more examples. It is the sentence:
+
+- Can you say in **one English sentence** what `dp[i]` means?
+- Can you **justify the transition from that sentence** — explain why each term is there?
+
+If either answer is no, you do not have a subproblem yet, whatever the output says. Write
+the sentence before the code.
+
+> All three mistakes come from treating the table as numbers that happen to work. Every one
+> of them is caught by going back to step 1 and reading what a cell means.

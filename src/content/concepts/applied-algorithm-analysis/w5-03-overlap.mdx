@@ -1,0 +1,87 @@
+---
+course: applied-algorithm-analysis
+section: w5-overlap
+order: 790
+title: "Overlap: DP Against Divide and Conquer"
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week5.html?hash=true#/13
+    caption: Slides 14–16 of 63 — divide and conquer, dynamic programming, and one line for each.
+notation:
+  - symbol: independent subproblems
+    reads: independent subproblems
+    means: >-
+      Smaller problems that share nothing. Solving one tells you nothing about another, as
+      with the left and right halves of an array in mergesort.
+  - symbol: overlapping subproblems
+    reads: overlapping subproblems
+    means: >-
+      Smaller problems that turn up more than once on the way to the answer. `F(n−2)` is
+      needed by both `F(n)` and `F(n−1)`.
+questions:
+  - ask: >-
+      Someone adds a cache to mergesort, keyed by the start and end index of the subarray
+      being sorted. What happens to its running time?
+    choices:
+      - text: >-
+          Nothing useful — each subarray is sorted exactly once, so the cache is never hit
+        correct: true
+        explains: >-
+          Mergesort's two halves share nothing, and the same range never comes up twice.
+          A cache only pays when a subproblem is requested again. This is divide and
+          conquer with extra bookkeeping.
+      - text: It drops from `O(n log n)` to `O(n)`, as it did for Fibonacci
+        explains: >-
+          Fibonacci improved because the same subproblems were being recomputed
+          exponentially often. Mergesort recomputes nothing, so there is no repeated work
+          to remove.
+      - text: It improves by a constant factor, because cache lookups are cheap
+        explains: >-
+          A lookup that always misses is pure overhead. The cache makes it slightly
+          slower, not faster.
+      - text: It cannot be cached at all, because mergesort is not recursive in the right way
+        explains: >-
+          It can be cached — any recursive function can. The point is that doing so
+          achieves nothing here.
+    work: |-
+      Mergesort on `[0, 8)` calls `[0, 4)` and `[4, 8)`; those call `[0, 2)`, `[2, 4)`,
+      `[4, 6)`, `[6, 8)`. Every range is distinct.
+      `fib1(5)` calls `fib1(4)` and `fib1(3)`; `fib1(4)` calls `fib1(3)` again.
+      Repeats exist in the second tree and not in the first. Only repeats make storage pay.
+---
+
+Weeks 3 and 4 were divide and conquer: split a problem, solve the pieces, combine. Dynamic
+programming also splits a problem into smaller ones and combines their answers. So what
+makes it a different technique?
+
+Look at what the pieces have to do with each other.
+
+**Mergesort.** The left half and the right half of the array share no elements. Sorting one
+tells you nothing about the other, and no subarray is ever sorted twice.
+
+**Fibonacci.** `F(n)` needs `F(n−1)` and `F(n−2)`. But `F(n−1)` *also* needs `F(n−2)`. The
+two pieces are not separate problems; one is inside the other.
+
+That is the whole distinction, and it has a name: **overlap**.
+
+| | Divide and conquer | Dynamic programming |
+| --- | --- | --- |
+| Subproblems are | independent | overlapping |
+| Results are | solved separately, then combined | stored and reused |
+| Recomputation | none to avoid | avoided by memoization or tabulation |
+| Examples | mergesort, quicksort, binary search | Fibonacci, knapsack, shortest paths |
+| In one line | divide → solve independently → combine | divide → solve overlapping parts → reuse results |
+
+## Why the storage matters in one and not the other
+
+Storing an answer costs memory and a lookup. That cost is only repaid when the answer is
+asked for again. In mergesort it never is, which is why no cache would help it. In Fibonacci
+almost every request is a repeat, which is why a cache turns an exponential running time
+into a linear one.
+
+So the test for "is this a dynamic programming problem?" is not whether it is recursive —
+mergesort is recursive too. It is a practical one: write out the recursion and see whether
+the same subproblem appears on more than one branch.
+
+> Overlap is what makes storage pay for itself. Without it you have divide and conquer with
+> extra bookkeeping.

@@ -1,0 +1,145 @@
+---
+course: applied-algorithm-analysis
+section: w5-lis
+order: 890
+title: Recovering It Under Binary Search
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week5.html?hash=true#/39
+    caption: Slides 40–44 of 63 — the two extra arrays, how they are filled, an animated run, the same run as a table, and the walk back.
+notation:
+  - symbol: "pos[k]"
+    reads: pos of k
+    means: >-
+      Where in `nums` the number currently in `sub[k]` came from. If `sub[1] = 8` and that
+      8 is `nums[2]`, then `pos[1] = 2`.
+  - symbol: "parent[i]"
+    reads: parent of i
+    means: >-
+      An arrow back from `nums[i]` to the number just before it in its subsequence, stored
+      as a position in `nums`. −1 if nothing comes before.
+  - symbol: "k"
+    reads: k
+    means: >-
+      The position in `sub` where the current number lands — found by the binary search,
+      or the length of `sub` when the number is appended.
+questions:
+  - ask: >-
+      Run the method with `pos` and `parent` on `nums = [3, 4, 1, 2, 5, 0]`. What does the
+      walk back return?
+    choices:
+      - text: "`[1, 2, 5]`"
+        correct: true
+        explains: >-
+          The last entry of `sub` came from index 4 (the 5). Its parent is index 3 (the
+          2), whose parent is index 2 (the 1), whose parent is −1. Reversed: 1, 2, 5.
+      - text: "`[0, 2, 5]`"
+        explains: >-
+          That is `sub` at the end. The 0 is the last number of the input, so it cannot
+          come before 2 and 5. Reading `sub` is the bug the two extra arrays exist to
+          avoid.
+      - text: "`[3, 4, 5]`"
+        explains: >-
+          A genuine increasing subsequence of length 3, but not the one this walk finds.
+          When the 5 arrived, `sub[1]` held the 2, not the 4, so `parent[4]` points at the
+          2.
+      - text: "`[5, 2, 1]`"
+        explains: >-
+          Those are the numbers in the order the walk meets them. It runs from the last
+          number to the first, so the result has to be reversed.
+    work: |-
+      `i=0`, 3: `k=0`, parent −1. `sub=[3]`, `pos=[0]`.
+      `i=1`, 4: `k=1`, parent `pos[0]=0`. `sub=[3,4]`, `pos=[0,1]`.
+      `i=2`, 1: `k=0`, parent −1. `sub=[1,4]`, `pos=[2,1]`.
+      `i=3`, 2: `k=1`, parent `pos[0]=2`. `sub=[1,2]`, `pos=[2,3]`.
+      `i=4`, 5: `k=2`, parent `pos[1]=3`. `sub=[1,2,5]`, `pos=[2,3,4]`.
+      `i=5`, 0: `k=0`, parent −1. `sub=[0,2,5]`, `pos=[5,3,4]`.
+      Walk: `pos[2]=4` → `parent[4]=3` → `parent[3]=2` → −1. Numbers 5, 2, 1 → `[1, 2, 5]`.
+  - ask: >-
+      Why is `parent[i]` copied from `pos[k−1]` at the moment `nums[i]` arrives, rather than
+      worked out from `pos` once the whole input has been read?
+    choices:
+      - text: >-
+          Because `pos[k−1]` may be overwritten later, when a smaller number replaces
+          `sub[k−1]`
+        correct: true
+        explains: >-
+          In the lecture's run, 3 replaces 5 in `sub[0]` and `pos[0]` changes from 1 to 3.
+          The 8 arrived before that and still follows the 5. Only a copy made at the time
+          remembers it.
+      - text: Because copying it later would cost `O(n²)`
+        explains: >-
+          Cost is not the issue. The information is gone by then: `pos` holds only the
+          latest occupant of each position.
+      - text: Because `parent` must be sorted, and filling it in order keeps it sorted
+        explains: >-
+          `parent` is not sorted and does not need to be. In the lecture's run it is
+          `[−1, −1, 1, −1, 2]`.
+      - text: It makes no difference — the final `pos` array gives the same arrows
+        explains: >-
+          The final `pos` is `[3, 2, 4]`, which points at 3, 8, 9. Those are the contents
+          of `sub`, which is not a subsequence of the input.
+    work: |-
+      `nums = [10, 5, 8, 3, 9]`.
+      When 8 arrives (`i = 2`): `sub = [5]`, `pos = [1]`, so `parent[2] = 1` — the 5.
+      When 3 arrives (`i = 3`): `sub[0]` becomes 3 and `pos[0]` becomes 3.
+      Read from the final `pos`, the number before 8 would be index 3 — the 3, which comes
+      *after* 8 in `nums`. The copy made earlier still says index 1.
+---
+
+The binary-search method ends with `sub`, and an earlier concept showed that `sub` is not a
+subsequence of the input. To rebuild a real one, use the same plan as the table method: walk
+back from the last number, with each number remembering the one just before it. `sub` cannot
+do that, so two more arrays are kept alongside it.
+
+## The two arrays
+
+**`pos[k]` — where `sub[k]` came from.** `sub[k]` holds a number from `nums`; `pos[k]` says
+at which position. After reading 10, 5, 8 from `nums = [10, 5, 8, 3, 9]`: `sub = [5, 8]` and
+`pos = [1, 2]`, because 5 is `nums[1]` and 8 is `nums[2]`.
+
+**`parent[i]` — an arrow back.** Each number points to the number just before it in its
+subsequence. `parent[2] = 1`: the number before 8 is 5, which is `nums[1]`.
+
+## Filling them
+
+When `nums[i]` lands at position `k`, the number before it is the one in `sub[k−1]`, and its
+position in `nums` is `pos[k−1]`. So `parent[i] = pos[k−1]`.
+
+```
+for i = 0 … n−1:
+    k = first position with sub[k] ≥ nums[i]     (k = len(sub) if none)
+    parent[i] = pos[k−1] if k > 0 else −1        ← new: copy the arrow now
+    sub[k] = nums[i]                             (appends when k = len(sub))
+    pos[k] = i                                   ← new: remember where it came from
+```
+
+**Copy it at that moment.** Later, `sub[k−1]` may be replaced by a smaller number, but
+`parent[i]` does not change.
+
+| `i` | `nums[i]` | lands at `k` | `parent[i]` | `sub` | `pos` |
+| --- | --- | --- | --- | --- | --- |
+| 0 | 10 | 0 | −1 | `[10]` | `[0]` |
+| 1 | 5 | 0 | −1 | `[5]` | `[1]` |
+| 2 | 8 | 1 | 1 | `[5, 8]` | `[1, 2]` |
+| 3 | 3 | 0 | −1 | `[3, 8]` | `[3, 2]` |
+| 4 | 9 | 2 | 2 | `[3, 8, 9]` | `[3, 2, 4]` |
+
+Row 3 is the one to study. The 3 replaces the 5, so `pos[0]` becomes 3 — but `parent[2]` was
+written a row earlier and stays 1. The deck's slide 42 animates this run, and a longer one.
+
+## Walking back
+
+1. `sub` has 3 entries, so start at the last: `pos[2] = 4`.
+2. Follow `parent`: 4 → 2 → 1 → −1. The numbers met are 9, 8, 5.
+3. Reverse: `[5, 8, 9]` — a real subsequence, not `[3, 8, 9]`.
+
+Why is it guaranteed real? Each arrow was written when `nums[i]` arrived. The number it
+points to was already in `sub` then, so it is **earlier** in `nums`; and it was `sub[k−1]`,
+so it is **smaller**. Along the walk, positions go left and numbers go down. Reversed, they
+go right and up.
+
+The cost is two extra arrays, `O(n)` space. The time stays `O(n log n)`.
+
+> `sub` and `pos` describe the present and get overwritten. `parent` records the past and
+> is never touched again. Reconstruction always needs something that is written once.

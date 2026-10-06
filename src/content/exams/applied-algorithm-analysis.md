@@ -1,7 +1,7 @@
 ---
 course: applied-algorithm-analysis
 title: "Applied Algorithm Analysis · Final Exam"
-minutes: 80
+minutes: 100
 passMark: 60
 questions:
   - topic: "Week 1 · Big-O and growth"
@@ -869,8 +869,260 @@ questions:
       FFT: a=2,b=2,d=1. log_2 2=1=1: balanced, O(n log n).
       Strassen: a=7,b=2,d=2. log_2 7~2.81 > 2: leaves pay, O(n^2.81).
       One comparison, d vs log_b a, reproduces all three outcomes.
+  - topic: "Week 5 · Dynamic programming, part I"
+    ask: "Each stair `i` has a toll `cost[i]`, and you may climb one or two stairs at a time, starting on stair 0 or stair 1. Define `dp[i]` as the cheapest total toll paid to be standing on stair `i`, so `dp[i] = cost[i] + min(dp[i−1], dp[i−2])`, with `dp[0] = cost[0]` and `dp[1] = cost[1]`. For `cost = [3, 5, 2, 8]`, what is `dp[3]`?"
+    choices:
+      - text: "13"
+        correct: true
+        explains: "Right. `dp[2] = 2 + min(5, 3) = 5`, then `dp[3] = 8 + min(5, 5) = 13`."
+      - text: "18"
+        explains: "That pays every toll, 3 + 5 + 2 + 8. A two-stair move skips one, and the `min` chooses which."
+      - text: "10"
+        explains: "That adds `cost[2]` to `cost[3]`. The recurrence adds `dp[2]`, the cheapest total to reach stair 2, which already includes an earlier toll."
+      - text: "11"
+        explains: "That is 8 + 3, a jump from stair 0 straight to stair 3. Moves are one or two stairs, so `dp[3]` can only read `dp[2]` and `dp[1]`."
+    work: |-
+      `dp[0] = 3`, `dp[1] = 5` (base cases).
+      `dp[2] = cost[2] + min(dp[1], dp[0]) = 2 + min(5, 3) = 5`.
+      `dp[3] = cost[3] + min(dp[2], dp[1]) = 8 + min(5, 5) = 13`.
+      Check against the sentence: the cheapest way to stand on stair 3 is 0 → 2 → 3 (3 + 2 + 8) or 1 → 3 (5 + 8). Both 13.
+  - topic: "Week 5 · Dynamic programming, part I"
+    ask: "A recurrence has `T(k)` depending only on `T(⌊k/2⌋)`, with `T(0)` known. You need `T(1,000,000)`. Roughly how many subproblems does a top-down memoized version solve, against a bottom-up loop that fills `T(0)` to `T(1,000,000)`?"
+    choices:
+      - text: "About 20, against about a million"
+        correct: true
+        explains: "Right. Top-down touches only what the answer needs: 1,000,000, 500,000, 250,000 and so on, halving about 20 times. The loop fills every cell whether or not anything reads it."
+      - text: "About a million each"
+        explains: "They would match if every subproblem were needed, as with Fibonacci. Here almost none are, and memoization never visits them."
+      - text: "About a million, against about 20"
+        explains: "This is the right pair the wrong way round. It is the bottom-up table that solves subproblems nobody asked for."
+      - text: "About 2²⁰ each, since the recursion halves 20 times"
+        explains: "Each call makes one further call, not two, so the calls form a chain of about 20, not a tree with 2²⁰ leaves."
+    work: |-
+      Top-down: 1,000,000 → 500,000 → 250,000 → … → 1 → 0. Halving a million reaches 1 after about 20 steps, since 2²⁰ ≈ 1,000,000.
+      Bottom-up: one cell for each of 0, 1, …, 1,000,000 — about a million.
+      Same recurrence, same answer. Only the top-down schedule skips unneeded subproblems.
+  - topic: "Week 5 · Dynamic programming, part I"
+    ask: "Which of these recursions gains from adding a cache of results?"
+    choices:
+      - text: "`paths(i, j) = paths(i−1, j) + paths(i, j−1)`, counting routes through a grid"
+        correct: true
+        explains: "Right. `paths(2, 2)` calls `paths(1, 2)` and `paths(2, 1)`, and both of those call `paths(1, 1)`. The same subproblem on two branches is overlap, and overlap is what a cache exploits."
+      - text: "Mergesort, sorting the left half and the right half"
+        explains: "The halves share no elements and no range is ever sorted twice. The cache would never be hit."
+      - text: "Binary search, recursing into one half of a sorted array"
+        explains: "Each call makes a single further call on a range not seen before. Nothing repeats."
+      - text: "Quicksort, recursing on the elements below and above the pivot"
+        explains: "The two parts are disjoint, so their subproblems are independent. This is divide and conquer."
+    work: |-
+      `paths(2, 2)` → `paths(1, 2)`, `paths(2, 1)`.
+      `paths(1, 2)` → `paths(0, 2)`, `paths(1, 1)`.
+      `paths(2, 1)` → `paths(1, 1)`, `paths(2, 0)`.
+      `paths(1, 1)` appears twice already, and the repeats multiply as the grid grows.
+      The other three split into pieces that share nothing.
+  - topic: "Week 5 · Dynamic programming, part I"
+    ask: "A dag has edges `S→A` 3, `S→B` 1, `B→A` 1, `A→C` 2, `B→C` 5, `A→T` 6, `C→T` 2. Processing the nodes in the linearized order `S, B, A, C, T`, what is `dist(T)`?"
+    choices:
+      - text: "6"
+        correct: true
+        explains: "Right. The route is `S → B → A → C → T`: 1 + 1 + 2 + 2."
+      - text: "7"
+        explains: "That uses the direct edge `S→A` for `dist(A) = 3`. `A` has a second predecessor, `B`, and `dist(B) + 1 = 2` is shorter."
+      - text: "8"
+        explains: "That is `dist(A) + 6`, the route into `T` from `A`. `T` also has `C` as a predecessor, and `dist(C) + 2 = 6` is smaller."
+      - text: "9"
+        explains: "That is `S → A → T`, 3 + 6, the route with the fewest edges. Fewest edges is not shortest length."
+    work: |-
+      `dist(S) = 0`.
+      `dist(B) = 0 + 1 = 1`.
+      `dist(A) = min{0 + 3, 1 + 1} = 2`.
+      `dist(C) = min{2 + 2, 1 + 5} = 4`.
+      `dist(T) = min{2 + 6, 4 + 2} = 6`.
+  - topic: "Week 5 · Dynamic programming, part I"
+    ask: "A recurrence defines `dp[i]` in terms of `dp[i+1]` and `dp[i+2]`, with base cases at `dp[n]` and `dp[n+1]`. Which bottom-up fill order is valid?"
+    choices:
+      - text: "`i` from `n − 1` down to 0"
+        correct: true
+        explains: "Right. Draw the dependencies as edges: they run from larger indices to smaller ones. A valid order is a linearization, so larger indices must come first."
+      - text: "`i` from 0 up to `n − 1`"
+        explains: "That reads `dp[i+1]` and `dp[i+2]` before they have been computed. Ascending order is right only when cells depend on smaller indices."
+      - text: "Any order, because each cell is computed exactly once"
+        explains: "Being computed once is not enough. Each cell's inputs must be finished before it is computed."
+      - text: "None, because a cell that depends on later cells makes a cycle"
+        explains: "A cycle would need some cell to depend, directly or not, on itself. Here every dependency points to a strictly larger index, so there is none."
+    work: |-
+      Edges: `i+1 → i` and `i+2 → i`. All point from larger to smaller index.
+      Linearization: `n+1, n, n−1, …, 1, 0`.
+      So fill the base cases at `n` and `n+1`, then loop `i` downward.
+      Top-down memoization would find this order by itself; bottom-up has to name it.
+  - topic: "Week 5 · Dynamic programming, part I"
+    ask: "In the array `[10, 9, 2, 5, 3, 7, 101, 18]`, which description fits the selection `2, 7, 18`?"
+    choices:
+      - text: "An increasing subsequence, but not a substring and not the longest"
+        correct: true
+        explains: "Right. It keeps the array's order and goes up at each step, with gaps between the chosen positions. A longer one exists: `2, 3, 7, 18`."
+      - text: "A substring"
+        explains: "A substring is a run of neighbours. Between the 2 and the 7 sit a 5 and a 3."
+      - text: "Not a subsequence, because elements were skipped"
+        explains: "Skipping is exactly what a subsequence allows. Only the order has to be kept."
+      - text: "A longest increasing subsequence"
+        explains: "It has length 3. Putting the 3 or the 5 between the 2 and the 7 makes length 4."
+    work: |-
+      Positions: 2 at index 2, 7 at index 5, 18 at index 7. Increasing indices → a subsequence.
+      Values 2 < 7 < 18 → increasing.
+      Indices 2, 5, 7 are not consecutive → not a substring.
+      `2, 3, 7, 18` (indices 2, 4, 5, 7) has length 4 → not the longest.
+  - topic: "Week 5 · Dynamic programming, part I"
+    ask: "With `dp[i]` = the length of the longest increasing subsequence ending at `i`, the table for `[1, 3, 6, 7, 9, 4, 10, 5, 6]` is `[1, 2, 3, 4, 5, 3, 6, 4, 5]`. What is the length of the LIS?"
+    choices:
+      - text: "6"
+        correct: true
+        explains: "Right. The answer is the maximum over the whole table. It sits at index 6, for `1, 3, 6, 7, 9, 10`."
+      - text: "5"
+        explains: "That is the last cell, the best subsequence ending with the final 6. The best one overall ends earlier, at the 10."
+      - text: "9"
+        explains: "That is the number of elements. The array is not increasing throughout: the 4 after the 9 breaks it."
+      - text: "33"
+        explains: "That is the sum of the cells. They are lengths of overlapping subsequences, so adding them counts elements many times over."
+    work: |-
+      `max{1, 2, 3, 4, 5, 3, 6, 4, 5} = 6`, at index 6.
+      `dp[8] = 5`: the best ending at the final 6 is `1, 3, 4, 5, 6`.
+      The state says "ending at `i`", so no single fixed cell is the answer.
+  - topic: "Week 5 · Dynamic programming, part I"
+    ask: "The smallest-tails method (append if larger than everything, otherwise replace the first entry ≥ `x`) is run on `[1, 3, 6, 7, 9, 4, 10, 5, 6]`. What is `sub` at the end?"
+    choices:
+      - text: "`[1, 3, 4, 5, 6, 10]`"
+        correct: true
+        explains: "Right. Six entries, so the LIS has length 6. The contents are not a real subsequence, though: in the input the 10 comes before the 5."
+      - text: "`[1, 3, 6, 7, 9, 10]`"
+        explains: "That is the actual longest increasing subsequence, and it is what `sub` would hold if only the append rule existed. The 4, 5 and 6 each replace an entry."
+      - text: "`[1, 3, 4, 7, 9, 10]`"
+        explains: "That is `sub` just after the 10 is read. Two numbers remain: the 5 replaces the 7 and the final 6 replaces the 9."
+      - text: "`[1, 3, 4, 5, 6]`"
+        explains: "`sub` never gets shorter, and no rule removes the last entry. The 10 stays as the smallest tail for length 6."
+    work: |-
+      1, 3, 6, 7, 9 → all appended → `[1, 3, 6, 7, 9]`.
+      4 → first entry ≥ 4 is 6 → `[1, 3, 4, 7, 9]`.
+      10 → append → `[1, 3, 4, 7, 9, 10]`.
+      5 → first entry ≥ 5 is 7 → `[1, 3, 4, 5, 9, 10]`.
+      6 → first entry ≥ 6 is 9 → `[1, 3, 4, 5, 6, 10]`.
+  - topic: "Week 5 · Dynamic programming, part I"
+    ask: "A programmer implements the smallest-tails method but searches for the first entry **>** `x` instead of the first entry **≥** `x`. What does the program return for `[4, 4, 4]`?"
+    choices:
+      - text: "3. It now computes the longest subsequence that never decreases"
+        correct: true
+        explains: "Right. No entry is greater than 4, so each 4 is appended. With ≥, each later 4 would replace the first and the result would be 1."
+      - text: "1, the same as before"
+        explains: "With ≥ it would be 1. With > the search finds nothing to replace, so every equal number is appended."
+      - text: "0, because no number is strictly greater than another"
+        explains: "A single element is always an increasing subsequence of length 1, and the first 4 is appended to an empty `sub` under either comparison."
+      - text: "2, because only the first repeat is appended"
+        explains: "Every repeat behaves the same way. The third 4 is also not exceeded by anything in `sub`, so it is appended too."
+    work: |-
+      With `>`: 4 → `[4]`. Next 4: any entry > 4? No → append → `[4, 4]`. Next 4 → `[4, 4, 4]`. Returns 3.
+      With `≥`: 4 → `[4]`. Next 4: first entry ≥ 4 is at position 0 → replace → `[4]`. Returns 1.
+      A strictly increasing subsequence of `[4, 4, 4]` has length 1.
+  - topic: "Week 5 · Dynamic programming, part I"
+    ask: "For `nums = [0, 8, 4, 12, 2, 10, 6]` the tables are `dp = [1, 2, 2, 3, 2, 3, 3]` and `prev = [−1, 0, 0, 1, 0, 1, 2]`. Starting from the first index where `dp` is largest, what does the walk back along `prev` return?"
+    choices:
+      - text: "`[0, 8, 12]`"
+        correct: true
+        explains: "Right. The first maximum is at index 3. Follow `prev`: 3 → 1 → 0 → −1, meeting 12, 8, 0, then reverse."
+      - text: "`[12, 8, 0]`"
+        explains: "Those are the numbers in the order the walk meets them, last first. The result must be reversed."
+      - text: "`[0, 4, 6]`"
+        explains: "A valid answer of the same length, but it comes from starting at index 6. The first index with `dp = 3` is index 3."
+      - text: "`[0, 2, 6]`"
+        explains: "That is what the smallest-tails array holds at the end. `prev` never leads there: `prev[6]` is 2, the position of the 4."
+    work: |-
+      Largest `dp` is 3, first reached at `i = 3` (the 12).
+      `prev[3] = 1` → the 8. `prev[1] = 0` → the 0. `prev[0] = −1` → stop.
+      Met: 12, 8, 0. Reversed: `[0, 8, 12]`.
+  - topic: "Week 5 · Dynamic programming, part I"
+    ask: "A colleague shows four edits that turn string `x` into string `y`. Your correctly filled edit-distance table has 3 in its bottom-right cell. What follows?"
+    choices:
+      - text: "The edit distance is 3. Their four edits only showed it was at most 4"
+        correct: true
+        explains: "Right. An example sequence gives an upper limit. The table's `min` covers every alignment, so its value is the true minimum."
+      - text: "The edit distance is 4, because their edits are a concrete demonstration"
+        explains: "A demonstration proves that four are enough, not that four are needed. A cheaper sequence exists, and the walk back through the table would produce it."
+      - text: "One of the two must contain a mistake"
+        explains: "They do not conflict. \"At most 4\" and \"exactly 3\" are both true at once."
+      - text: "The edit distance is somewhere between 3 and 4"
+        explains: "It is a whole number of edits and it is the minimum. The table says that minimum is 3."
+    work: |-
+      Four edits exist → distance ≤ 4.
+      `E(m, n) = 3` → the best alignment has cost 3 → distance = 3.
+      3 ≤ 4, so the two statements agree. The colleague's sequence is valid but not the shortest.
+  - topic: "Week 5 · Dynamic programming, part I"
+    ask: "Filling the edit-distance table for `x` = BEAD and `y` = BAD, you reach `E(3, 2)`, comparing BEA with BA. The neighbours are `E(2, 2) = 1`, `E(3, 1) = 2` and `E(2, 1) = 1`. What is `E(3, 2)`?"
+    choices:
+      - text: "1"
+        correct: true
+        explains: "Right. The letters `x[3]` and `y[2]` are both A, so the diagonal candidate is `0 + E(2, 1) = 1`, the smallest of the three."
+      - text: "0"
+        explains: "The matching letters make the last column free, but what is left, BE against B, still costs `E(2, 1) = 1`."
+      - text: "2"
+        explains: "That is `1 + E(2, 2)`, the candidate for deleting the A. The diagonal candidate is cheaper."
+      - text: "3"
+        explains: "That is `1 + E(3, 1)`, the candidate for inserting an A, and the largest of the three. The recurrence takes the minimum."
+    work: |-
+      Scenario 1 (delete `x[3]`): `1 + E(2, 2) = 1 + 1 = 2`.
+      Scenario 2 (insert `y[2]`): `1 + E(3, 1) = 1 + 2 = 3`.
+      Scenario 3 (`A` over `A`, `diff = 0`): `0 + E(2, 1) = 0 + 1 = 1`.
+      `min{2, 3, 1} = 1`. BEA → BA by deleting the E.
+  - topic: "Week 5 · Dynamic programming, part I"
+    ask: "Two services compare pairs of 200,000-character documents. Service A reports only the edit distance. Service B must show which characters were inserted, deleted or substituted. How much of the table does each need to keep?"
+    choices:
+      - text: "A can keep two rows. B needs the whole table, or pointers stored as it goes"
+        correct: true
+        explains: "Right. Each cell reads only its own row and the one above, so the distance needs two rows. The walk back visits a cell in every row, so recovering the edits needs all of them."
+      - text: "Both can keep two rows"
+        explains: "B's walk back starts at the bottom-right cell and climbs through every row to the top-left. Rows that were discarded cannot be walked through."
+      - text: "Both need the whole table"
+        explains: "A never looks back further than one row, so keeping all 200,001 rows wastes memory for nothing."
+      - text: "A needs the whole table. B can keep two rows"
+        explains: "The wrong way round. The number is the cheap thing to keep; the history of decisions is what costs memory."
+    work: |-
+      `E(i, j)` reads `E(i−1, j)`, `E(i, j−1)`, `E(i−1, j−1)`: rows `i − 1` and `i` only.
+      Service A: 2 × 200,001 ≈ 400,000 cells.
+      Service B: 200,001 × 200,001 ≈ 4 × 10¹⁰ cells, since the walk from `(m, n)` to `(0, 0)` re-checks cells in every row.
+      Running time is `O(mn)` for both.
+  - topic: "Week 5 · Dynamic programming, part I"
+    ask: "Walking back through the table for `x` = PLAN and `y` = PAIN, you are at cell `(3, 3)` with value 2, comparing PLA with PAI. The neighbours are `E(2, 2) = 1`, `E(2, 3) = 2` and `E(3, 2) = 1`. The code tests the diagonal scenario first. Which column does it add?"
+    choices:
+      - text: "`A / I`, a substitution, moving to `(2, 2)`"
+        correct: true
+        explains: "Right. A and I differ, so the diagonal candidate is `1 + E(2, 2) = 2`, which equals the cell. The code takes the first scenario that fits."
+      - text: "`− / I`, an insertion, moving to `(3, 2)`"
+        explains: "That candidate, `1 + E(3, 2) = 2`, also equals the cell, so it leads to another best alignment. But the diagonal test comes first and already succeeds."
+      - text: "`A / −`, a deletion, moving to `(2, 3)`"
+        explains: "That candidate is `1 + E(2, 3) = 3`, which is not the cell's value. This scenario did not produce the 2."
+      - text: "`A / A`, a free match, moving to `(2, 2)`"
+        explains: "`x[3]` is A but `y[3]` is I. They differ, so the column costs 1."
+    work: |-
+      Scenario 3: `x[3] = A`, `y[3] = I`, different → `1 + E(2, 2) = 1 + 1 = 2` ✓
+      Scenario 1: `1 + E(2, 3) = 1 + 2 = 3` ✗
+      Scenario 2: `1 + E(3, 2) = 1 + 1 = 2` ✓ (a tie)
+      The code checks scenario 3 first → column `A / I`, then `i = 2`, `j = 2`.
+  - topic: "Week 5 · Dynamic programming, part I"
+    ask: "For a new problem you define `dp[i]` as the largest sum of a run of neighbouring elements that **ends at** position `i`. Once the table is filled, where is the largest sum of any run in the array?"
+    choices:
+      - text: "The maximum over all cells"
+        correct: true
+        explains: "Right. Each cell speaks for one ending position, exactly as in the LIS table. The best run may end anywhere, so every ending has to be compared."
+      - text: "The last cell, `dp[n−1]`"
+        explains: "That cell covers only runs that end at the final element. The last cell is the answer when the state describes a whole prefix, and this one does not."
+      - text: "The first cell, `dp[0]`"
+        explains: "That covers only the run made of the first element alone."
+      - text: "The sum of all cells"
+        explains: "The cells describe overlapping runs. Adding them counts the same elements repeatedly and answers no question that was asked."
+    work: |-
+      Read the definition: "ends at `i`" fixes where the run stops.
+      The question asked has no fixed ending, so it is `max{dp[0], …, dp[n−1]}`.
+      Same reasoning as the LIS: an "ending at" state buys a recurrence and moves the answer out of the last cell.
 ---
-52 multiple-choice questions across all four weeks. Nothing is revealed until you submit: pick an
+67 multiple-choice questions across all five weeks. Nothing is revealed until you submit: pick an
 answer for each question (you can change it as often as you like), then submit to see your score, the
 correct answer, an explanation for the one you chose, and a worked solution.
 

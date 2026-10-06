@@ -1,0 +1,120 @@
+---
+course: applied-algorithm-analysis
+section: w5-edit
+order: 930
+title: Two Rows Are Enough
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week5.html?hash=true#/55
+    caption: Slide 56 of 63 — the memory saving, where it was seen before, and what it gives up.
+notation:
+  - symbol: "O(mn)"
+    reads: big O of m n
+    means: >-
+      Proportional to the product of the two string lengths. Here, the memory for the full
+      table.
+  - symbol: "O(n)"
+    reads: big O of n
+    means: >-
+      Proportional to the length of one string. Here, the memory for two rows of the
+      table.
+questions:
+  - ask: >-
+      You switch an edit-distance program from the full table to two rows. What changes?
+    choices:
+      - text: >-
+          Memory drops from `O(mn)` to `O(n)`, running time is unchanged, and the alignment
+          can no longer be recovered by walking back
+        correct: true
+        explains: >-
+          Every cell is still computed, so the time is the same. Only the storage is
+          discarded — and the walk back needs cells from every row.
+      - text: Memory and running time both drop to `O(n)`
+        explains: >-
+          The same `m × n` cells are still computed, one after another. Forgetting old rows
+          saves space, not work.
+      - text: Memory drops to `O(n)` and nothing is lost
+        explains: >-
+          The distance is still correct. What is lost is the ability to recover *which*
+          edits achieve it, since that reads the whole table.
+      - text: The answer becomes approximate, because some cells are no longer available
+        explains: >-
+          A cell is thrown away only after everything that reads it has been computed. The
+          final number is exactly the same.
+    work: |-
+      `E(i, j)` reads `E(i−1, j)`, `E(i, j−1)`, `E(i−1, j−1)`: row `i − 1` and row `i` only.
+      Once row `i` is complete, row `i − 1` is never read again by the fill.
+      Cells computed: still `m × n`. Cells held at once: `2 × (n + 1)`.
+      The walk back starts at `E(m, n)` and visits a cell in every row down to row 0.
+  - ask: >-
+      Two strings of 1,000,000 characters each. Roughly how many cells does the full table
+      hold, and how many do two rows hold?
+    choices:
+      - text: About a trillion (10¹²) against about two million
+        correct: true
+        explains: >-
+          A million rows by a million columns, against two rows of about a million each.
+          The first does not fit in memory; the second easily does.
+      - text: About two million against about two
+        explains: >-
+          The full table has a cell for every *pair* of positions, so the lengths
+          multiply. And a "row" is a million cells wide, not one.
+      - text: About a trillion against about a thousand
+        explains: >-
+          A row is as wide as the second string, about a million cells. A thousand would
+          be far too few to hold even one row.
+      - text: About a billion (10⁹) against about two thousand
+        explains: >-
+          Those are the figures for a million by a thousand. Here both strings have a
+          million characters.
+    work: |-
+      Full table: `(10⁶ + 1) × (10⁶ + 1) ≈ 10¹²` cells.
+      Two rows: `2 × (10⁶ + 1) ≈ 2 × 10⁶` cells.
+      Ratio: about 500,000 times less memory, for the same running time.
+---
+
+The edit-distance table has `(m + 1)(n + 1)` cells. For two short words that is nothing. For
+two documents of a million characters each it is about a trillion cells — far too much to
+hold in memory, long before the running time becomes the problem.
+
+## Look at what a cell reads
+
+```
+E(i, j) = min{ 1 + E(i−1, j),  1 + E(i, j−1),  diff(i, j) + E(i−1, j−1) }
+```
+
+Three cells: `E(i−1, j)` and `E(i−1, j−1)` are in the row above, and `E(i, j−1)` is in the
+current row. Nothing from two rows up, or any earlier row, is ever read.
+
+So when row `i` is being filled, rows 0 to `i − 2` are dead weight. Keep two rows — the one
+above and the one being written — and throw the rest away as you go.
+
+| | Full table | Two rows |
+| --- | --- | --- |
+| Memory | `O(mn)` | `O(n)` |
+| Running time | `O(mn)` | `O(mn)` — every cell is still computed |
+| Final distance | exact | exact |
+
+## The same trick you have already seen
+
+In the tabulation concept, `fib2` kept an array of `n` entries but only ever read the last
+two, and that is how the array collapsed to two variables. This is the same move with a
+bigger unit: there it was a number, here it is a row.
+
+The general test is to look at the dependency arrows. If every arrow into a cell comes from
+a narrow band just behind it, only that band needs to be stored.
+
+## What you give up
+
+The next concept recovers the actual alignment — which letters were substituted, inserted or
+deleted — by walking backwards from the bottom-right cell to the top-left. That walk visits
+a cell in every row. With only two rows kept, there is nothing to walk through.
+
+So the choice is:
+
+- **you need only the distance** → two rows, `O(n)` memory;
+- **you need the alignment too** → the whole table, or pointers stored as you go.
+
+> Storing less is possible when each cell only looks a short way back. But a table that has
+> forgotten its history can tell you the cost of the best solution and not what the solution
+> is.

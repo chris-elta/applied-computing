@@ -1,0 +1,138 @@
+---
+course: applied-algorithm-analysis
+section: w5-edit
+order: 920
+title: Filling the Edit-Distance Table
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week5.html?hash=true#/51
+    caption: Slides 52–55 of 63 — an animated fill, the finished table, the loop with its dependency picture, and a larger example.
+notation:
+  - symbol: "∅"
+    reads: empty
+    means: >-
+      The empty prefix — zero characters. It labels row 0 and column 0 of the table.
+  - symbol: "E(i, j)"
+    reads: E of i, j
+    means: >-
+      The cell in row `i`, column `j`: the edit distance between the first `i` characters
+      of `x` and the first `j` characters of `y`.
+  - symbol: "O(mn)"
+    reads: big O of m n
+    means: >-
+      Proportional to the product of the two lengths — the number of cells in the table.
+questions:
+  - ask: >-
+      In the SNOWY / SUNNY table, `E(2, 3) = 1`, `E(3, 2) = 2` and `E(2, 2) = 1`. What is
+      `E(3, 3)`, for SNO against SUN?
+    choices:
+      - text: "2"
+        correct: true
+        explains: >-
+          The three candidates are 2, 3 and 2. The letters `O` and `N` differ, so the
+          diagonal candidate is `1 + 1`.
+      - text: "1"
+        explains: >-
+          That treats `O` and `N` as a match, taking `0 + E(2, 2)`. They are different
+          letters, so `diff(3, 3) = 1`.
+      - text: "3"
+        explains: >-
+          That is the largest candidate, `1 + E(3, 2)`. The recurrence takes the `min` of
+          the three.
+    work: |-
+      Scenario 1: `1 + E(2, 3) = 1 + 1 = 2`.
+      Scenario 2: `1 + E(3, 2) = 1 + 2 = 3`.
+      Scenario 3: `x[3] = O`, `y[3] = N`, different, so `1 + E(2, 2) = 1 + 1 = 2`.
+      `min{2, 3, 2} = 2`.
+  - ask: >-
+      You compare a 7-letter word with a 9-letter word. How many cells does the table have,
+      and which one holds the edit distance?
+    choices:
+      - text: 80 cells; the bottom-right one, `E(7, 9)`
+        correct: true
+        explains: >-
+          `(7 + 1) × (9 + 1)`. Each cell compares two whole prefixes, so the cell for the
+          two full strings is the answer.
+      - text: 63 cells; the bottom-right one
+        explains: >-
+          7 × 9 forgets the row and column for the empty prefix. Those hold the base
+          cases, and nothing else can be computed without them.
+      - text: 80 cells; the largest value anywhere in the table
+        explains: >-
+          That is how the LIS table is read, because its cells were each about one
+          ending. Here every cell is about whole prefixes, and the largest value is
+          usually a base case on the edge.
+      - text: 16 cells; the bottom-right one
+        explains: >-
+          7 + 9 adds the lengths. There is one cell for every *pair* of prefix lengths, so
+          the counts multiply.
+    work: |-
+      Rows: `i = 0 … 7` → 8. Columns: `j = 0 … 9` → 10. Cells: 8 × 10 = 80.
+      The answer is `E(m, n) = E(7, 9)`, the last cell filled.
+---
+
+The recurrence from the previous concept reads three neighbours: the cell above, the cell to
+the left, and the cell diagonally up-left. Fill the base cases along the top and left edges,
+and every other cell can be computed once those three are in place.
+
+## The finished table: SNOWY against SUNNY
+
+Rows are prefixes of `x` = SNOWY and columns are prefixes of `y` = SUNNY.
+
+| | ∅ | S | U | N | N | Y |
+| --- | --- | --- | --- | --- | --- | --- |
+| **∅** | 0 | 1 | 2 | 3 | 4 | 5 |
+| **S** | 1 | 0 | 1 | 2 | 3 | 4 |
+| **N** | 2 | 1 | 1 | 1 | 2 | 3 |
+| **O** | 3 | 2 | 2 | 2 | 2 | 3 |
+| **W** | 4 | 3 | 3 | 3 | 3 | 3 |
+| **Y** | 5 | 4 | 4 | 4 | 4 | **3** |
+
+## One cell, slowly
+
+Take `E(2, 3)`: SN against SUN.
+
+| Scenario | Candidate | Value |
+| --- | --- | --- |
+| 1 — delete `N` | `1 + E(1, 3)` | 1 + 2 = 3 |
+| 2 — insert `N` | `1 + E(2, 2)` | 1 + 1 = 2 |
+| 3 — `N` over `N` | `0 + E(1, 2)` | 0 + 1 = 1 |
+
+The smallest is 1. In words: SN and SUN are one edit apart — insert the U — and the table
+has found that by matching the two Ns for free.
+
+The bottom-right cell says 3. So the edit distance is **exactly** 3: the cost-3 alignment
+from two concepts back was the best possible. This is the proof the three-edit example could
+not give.
+
+## The loop
+
+```
+for i = 0…m: E(i, 0) = i
+for j = 1…n: E(0, j) = j
+
+for i = 1…m:
+    for j = 1…n:
+        E(i, j) = min{ 1 + E(i−1, j),
+                       1 + E(i, j−1),
+                       diff(i, j) + E(i−1, j−1) }
+return E(m, n)
+```
+
+There are `O(mn)` subproblems with `O(1)` work each, so `O(mn)` in total.
+
+## The grid is a dag
+
+Each cell is a node with three edges coming in: from above, from the left, and from the
+diagonal. That is the dag of subproblems from the shortest-paths concepts. Filling row by
+row is one linearization; column by column is another. Either works, because in both every
+arrow points forward.
+
+## Longer words only make the rectangle bigger
+
+EXPONENTIAL against POLYNOMIAL gives 12 rows by 11 columns — 132 cells — and an edit
+distance of 6 in the bottom-right corner. Nothing about the method changes; the table has
+the same shape and the count is still rows times columns.
+
+> One cell is three lookups and a `min`. The work is in knowing what the cell means, so
+> that you can check one by hand and recognise when the loop has gone wrong.

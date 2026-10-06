@@ -1,0 +1,140 @@
+---
+course: applied-algorithm-analysis
+section: w5-recipe
+order: 770
+title: The Three-Step Recipe
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week5.html?hash=true#/3
+    caption: Slides 4–7 of 63 — the three steps, then each one on Fibonacci.
+notation:
+  - symbol: "dp[i]"
+    reads: d p of i
+    means: >-
+      One cell of a table, holding the answer to one smaller problem. The letters stand for
+      "dynamic programming" and carry no meaning of their own — what the cell *means* is
+      something you have to write down in words.
+  - symbol: "dp[i][j]"
+    reads: d p of i, j
+    means: >-
+      The same idea when one number is not enough to name a smaller problem and you need
+      two. Edit distance, later this week, uses a pair.
+  - symbol: state
+    reads: state
+    means: >-
+      What the index of a cell stands for. "The `i`-th Fibonacci number" is a state;
+      "position `i`" is only an index.
+  - symbol: transition
+    reads: transition
+    means: >-
+      The rule that computes one cell from smaller ones. Another word for the recurrence.
+questions:
+  - ask: >-
+      You can climb a staircase one step or two steps at a time, and want the number of
+      different ways to reach step `n`. Which of these is a complete answer to step 1 of the
+      recipe?
+    choices:
+      - text: "`dp[i] = dp[i−1] + dp[i−2]`"
+        explains: >-
+          That is step 2, the recurrence. It says how cells relate without saying what any
+          cell holds — and until you know what a cell holds you cannot check that the
+          relation is true.
+      - text: "`dp[i]` = the number of ways to reach step `i`"
+        correct: true
+        explains: >-
+          One English sentence that says what the cell means. The recurrence can now be
+          justified from it: the last move was a one-step or a two-step, so the ways to
+          reach `i` are the ways to reach `i−1` plus the ways to reach `i−2`.
+      - text: "`dp[0] = 1`, `dp[1] = 1`"
+        explains: >-
+          Those are base cases, which belong to step 3. They are values for two cells, not a
+          meaning for every cell.
+      - text: An array of length `n + 1`
+        explains: >-
+          That is storage. It says how many cells there are, not what any of them means.
+    work: |-
+      Step 1 is a sentence: "`dp[i]` is …".
+      Step 2 is an equation between cells.
+      Step 3 is base cases, an order, and where the answer sits.
+      Only "the number of ways to reach step `i`" is a sentence about meaning.
+  - ask: >-
+      A student defines `dp[i]` as the `i`-th Fibonacci number with `F₀ = 0`, uses
+      `dp[i] = dp[i−1] + dp[i−2]`, and starts the table with `dp[0] = 1`, `dp[1] = 1`. The
+      program prints 8 for `F₅`. Which step went wrong?
+    choices:
+      - text: Step 1 — the subproblem is badly defined
+        explains: >-
+          The definition is fine: "the `i`-th Fibonacci number" is a clear sentence. The
+          trouble is that the table does not match it.
+      - text: Step 2 — the recurrence is wrong
+        explains: >-
+          The recurrence is the definition of Fibonacci. Given correct starting values it
+          produces correct cells.
+      - text: Step 3 — the base cases do not match the definition
+        correct: true
+        explains: >-
+          With `F₀ = 0` the definition demands `dp[0] = 0`. Starting from 1, 1 shifts every
+          cell along by one, so `dp[5]` holds `F₆ = 8`. Checking `dp[2]` by hand would have
+          caught it: the definition says `F₂ = 1`, the table says 2.
+      - text: Nothing — 8 is `F₅`
+        explains: >-
+          With `F₀ = 0` the sequence runs 0, 1, 1, 2, 3, 5, so `F₅ = 5`.
+    work: |-
+      Correct table: 0, 1, 1, 2, 3, 5 — so `dp[5] = 5`.
+      Student's table: 1, 1, 2, 3, 5, 8 — so `dp[5] = 8`.
+      The recurrence is identical in both; only the two starting cells differ.
+      Hand check: `dp[2] = dp[1] + dp[0]` should be 1. The student's is 2.
+---
+
+Suppose someone hands you a table of numbers and a loop that fills it, and the loop gives the
+right answer on three test inputs. Is the program correct? You cannot tell — not until you
+know what each cell of the table is *supposed* to hold. Dynamic programming is a way of
+solving a problem by filling such a table, and the method is three steps, always in the same
+order.
+
+| Step | Name | The question it answers |
+| --- | --- | --- |
+| 1 | Define the subproblem | What exactly does `dp[i]` mean? |
+| 2 | Establish the recurrence | How does one cell follow from smaller ones? |
+| 3 | Initialize and compute | What are the base cases, in what order are cells filled, and where is the answer? |
+
+Every problem this week is these three steps with different contents.
+
+## Step 1 — define the subproblem
+
+Find a smaller version of the problem that helps build the full one, and say **in words**
+what a cell holds: "the minimum cost to reach step `i`", "the number of ways to make sum
+`i`". The index is called the **state**. For Fibonacci:
+
+> `dp[i]` = the `i`-th Fibonacci number.
+
+If you cannot say the meaning in one English sentence, you do not have a subproblem yet. Most
+wrong solutions start here, and they start by skipping the sentence.
+
+## Step 2 — establish the recurrence
+
+Write `dp[i]` in terms of smaller cells. The question that usually finds it is: **what was
+the last decision?** There are only a few things it could have been, and each one leaves a
+smaller problem of the same kind. Fibonacci has no decision to make, so its recurrence — its
+**transition** — is the definition:
+
+```
+dp[i] = dp[i−1] + dp[i−2]
+```
+
+## Step 3 — initialize and compute
+
+Three things, each small and each a place to slip:
+
+- **Base cases** stop the recurrence: `dp[0] = 0`, `dp[1] = 1`.
+- **An order** in which to fill the cells — here `i = 2` up to `n`. The next concept shows
+  there are two directions to choose from.
+- **Where the answer sits.** Often the last cell, but not always; the longest increasing
+  subsequence later this week is a problem where it is not.
+
+Before trusting the loop, compute one cell by hand and compare it with the sentence from
+step 1: `dp[2] = dp[1] + dp[0] = 1`, and the second Fibonacci number is indeed 1. Base cases
+are where off-by-one errors live, and this check costs ten seconds.
+
+> When you are stuck on a dynamic programming problem, ask which of the three steps you are
+> stuck on. It is nearly always the first.

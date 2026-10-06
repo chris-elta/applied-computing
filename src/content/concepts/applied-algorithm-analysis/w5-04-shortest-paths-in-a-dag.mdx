@@ -1,0 +1,150 @@
+---
+course: applied-algorithm-analysis
+section: w5-dags
+order: 800
+title: Shortest Paths in a Dag
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week5.html?hash=true#/17
+    caption: Slides 18–20 of 63 — a dag and its linearization, the two edges into D, then the loop.
+notation:
+  - symbol: dag
+    reads: dag (rhymes with "bag")
+    means: >-
+      Directed acyclic graph: arrows between nodes, with no way to follow arrows and come
+      back to where you started.
+  - symbol: linearization
+    reads: linearization
+    means: >-
+      An arrangement of a dag's nodes on a line so that every edge points left to right.
+      The same thing as a topological sort.
+  - symbol: "dist(x)"
+    reads: dist of x
+    means: >-
+      The length of the shortest route from the start node `S` to node `x`.
+  - symbol: "u → v"
+    reads: u to v
+    means: >-
+      An edge from node `u` to node `v`. `u` is called a predecessor of `v`.
+  - symbol: "∞"
+    reads: infinity
+    means: >-
+      A placeholder meaning "no route found yet". Anything plus ∞ is still ∞, so it never
+      wins a `min`.
+  - symbol: "O(|V| + |E|)"
+    reads: big O of V plus E
+    means: >-
+      The bars mean "the number of". `|V|` is how many nodes (vertices) the graph has and
+      `|E|` how many edges. The running time is proportional to their sum.
+questions:
+  - ask: >-
+      In the lecture's dag — edges `S→C` 2, `S→A` 1, `C→A` 4, `C→D` 3, `A→B` 6, `B→D` 1,
+      `B→E` 2, `D→E` 1 — what is `dist(E)`?
+    choices:
+      - text: "6"
+        correct: true
+        explains: >-
+          `E` has two predecessors. Through `B` costs `dist(B) + 2 = 9`; through `D` costs
+          `dist(D) + 1 = 6`. The route is `S → C → D → E`.
+      - text: "9"
+        explains: >-
+          That is the route through `B` (`S → A → B → E`, 1 + 6 + 2). `E` has a second
+          predecessor, `D`, and the `min` has to look at both.
+      - text: "14"
+        explains: >-
+          That adds up the edges along the linearized row, 2 + 4 + 6 + 1 + 1. The row is the
+          order nodes are processed in, not a route you must follow.
+      - text: "5"
+        explains: >-
+          That is `dist(D)`. One more edge, of length 1, is needed to reach `E`.
+    work: |-
+      `dist(S) = 0`.
+      `dist(C) = 0 + 2 = 2`.
+      `dist(A) = min{0 + 1, 2 + 4} = 1`.
+      `dist(B) = 1 + 6 = 7`.
+      `dist(D) = min{7 + 1, 2 + 3} = 5`.
+      `dist(E) = min{7 + 2, 5 + 1} = 6`.
+  - ask: What does processing the nodes in linearized order guarantee?
+    choices:
+      - text: >-
+          When a node is reached, the distance to every one of its predecessors is already
+          final
+        correct: true
+        explains: >-
+          Every edge points left to right, so all predecessors of `v` sit to its left and
+          have been processed. The `min` reads only finished values.
+      - text: Nodes are processed from nearest to farthest
+        explains: >-
+          Not so. In the lecture's order `C` (distance 2) comes before `A` (distance 1).
+          The order respects the edges, not the distances.
+      - text: The shortest path uses the fewest edges
+        explains: >-
+          Nothing here counts edges. The shortest route to `E` uses three edges, and so does
+          a longer one.
+      - text: Each node has at most two incoming edges
+        explains: >-
+          The order says nothing about how many edges a node has. The loop takes a `min`
+          over however many there are.
+    work: |-
+      Linearized: `S, C, A, B, D, E`. Edges into `D` come from `B` and `C`.
+      Both are left of `D`, so both are done before `D` is computed.
+      Distances in that order: 0, 2, 1, 7, 5, 6 — not sorted, and they do not need to be.
+---
+
+Here is a small road map with one-way streets and no way to drive in a circle. Six places —
+`S`, `A`, `B`, `C`, `D`, `E` — and eight roads with lengths:
+
+| From | To | Length | | From | To | Length |
+| --- | --- | --- | --- | --- | --- | --- |
+| `S` | `A` | 1 | | `A` | `B` | 6 |
+| `S` | `C` | 2 | | `B` | `D` | 1 |
+| `C` | `A` | 4 | | `B` | `E` | 2 |
+| `C` | `D` | 3 | | `D` | `E` | 1 |
+
+A graph like this, with arrows and no cycles, is a **dag**. Its special property is that the
+nodes can be **linearized**: laid out on a line so that every edge points left to right. For
+this one, `S, C, A, B, D, E` works. If you have met topological sort, this is the same
+thing.
+
+## One node at a time
+
+Take `D`. The only roads into it come from `B` and `C`, so any route to `D` ends with one of
+those two edges. Write `dist(x)` for the length of the shortest route from `S` to `x`. Then:
+
+```
+dist(D) = min{ dist(B) + 1, dist(C) + 3 }
+```
+
+This is only useful if `dist(B)` and `dist(C)` are already known. In the linearized row both
+sit to the left of `D`. That is what the order is for.
+
+## The same relation, everywhere
+
+Nothing about `D` was special. Every node's distance is a `min` over the edges coming into
+it:
+
+```
+dist(S) = 0; every other dist(·) = ∞
+for each node v other than S, in linearized order:
+    dist(v) = min over every edge u → v of dist(u) + length(u, v)
+```
+
+Run it along the row:
+
+| Node | Candidates | `dist` |
+| --- | --- | --- |
+| `S` | start | 0 |
+| `C` | `S`: 0 + 2 | 2 |
+| `A` | `S`: 0 + 1 · `C`: 2 + 4 | 1 |
+| `B` | `A`: 1 + 6 | 7 |
+| `D` | `B`: 7 + 1 · `C`: 2 + 3 | 5 |
+| `E` | `B`: 7 + 2 · `D`: 5 + 1 | 6 |
+
+Notice that the order is not "nearest first": `C` is processed before `A` although `A` is
+closer. The order only has to respect the arrows.
+
+Each node is visited once and each edge is looked at once, so the cost is `O(|V| + |E|)`.
+
+> Shortest paths in a dag is easy for exactly one reason: there is an order in which every
+> value you need has already been computed. The next concept shows that this is not a
+> property of graphs — it is what every dynamic program relies on.

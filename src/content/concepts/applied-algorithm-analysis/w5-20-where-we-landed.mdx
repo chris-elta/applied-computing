@@ -1,0 +1,117 @@
+---
+course: applied-algorithm-analysis
+section: w5-review
+order: 960
+title: Where We Landed
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week5.html?hash=true#/60
+    caption: Slides 61 and 63 of 63 — the summary table, then the reading.
+notation:
+  - symbol: indexed by
+    reads: indexed by
+    means: >-
+      What you have to supply to name one subproblem. Fibonacci's are indexed by one
+      integer; edit distance's by a pair of prefix lengths.
+  - symbol: "O(|V| + |E|)"
+    reads: big O of V plus E
+    means: >-
+      Proportional to the number of nodes plus the number of edges of a graph.
+questions:
+  - ask: >-
+      A new problem: a grid of numbers, moves only right or down, find the cheapest route
+      from the top-left to the bottom-right. Each cell's best cost depends on the cell above
+      and the cell to the left. What is the subproblem indexed by, and what does the fill
+      cost for `r` rows and `c` columns?
+    choices:
+      - text: A cell `(i, j)`; `O(rc)`
+        correct: true
+        explains: >-
+          One subproblem per cell — "the cheapest route from the top-left to here" — and a
+          constant amount of work in each: two lookups and a `min`.
+      - text: A row `i`; `O(r)`
+        explains: >-
+          Knowing the row does not say where in it the route currently is, so the state
+          cannot answer "what is above and to the left?". It needs both coordinates.
+      - text: A route from the top-left; exponential in `r + c`
+        explains: >-
+          That enumerates solutions rather than subproblems. Many routes pass through the
+          same cell, and that overlap is exactly what the table exploits.
+      - text: A cell `(i, j)`; `O(r²c²)`
+        explains: >-
+          Right index, wrong cost. Each cell reads two neighbours, not every other cell,
+          so the work per cell is constant.
+    work: |-
+      Step 1: `dp[i][j]` = cheapest cost of a route from the top-left to cell `(i, j)`.
+      Step 2: `dp[i][j] = grid[i][j] + min{dp[i−1][j], dp[i][j−1]}`.
+      Step 3: fill row by row; the answer is the bottom-right cell.
+      Subproblems: `r × c`. Work each: `O(1)`. Total `O(rc)`.
+  - ask: >-
+      For which of this week's problems is the answer **not** found in the last cell of the
+      table?
+    choices:
+      - text: Longest increasing subsequence, with the `O(n²)` table
+        correct: true
+        explains: >-
+          Its state is "ending at `i`", so each cell covers one ending and the answer is
+          the maximum over all of them.
+      - text: Fibonacci
+        explains: >-
+          `f[n]` is the `n`-th Fibonacci number, which is what was asked for.
+      - text: Edit distance
+        explains: >-
+          `E(m, n)` compares the two complete strings. It is the bottom-right cell.
+      - text: Shortest path in a dag, to the last node of the linearization
+        explains: >-
+          `dist` of that node is exactly the quantity wanted, and it is the last one
+          computed.
+    work: |-
+      Fibonacci: answer `f[n]` — last cell.
+      Dag shortest path to the final node: `dist` of that node — last cell.
+      Edit distance: `E(m, n)` — last cell.
+      LIS: `max{dp[0], …, dp[n−1]}` — anywhere in the table.
+---
+
+Four problems, one method.
+
+## The table
+
+| Problem | Subproblem is indexed by | Time |
+| --- | --- | --- |
+| Fibonacci | one integer | `O(n)` |
+| Shortest path in a dag | a vertex | `O(∣V∣ + ∣E∣)` |
+| Longest increasing subsequence | an ending position | `O(n²)`, or `O(n log n)` |
+| Edit distance | a pair of prefixes | `O(mn)` |
+
+The middle column is the one that matters. If you can fill it in for a problem you have not
+seen before, the recurrence usually follows — because naming what indexes a subproblem is
+most of saying what the subproblem is.
+
+## The three steps, every time
+
+1. **Define the subproblem** — a sentence saying what one cell means.
+2. **Write the recurrence** — ask what the last decision was.
+3. **Choose an order** — base cases first, then any order in which every cell's inputs are
+   ready, then read the answer from wherever your definition puts it.
+
+## What sits underneath
+
+- **Overlap** is what separates this from divide and conquer. Subproblems that recur are
+  worth storing; independent ones are not.
+- **The dag.** Subproblems are nodes, dependencies are edges, and a valid fill order is a
+  linearization. Tabulation names the order; memoization discovers it.
+- **Cost and solution are different things.** A table gives the cost. Getting the solution
+  back means recording decisions (`prev`, `parent`) or keeping enough of the table to
+  re-derive them — which is what the two-row memory saving gives up.
+
+## Reading
+
+- Dasgupta, Papadimitriou & Vazirani, *Algorithms* — sections 6.1 to 6.3 cover every
+  problem in this part.
+- Week 1 of this course — `fib1`, `fib2`, `fib3`, `fib4` and the cost of each.
+- Tutorial Part 5, *Solve It Once, Write It Down* — §5.1 to §5.5, the written version of
+  this lecture; §5.5.2 is a self-check.
+- Practice: LeetCode 64, 300, 62, 63, 120.
+
+Part II continues with the knapsack, chain matrix multiplication, and independent sets in
+trees.

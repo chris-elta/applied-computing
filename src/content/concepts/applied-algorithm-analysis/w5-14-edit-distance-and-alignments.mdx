@@ -1,0 +1,151 @@
+---
+course: applied-algorithm-analysis
+section: w5-edit
+order: 900
+title: Edit Distance and Alignments
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week5.html?hash=true#/45
+    caption: Slides 46–48 of 63 — the three operations, kitten to sitting, and two alignments of SNOWY with SUNNY.
+notation:
+  - symbol: edit distance
+    reads: edit distance
+    means: >-
+      The smallest number of single-character insertions, deletions and substitutions that
+      turn one string into another. Also called Levenshtein (LEV-en-shtine) distance.
+  - symbol: alignment
+    reads: alignment
+    means: >-
+      The two strings written one above the other, with gaps allowed, so that the letters
+      line up in columns.
+  - symbol: "−"
+    reads: gap
+    means: >-
+      An empty place in an alignment. A column with a letter over a gap, or a gap over a
+      letter, always counts as a difference.
+  - symbol: at most
+    reads: at most
+    means: >-
+      An upper limit. "The distance is at most 3" says 3 edits are enough; it does not
+      rule out 2.
+questions:
+  - ask: >-
+      You find three edits that turn "kitten" into "sitting". What have you proved about
+      the edit distance?
+    choices:
+      - text: It is at most 3
+        correct: true
+        explains: >-
+          Showing one way to do it in three proves that three are enough. It says nothing
+          about whether some cleverer sequence needs only two — ruling that out takes the
+          table.
+      - text: It is exactly 3
+        explains: >-
+          That also needs a proof that nothing cheaper exists. An example can only show
+          what is possible, never what is impossible.
+      - text: It is at least 3
+        explains: >-
+          That is the half an example cannot give. "At least" is a claim about every
+          possible sequence of edits, not one of them.
+      - text: Nothing, until the table has been filled
+        explains: >-
+          The three edits are real evidence: the distance cannot be 4 or more.
+    work: |-
+      kitten → sitten (substitute k → s) → sittin (substitute e → i) → sitting (insert g).
+      Three edits exist, so distance ≤ 3.
+      Distance ≥ 3 would need an argument that no 0-, 1- or 2-edit sequence works.
+      The table supplies it: the bottom-right cell for these two words is 3.
+  - ask: |-
+      What is the cost of this alignment of TREE with TEA?
+
+      `T R E E`
+      `T − E A`
+    choices:
+      - text: "2"
+        correct: true
+        explains: >-
+          Two columns differ: `R` over a gap, and `E` over `A`. The other two columns
+          match.
+      - text: "1"
+        explains: >-
+          That counts only `E` over `A`. A gap always differs from a letter, so `R` over
+          `−` costs 1 as well — it is a deletion.
+      - text: "3"
+        explains: >-
+          Only two of the four columns differ. `T` over `T` and the first `E` over `E` are
+          matches and cost nothing.
+      - text: "4"
+        explains: >-
+          That is the number of columns. Cost counts only the columns where the top and
+          bottom differ.
+    work: |-
+      Column 1: `T` / `T` — same, 0.
+      Column 2: `R` / `−` — differ, 1 (delete R).
+      Column 3: `E` / `E` — same, 0.
+      Column 4: `E` / `A` — differ, 1 (substitute).
+      Total 2.
+---
+
+How different are "cat" and "cart"? One letter. "Cat" and "bat"? Also one letter, in a
+different sense. A spell-checker needs a single number that covers both.
+
+## Three operations
+
+The **edit distance** between two strings is the minimum number of operations needed to
+turn one into the other, where each operation costs 1:
+
+| Operation | Does | Example |
+| --- | --- | --- |
+| Insertion | adds a character | "cat" → "cart" |
+| Deletion | removes a character | "cart" → "cat" |
+| Substitution | replaces a character | "cat" → "bat" |
+
+## "At most" is not "exactly"
+
+Turn "kitten" into "sitting":
+
+1. "kitten" → "sitten" — substitute `k → s`
+2. "sitten" → "sittin" — substitute `e → i`
+3. "sittin" → "sitting" — insert `g`
+
+So the edit distance is **at most** 3. Does this prove it is exactly 3? No. Three operations
+show that three are enough; they do not show that two are not. To claim a minimum you have
+to account for every possible sequence of edits, and that is what the table in the coming
+concepts does.
+
+## Alignments
+
+Thinking in sequences of edits is awkward — the string keeps changing under you. A stiller
+picture is an **alignment**: write the two strings one above the other, allowing gaps.
+Here are two alignments of SNOWY with SUNNY:
+
+```
+S − N O W Y          − S N O W − Y
+S U N N − Y          S U N − − N Y
+cost 3               cost 5
+```
+
+The **cost** of an alignment is the number of columns in which the two symbols differ, and a
+gap always differs. Each such column is one edit: a letter over a different letter is a
+substitution, a letter over a gap is a deletion, and a gap over a letter is an insertion.
+
+The edit distance is the cost of the **best** alignment.
+
+## Why this picture helps
+
+An alignment is built one column at a time, and each column is one of only three kinds:
+
+- letter over letter,
+- letter over gap,
+- gap over letter.
+
+Now remove the last column. What remains is an alignment of two shorter strings — a prefix
+of each. That is a smaller problem of exactly the same kind. (Removing the first column
+works as well; what is left is then two suffixes.)
+
+This is the recipe's step 2 question, "what was the last decision?", answered before any
+table exists: the last decision is the last column, and it has three possible shapes.
+
+> An example proves an upper limit. A minimum needs every alternative accounted for — and
+> the way to do that is to find a structure, here the last column, that every alternative
+> must have.

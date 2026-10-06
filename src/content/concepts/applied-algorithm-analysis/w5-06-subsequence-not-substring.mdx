@@ -1,0 +1,138 @@
+---
+course: applied-algorithm-analysis
+section: w5-lis
+order: 820
+title: Subsequence, Not Substring
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week5.html?hash=true#/23
+    caption: Slides 24–26 of 63 — the problem, the two words set side by side, and the dag of increasing subsequences.
+notation:
+  - symbol: LIS
+    reads: L I S
+    means: >-
+      Longest increasing subsequence. Here "the LIS" usually means its length, since that
+      is what the problem asks for.
+  - symbol: subsequence
+    reads: subsequence
+    means: >-
+      A selection from an array that keeps the original order but may skip elements. From
+      `[10, 9, 2, 5]`, both `[10, 2]` and `[9, 5]` are subsequences.
+  - symbol: substring
+    reads: substring
+    means: >-
+      A run of neighbours with nothing skipped. Every substring is a subsequence; most
+      subsequences are not substrings.
+  - symbol: strictly increasing
+    reads: strictly increasing
+    means: >-
+      Each number is larger than the one before — equal does not count. `2, 6, 6` is not
+      strictly increasing.
+  - symbol: "nums[i]"
+    reads: nums of i
+    means: >-
+      The number at position `i` of the input array. Positions count from 0.
+questions:
+  - ask: >-
+      For `[10, 9, 2, 5, 3, 7, 101, 18]` a student answers 3 and offers `[3, 7, 101]` as
+      evidence. What have they solved?
+    choices:
+      - text: The longest increasing *substring* — a run of neighbours
+        correct: true
+        explains: >-
+          `3, 7, 101` sit next to each other in the array, and no longer increasing run
+          exists. Allowing gaps lets a 2 go in front — `[2, 3, 7, 101]` — for length 4.
+      - text: The right problem — 3 is the answer
+        explains: >-
+          `[2, 3, 7, 101]` keeps the array's order, increases at every step, and has
+          length 4.
+      - text: The longest subsequence that is not strictly increasing
+        explains: >-
+          Allowing equal neighbours would only make the answer longer, never shorter. And
+          this input has no repeated values to take advantage of.
+      - text: The longest *decreasing* subsequence
+        explains: >-
+          `3, 7, 101` goes up. A longest decreasing subsequence here would be
+          `10, 9, 5, 3`.
+    work: |-
+      Increasing runs of neighbours: `10` · `9` · `2, 5` · `3, 7, 101` · `18`. Longest: 3.
+      With gaps allowed: `2` (index 2), `3` (index 4), `7` (index 5), `101` (index 6). Length 4.
+      The indices 2, 4, 5, 6 increase but are not consecutive — a subsequence, not a substring.
+  - ask: >-
+      In the dag for `5 2 8 6 3 6 9 7`, there is an edge from position `i` to a later
+      position `j` whenever `nums[i] < nums[j]`. How many nodes are on its longest path?
+    choices:
+      - text: "4"
+        correct: true
+        explains: >-
+          For example `2 → 3 → 6 → 9`. Paths in this dag are exactly the increasing
+          subsequences, so the longest path is the LIS.
+      - text: "5"
+        explains: >-
+          That needs `2, 3, 6, 6, 9`, using both 6s. They are not joined by an edge,
+          because 6 is not strictly less than 6.
+      - text: "3"
+        explains: >-
+          `5, 8, 9` and `5, 6, 9` have three nodes, but starting from 2 instead of 5 makes
+          room for the 3 as well.
+      - text: "8"
+        explains: >-
+          A path through every node would need the whole array to be increasing already.
+          The very first step, 5 to 2, goes down.
+    work: |-
+      From `2` (position 1): `2 → 3` (position 4) `→ 6` (position 5) `→ 9` (position 6). Four nodes.
+      `2 → 3 → 6 → 7` also has four.
+      Longest path ending at each position, left to right: 1, 1, 2, 2, 2, 3, 4, 4.
+      The maximum is 4, so no path has five nodes.
+---
+
+Here is an array of eight numbers:
+
+```
+10   9   2   5   3   7   101   18
+```
+
+Cross out as few as you can so that what remains goes strictly upward, left to right. Cross
+out 10, 9, 5 and 18 and you are left with `2, 3, 7, 101` — four numbers. No choice leaves
+five. That 4 is the answer to this problem:
+
+> Given an array of numbers, find the length of the longest strictly increasing subsequence.
+
+## The word that causes the wrong answers
+
+The numbers you keep do **not** have to be neighbours. They only have to stay in their
+original order. Two words describe a selection taken in order, and only one of them allows
+gaps:
+
+| | Positions must be | Example from the array |
+| --- | --- | --- |
+| **Substring** | adjacent, nothing skipped | `2, 5, 3` |
+| **Subsequence** | in order, gaps allowed | `2, 5, 7` — skips the 3 |
+
+`2, 5, 7` is a subsequence and not a substring. This problem is about subsequences. Almost
+every wrong answer to it starts by solving the substring version by accident, which is
+easier and gives a smaller number.
+
+## Seeing it as a dag
+
+Take a different, shorter input: `5 2 8 6 3 6 9 7`. Make each position a node, and draw an
+edge from position `i` to a later position `j` whenever `nums[i] < nums[j]` — that is,
+whenever the second number could come directly after the first in an increasing
+subsequence.
+
+All the edges point rightward, so this is a dag. The two 6s are **not** joined, because the
+subsequence must be *strictly* increasing.
+
+Now follow any path through the dag and write down the numbers you pass. They go up at every
+step and appear in array order: an increasing subsequence. And every increasing subsequence
+is a path. So:
+
+- increasing subsequences are exactly the paths;
+- the LIS is the **longest path** in this dag.
+
+The shortest-paths concept already swept a dag left to right taking a `min` at each node.
+The same sweep with `max` in place of `min` finds the longest path. Nothing new has to be
+invented — what remains is to write it as a recipe, which is the next concept.
+
+> Order must be kept; positions need not be adjacent. Read the problem for that word before
+> writing anything.

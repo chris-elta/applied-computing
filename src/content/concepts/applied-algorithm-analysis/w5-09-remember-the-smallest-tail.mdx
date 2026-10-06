@@ -1,0 +1,123 @@
+---
+course: applied-algorithm-analysis
+section: w5-lis
+order: 850
+title: Remember the Smallest Tail
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week5.html?hash=true#/30
+    caption: Slides 31–32 of 63 — the array of smallest tails, and why the smallest is the only one worth keeping.
+notation:
+  - symbol: tail
+    reads: tail
+    means: >-
+      The last number of a subsequence. The tail of `[2, 5, 7]` is 7.
+  - symbol: "sub"
+    reads: sub
+    means: >-
+      An array with one entry per length. Each entry is the smallest tail of any increasing
+      subsequence of that length seen so far.
+  - symbol: "sub[k]"
+    reads: sub of k
+    means: >-
+      The smallest tail among increasing subsequences of length `k + 1`. The "+ 1" is
+      because positions count from 0: `sub[0]` is for length 1.
+questions:
+  - ask: "After reading `6, 9, 7` from an array, what is `sub`?"
+    choices:
+      - text: "`[6, 7]`"
+        correct: true
+        explains: >-
+          Length 1: the tails seen are 6, 9, 7, and the smallest is 6. Length 2: the
+          increasing pairs are `[6, 9]` and `[6, 7]`, with tails 9 and 7, and the smaller
+          is 7.
+      - text: "`[6, 9]`"
+        explains: >-
+          That was right before the 7 arrived. `[6, 7]` is also an increasing subsequence
+          of length 2 and has a smaller tail, so 7 takes the place of 9.
+      - text: "`[6, 9, 7]`"
+        explains: >-
+          That is the input copied. `sub` has one entry per *length*, and no increasing
+          subsequence of length 3 exists here, because 7 cannot follow 9.
+      - text: "`[7]`"
+        explains: >-
+          `sub` does not hold the most recent number. It holds, for each length, the
+          smallest tail — and both lengths 1 and 2 have been achieved.
+    work: |-
+      Read 6: subsequences `[6]`. `sub = [6]`.
+      Read 9: adds `[9]`, `[6, 9]`. Smallest tail of length 1 is 6; of length 2 is 9. `sub = [6, 9]`.
+      Read 7: adds `[7]`, `[6, 7]`. Length 1 → 6. Length 2 → min(9, 7) = 7. `sub = [6, 7]`.
+  - ask: "`sub` currently has five entries. What does `sub[2]` hold?"
+    choices:
+      - text: The smallest tail among increasing subsequences of length 3 seen so far
+        correct: true
+        explains: >-
+          Position `k` is for length `k + 1`, so position 2 is for length 3. And five
+          entries means the longest length found so far is 5.
+      - text: The smallest tail among increasing subsequences of length 2
+        explains: >-
+          That is `sub[1]`. Positions start at 0 and lengths start at 1, so they are always
+          one apart.
+      - text: The third number of the longest increasing subsequence
+        explains: >-
+          Each entry is the tail of a possibly different subsequence. The entries need not
+          belong together at all, which a later concept shows with an example.
+      - text: The third-smallest number read so far
+        explains: >-
+          `sub` is sorted, but it is not a sorted copy of the input. Most numbers read are
+          not in it.
+    work: |-
+      `sub[0]` ↔ length 1, `sub[1]` ↔ length 2, `sub[2]` ↔ length 3.
+      Length of `sub` = 5 = longest length found so far.
+---
+
+The table method costs `O(n²)` because for every element it looks back at all earlier
+elements. A different idea brings that down to `O(n log n)`, and it rests on one observation
+about which subsequences are worth remembering.
+
+## One new word
+
+The **tail** of a subsequence is its last number. The tail of `[2, 5, 7]` is 7.
+
+## Which would you rather keep?
+
+Take `nums = [5, 12, 8, 10]`. After reading 5, 12 and 8 there are two increasing
+subsequences of length 2: `[5, 12]` and `[5, 8]`. Then 10 arrives.
+
+| Subsequence | Tail | Can 10 follow? |
+| --- | --- | --- |
+| `[5, 8]` | 8 | yes — `[5, 8, 10]`, length 3 |
+| `[5, 12]` | 12 | no — 10 is smaller than 12 |
+
+It is not an accident that the one with the smaller tail did better. Any number that can be
+added after 12 must be bigger than 12, so it is also bigger than 8, so it can be added after
+8 too. `[5, 12]` can never do anything `[5, 8]` cannot. It can be forgotten.
+
+That argument used nothing about these particular numbers. Among all increasing subsequences
+of the same length, the one with the **smallest tail** can be extended by everything the
+others can. So for each length, one number is enough.
+
+## The array `sub`
+
+Keep one array. Group the increasing subsequences seen so far by length, and for each group
+store only the smallest tail:
+
+| Entry | Holds the smallest tail of an increasing subsequence of length |
+| --- | --- |
+| `sub[0]` | 1 |
+| `sub[1]` | 2 |
+| `sub[k]` | `k + 1` |
+
+Read that last row twice. Positions count from 0 and lengths from 1, so position `k` means
+length `k + 1`. In the example, after 5, 12, 8 the array is `sub = [5, 8]`: the smallest
+tail of length 1 is 5 and of length 2 is 8.
+
+Since there is an entry for every length that has been achieved, **the length of `sub` is
+the longest length found so far**. When the whole input has been read, that is the LIS.
+
+Notice what has been given up. `sub` does not remember the subsequences, only their last
+numbers — and only one last number per length. That is why it is small, and it will matter
+two concepts from now.
+
+> Among candidates of equal length, keep the one that leaves the most room to grow. For
+> increasing subsequences that means the smallest last number.

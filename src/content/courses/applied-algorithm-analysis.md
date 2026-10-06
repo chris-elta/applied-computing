@@ -72,4 +72,32 @@ sections:
       into itself.
   - id: w4-review
     title: Week 4 · Where we landed
+  - id: w5-recipe
+    title: Week 5 · The dynamic programming recipe
+    summary: >-
+      Three steps that turn a problem into a table: say what a cell means, say how it follows
+      from smaller cells, then fill it in an order that works.
+  - id: w5-directions
+    title: Week 5 · Tabulation and memoization
+    summary: One recurrence, evaluated in two opposite directions.
+  - id: w5-overlap
+    title: Week 5 · DP against divide and conquer
+    summary: The difference is one word — overlap.
+  - id: w5-dags
+    title: Week 5 · Shortest paths in dags
+    summary: >-
+      The problem that shows what every dynamic program is underneath: subproblems as
+      nodes, dependencies as edges, and an order that points every edge the same way.
+  - id: w5-lis
+    title: Week 5 · Longest increasing subsequence
+    summary: >-
+      A state that has to say where the subsequence ends, an `O(n log n)` shortcut that
+      keeps only the smallest tails, and how to get the subsequence back out of either.
+  - id: w5-edit
+    title: Week 5 · Edit distance
+    summary: >-
+      A two-dimensional table over pairs of prefixes, and a walk back through it that
+      recovers the alignment.
+  - id: w5-review
+    title: Week 5 · Where we landed
 ---
