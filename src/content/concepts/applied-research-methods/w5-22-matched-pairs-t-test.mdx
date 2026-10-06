@@ -1,0 +1,117 @@
+---
+course: applied-research-methods
+section: w5-ttests
+order: 730
+title: Worked Example — the Matched-Pairs t-Test
+visuals:
+  - type: svg
+    src: applied-research-methods/week5/61.svg
+    caption: Slide 61 of 66 — the weight-loss claim, and the table of paired measurements.
+  - type: svg
+    src: applied-research-methods/week5/62.svg
+    caption: Slide 62 of 66 — the weight-loss claim, and the table of paired measurements.
+  - type: svg
+    src: applied-research-methods/week5/63.svg
+    caption: Slide 63 of 66 — the weight-loss claim, and the table of paired measurements.
+  - type: svg
+    src: applied-research-methods/week5/64.svg
+    caption: Slide 64 of 66 — the hypotheses on the differences, and the result.
+  - type: svg
+    src: applied-research-methods/week5/65.svg
+    caption: Slide 65 of 66 — the hypotheses on the differences, and the result.
+notation:
+  - symbol: d
+    reads: d
+    means: 'The difference for one pair: here, initial weight minus weight after a week. Each person contributes one d.'
+  - symbol: x̄_d, s_d
+    reads: x-bar sub d, s sub d
+    means: The mean and standard deviation of the differences, treated as a single sample.
+  - symbol: μ_d
+    reads: mu sub d
+    means: The true mean of the differences in the population.
+questions:
+  - ask: A team measures the same 20 developers' task times before and after training. Which analysis fits?
+    choices:
+      - text: Treat the 40 times as one sample of 40 independent values
+        explains: Before and after for the same person are not independent; analysing them as 40 separate values would ignore the pairing.
+      - text: No test is possible, because there are two measures
+        explains: Pairing converts it to a single sample of differences.
+      - text: 'A matched-pairs t-test: compute each developer''s difference, then run a one-sample t-test on the differences'
+        correct: true
+        explains: The measurements come in pairs, one per person, so the natural data are the differences. Each difference is one observation.
+      - text: A z-test on the 20 initial times alone
+        explains: That discards the 'after' data and the comparison the study was designed for.
+  - ask: In the weight-loss example, x̄_d = 2.333, s_d = 2.674 and n = 12. The claim is 'at least 5 lb lost'. What are the test statistic and its meaning?
+    choices:
+      - text: t = 2.333 / 5 ≈ 0.47
+        explains: That is a ratio, and not a test statistic.
+      - text: t = (2.333 − 5) / (2.674/√12) ≈ −3.45; the average loss is about 3.45 standard errors below the claimed 5 lb
+        correct: true
+        explains: The negative value shows the loss fell short of the claim. With 11 degrees of freedom the one-sided p-value is about 0.0027.
+      - text: t = (2.333 − 0) / (2.674/√12) ≈ 3.02; the loss is significantly different from zero
+        explains: That tests against no change, not against the centre's claim of 5 lb.
+      - text: t = (5 − 2.333) / 2.674 ≈ 1.0
+        explains: That omits the √n, and it reverses the sign.
+---
+
+**The problem.** A weight-loss centre advertises that participants lose **at least 5 pounds
+in the first week**. The state's consumer agency doubts it. To test the claim at the **0.05**
+level, **12 participants** are randomly selected and weighed at the start and after one week.
+
+## Why pairs need their own treatment
+
+Each person is weighed twice. A person who starts at 215 lb ends near 211; one who starts at
+125 ends near 123. The two columns are strongly related, because they are the same
+people, so they are not two independent samples. The solution is to look at **what each
+person changed**.
+
+| Member | Initial | After 1 week | Difference `d` (initial − after) |
+| --- | --- | --- | --- |
+| 1 | 195 | 195 | 0 |
+| 2 | 153 | 151 | 2 |
+| 3 | 174 | 170 | 4 |
+| 4 | 125 | 123 | 2 |
+| 5 | 149 | 144 | 5 |
+| 6 | 152 | 149 | 3 |
+| 7 | 135 | 131 | 4 |
+| 8 | 143 | 147 | −4 |
+| 9 | 139 | 138 | 1 |
+| 10 | 198 | 192 | 6 |
+| 11 | 215 | 211 | 4 |
+| 12 | 153 | 152 | 1 |
+
+The slide's own note: the last column is **the data we are after**. Twelve differences form
+a single sample, and the test is now an ordinary one-sample t-test on them.
+
+## The test
+
+| Step | Working |
+| --- | --- |
+| **Parameter** | `μ_d` = true mean weight loss (initial − after) |
+| **Hypotheses** | `H₀: μ_d = 5`, `Hₐ: μ_d < 5` (the centre's claim is 'at least 5'; the agency suspects less) |
+| **Level** | `α = 0.05` |
+| **Summary** | `n = 12`, `x̄_d = 2.333`, `s_d = 2.674` |
+| **Statistic** | `t = (2.333 − 5) / (2.674/√12) = −2.667 / 0.772 ≈ −3.45` |
+| **df and p** | 11 degrees of freedom; one-sided `p ≈ 0.0027` |
+| **Compare** | `0.0027 < 0.05` |
+
+## Conclusions
+
+- **Statistical:** reject `H₀`.
+- **Contextual:** there is **strong evidence** that the mean weight loss of people on the
+  program for one week is **less than 5 pounds**.
+
+## Two things to notice
+
+- The null here is **not 0**. Many matched-pairs examples test 'no change', but the claim
+  being tested is a specific amount, so `μ_d` is compared with 5.
+- The mean loss of 2.3 lb is real: the centre's participants *did* lose weight. The test
+  says that they did not lose *as much as advertised*. A claim can fail without the effect
+  being absent.
+
+This closes the course's arc: pose a question precisely (Week 1), find what is known (Week 2),
+design a study (Week 3), collect and describe data (Week 4), and test what the sample says
+about the population (Week 5), then interpret the answer honestly.
+
+> Pairing turns two related columns into one sample of changes. Then you already know the
+> test.

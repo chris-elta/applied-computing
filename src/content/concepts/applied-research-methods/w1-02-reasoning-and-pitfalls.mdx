@@ -1,0 +1,82 @@
+---
+course: applied-research-methods
+section: w1-nature
+order: 20
+title: Reasoning, and How It Goes Wrong
+visuals:
+  - type: svg
+    src: applied-research-methods/week1/08.svg
+    caption: Slide 8 of 50 — the tools of reasoning and the seven pitfalls.
+  - type: svg
+    src: applied-research-methods/week1/09.svg
+    caption: Slide 9 of 50 — the tools of reasoning and the seven pitfalls.
+notation:
+  - symbol: deductive
+    reads: dee-DUK-tiv
+    means: Reasoning from general premises to a specific conclusion. All servers in this rack are down; this server is in this rack; so it is down.
+  - symbol: inductive
+    reads: in-DUK-tiv
+    means: Reasoning from specific observations to a general claim. Three builds failed on Friday, so Friday builds fail.
+  - symbol: abduction
+    reads: ab-DUK-shun
+    means: Reasoning to the best available explanation of what you saw. The logs show a timeout, so the network was probably the cause. Plausible, not guaranteed.
+questions:
+  - ask: A developer tests a new library on three small projects, sees it compile quickly each time, and writes in the proposal that it compiles quickly for all projects. Which pitfall from the lecture is this?
+    choices:
+      - text: Generalising about a category from a restricted subset of it
+        correct: true
+        explains: 'This is the inductive-reasoning pitfall: three small projects are a narrow slice of all projects.'
+      - text: Mistaking dogma for fact
+        explains: Dogma means accepting a claim because of who says it or how long it has been repeated. The developer observed something directly; they just observed too little.
+      - text: Confusing what must logically be true with what seems to be true
+        explains: That is the deductive pitfall, where a conclusion feels right although the premises do not force it. Here the problem is the size and kind of the sample, not a faulty chain of premises.
+      - text: Mistaking correlation for causation
+        explains: No relationship between two variables is being claimed here. The claim is that a property holds for a whole category.
+  - ask: A researcher expects their new scheduling algorithm to win. They run twelve benchmarks, drop the two where it lost as 'unrepresentative', and report the other ten. Which pitfalls are at work?
+    choices:
+      - text: Looking only for supporting evidence, and confirming expectations in the face of contradictory evidence
+        correct: true
+        explains: Discarding the two losses because they disagree with the hypothesis is exactly pitfalls 3 and 4. A reason to drop a benchmark has to be stated before seeing the result.
+      - text: The deductive pitfall, because ten of twelve is not a logical proof
+        explains: The issue is not that the evidence falls short of proof. Evidence never proves in this setting; the issue is that contrary evidence was thrown out.
+      - text: None, because excluding outliers is always acceptable practice
+        explains: Outliers may sometimes be excluded, but only for reasons fixed in advance. Here the only thing the two benchmarks have in common is that they went against the hypothesis.
+      - text: Letting emotions override logic, because the researcher is attached to the algorithm
+        explains: Attachment may be the motive, but the observable error is in how evidence was selected. Pitfall 6 is about feelings steering the reasoning itself, and it is hard to show from the behaviour alone.
+---
+
+Research leans on a few kinds of reasoning, and each has a characteristic way of failing. The
+lecture lists the tools first and then the traps.
+
+## The tools
+
+| Tool | What it does |
+| --- | --- |
+| **Critical thinking** | Verbal reasoning, argument analysis, probabilistic reasoning, decision making, hypothesis testing |
+| **Deductive logic** | Starts from premises or assumptions and proceeds to conclusions |
+| **Inductive reasoning** | Starts from observations and proceeds to broader generalisations |
+| **Scientific method** | A systematic and rigorous, yet flexible, process |
+| **Theory building** | Well-documented findings and defensible reasoning; may use **abduction** |
+| **Collaboration** | Other minds catch what yours will not |
+
+Deduction is *truth-preserving*: if the premises hold, the conclusion must. Induction is not.
+However many observations you gather, the generalisation is a bet, which is why the sample
+you observe matters so much (Week 4).
+
+## Seven pitfalls
+
+1. Confusing what *must* logically be true with what *seems* true — the deductive pitfall.
+2. Generalising about a whole category from a restricted subset — the inductive pitfall.
+3. Looking only for evidence that supports our hypotheses.
+4. Confirming expectations even when the evidence contradicts them.
+5. Mistaking dogma for fact.
+6. Letting emotions override logic and objectivity.
+7. Mistaking correlation for causation.
+
+Pitfalls 3, 4 and 6 are not errors of logic. They are errors of *motivation*: the researcher
+wants a particular answer and the reasoning bends toward it. Pitfall 7 returns as a design
+problem in Week 3, where the choice of study decides whether a cause can be claimed at all.
+
+> The check against motivated reasoning is procedural, not personal: decide what counts as
+> evidence before you see the results, and invite other people to find the holes.
+

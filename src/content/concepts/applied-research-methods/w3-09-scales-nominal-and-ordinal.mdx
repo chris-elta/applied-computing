@@ -1,0 +1,100 @@
+---
+course: applied-research-methods
+section: w3-measurement
+order: 290
+title: Measurement, and the Nominal and Ordinal Scales
+visuals:
+  - type: svg
+    src: applied-research-methods/week3/18.svg
+    caption: Slide 18 of 26 — what measurement is, and the four scales.
+  - type: svg
+    src: applied-research-methods/week3/19.svg
+    caption: Slide 19 of 26 — what measurement is, and the four scales.
+  - type: svg
+    src: applied-research-methods/week3/20.svg
+    caption: Slide 20 of 26 — nominal and ordinal data.
+  - type: svg
+    src: applied-research-methods/week3/21.svg
+    caption: Slide 21 of 26 — nominal and ordinal data.
+notation:
+  - symbol: nominal
+    reads: NOM-in-ul
+    means: Of names. Data that are only labels for categories, such as operating system or programming language.
+  - symbol: ordinal
+    reads: OR-din-ul
+    means: Of order. Data that can be ranked but whose gaps are not equal, such as first, second, third.
+  - symbol: mode
+    reads: mode
+    means: The value that occurs most often.
+  - symbol: median
+    reads: MEE-dee-un
+    means: The middle value when the data are lined up in order.
+  - symbol: chi-square test
+    reads: kai-square
+    means: A test of whether counts across categories differ from what chance alone would produce. Used on nominal data.
+  - symbol: Spearman's rank-order correlation
+    reads: SPEER-munz rank-order correlation
+    means: A correlation computed on ranks rather than raw values, suited to ordinal data.
+questions:
+  - ask: 'A survey records each respondent''s preferred editor: VS Code, Vim, Emacs or other. Which scale of measurement is this, and which summary statistic makes sense?'
+    choices:
+      - text: Interval; the mean editor
+        explains: You cannot add editor names, so a mean is meaningless.
+      - text: Ratio; the geometric mean
+        explains: A ratio scale needs a true zero and equal units. Editor names have neither.
+      - text: Nominal; the mode (the most common editor) and percentages
+        correct: true
+        explains: The values are names with no order. The lecture lists mode, percentage and the chi-square test for nominal data.
+      - text: Ordinal; the median editor
+        explains: There is no ranking of editors, so there is no middle one.
+  - ask: Race finishers are recorded as 1st, 2nd and 3rd, with no times. What can you say?
+    choices:
+      - text: The first was twice as fast as the second
+        explains: That needs a ratio scale. A rank carries no information about size.
+      - text: The gap between first and second equals the gap between second and third
+        explains: Nothing says so. The gaps could be seconds or minutes.
+      - text: The first finished ahead of the second, but not by how much; this is ordinal
+        correct: true
+        explains: Ordinal data let you rank (greater than or less than) but the gaps between ranks are unknown, so the median and Spearman's correlation are appropriate.
+      - text: The data are nominal, because ranks are names
+        explains: 'Ranks are not just labels: they have an order, which nominal data lack.'
+---
+
+**Measurement** is how a phenomenon is turned into data: you limit what you record about it,
+interpret it, and compare it with a standard. Some measurements are **substantial** (they
+have physical substance, like a length) and some **insubstantial** (concepts, ideas and
+opinions). Computing deals with many of the second kind: satisfaction, difficulty, code
+quality.
+
+The kind of measurement decides which statistics are legitimate. The lecture gives **four
+scales**, in order of increasing information: nominal, ordinal, interval and ratio.
+
+## Nominal
+
+Assign **names** to data. There are infinitely many ways to do so, and it is the simplest
+scale: it just divides data into **discrete categories**. Operating system, language, team,
+bug type.
+
+Statistics: **mode, percentage, chi-square test**.
+
+## Ordinal
+
+Think in terms of the symbols `>` and `<`. Ordinal data can be **rank-ordered**: first,
+second, third; low, medium, high. You know the order but not the distances.
+
+Statistics: **median, percentile rank, Spearman's rank-order correlation**.
+
+## The summary so far
+
+| Scale | What you can say | Example |
+| --- | --- | --- |
+| **Nominal** | A is *different from* B | Python vs Java |
+| **Ordinal** | A is *bigger or better* than B | Gold, silver, bronze |
+
+The mistake to avoid is computing a statistic from a scale that cannot support it. Averaging
+operating-system codes, or treating the distance between 'medium' and 'high' as equal to that
+between 'low' and 'medium', gives you a number that means nothing. The next concept adds the
+upper two scales, and then the rest of the table.
+
+> Pick the statistic after you know the scale. The data decide what is allowed.
+

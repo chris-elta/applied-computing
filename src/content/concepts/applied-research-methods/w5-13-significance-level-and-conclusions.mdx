@@ -1,0 +1,89 @@
+---
+course: applied-research-methods
+section: w5-testing
+order: 640
+title: The Significance Level and Reaching a Conclusion
+visuals:
+  - type: svg
+    src: applied-research-methods/week5/29.svg
+    caption: Slide 29 of 66 — the 0.05 convention, and what the conclusion says.
+  - type: svg
+    src: applied-research-methods/week5/30.svg
+    caption: Slide 30 of 66 — the 0.05 convention, and what the conclusion says.
+notation:
+  - symbol: reject H₀
+    reads: reject H-nought
+    means: Decide the data are too unlikely under the null, so you act as though the alternative is supported.
+  - symbol: fail to reject H₀
+    reads: fail to reject H-nought
+    means: Decide the data are not unlikely enough. It does not say the null is true, only that the evidence was insufficient.
+questions:
+  - ask: 'A test of H₀: μ = 12 gives p = 0.08 at α = 0.05. Which conclusion is correct?'
+    choices:
+      - text: 'Fail to reject H₀: there is not sufficient evidence, at this level, to say the mean differs from 12'
+        correct: true
+        explains: 0.08 is larger than 0.05, so the data are not unusual enough under the null. That is an absence of evidence, which is not evidence of absence.
+      - text: Reject H₀ and conclude the null has an 8% chance of being true
+        explains: 'Two errors: the decision is wrong, and the p-value is not the probability of the null.'
+      - text: 'Accept H₀: the mean is 12'
+        explains: A failure to find evidence against a claim is not a demonstration that the claim is true.
+      - text: Reject H₀, because 0.08 is small
+        explains: The rule compares p with α. 0.08 is above 0.05.
+  - ask: Test A gives p = 0.049 and test B gives p = 0.051, both at α = 0.05. How should they be treated?
+    choices:
+      - text: Both are meaningless, because 0.05 is arbitrary
+        explains: The cutoff is a convention, but the p-values themselves carry real information.
+      - text: A is real and B is nothing, since A is below 0.05
+        explains: The data in the two cases are almost equally compatible with the null.
+      - text: B is stronger, because it is higher
+        explains: A higher p-value is weaker evidence against the null.
+      - text: 'Almost identically as evidence: the cutoff is a convention, and p-values are in shades of gray rather than black and white'
+        correct: true
+        explains: The lecture calls the strict split ridiculous at values like 0.0501 and 0.049999. Report the p-value itself and judge it sensibly.
+---
+
+A p-value is a number. A **decision** needs a rule, and the rule is the significance level
+`α` that Week 4 introduced.
+
+## The decision rule
+
+Compare the p-value with the **significance level**, `α`, chosen *before* the analysis:
+
+| Result | Decision | Reading |
+| --- | --- | --- |
+| `p ≤ α` | **Reject `H₀`** | The data are too unlikely under the null, so there is enough evidence for `Hₐ` |
+| `p > α` | **Fail to reject `H₀`** | The evidence is not strong enough |
+
+Most of the scientific world uses **0.05** as the standard cutoff. P-values below 0.05 are
+treated as small and those above as large.
+
+## A convention, not a cliff
+
+The lecture's caution: this *gets ridiculous* when p-values are 0.0501 or 0.049999. They are
+virtually the same evidence. **P-values are in shades of gray, not black and white.** Report
+the value itself, not just 'significant' or 'not'.
+
+## The wording of a conclusion
+
+The final slide of the test asks whether the data's evidence was enough to convince us that
+the null is not plausible, or whether there was *not enough evidence to refute* it. That
+second phrase explains the wording **'fail to reject'**.
+
+- A rejection says: *the data are hard to reconcile with the null.*
+- A failure to reject says: *the data do not rule the null out.* It does **not** say the null
+  is true: a small sample or a noisy measure might simply have missed a real effect. That is
+  the Type II error from Week 4.
+
+## Two layers
+
+State the conclusion twice, as the lecture requires:
+
+| Layer | Example |
+| --- | --- |
+| **Statistical** | Reject the null hypothesis in favour of the alternative |
+| **Contextual** | There is sufficient evidence that the company puts less than 12 oz of soda in its cans |
+
+The statistical layer is for the analyst; the contextual layer is for everyone else.
+
+> 'Not significant' means 'not proven', not 'proven absent'.
+

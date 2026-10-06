@@ -1,0 +1,83 @@
+---
+course: applied-research-methods
+section: w3-experiments
+order: 250
+title: Pre-Experimental Designs
+visuals:
+  - type: svg
+    src: applied-research-methods/week3/10.svg
+    caption: Slide 10 of 26 — the five families, and the three pre-experimental designs.
+  - type: svg
+    src: applied-research-methods/week3/11.svg
+    caption: Slide 11 of 26 — the five families, and the three pre-experimental designs.
+  - type: svg
+    src: applied-research-methods/week3/12.svg
+    caption: Slide 12 of 26 — the five families, and the three pre-experimental designs.
+notation:
+  - symbol: Tx
+    reads: tee-ex
+    means: 'Treatment: the thing done to the group, such as the new tool, drug or interface. Read the diagram row left to right in time order.'
+  - symbol: Obs
+    reads: obs, or observation
+    means: An observation or measurement of the dependent variable.
+  - symbol: '---'
+    reads: no treatment
+    means: In the diagram, a group that gets no treatment before its observation.
+questions:
+  - ask: A team rolls out a new editor to all staff, then measures how many bugs they ship that quarter. Why can this not show that the editor reduced bugs?
+    choices:
+      - text: The sample is too large
+        explains: A larger sample would not help. The problem is the absence of any comparison.
+      - text: 'There is no comparison: the independent variable never varies, and we cannot tell what bug rates would have been without it'
+        correct: true
+        explains: This is Design 1, the one-shot case study (Tx then Obs) with low internal validity. A single number has nothing to be compared with.
+      - text: Bug counts are a nominal scale
+        explains: Counts are not what makes the design weak; there is no comparison at all.
+      - text: Editors cannot affect bugs
+        explains: They might. The issue is that this design cannot find out.
+  - ask: In a static group comparison, one existing team uses the new tool and another existing team does not, and both are measured afterwards. What stops this from showing cause and effect?
+    choices:
+      - text: A control group is not allowed
+        explains: There is a comparison group. The issue is how it was formed.
+      - text: The two groups were not randomly assigned or shown to be equivalent, so they may have differed before the tool
+        correct: true
+        explains: The lecture's reason pre-experimental designs fail is non-equivalent groups, or an independent variable that does not vary.
+      - text: The treatment should be applied after the observation
+        explains: 'Order matters in the opposite direction: treatment first, then observation.'
+      - text: There is only one observation
+        explains: Both groups are observed. What is missing is any assurance that they started alike.
+---
+
+The lecture groups experimental designs into **five families**:
+
+1. Pre-experimental
+2. True experimental
+3. Quasi-experimental
+4. Ex post facto
+5. Factorial
+
+They run roughly from the weakest claims to the strongest, apart from factorial, which is
+about the number of independent variables.
+
+## What 'pre-experimental' means
+
+**Pre-experimental designs cannot show cause and effect**, for one of two reasons: the
+independent variable **does not vary**, or the experimental and control groups are **not
+equivalent or randomly selected**.
+
+The slide draws each design as rows of symbols read left to right: `Tx` is the treatment and
+`Obs` an observation.
+
+| Design | Layout | Problem |
+| --- | --- | --- |
+| **1. One-shot case study** | Group 1: `Tx` then `Obs` | Low internal validity. One measurement, nothing to compare with |
+| **2. One-group pretest-posttest** | Group 1: `Obs`, `Tx`, `Obs` | Better: a before and an after. But anything else that changed in between looks like the treatment's effect |
+| **3. Static group comparison** | Group 1: `Tx`, `Obs`. Group 2: `---`, `Obs` | There is a comparison, but the groups were not formed by random assignment, so they may have differed already |
+
+Each design fixes a flaw in the one before. Design 2 adds a before-measurement. Design 3
+adds a second group. What none has is both a comparison group *and* a way of making the
+groups equal at the start, which is what the next family adds.
+
+> A single measurement is a fact. Two measurements are a comparison. A comparison between
+> groups that started unequal is still not a test.
+

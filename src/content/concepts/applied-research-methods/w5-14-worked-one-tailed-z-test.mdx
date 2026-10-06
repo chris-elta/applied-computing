@@ -1,0 +1,102 @@
+---
+course: applied-research-methods
+section: w5-testing
+order: 650
+title: Worked Example — One-Tailed z-Test (Soda Cans)
+visuals:
+  - type: svg
+    src: applied-research-methods/week5/32.svg
+    caption: Slide 32 of 66 — the sampling distribution, the test statistic, the p-value and the conclusion.
+  - type: svg
+    src: applied-research-methods/week5/33.svg
+    caption: Slide 33 of 66 — the sampling distribution, the test statistic, the p-value and the conclusion.
+  - type: svg
+    src: applied-research-methods/week5/34.svg
+    caption: Slide 34 of 66 — the sampling distribution, the test statistic, the p-value and the conclusion.
+  - type: svg
+    src: applied-research-methods/week5/35.svg
+    caption: Slide 35 of 66 — the sampling distribution, the test statistic, the p-value and the conclusion.
+notation:
+  - symbol: N(12, 0.0367)
+    reads: normal with mean twelve and standard deviation point-oh-three-six-seven
+    means: 'The normal curve that describes sample means if the null is true: centred on the claimed 12 oz, with the standard deviation of the mean, 0.18/√24.'
+  - symbol: normalcdf
+    reads: normal c-d-f
+    means: A calculator function that returns the area under the normal curve between two limits. Software gives the same answer.
+questions:
+  - ask: A courier claims its mean delivery time is 30 minutes (σ = 4). A customer group suspects it is longer and samples 64 deliveries with mean 31.2 minutes. What are the test statistic and the p-value?
+    choices:
+      - text: z = (31.2 − 30)/(4/√64) = 2.4, and a one-sided p-value of about 0.008
+        correct: true
+        explains: 'The suspicion is ''longer'', so Hₐ: μ > 30 and the p-value is the upper tail only: about 0.82%.'
+      - text: z = 0.3, and a p-value of about 0.38
+        explains: That divides by σ instead of σ/√n.
+      - text: z = 1.2, and a p-value of about 0.115
+        explains: That divides by 1 rather than the standard deviation of the mean.
+      - text: z = 2.4, and a p-value of about 0.016
+        explains: 0.016 is the two-sided value. The alternative here is one-sided, so only one tail counts.
+  - ask: At α = 0.05, what is the conclusion to the courier problem, in context?
+    choices:
+      - text: 'Reject H₀: there is a 0.8% chance the courier is truthful'
+        explains: A p-value is not the probability of the null.
+      - text: 'Fail to reject H₀: the courier''s claim is true'
+        explains: p is below α, so the null is rejected, and failing to reject would not prove the claim in any case.
+      - text: 'Reject H₀: there is sufficient evidence that the mean delivery time is more than 30 minutes'
+        correct: true
+        explains: p ≈ 0.008 is below 0.05, so the data are too unlikely under the claim. State it in the words of the problem.
+      - text: 'Reject H₀: deliveries are 1.2 minutes late on every trip'
+        explains: The test is about the mean, not about every trip.
+---
+
+**The problem.** A bottler claims **12 fluid ounces** per can with `σ = 0.18`. We suspect
+short-changing. A sample of **24 cans** has a mean of **11.92 oz**. Is that evidence the
+company is not telling the truth?
+
+## Step 1: hypotheses
+
+`H₀: μ = 12` (the company is truthful). `Hₐ: μ < 12` (we suspect it puts in *less*).
+
+## Step 2: the sampling distribution under the null
+
+If the null is true and the sample means are approximately normal (a normal population, or a
+large enough sample by the Central Limit Theorem), sample means follow
+
+`N(12, 0.18/√24) = N(12, 0.0367)`
+
+centred on the claim, with the spread of a mean of 24 cans.
+
+## Step 3: the test statistic
+
+`z = (11.92 − 12) / 0.0367 = −2.18`
+
+The slide reports −2.1798, using a rounded standard deviation of 0.0367. The sample mean is
+about 2.18 standard deviations *below* the claim. The negative sign is just direction.
+
+## Step 4: the p-value
+
+Because `Hₐ` is `μ < 12`, the p-value is the area in the **lower tail** only:
+
+`p = P(Z ≤ −2.18) ≈ 0.0146` (about 1.5%)
+
+## Step 5: conclusions
+
+| | |
+| --- | --- |
+| **Interpretation** | There is only about a 1.46% chance of getting a sample like this if the company were telling the truth |
+| **Compare** | `0.0146 < 0.05` |
+| **Statistical conclusion** | Reject `H₀` in favour of `Hₐ` |
+| **Contextual conclusion** | There is sufficient evidence to suggest that the company is putting less than 12 oz of soda into its cans |
+
+## Reading the result carefully
+
+The *size* of the shortfall is 0.08 oz, under 1%. It is statistically detectable because the
+standard deviation of the mean is small. Whether a 0.08 oz shortfall matters to a customer is
+a question of **practical significance**, which Week 4's interpretation concept raised and the
+test cannot answer.
+
+The lecture's 'Central Limit Theorem' is a result about sample means; it is named here but not
+developed in the slides.
+
+> Hypotheses, sampling distribution, test statistic, p-value, then two conclusions. Always the
+> same five steps.
+

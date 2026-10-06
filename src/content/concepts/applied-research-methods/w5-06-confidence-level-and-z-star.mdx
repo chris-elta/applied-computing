@@ -1,0 +1,87 @@
+---
+course: applied-research-methods
+section: w5-ci
+order: 570
+title: Confidence Level and the Critical Value z*
+visuals:
+  - type: svg
+    src: applied-research-methods/week5/12.svg
+    caption: Slide 12 of 66 — what a confidence level is, and the table of critical values.
+  - type: svg
+    src: applied-research-methods/week5/13.svg
+    caption: Slide 13 of 66 — what a confidence level is, and the table of critical values.
+notation:
+  - symbol: confidence level
+    reads: confidence level
+    means: 'How sure you want to be that the interval method captures the parameter: 90%, 95%, 99%.'
+  - symbol: critical value
+    reads: critical value
+    means: 'Another name for z*: the cutoff on the standard normal curve that leaves the chosen confidence level between −z* and +z*.'
+questions:
+  - ask: You want to switch from a 95% to a 99% confidence interval with the same data. What happens to the interval?
+    choices:
+      - text: It stays the same, because the data are the same
+        explains: The data are the same but the margin depends on z*.
+      - text: It gets wider, because z* rises from 1.96 to 2.576
+        correct: true
+        explains: Demanding more confidence means casting a wider net. The estimate at the centre is unchanged.
+      - text: It moves up, because the mean increases
+        explains: The mean is a property of the sample and does not change.
+      - text: It gets narrower, because 99 is bigger than 95
+        explains: A higher confidence level needs a larger z*, which widens the margin.
+  - ask: A 90% confidence interval for a mean is (40, 50) with z* = 1.645. What is the sample mean and the margin of error?
+    choices:
+      - text: Mean 45, margin of error 5, because the interval is symmetric about the mean
+        correct: true
+        explains: The midpoint (40 + 50)/2 is 45 and the half-width is 5. Recomputing at 95% would multiply the margin by 1.96/1.645, about 1.19.
+      - text: Mean 45, margin of error 10
+        explains: The margin is the half-width, 5, not the full width.
+      - text: Mean 40, margin of error 10
+        explains: The estimate sits in the middle, not at one end.
+      - text: Mean 50, margin of error 10
+        explains: The interval is symmetric around the mean.
+---
+
+The critical value `z*` is where your choice of **confidence level** enters the formula.
+
+The **confidence level** is how confident you want to be that the interval will contain the
+parameter. A **95% confidence level** means that **95% of intervals built this way from
+samples of size `n` will capture the population mean**. Picture the standard normal curve with
+the middle 95% shaded: `z*` is the number of standard deviations from the middle to the edge
+of the shading, and `−z*` is its mirror image on the other side.
+
+## The values to know
+
+| Confidence level | `z*` |
+| --- | --- |
+| 80% | 1.282 |
+| 90% | 1.645 |
+| 95% | **1.96** |
+| 98% | 2.326 |
+| 99% | 2.576 |
+
+The deck shows how to read these from a table or with an inverse-normal function on a
+calculator. Statistical software does it for you.
+
+## The trade-off, in numbers
+
+All else equal, the margin of error is proportional to `z*`. Moving from 95% to 99% multiplies
+the margin by 2.576 / 1.96 ≈ **1.31**: you pay about a third more width for the extra
+confidence.
+
+| Level | Relative width |
+| --- | --- |
+| 90% | 1.645 / 1.96 ≈ 0.84 |
+| 95% | 1.00 |
+| 99% | ≈ 1.31 |
+
+There is no free setting. Pick the confidence level for the cost of being wrong: a safety
+claim may demand 99%, a casual comparison may be fine at 90%. 95% is the convention.
+
+Note what does *not* change when you move the level: the point estimate at the centre. The
+interval is symmetric about `x̄`, so you can always recover the sample mean as the midpoint
+and the margin as the half-width.
+
+> A higher confidence level does not make the estimate better. It only makes the interval
+> wider.
+

@@ -1,0 +1,71 @@
+---
+course: applied-research-methods
+section: w3-design
+order: 210
+title: Correlational Research
+visuals:
+  - type: svg
+    src: applied-research-methods/week3/03.svg
+    caption: Slide 3 of 26 — correlational research and the warning attached to it.
+  - type: svg
+    src: applied-research-methods/week4/06.svg
+    caption: Slide 6 of 52 — the same idea revisited in Week 4.
+notation:
+  - symbol: ≠
+    reads: does not equal
+    means: 'Here, ''correlation is not causation'': two things moving together does not show that one makes the other happen.'
+  - symbol: scatter plot
+    reads: scatter plot
+    means: A graph with one variable on each axis and a dot for each case. A pattern of dots rising or falling together shows a correlation.
+questions:
+  - ask: A researcher gathers data on weekly hours of code review and number of bugs reported, for 40 teams, and finds the two decrease together. What can the study conclude?
+    choices:
+      - text: More review hours cause fewer bugs
+        explains: That would be mistaking correlation for causation. Teams with better practices overall might both review more and ship fewer bugs.
+      - text: Nothing, because a correlation shows no relationship at all
+        explains: A correlation does show a relationship. It just does not show its direction or cause.
+      - text: Fewer bugs cause teams to review less
+        explains: The reverse direction is just as unsupported. The data show only that the two move together.
+      - text: The two variables are related; it cannot say that review hours cause fewer bugs
+        correct: true
+        explains: Correlational research examines whether differences in one variable go with differences in another. Without manipulating anything, causes cannot be separated from coincidence.
+  - ask: Which description fits correlational research?
+    choices:
+      - text: Interviewing a few people in depth
+        explains: An interview study is not defined by examining how variables vary together.
+      - text: Randomly assigning people to treatment and control groups
+        explains: That is experimental research, where the researcher changes something.
+      - text: Following one group for several years
+        explains: That is a longitudinal study, a different design question.
+      - text: Gathering data on two or more characteristics of one group to find any interrelationships
+        correct: true
+        explains: That is the lecture's definition. Nothing is manipulated; you look at how characteristics vary together.
+---
+
+A very common first study design asks: *does this go with that?* Do teams that review more
+code ship fewer bugs? Do users who see more tutorials stay longer?
+
+That is **correlational research**. The lecture's definition: it **examines the extent to
+which differences in one variable or characteristic are related to differences in one or more
+others**. The researcher gathers data about **two or more characteristics for a particular
+group** and looks for any interrelationships.
+
+The usual picture is a **scatter plot**. Each dot is a case — a team, a user — placed by its
+value on each variable. If the dots drift upward to the right, as one variable increases so
+does the other; if they drift downward, one goes up as the other goes down. That is
+Week 4's description of correlation: *when one variable increases, another increases or
+decreases predictably*. Week 5 gives the number that measures how tightly dots follow a line.
+
+## The warning
+
+The lecture writes it twice, in capitals: **correlation ≠ causation**. Nothing was
+manipulated and nobody was randomly assigned, so any unmeasured third factor might explain
+the pattern. This is the Week 1 pitfall, now attached to a study design: *the design decides
+what you are entitled to conclude*.
+
+Correlational research is not second-rate. Often it is the only ethical or practical option,
+and it is a good way to find what is worth testing more tightly. It just answers a
+different question: *what goes with what*, not *what makes what happen*.
+
+> Correlation tells you where to look for a cause. It does not tell you that you found one.
+

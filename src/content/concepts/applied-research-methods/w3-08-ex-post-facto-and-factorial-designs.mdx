@@ -1,0 +1,81 @@
+---
+course: applied-research-methods
+section: w3-experiments
+order: 280
+title: Ex Post Facto and Factorial Designs
+visuals:
+  - type: svg
+    src: applied-research-methods/week3/16.svg
+    caption: Slide 16 of 26 — studying what has already happened, and studying more than one cause at once.
+  - type: svg
+    src: applied-research-methods/week3/17.svg
+    caption: Slide 17 of 26 — studying what has already happened, and studying more than one cause at once.
+notation:
+  - symbol: ex post facto
+    reads: ex post FAK-toh
+    means: Latin for 'after the fact'. The cause has already happened before the study begins.
+  - symbol: factorial design
+    reads: fack-TOR-ee-ul
+    means: A study of the effects of two or more independent variables in a single design.
+questions:
+  - ask: A researcher compares the current code quality of projects whose teams adopted pair programming two years ago with projects whose teams did not. Nobody assigned the practice for the study. What kind of design is this?
+    choices:
+      - text: True experimental, because it has an independent variable and a dependent variable
+        explains: 'Having both variables is not enough: a true experiment manipulates the independent variable and assigns randomly.'
+      - text: Pre-experimental, because the treatment is applied once
+        explains: The researcher applied no treatment.
+      - text: Correlational only, because it has no independent variable
+        explains: It is similar to correlational research, but has a clearly identified presumed cause and effect, which is what distinguishes it.
+      - text: 'Ex post facto: the presumed cause already occurred, so the researcher observes it rather than manipulates it'
+        correct: true
+        explains: It has identifiable independent and dependent variables like an experiment, but no direct manipulation, as in the lecture's definition.
+  - ask: Which sentence best describes a factorial design?
+    choices:
+      - text: It uses factors from a questionnaire to assess a single construct
+        explains: That is a different sense of 'factor'.
+      - text: It examines the effects of two or more independent variables in a single study
+        correct: true
+        explains: The slide's definition. For example, interface style and screen size together, in one design.
+      - text: It always includes exactly two groups
+        explains: A factorial design has as many groups as combinations of the independent variables' levels.
+      - text: It follows one group over time
+        explains: That is a longitudinal study.
+---
+
+## Ex post facto
+
+Sometimes the cause has already happened and you cannot undo it. A team adopted pair
+programming two years ago. A server outage occurred last month. The **ex post facto**
+(*after the fact*) design identifies events that have **already occurred or conditions that
+are already present** and then collects data to look for a relationship with later
+characteristics or behaviours.
+
+The lecture places it between two neighbours:
+
+| | Like correlational research | Like experimental research |
+| --- | --- | --- |
+| **What it shares** | Looks at existing circumstances | Has clearly identifiable independent and dependent variables |
+| **What it lacks** | | **No direct manipulation** of the independent variable, because the presumed cause has already occurred |
+
+That missing manipulation is the limit. Teams that adopted pair programming may differ in
+many other ways from those that did not. The slide's one example is Design 14, the **simple
+ex post facto design**.
+
+## Factorial designs
+
+Real outcomes usually have more than one influence. A **factorial design** examines the
+effects of **two or more independent variables in a single study**. If interface style (two
+types) and screen size (small or large) both might change task time, a factorial study uses
+all four combinations. That does two jobs at once: it tests each variable, and it reveals
+whether the effect of one *depends on* the other.
+
+Two designs are named:
+
+- **Design 15, randomised two-factor design:** both independent variables are manipulated, and
+  participants are randomly assigned.
+- **Design 16, combined experimental and ex post facto design:** one variable is manipulated,
+  and one is a condition that already exists, such as participants' prior experience.
+
+> Ex post facto trades manipulation for access to causes you could never assign. Factorial
+> trades simplicity for being able to see how causes combine.
+

@@ -1,0 +1,82 @@
+---
+course: applied-research-methods
+section: w5-correlation
+order: 540
+title: The Correlation Coefficient
+visuals:
+  - type: svg
+    src: applied-research-methods/week5/06.svg
+    caption: Slide 6 of 66 — what the coefficient measures, and how to read its sign and size.
+  - type: svg
+    src: applied-research-methods/week5/07.svg
+    caption: Slide 7 of 66 — what the coefficient measures, and how to read its sign and size.
+notation:
+  - symbol: r
+    reads: r, or the correlation coefficient
+    means: Pearson's product-moment correlation coefficient, a number between −1 and 1 measuring the strength and direction of a linear relationship.
+  - symbol: linear
+    reads: LIN-ee-er
+    means: Following a straight line. Points that curve can have a strong relationship and still a low r.
+questions:
+  - ask: For two variables, r = −0.9. How should it be read?
+    choices:
+      - text: No relationship, because the value is below zero
+        explains: Zero marks the weakest linear relationship; −0.9 is nearly the strongest.
+      - text: A strong linear relationship in which one variable tends to get smaller as the other gets bigger
+        correct: true
+        explains: The size (0.9, close to 1) says strong; the negative sign says the variables move in opposite directions.
+      - text: A weak relationship, because the number is negative
+        explains: The sign gives direction, not strength. Strength is the absolute value.
+      - text: One variable causes the other to decrease
+        explains: Correlation is not causation (Week 3), even at −0.9.
+  - ask: A scatter plot shows a clear U-shape, yet r = 0.02. Which statement is correct?
+    choices:
+      - text: r must have been miscalculated
+        explains: A U-shape can produce r near zero legitimately.
+      - text: The relationship is causal, because the pattern is clear
+        explains: Pattern clarity says nothing about cause.
+      - text: There is a strong relationship, but it is not linear, so r misses it
+        correct: true
+        explains: The lecture defines r as measuring the strength of a linear relationship. A value near zero rules out a straight-line pattern, not every pattern.
+      - text: There is no relationship, because r is near zero
+        explains: The U-shape is a relationship. r reports only on straight-line association.
+---
+
+Week 3 said correlational research asks whether two variables go together. The
+**correlation coefficient** puts a number on how tightly they do. The lecture usually means
+the **Pearson product-moment correlation coefficient**, written `r`.
+
+## Reading the number
+
+| `r` | Reading |
+| --- | --- |
+| Between **−1 and 1** | Always: the value cannot leave this range |
+| **Absolute value near 1** | A strong linear relationship; −1 and 1 are the strongest |
+| **0** | The weakest linear relationship |
+| **Positive** | As one variable gets bigger, the other tends to get bigger |
+| **Negative** | As one variable gets bigger, the other tends to get smaller |
+
+Two separate things are packed into the number: the **sign** gives the direction and the
+**absolute value** gives the strength. `−0.9` is a *stronger* relationship than `+0.4`, not a
+weaker one.
+
+## The word 'linear'
+
+The lecture says 'linear' every time, and it is not decoration. The coefficient asks whether
+the points hug a *straight line*. A perfect U-shape, such as performance that rises and then
+falls with workload, can give `r` close to 0 while the relationship is plain to the eye. So
+**always plot the data first**.
+
+Because Pearson's `r` works with means and standard deviations, it belongs with interval or
+ratio data (Week 3). For ordinal data the matching tool is Spearman's rank correlation.
+
+## What it does not say
+
+It does not say that one variable *causes* the other: that is Week 3's correlation ≠
+causation. And it says nothing about whether the relationship would hold in the whole
+population: a coefficient from a small sample can be large by chance, which is a question for
+significance testing, later this week.
+
+> `r` measures how well a straight line summarises the pairs. Direction is the sign. Strength
+> is the size.
+

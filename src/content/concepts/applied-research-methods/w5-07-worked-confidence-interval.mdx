@@ -1,0 +1,78 @@
+---
+course: applied-research-methods
+section: w5-ci
+order: 580
+title: Worked Example — a Confidence Interval for Fuel Capacity
+visuals:
+  - type: svg
+    src: applied-research-methods/week5/14.svg
+    caption: Slide 14 of 66 — the fuel tank example and its solution.
+  - type: svg
+    src: applied-research-methods/week5/15.svg
+    caption: Slide 15 of 66 — the fuel tank example and its solution.
+notation:
+  - symbol: (17.84, 20.00)
+    reads: seventeen eight four to twenty
+    means: 'An interval written with parentheses: lower end, upper end.'
+questions:
+  - ask: Another sample of 40 cars of the same model gives a mean tank capacity of 19.5 gallons. With σ = 3.5 and 95% confidence, what is the interval?
+    choices:
+      - text: 19.5 ± 1.96, about (17.54, 21.46)
+        explains: That drops σ/√n and uses z* alone as the margin.
+      - text: 19.5 ± 1.085, about (18.42, 20.59)
+        correct: true
+        explains: 'The margin does not depend on the sample mean: 1.96 × 3.5/√40 = 1.085. Only the centre moves.'
+      - text: 19.5 ± 3.5, about (16, 23)
+        explains: 3.5 is the standard deviation of individual cars, not of the sample mean.
+      - text: 19.5 ± 0.543, about (18.96, 20.04)
+        explains: That would be the margin for a larger sample (about 160 cars).
+  - ask: In the worked example, the interval for the mean fuel capacity is (17.84, 20.00) gallons. Which sentence is a correct reading, in line with the lecture?
+    choices:
+      - text: The true mean has been proven to lie in the interval
+        explains: Nothing is proven. The method has a 95% success rate.
+      - text: 95% of cars have a tank capacity between 17.84 and 20.00 gallons
+        explains: The interval is about the mean, not about individual cars. Individual cars vary far more (σ = 3.5).
+      - text: The sample mean is 95% likely to be between 17.84 and 20.00
+        explains: The sample mean is 18.92, known exactly, and it is the centre of the interval.
+      - text: 95% of all possible intervals built this way from samples of 40 would contain the population mean; we are 95% confident that this one does
+        correct: true
+        explains: The confidence is in the method. It is a statement about the long run of intervals, applied to this one.
+---
+
+**The problem.** A sample of 40 cars of one model has a **mean fuel tank capacity of 18.92
+gallons**. The **population standard deviation** is taken to be **3.5** (the lecture notes
+this is the unrealistic part: in practice we would not know it). Construct a **95% confidence
+interval** for the mean capacity.
+
+## Step by step
+
+| Step | Working |
+| --- | --- |
+| Write the formula | `x̄ ± z* · σ/√n` |
+| Fill in | `18.92 ± 1.96 × 3.5/√40` |
+| Standard deviation of the mean | `3.5/√40 = 0.5534` |
+| Margin of error | `1.96 × 0.5534 = 1.0847` |
+| Interval | `18.92 − 1.0847 = 17.8353` to `18.92 + 1.0847 = 20.0047` |
+
+So the interval is **(17.84, 20.00)** gallons, or (17.8353, 20.0047) before rounding.
+
+## The two sentences the lecture wants you to write
+
+- *95% of all possible confidence intervals for a sample size of 40 will contain the
+  population mean.*
+- *We are 95% confident that the mean fuel capacity of this model is between 17.8 and 20.0
+  gallons.*
+
+Both are statements about the **procedure**, and the next concept explains why the
+distinction is important.
+
+## Checking your work
+
+- The interval should be **centred on the sample mean** (the midpoint is 18.92 ✓).
+- It should be much **narrower than the spread of individual values**: σ = 3.5 for single
+  cars, but the margin for the mean is only about 1.08, thanks to the `√40`.
+- If you change only the sample mean, the interval slides but its width stays the same.
+
+> Write the formula, fill it in, compute the margin, then add and subtract. Then read the
+> result as a statement about the method.
+

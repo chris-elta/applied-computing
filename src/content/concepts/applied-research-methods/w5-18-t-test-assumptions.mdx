@@ -1,0 +1,79 @@
+---
+course: applied-research-methods
+section: w5-ttests
+order: 690
+title: When a t-Test Is Safe to Use
+visuals:
+  - type: svg
+    src: applied-research-methods/week5/49.svg
+    caption: Slide 49 of 66 — the caution, and the sample-size guide.
+  - type: svg
+    src: applied-research-methods/week5/50.svg
+    caption: Slide 50 of 66 — the caution, and the sample-size guide.
+notation:
+  - symbol: outlier
+    reads: out-LY-er
+    means: A value far from the rest of the data.
+  - symbol: skewness
+    reads: SKYOO-ness
+    means: 'Lopsidedness: a long tail on one side of the distribution.'
+questions:
+  - ask: A sample of 12 response times has one very large value that is clearly an outlier, and the rest are tightly grouped. Should a t-test be used?
+    choices:
+      - text: Yes, since outliers do not affect means
+        explains: They affect means strongly, as Week 4's median example showed.
+      - text: 'Not safely: with n below 15, the sample should look pretty normal with no outliers and very little skewness'
+        correct: true
+        explains: Small samples cannot lean on the sample size to excuse a skewed shape. This one needs another approach, or a closer look at the outlier.
+      - text: Yes, because 12 is close enough to 15
+        explains: Even at 15 to 40 the guide forbids large outliers.
+      - text: Yes, because the t-test is always appropriate
+        explains: 'The lecture opens with ''CAUTION: the t-test is NOT always appropriate''.'
+  - ask: A sample of 120 skewed values, with a few outliers, is used for a t-test of a mean. According to the lecture's guide, is that acceptable?
+    choices:
+      - text: No, because skewed data can never be used with a t-test
+        explains: That applies to small samples only.
+      - text: No, because outliers invalidate every statistical test
+        explains: Large samples tolerate them, though extreme values still deserve scrutiny.
+      - text: 'Yes: for a sample size over 40 the t-procedures are large-sample safe regardless of shape'
+        correct: true
+        explains: Larger samples make the sample mean behave normally even when the population is skewed, which is the Central Limit Theorem at work.
+      - text: Only if the data are first converted to ranks
+        explains: Ranking leads to a nonparametric approach, which is not required here.
+---
+
+The t-test is useful, and the lecture does not let you use it blindly: **CAUTION! The t-test is
+not always appropriate.** To use it, either the **population distribution must be normal**, or
+the **sample size must be large enough**.
+
+## How large is large enough?
+
+| Sample size | What the sample must look like |
+| --- | --- |
+| `n` under 15 | Pretty normal: **no outliers** and very little skewness |
+| `n` from 15 to 40 | **No large outliers** and no extreme skewness |
+| `n` over 40 | Large enough to use t-procedures **regardless** of shape |
+
+(The slide's ranges write 15 and 40 as boundaries without saying which side they belong to;
+treat them as rules of thumb, not sharp edges.)
+
+## Why the shape matters less as `n` grows
+
+The test is about the *sample mean*. Even if individual values are skewed, the **means** of
+large samples pile up in a roughly normal shape, a result called the Central Limit Theorem.
+With a small sample there is no such help, so the data themselves must already look normal,
+because one outlier can shift the mean and inflate `s`.
+
+## What to do about it
+
+1. **Plot the data** (histogram or boxplot) before you test.
+2. Under 15, look for outliers and skew; if present, investigate each outlier rather than
+   dropping it silently, because Week 4 asked for a rationale for any clean-up.
+3. If the assumptions fail and the sample cannot be enlarged, a **nonparametric** method is
+   the alternative (Week 4).
+
+This is an application of the Week 4 rule of thumb about parametric versus nonparametric
+statistics, with the sample-size escape hatch spelled out.
+
+> Check the plot before you trust the p-value. The test cannot see the problem; you can.
+

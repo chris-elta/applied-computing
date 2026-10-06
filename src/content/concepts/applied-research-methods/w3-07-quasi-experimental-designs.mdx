@@ -1,0 +1,74 @@
+---
+course: applied-research-methods
+section: w3-experiments
+order: 270
+title: Quasi-Experimental Designs
+visuals:
+  - type: svg
+    src: applied-research-methods/week3/14.svg
+    caption: Slide 14 of 26 — six designs for when randomisation is not possible or practical.
+  - type: svg
+    src: applied-research-methods/week3/15.svg
+    caption: Slide 15 of 26 — six designs for when randomisation is not possible or practical.
+notation:
+  - symbol: quasi
+    reads: KWAH-zye, or KWAY-zye
+    means: Latin for 'as if' or 'resembling'. A quasi-experiment looks like an experiment but lacks something, usually random assignment.
+  - symbol: baseline
+    reads: base-line
+    means: Repeated measurements of the dependent variable before any treatment, showing what 'normal' looks like so that a change can be recognised.
+questions:
+  - ask: A company introduces a new on-call policy at one site, and uses another site, chosen for being similar, as the comparison. Staff cannot be randomly assigned to sites. What kind of design is this?
+    choices:
+      - text: Ex post facto, because the policy is already in place
+        explains: Ex post facto designs study conditions that already occurred without anyone manipulating them. Here the company chose to introduce the policy.
+      - text: True experimental, because it has a control group
+        explains: A control group is not enough. True experiments assign randomly.
+      - text: 'Quasi-experimental: a nonrandomised control group, pretest-posttest design'
+        correct: true
+        explains: There is a control group and before-and-after measurement, but no random assignment because it was not possible or practical.
+      - text: Pre-experimental, because it has no control group
+        explains: This one has a control group. It lacks only randomisation, which is the quasi-experimental trade-off.
+  - ask: Why can a quasi-experimental design never rule out all confounding variables?
+    choices:
+      - text: Because quasi-experiments do not use an independent variable
+        explains: They do manipulate one. What they lack is random assignment.
+      - text: Because they cannot be repeated
+        explains: Repeatability is not the issue here.
+      - text: Without randomness, it cannot control for all the differences between groups or conditions
+        correct: true
+        explains: 'That is the lecture''s definition: randomness is not possible or practical, so confounds cannot all be controlled.'
+      - text: Because time-series designs have too few observations
+        explains: Time-series designs take many observations. That is part of how they compensate.
+---
+
+Sometimes randomisation is not possible (you cannot randomly assign people to different
+offices) or not practical. The lecture calls the designs for those situations
+**quasi-experimental**, and says plainly that you **cannot control for all confounding
+variables** in them. They compensate by adding **observations over time**.
+
+| Design | Idea |
+| --- | --- |
+| **8. Nonrandomised control group, pretest-posttest** | Like Design 4, but groups are existing ones rather than randomly assigned |
+| **9. Simple time series** | Measure the same thing many times before and after the treatment |
+| **10. Control group time series** | A time series for the treated group and another for a comparison group |
+| **11. Reversal time series** | Introduce the treatment, withdraw it, and watch whether the measure changes back |
+| **12. Alternating treatment** | Switch between treatments repeatedly and compare the measure under each |
+| **13. Multiple baseline** | Start the treatment at different times for different people or settings |
+
+## Why time helps
+
+A single before-and-after pair can be explained by anything that happened in between. A
+**series** shows the trend that was already under way. If your measure was rising steadily
+before the treatment, a rise after it means little; if it was flat and then jumped, that is
+more persuasive.
+
+The reversal, alternating and multiple-baseline designs go further by making the treatment
+*come and go*. If the measure follows the treatment on and off, or changes exactly when each
+person starts, a coincidence becomes hard to sustain.
+
+The slide lists only names. The descriptions above are the plain meaning of each name, and the
+textbook has the details.
+
+> Where you cannot randomise, replace one comparison with many.
+

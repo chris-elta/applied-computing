@@ -186,3 +186,24 @@
 .sig-track { fill: var(--accent-soft); }
 .sig-fill { fill: var(--accent); }
 .sig-tail { fill: var(--bad); fill-opacity: 0.35; }
+
+/* Convolution grid (Convolution.tsx): the anti-diagonal being summed, and the ones already banked. */
+.conv-cell rect {
+  fill: var(--bg-raised);
+  stroke: var(--line-strong);
+  stroke-width: 1.2;
+  transition: fill 0.35s, stroke 0.35s, opacity 0.35s;
+}
+.conv-cell text:not(.fig-sub) {
+  fill: var(--ink-soft);
+  font-size: 14px;
+  font-family: var(--font-mono);
+  transition: fill 0.35s, opacity 0.35s;
+}
+.conv-cell.is-now rect { fill: var(--accent); stroke: var(--accent); }
+.conv-cell.is-now text:not(.fig-sub) { fill: var(--bg-raised); font-weight: 700; }
+.conv-cell.is-done rect { fill: var(--accent-soft); stroke: var(--accent); }
+.conv-cell.is-done text:not(.fig-sub) { fill: var(--accent); }
+@media (prefers-reduced-motion: reduce) {
+  .conv-cell rect, .conv-cell text { transition: none; }
+}

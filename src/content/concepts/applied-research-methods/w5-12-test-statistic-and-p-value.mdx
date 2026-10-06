@@ -1,0 +1,90 @@
+---
+course: applied-research-methods
+section: w5-testing
+order: 630
+title: The Test Statistic and the p-Value
+visuals:
+  - type: svg
+    src: applied-research-methods/week5/27.svg
+    caption: Slide 27 of 66 — what the test statistic is, and what a p-value measures.
+  - type: svg
+    src: applied-research-methods/week5/28.svg
+    caption: Slide 28 of 66 — what the test statistic is, and what a p-value measures.
+notation:
+  - symbol: test statistic
+    reads: test statistic
+    means: A single number that summarises how far the sample is from what the null hypothesis claims, here in standard deviations.
+  - symbol: z = (x̄ − μ₀) / (σ/√n)
+    reads: z equals x-bar minus mu-nought, over sigma over root n
+    means: 'The z test statistic for a mean: the gap between the sample mean and the null value, divided by the standard deviation of the sample mean.'
+  - symbol: p-value
+    reads: p-value
+    means: The probability of getting a test statistic as extreme or more extreme than the one observed, if the null hypothesis is true.
+questions:
+  - ask: A test gives p = 0.03. Which reading matches the lecture's definition?
+    choices:
+      - text: 3% of the sample is different from the claim
+        explains: The p-value is not about a share of the sample.
+      - text: There is a 97% probability that the alternative hypothesis is true
+        explains: This is the same mistake mirrored. A p-value does not give the probability of either hypothesis.
+      - text: If the null hypothesis were true, data as extreme as these (or more) would occur about 3% of the time
+        correct: true
+        explains: A p-value is calculated assuming the null is true. It measures how consistent the sample is with that assumption.
+      - text: There is a 3% probability that the null hypothesis is true
+        explains: The p-value is not the probability of the hypothesis. It is the probability of the data, assuming the null.
+  - ask: 'Under H₀: μ = 100 with σ = 15 and n = 36, a sample has mean 106. What is the test statistic?'
+    choices:
+      - text: z = (106 − 100) / (15/√36) = 6 / 2.5 = 2.4
+        correct: true
+        explains: The standard deviation of the sample mean is 15/6 = 2.5, so the sample is 2.4 of those units above the null value.
+      - text: z = 106 / 100 = 1.06
+        explains: A z-statistic is a difference measured in standard deviations, not a ratio of means.
+      - text: z = (106 − 100) / 36 = 0.17
+        explains: That divides by n, which is not the standard deviation of anything here.
+      - text: z = (106 − 100) / 15 = 0.4
+        explains: That divides by σ instead of σ/√n. It measures a single observation, not a sample mean.
+---
+
+Two numbers do the work in a significance test.
+
+## The test statistic
+
+The **test statistic** is a convenient summary of the sample data that can be used to decide
+between the hypotheses. It is often a transformation of the data to a more convenient form,
+such as a **z-score**, and it is **calculated assuming `H₀` is true**. You can read it as *how
+many standard deviations away from the null value the sample was*.
+
+For a mean with known `σ`:
+
+`z = (x̄ − μ₀) / (σ/√n)`
+
+The numerator is the gap between what you saw (`x̄`) and what the null claims (`μ₀`). The
+denominator is the standard deviation of a sample mean, the same quantity that sets the
+margin of error in a confidence interval.
+
+For example, if `H₀: μ = 100`, `σ = 15`, `n = 36` and the sample mean is 106, then
+`z = 6 / 2.5 = 2.4`: the sample sits 2.4 standard errors above the null value.
+
+## The p-value
+
+The **p-value** is a probability, so a number between 0 and 1. It measures **how consistent
+the sample data are with the null hypothesis**. The lecture offers two phrasings:
+
+- the probability of observing a value of the test statistic **as extreme or more extreme**
+  than the one observed, **if `H₀` is true**;
+- the probability of observing **data like ours** if the null hypothesis is true.
+
+It is found from the normal curve: the area in the tail beyond the test statistic. A small
+p-value says that data like yours would be rare in a world where the null is true, which is
+reason to doubt that world.
+
+## What it is not
+
+The p-value is **not** the probability that the null hypothesis is true. Every p-value is
+computed *by assuming the null*; it cannot then tell you how likely that assumption is. This is
+the same trap as the confidence-interval one: a probability about data under a hypothesis is
+not a probability about the hypothesis.
+
+> A p-value answers 'how surprising is this sample, if nothing is going on?'. It does not answer
+> 'is something going on?'.
+

@@ -1,0 +1,79 @@
+---
+course: applied-research-methods
+section: w5-ci
+order: 550
+title: Unbiased Estimates
+visuals:
+  - type: svg
+    src: applied-research-methods/week5/08.svg
+    caption: Slide 8 of 66 — statistics as estimates of parameters, and the target picture.
+  - type: svg
+    src: applied-research-methods/week5/09.svg
+    caption: Slide 9 of 66 — statistics as estimates of parameters, and the target picture.
+notation:
+  - symbol: unbiased
+    reads: un-BY-ust
+    means: Describes an estimator whose values, averaged over many samples, equal the true parameter. It is right on average.
+  - symbol: estimator
+    reads: ES-tuh-may-ter
+    means: A rule for computing an estimate from a sample, such as 'take the sample mean'.
+questions:
+  - ask: Every day a team draws a random sample of 100 requests and computes the mean latency. Over a year the daily means scatter around the service's true mean, with no tendency to be above or below it. What does that show about the sample mean as an estimator?
+    choices:
+      - text: It has no variance
+        explains: The values scatter, so it has variance.
+      - text: 'It is unbiased: on average the statistic equals the parameter, even though any one day''s value is off'
+        correct: true
+        explains: Unbiased does not mean any single estimate is right; it means the errors do not lean in one direction.
+      - text: It is biased, because individual days differ
+        explains: Day-to-day variation is not bias. Bias is a systematic lean.
+      - text: It is exact, because the daily values are close to the truth
+        explains: No individual sample mean is exact. The point is about the average of many.
+  - ask: A latency monitor always reports values 15 ms lower than the truth, but its readings barely fluctuate. Using the target picture, how would you describe it?
+    choices:
+      - text: 'Small variance but biased: a tight cluster that is off-centre'
+        correct: true
+        explains: The darts are grouped but away from the bullseye. Bias is about where the cluster sits, variance about how wide it is.
+      - text: Unbiased with small variance
+        explains: That would be a tight cluster on the bullseye.
+      - text: Neither biased nor variable
+        explains: A consistent 15 ms error is bias.
+      - text: Unbiased with large variance
+        explains: That would be a wide scatter centred on the target.
+---
+
+A statistic is used to **estimate a parameter**: the average salary, the mean latency, the
+average frame rate, the average sales. The lecture asks what makes an estimate good. Its first
+answer is that it should be **unbiased**: *on average, the statistic equals the parameter of
+interest.*
+
+## The target picture
+
+Slide 9 draws a target. The **centre is the parameter**, the thing you want to know. Each
+**blue point is a statistic, computed from a different sample**. In the picture they scatter
+around the centre, and on average they land on it. That is *unbiased with small variance*.
+
+Two separate qualities are in play:
+
+| Quality | Question | Picture |
+| --- | --- | --- |
+| **Bias** | Do the estimates, on average, land on the parameter? | Is the cluster *centred* on the bullseye? |
+| **Variance** | How much do estimates differ from sample to sample? | How *tight* is the cluster? |
+
+You want both: centred and tight. A cluster can be tight and off-centre (a precise but
+systematically wrong instrument), or centred and wide (right on average, unreliable on any
+one try). That echoes Week 3's *validity* and *reliability*; here the object is a statistic
+rather than an instrument.
+
+## Where this leads
+
+The sample mean is unbiased for the population mean, so it is the natural point estimate. But
+a single sample gives a single point, and you cannot tell whether yours is a lucky or an
+unlucky one. The **confidence interval** adds an honest statement of how far off it may be,
+using how much sample means scatter, which the next concept builds.
+
+Do not confuse this *estimation* bias with the *sampling* bias of Week 4. They share a name
+and a direction-of-error idea, but the second is about who got into the sample.
+
+> Unbiased means 'right on average'. It does not mean 'right this time'.
+

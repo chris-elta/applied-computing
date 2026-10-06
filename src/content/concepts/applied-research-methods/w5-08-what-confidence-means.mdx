@@ -1,0 +1,88 @@
+---
+course: applied-research-methods
+section: w5-ci
+order: 590
+title: What '95% Confident' Does and Does Not Mean
+visuals:
+  - type: svg
+    src: applied-research-methods/week5/16.svg
+    caption: Slide 16 of 66 — the probability trap, with the weather forecast analogy.
+  - type: svg
+    src: applied-research-methods/week5/17.svg
+    caption: Slide 17 of 66 — the probability trap, with the weather forecast analogy.
+  - type: svg
+    src: applied-research-methods/week5/18.svg
+    caption: Slide 18 of 66 — fifty confidence intervals from the same population.
+notation:
+  - symbol: P(17.8 < μ < 20.0)
+    reads: the probability that mu is between 17.8 and 20.0
+    means: A statement about the chance that the true mean falls in a specific, already-computed interval. The lecture says this is not what 95% confidence gives you.
+questions:
+  - ask: A researcher computes a 95% confidence interval of (17.8, 20.0) and says 'there is a 95% probability that the true mean lies between 17.8 and 20.0'. What does the lecture say about this?
+    choices:
+      - text: It is wrong, because the probability is exactly 50%
+        explains: Nothing says 50%. The point is that it is 0 or 1 and unknown.
+      - text: It is correct only if the sample is large
+        explains: Sample size does not turn a method-level confidence into a probability for a fixed interval.
+      - text: It is correct, since that is what '95% confident' means
+        explains: This is the very reading the lecture rejects.
+      - text: 'It is wrong: once the data are collected, the mean either is in this interval or it is not, so the probability is 0 or 1; the 95% describes the method'
+        correct: true
+        explains: 'The meteorologist analogy: a 10% chance of rain this weekend does not mean a 10% chance that it rained last weekend. Before the sample, 95%; after, it is settled even though we do not know which way.'
+  - ask: Fifty researchers each draw their own sample from the same population and build a 90% confidence interval. About how many intervals should contain the true mean?
+    choices:
+      - text: About 5, since 10% is the failure rate
+        explains: That swaps the success and failure rates.
+      - text: All 50, since each is a 90% interval
+        explains: Ninety percent describes the long-run share. Some intervals miss, by design.
+      - text: About 45 of the 50, and the other 5 or so will miss
+        correct: true
+        explains: Ninety percent of 50 is 45. This is the picture on slide 18, where the intervals that miss are drawn in red.
+      - text: Exactly 45, no more and no fewer
+        explains: The count varies from run to run. Expect about 45, not exactly 45.
+---
+
+This is the most misunderstood idea in the week, and the lecture spends three slides on it.
+
+## The tempting reading
+
+After computing the fuel-capacity interval, it is natural to say: *there is a 95% chance that
+`μ` lies between 17.8 and 20.0*, or `P(17.8 < μ < 20.0) = 0.95`. The lecture's answer is a
+flat **no**.
+
+## The weather forecast
+
+> A meteorologist says there is a 10% chance of rain this weekend. On Monday, does that mean
+> there is a 10% chance that it rained over the weekend?
+
+No. **Either it rained or it did not**, so the probability is 0 or 1. The forecast made sense
+*before* the weekend, and it is a statement about the forecasting method.
+
+The interval works the same way:
+
+| | The population mean `μ` | The interval |
+| --- | --- | --- |
+| **Before** collecting data | Fixed, unknown | Not yet determined: it will be random, and has a 95% chance of covering `μ` |
+| **After** collecting data | Still fixed, unknown | Now fixed: it either contains `μ` or it does not, so the probability is 0 or 1 |
+
+The lecture adds that *the fact that we do not know what `μ` is does not change this.*
+Ignorance is not probability.
+
+## The picture
+
+Slide 18 shows **50 intervals**, each a 90% interval from a different sample of size `n` from
+the same population. A vertical line marks `μ`. Intervals that cross the line contain it
+(black); the ones that miss are red. We **expect about 90%** of the fifty to contain `μ`, so
+around five red ones.
+
+The confidence belongs to the **procedure**: if you repeated the whole study many times, about
+95% of the intervals would capture the parameter. Your own interval is one draw from that
+process.
+
+## A defensible way to say it
+
+*'We used a method that captures the true mean 95% of the time, and this is the interval it
+gave us.'* That is longer than the shortcut, and it is correct.
+
+> Confidence describes how reliable the recipe is, not how likely this particular answer is.
+

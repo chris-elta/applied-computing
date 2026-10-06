@@ -1,0 +1,78 @@
+---
+course: applied-research-methods
+section: w4-sampling
+order: 400
+title: How Large a Sample?
+visuals:
+  - type: svg
+    src: applied-research-methods/week4/29.svg
+    caption: Slide 29 of 52 — rules of thumb for sample size, and sampling very large populations.
+  - type: svg
+    src: applied-research-methods/week4/30.svg
+    caption: Slide 30 of 52 — rules of thumb for sample size, and sampling very large populations.
+notation:
+  - symbol: N
+    reads: capital N, or population size
+    means: The number of members in the whole population. A small n usually means the sample size.
+  - symbol: multistage sampling
+    reads: multi-stage sampling
+    means: Sampling in steps, for example regions first, then towns within the chosen regions, then households, using random selection at each step.
+questions:
+  - ask: Using the lecture's rules of thumb, roughly how many people should you survey from a population of 1,500?
+    choices:
+      - text: All 1,500
+        explains: Surveying everyone is advised only for populations of 100 or fewer.
+      - text: About 750, which is 50%
+        explains: 50% is the rule of thumb for a population around 500.
+      - text: 400, regardless of the population
+        explains: 400 is the figure for populations above 5,000.
+      - text: About 300, which is 20% of the population
+        correct: true
+        explains: The lecture gives 20% for a population around 1,500.
+  - ask: A colleague says 'we need 10% of any population for a valid sample'. How do the lecture's rules of thumb compare?
+    choices:
+      - text: 'They disagree: the percentage needed shrinks as the population grows, so a fixed percentage is too many for large populations and too few for small ones'
+        correct: true
+        explains: The lecture's table runs from everyone (100 or fewer), through 50% (500) and 20% (1,500), to about 400 in total beyond 5,000.
+      - text: They are irrelevant, because sample size never matters
+        explains: The lecture's opening rule is that the larger the sample, the better.
+      - text: They agree, since 10% is between 20% and 50%
+        explains: The percentage is not constant. It falls as population rises.
+      - text: They say the sample must always be exactly 400
+        explains: 400 applies only above about 5,000.
+---
+
+How big should the sample be? The lecture's first rule is *the larger the sample, the better*.
+Then it gives rules of thumb for how large is enough.
+
+| Population size | Suggested sample |
+| --- | --- |
+| 100 or fewer (`N` ≤ 100) | Survey the **entire population** |
+| About 500 | **50%**, about 250 |
+| About 1,500 | **20%**, about 300 |
+| More than 5,000 | **400** is fine |
+
+Read it down the table and a pattern appears: **the larger the population, the smaller the
+percentage needed** for a representative sample. The total needed levels off: 250, then 300,
+then 400.
+
+The reason is that the accuracy of an estimate depends mainly on how many cases you actually
+observe, not on what fraction of the population they are. This course's Week 5 shows the
+mechanism: the margin of error in a confidence interval depends on the sample size `n` and
+not on the population size.
+
+## Very large populations
+
+For a very large population, such as a country, the lecture says the sample **must be
+representative of the population about which inferences are drawn**, and suggests **random
+sampling in a multistage design** of areas: choose regions at random, then choose within
+them. The textbook's Figure 6.13 illustrates it; the deck does not reproduce it.
+
+## The condition behind the numbers
+
+These numbers assume a *good* sample. A sample of 400 collected from a convenient subgroup is
+still a sample of a convenient subgroup. Size reduces random error; it does nothing about
+bias, which the next concept covers.
+
+> More cases reduce chance error. Only better sampling reduces bias.
+

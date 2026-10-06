@@ -1,0 +1,88 @@
+---
+course: applied-research-methods
+section: w5-testing
+order: 610
+title: The Logic of a Significance Test
+visuals:
+  - type: svg
+    src: applied-research-methods/week5/22.svg
+    caption: Slide 22 of 66 — the soda-can problem, 'innocent until proven guilty', and the steps of a test.
+  - type: svg
+    src: applied-research-methods/week5/23.svg
+    caption: Slide 23 of 66 — the soda-can problem, 'innocent until proven guilty', and the steps of a test.
+  - type: svg
+    src: applied-research-methods/week5/24.svg
+    caption: Slide 24 of 66 — the soda-can problem, 'innocent until proven guilty', and the steps of a test.
+notation:
+  - symbol: significance test
+    reads: significance test
+    means: A procedure that asks whether a sample result is too unlikely to be explained by chance alone, given a claim about the population.
+  - symbol: statistical conclusion
+    reads: statistical conclusion
+    means: 'The decision about the hypotheses: reject the null hypothesis, or fail to reject it.'
+  - symbol: contextual conclusion
+    reads: contextual conclusion
+    means: 'The same decision restated in the terms of the problem: what it means about the cans, the bolts, the marketing campaign.'
+questions:
+  - ask: A company claims its cans hold 12 oz. You sample 24 and find a mean of 11.92 oz. In the 'innocent until proven guilty' framing, what do you do first?
+    choices:
+      - text: Assume the company is lying, then see whether the data fit
+        explains: That reverses the burden of proof. The null hypothesis, the claim to be tested, is the assumption of no wrongdoing.
+      - text: Collect samples until the mean reaches 12
+        explains: That would defeat the purpose of the test.
+      - text: Assume the company is telling the truth (a mean of 12 oz), then ask how likely a sample like yours would be under that assumption
+        correct: true
+        explains: Innocence is the starting position. The test only moves away from it if the data would be very surprising under it.
+      - text: Compute the average of the sample and declare the claim false if it is not 12
+        explains: A sample mean will almost never equal the claim exactly. The question is whether the gap is bigger than chance explains.
+  - ask: After a test, the researcher writes only 'reject the null hypothesis'. Why does the lecture want more?
+    choices:
+      - text: Because the p-value has to be in the sentence
+        explains: The p-value belongs in the calculation, and the conclusion should be readable without it.
+      - text: Because the contextual conclusion must be stronger
+        explains: It restates the same evidence, not a stronger claim.
+      - text: Because rejecting the null is not a conclusion
+        explains: It is the statistical conclusion. It simply is not complete without the context.
+      - text: A statistical conclusion must also be stated in context, so a reader knows what it says about the problem
+        correct: true
+        explains: 'The lecture asks for both: the statistical decision, then the contextual conclusion in the words of the problem.'
+---
+
+The lecture introduces significance testing with a problem. A bottling company claims to put
+**12 fluid ounces** into every can, with a **standard deviation of σ = 0.18**. We suspect it is
+short-changing us, so we take a sample of **24 cans** and find a **mean of 11.92 fluid
+ounces**. Is that enough evidence to say the company is not being truthful?
+
+The sample mean is below 12, but sample means vary by chance, so a gap alone proves nothing.
+The test is a way of asking whether this gap is bigger than chance reasonably produces.
+
+## Innocent until proven guilty
+
+The lecture frames it as a trial, and the framing is the logic:
+
+1. **Assume the company is innocent**: there really are 12 oz in each can.
+2. **Take a sample** and measure it (here, 11.92).
+3. **Determine the probability** of getting a sample like this *if* the assumption is true.
+4. If that probability is very small, the assumption is hard to believe.
+
+This is, as the slide says, essentially following the **scientific method**: state a claim,
+gather data, and see whether the data can survive it. It is the indirect argument from Week 4:
+you never prove the suspicion; you show the innocent explanation would rarely produce what you
+observed.
+
+## The steps
+
+The lecture numbers them 1, 2 and 4 (3 is missing from the slide). In practice there are four
+parts:
+
+| Step | What you do |
+| --- | --- |
+| **1. Write hypotheses** | A null hypothesis (innocence) and an alternative (the charge) |
+| **2. Calculate the test statistic** | How many standard deviations from the claim your sample is |
+| **3. Calculate the p-value** | The probability of data like yours if the null is true |
+| **4. Conclude** | A *statistical* conclusion (reject, or fail to reject), then a *contextual* one in the words of the problem |
+
+The next concepts take these in turn. After that come three complete examples.
+
+> A significance test is a trial of the null hypothesis, with your sample as the evidence.
+

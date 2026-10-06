@@ -1,0 +1,105 @@
+---
+course: applied-research-methods
+section: w4-statistics
+order: 450
+title: Central Tendency and Variability
+visuals:
+  - type: svg
+    src: applied-research-methods/week4/39.svg
+    caption: Slide 39 of 52 — three questions to ask of a data set, and the measures that answer them.
+  - type: svg
+    src: applied-research-methods/week4/40.svg
+    caption: Slide 40 of 52 — three questions to ask of a data set, and the measures that answer them.
+  - type: svg
+    src: applied-research-methods/week4/41.svg
+    caption: Slide 41 of 52 — three questions to ask of a data set, and the measures that answer them.
+  - type: svg
+    src: applied-research-methods/week4/42.svg
+    caption: Slide 42 of 52 — three questions to ask of a data set, and the measures that answer them.
+notation:
+  - symbol: mean
+    reads: mean
+    means: 'The arithmetic average: add the values and divide by how many there are.'
+  - symbol: median
+    reads: MEE-dee-un
+    means: The middle value when the data are in order. Half the values lie below it, half above.
+  - symbol: mode
+    reads: mode
+    means: The value that occurs most often.
+  - symbol: geometric mean
+    reads: gee-uh-MET-rik mean
+    means: An average based on multiplying rather than adding, suited to growth over time. For two years' growth factors of 1.2 and 1.8, it is the square root of 1.2 × 1.8.
+  - symbol: standard deviation
+    reads: standard dee-vee-AY-shun
+    means: A typical distance of values from the mean, in the same units as the data.
+  - symbol: variance
+    reads: VAIR-ee-unts
+    means: The standard deviation squared.
+  - symbol: standard score
+    reads: standard score
+    means: How many standard deviations a value is from the mean. Week 5 gives the formula.
+questions:
+  - ask: Five load times in seconds are 1, 2, 2, 3 and 12. What are the mean, median and mode, and which best describes the typical load time?
+    choices:
+      - text: Mean 4, median 3, mode 2; the mean is best
+        explains: The median is the middle of the ordered list, which is the third value, 2.
+      - text: Mean 4, median 2, mode 2; the median (or mode) better describes the typical load, because the 12 pulls the mean up
+        correct: true
+        explains: The sum is 20, so the mean is 4; sorted, the middle value is 2; and 2 occurs twice. The single outlier drags the mean above four of the five values.
+      - text: Mean 2, median 4, mode 12; the mean is best
+        explains: 'That swaps the measures. Check by adding: 1 + 2 + 2 + 3 + 12 = 20, and 20 divided by 5 is 4.'
+      - text: Mean 4, median 2, mode 2; the mean is best because it uses every value
+        explains: The mean does use every value, which is why the outlier distorts it.
+  - ask: Two teams have the same mean sprint velocity of 30 points. Team A's velocities are 29, 30, 31; Team B's are 10, 30, 50. What does the standard deviation tell you that the mean does not?
+    choices:
+      - text: Which team's mean is correct
+        explains: Both means are 30. The standard deviation does not decide between them.
+      - text: Which team has more members
+        explains: Sample size is separate from spread.
+      - text: Nothing, since standard deviation always equals the mean
+        explains: No such relationship exists.
+      - text: 'How tightly values cluster around the mean: A''s is small and B''s is large, so A is far more predictable'
+        correct: true
+        explains: Variability measures how much data points spread around the centre. Same centre, very different spread.
+---
+
+Given a pile of numbers, three questions come up. The lecture states them and gives measures
+for each. The first two are covered here; correlation, the third, is taken up in Week 5.
+
+1. Where is the **centre**? (Central tendency)
+2. How **spread out** is it? (Variability)
+3. Do two variables move together? (Correlation)
+
+## Central tendency
+
+| Measure | Definition | Weak spot |
+| --- | --- | --- |
+| **Mode** | The number that occurs most often | May not be unique, and ignores everything else |
+| **Median** | The numerical centre of the data | Ignores how far the other values are |
+| **Mean** | The arithmetic average | **Pulled by extreme values** |
+| **Geometric mean** | A centre based on geometric progression, such as growth | Only for multiplicative quantities |
+
+For `1, 2, 2, 3, 12`: mode 2, median 2, mean 4. The mean is dragged above four of the five
+values by the 12. That is the reason to report more than one centre.
+
+## Variability
+
+Variability is how far values **cluster around the central tendency**.
+
+| Measure | Definition |
+| --- | --- |
+| **Range** | Highest value minus lowest |
+| **Average deviation** | The average of the differences between each value and the mean |
+| **Standard deviation** | The distance of values from the mean, in a form that **takes negative numbers into account** |
+| **Variance** | The standard deviation squared |
+| **Norm-referenced score** | Where each person stands relative to others in the group |
+| **Standard score** | How far a value is from the mean, in standard deviation units |
+
+A note on the second and third rows. Raw differences from the mean cancel to zero, so
+*something* has to handle the minus signs. The average deviation does it by ignoring signs;
+the standard deviation squares the differences before averaging, then takes a square root to
+return to the original units.
+
+> A mean without a spread is half a description. Two samples with the same mean can behave
+> completely differently.
+

@@ -1,0 +1,78 @@
+---
+course: applied-research-methods
+section: w3-control
+order: 240
+title: Internal Validity and Confounding Variables
+visuals:
+  - type: svg
+    src: applied-research-methods/week3/08.svg
+    caption: Slide 8 of 26 — internal validity, confounds, and six ways of controlling them.
+  - type: svg
+    src: applied-research-methods/week3/09.svg
+    caption: Slide 9 of 26 — internal validity, confounds, and six ways of controlling them.
+notation:
+  - symbol: confound
+    reads: CON-found
+    means: 'A variable that differs between your groups and is not the one being studied, so it could explain the result. Noun: confounding variable.'
+  - symbol: pretest
+    reads: pre-test
+    means: A measurement taken before the treatment, used to check that groups started out equal.
+questions:
+  - ask: A researcher compares test scores for students taught with a new tool against students in another class taught with the old one. The new-tool class is taught by a more experienced instructor. What is the instructor's experience?
+    choices:
+      - text: The independent variable, because it differs between groups
+        explains: The independent variable is the tool, the thing being studied. The instructor is an extra difference that comes along with it.
+      - text: The dependent variable, because it affects the scores
+        explains: The dependent variable is the score. Instructor experience is a possible cause of it, not the outcome.
+      - text: 'A confounding variable: it differs between groups for a reason unrelated to the tool, so it could explain any difference'
+        correct: true
+        explains: A confound accounts for differences between groups that are not attributable to what is being studied. The result cannot be cleanly attributed to the tool.
+      - text: Irrelevant, because instructors are not part of the study
+        explains: 'That is the problem with confounds: the effect is on the result whether or not they are part of the plan.'
+  - ask: Which control strategy is the most reliable way to make confounds equally likely in both groups, including ones you have not thought of?
+    choices:
+      - text: Randomly assigning people to groups
+        correct: true
+        explains: Random assignment spreads unknown differences across the groups by chance, so it addresses confounds you did not anticipate.
+      - text: Using a pretest
+        explains: A pretest lets you check equivalence on what it measures. It does not equalise what it does not measure.
+      - text: Keeping some things constant
+        explains: Useful for the confounds you know about, but you can only hold constant what you have identified.
+      - text: Asking participants whether they think they differ
+        explains: Not on the list, and self-assessment would be unreliable.
+---
+
+Having an independent and a dependent variable does not yet let you claim that one affects
+the other. The question is whether *something else* could be responsible.
+
+## Internal validity
+
+**Internal validity** is how much the study and the data it yields allow you to draw
+**accurate conclusions about cause and effect** and other relationships. The lecture is blunt
+about the stakes: *without internal validity in experimental designs, results are not
+interpretable*.
+
+The enemy is the **confounding variable**: a variable that accounts for differences between
+two or more groups that are **not attributable to what is being studied**. If the group using
+the new tool also had the more experienced instructor, you cannot say which produced the
+higher scores.
+
+## Six ways to deal with confounds
+
+| Strategy | What it does |
+| --- | --- |
+| **Keep some things constant** | Remove a known source of variation, e.g. use the same task for everyone |
+| **Include a control group** | A comparison group that does not get the treatment |
+| **Randomly assign people** to groups | Spread all differences, known or not, by chance |
+| **Assess equivalence** before treatment with one or more pretests | Check the groups started alike |
+| **Expose participants to all conditions** | Every person acts as their own comparison |
+| **Statistically control** for confounds | Adjust for a measured variable in the analysis |
+
+The first and last only work for confounds you have thought of. **Random assignment** is the
+most powerful strategy on the list because it works on the ones you have not. Every
+experimental design on the next slides can be read as a choice about which of these six
+strategies it uses.
+
+> Internal validity is the question 'what else could explain this?' Good design answers it
+> before the data arrives.
+

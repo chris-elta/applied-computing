@@ -1,0 +1,69 @@
+---
+course: applied-research-methods
+section: w3-control
+order: 230
+title: Independent and Dependent Variables
+visuals:
+  - type: svg
+    src: applied-research-methods/week3/07.svg
+    caption: Slide 7 of 26 — variables, cause and effect, independent and dependent.
+notation:
+  - symbol: variable
+    reads: VAIR-ee-uh-bul
+    means: Any quality or characteristic in the study that takes two or more values, such as response time, team size, or whether a feature is switched on.
+  - symbol: independent variable (IV)
+    reads: independent variable
+    means: The variable you study as a possible cause. In an experiment, the one you directly manipulate.
+  - symbol: dependent variable (DV)
+    reads: dependent variable
+    means: The variable that may be influenced by the independent variable. It depends on it, and it is what you measure.
+questions:
+  - ask: An experiment gives one group a redesigned checkout page and another the old page, then measures the percentage who complete purchase. Which is the independent variable?
+    choices:
+      - text: The number of participants
+        explains: Sample size is a feature of the design, not a variable under study as a cause.
+      - text: The time of day
+        explains: Unless it is manipulated or studied as a cause, time of day is something to keep constant or control.
+      - text: The percentage completing purchase
+        explains: 'That is the dependent variable: it is the outcome you measure, and it may depend on the page.'
+      - text: Which checkout page a participant sees
+        correct: true
+        explains: It is what the researcher directly manipulates, and it is the suspected cause.
+  - ask: Which of these is NOT a variable, as the lecture defines it?
+    choices:
+      - text: Operating system, with values Windows, macOS and Linux
+        explains: It takes three values, so it is a variable.
+      - text: Whether a feature flag is on or off
+        explains: Two values is enough.
+      - text: A characteristic that takes exactly one value for every participant
+        correct: true
+        explains: A variable must have two or more values. A characteristic that is the same for everyone, such as everyone being a student, cannot vary and so cannot be related to anything.
+      - text: Page-load time in milliseconds
+        explains: It takes many values.
+---
+
+Every design in this week is built from the same few pieces. The first is the **variable**: a
+quality or characteristic in the investigation that takes **two or more values**.
+
+The lecture then defines the **cause-and-effect relationship** as *how much one variable
+(the cause) influences another (the effect)*, and gives the two roles:
+
+| Role | Definition | In an A/B test of a checkout page |
+| --- | --- | --- |
+| **Independent variable** | The variable the researcher studies as a possible cause, and directly manipulates | Which page version the user sees |
+| **Dependent variable** | The variable potentially influenced by the independent one; it depends on it | Whether the user completes the purchase |
+
+The names are easy to swap. A quick check: ask *which one did I choose or change, and which
+one did I wait to see?* The one you chose is independent; the one you watched is dependent.
+
+Note the word **manipulates**. In an experiment, you set the independent variable. In
+correlational research and ex post facto designs (later this week), you cannot, so
+"independent variable" means only "the one we suspect is the cause". That is why those
+designs support weaker claims.
+
+A study may have more than one independent variable. That is a *factorial* design, also
+covered later this week.
+
+> Independent: what you change. Dependent: what you measure. The whole experiment is the
+> question of whether the second follows the first.
+

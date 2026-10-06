@@ -1,0 +1,91 @@
+---
+course: applied-research-methods
+section: w5-basics
+order: 520
+title: Population, Sample, Parameter and Statistic
+visuals:
+  - type: svg
+    src: applied-research-methods/week5/03.svg
+    caption: Slide 3 of 66 — population, sample, parameter and statistic.
+  - type: svg
+    src: applied-research-methods/week5/05.svg
+    caption: Slide 5 of 66 — the summary measures used throughout the week.
+notation:
+  - symbol: μ
+    reads: mew (Greek letter mu)
+    means: 'The mean of a population: a parameter.'
+  - symbol: σ
+    reads: SIG-muh (Greek letter sigma)
+    means: 'The standard deviation of a population: a parameter.'
+  - symbol: x̄
+    reads: x-bar
+    means: 'The mean of a sample: a statistic. The bar means ''average of''.'
+  - symbol: s
+    reads: s
+    means: 'The standard deviation of a sample: a statistic.'
+  - symbol: n
+    reads: n, or sample size
+    means: The number of observations in the sample.
+questions:
+  - ask: A quality engineer measures every bolt produced this year and finds the mean length is 50.02 mm. A second engineer measures 30 of them and gets a mean of 50.05 mm. Which is the parameter and which is the statistic?
+    choices:
+      - text: Both are parameters, because both are means
+        explains: Both are means, but one covers the population and one a sample.
+      - text: 50.02 mm is the parameter (it covers the whole population); 50.05 mm is the statistic (it is computed from a sample)
+        correct: true
+        explains: A parameter describes a population; a statistic describes a sample. The second engineer's value is an estimate of the first.
+      - text: Both are statistics, since all measurements are samples
+        explains: Measuring every item in the population gives the parameter itself.
+      - text: 50.05 mm is the parameter, because it is the more recent measurement
+        explains: Recency is irrelevant. What matters is whether every member of the population was measured.
+  - ask: A formula uses the symbol σ. What does it stand for?
+    choices:
+      - text: The standard deviation of the sample
+        explains: The sample's is written s.
+      - text: The mean of the population
+        explains: That is μ.
+      - text: The sample size
+        explains: That is n.
+      - text: The standard deviation of the population, read 'sigma'
+        correct: true
+        explains: Greek letters conventionally name population parameters; Roman letters (x̄, s) name their sample counterparts.
+---
+
+Week 4 introduced the idea; Week 5 uses it every line, so here is the vocabulary pinned down.
+
+- A **population** includes each element from the set of observations that can be made.
+- A **sample** consists only of observations drawn from the population.
+- A **parameter** is a measurable characteristic of the population, such as its mean or
+  standard deviation.
+- A **statistic** is a measurable characteristic of a sample.
+
+## Greek for the population, Roman for the sample
+
+A convention keeps them apart on the page:
+
+| Quantity | Population (parameter) | Sample (statistic) |
+| --- | --- | --- |
+| Mean | `μ` | `x̄` |
+| Standard deviation | `σ` | `s` |
+| Number of observations | `N` | `n` |
+
+A formula that mixes them is therefore telling you something. In `z = (x̄ − μ) / (σ / √n)`, the
+numerator compares what you saw (`x̄`) with what a claim says (`μ`).
+
+## The other measures
+
+Slide 5 restates the summary measures from Week 4:
+
+| Measure | In one line |
+| --- | --- |
+| **Mean** | The average |
+| **Median** | The middle value, smallest to largest |
+| **Mode** | The most common value |
+| **Variance** | How data points differ from the mean |
+| **Standard deviation** | The square root of the variance |
+| **Confidence interval** | Later this week |
+
+The deck also lists the **percentile** and **standard score**, which the next concept defines.
+
+> Parameters are what you want to know. Statistics are what you have. Inference connects them.
+

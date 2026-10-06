@@ -1,0 +1,86 @@
+---
+course: applied-research-methods
+section: w5-ttests
+order: 700
+title: Worked Example — a One-Sample t-Test (Bolt Strength)
+visuals:
+  - type: svg
+    src: applied-research-methods/week5/51.svg
+    caption: Slide 51 of 66 — the bolt problem, the hypotheses, and the p-value from the t-table.
+  - type: svg
+    src: applied-research-methods/week5/52.svg
+    caption: Slide 52 of 66 — the bolt problem, the hypotheses, and the p-value from the t-table.
+  - type: svg
+    src: applied-research-methods/week5/53.svg
+    caption: Slide 53 of 66 — the bolt problem, the hypotheses, and the p-value from the t-table.
+  - type: svg
+    src: applied-research-methods/week5/54.svg
+    caption: Slide 54 of 66 — the bolt problem, the hypotheses, and the p-value from the t-table.
+notation:
+  - symbol: t-table
+    reads: tee table
+    means: A reference table giving, for each number of degrees of freedom, the t-values that cut off given tail areas. It lets you find a p-value, or a range for it, by hand.
+questions:
+  - ask: A manufacturer needs mean bolt strength above 110 lb. A sample of 25 has mean 112.7 lb and s = 9.62 lb. What is the test statistic?
+    choices:
+      - text: t = (112.7 − 110) / 9.62 ≈ 0.28
+        explains: That omits the √n. It measures an individual bolt, not the mean of 25.
+      - text: t = (112.7 − 110) / (9.62/25) ≈ 7.0
+        explains: That divides by n instead of √n, vastly overstating the evidence.
+      - text: t = 112.7 / 110 ≈ 1.02
+        explains: A t statistic measures a difference in standard errors, not a ratio.
+      - text: t = (112.7 − 110) / (9.62/√25) = 2.7 / 1.924 ≈ 1.40, with 24 degrees of freedom
+        correct: true
+        explains: The standard deviation of the mean is 9.62/5 = 1.924. The sample mean is about 1.4 of those above 110.
+  - ask: In the bolt example, p ≈ 0.087 and α = 0.05. What is the correct conclusion?
+    choices:
+      - text: 'Fail to reject H₀: there is insufficient evidence that the mean shearing strength exceeds 110 lb'
+        correct: true
+        explains: 0.087 is above 0.05, so the sample, though above 110, could plausibly come from a process whose true mean is 110 or lower.
+      - text: 'Reject H₀: the bolts exceed 110 lb'
+        explains: Reject needs p at or below α.
+      - text: The bolts fail the standard, so reject the batch
+        explains: The test addresses evidence of strength above 110, and not meeting the standard is a different decision.
+      - text: 'Accept H₀: the bolts have a strength of exactly 110 lb'
+        explains: Failing to reject is not acceptance of the null.
+---
+
+**The problem.** A manufacturer requires a bolt's mean shearing strength to be **in excess of
+110 lb**. To check, a sample of **25 bolts** is tested. The **sample mean is 112.7 lb** and the
+**sample standard deviation is 9.62 lb**. Perform a hypothesis test at **α = 0.05**.
+
+This time σ is not given, only `s`, so this is a **t-test** (n = 25, in the 15 to 40 range, so
+check for outliers and extreme skew).
+
+## Step by step
+
+| Step | Working |
+| --- | --- |
+| **Define the parameter** | `μ` = the true mean shearing strength of this type of bolt |
+| **Hypotheses** | `H₀: μ = 110`, `Hₐ: μ > 110` |
+| **Significance level** | `α = 0.05` |
+| **Test statistic** | `t = (112.7 − 110) / (9.62/√25) = 2.7 / 1.924 ≈ 1.40` |
+| **Degrees of freedom** | `n − 1 = 24` |
+| **p-value** (upper tail) | `P(t > 1.40) = 0.087` |
+| **Compare** | `0.087 > 0.05` |
+
+The slide shows the p-value on a t-curve with the area beyond 1.4 shaded, and a row from the
+t-table for 24 degrees of freedom. Reading the table: the one-tail value for `t = 1.318` is
+0.10 and for `t = 1.711` it is 0.05. Our 1.40 sits between them, so the p-value lies between
+0.05 and 0.10, which is consistent with 0.087.
+
+## Conclusions
+
+- **Statistical:** fail to reject `H₀`.
+- **Contextual:** at the 0.05 level, there is **insufficient evidence** to conclude that the
+  mean shearing strength of this brand of bolt exceeds 110 lb.
+
+## Compare with the z-test
+
+Had the standard deviation been *known* to be 9.62, the statistic would have been the same
+number, 1.40, but the p-value would come from the normal curve: about 0.080. The t-curve's
+heavier tails make 0.087 slightly less impressive, which is the price of estimating `s`.
+
+> The sample mean was 2.7 lb above 110. That is not enough, with 25 noisy bolts, to say the
+> true mean is.
+

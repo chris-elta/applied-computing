@@ -1,0 +1,86 @@
+---
+course: applied-research-methods
+section: w5-basics
+order: 530
+title: Percentiles and z-Scores
+visuals:
+  - type: svg
+    src: applied-research-methods/week5/04.svg
+    caption: Slide 4 of 66 — percentile, and the standard score.
+notation:
+  - symbol: z
+    reads: z, or z-score
+    means: 'A standard score: how many standard deviations a value is from the mean. Positive means above the mean, negative below.'
+  - symbol: X
+    reads: capital X
+    means: The value you are looking at, such as one person's score.
+  - symbol: percentile
+    reads: per-SEN-tile
+    means: One of 100 equal slices of the ranked data. Being at the 90th percentile means 90% of values lie at or below yours.
+questions:
+  - ask: Exam scores have mean 70 and standard deviation 10. A student scores 85. What is the z-score, and what does it say?
+    choices:
+      - text: 'z = 1.5: the student beat exactly 15% of the class'
+        explains: The value is right but the reading is wrong. A z-score is a distance in standard deviations; the percentage beaten requires the distribution's shape.
+      - text: 'z = 0.15: the score is in the 15th percentile'
+        explains: That divides by 100 instead of by σ, and z-scores are not percentiles.
+      - text: 'z = 1.5: the score is one and a half standard deviations above the mean'
+        correct: true
+        explains: z = (85 − 70) / 10 = 1.5. Positive, so above the mean.
+      - text: 'z = 15: the score is 15 above the mean'
+        explains: 15 is the raw difference. A z-score divides by the standard deviation (10) to express it in standard deviation units.
+  - ask: Student A scores 85 on an exam with mean 70 and σ = 10. Student B scores 60 on an exam with mean 45 and σ = 5. Whose performance is stronger relative to their own class?
+    choices:
+      - text: A, because 85 is higher than 60
+        explains: Raw scores come from different scales. That is exactly the problem z-scores solve.
+      - text: It cannot be compared without the class sizes
+        explains: Class size is not needed to compute z.
+      - text: They are equal, because both are above their class means
+        explains: Both are above, but by different numbers of standard deviations.
+      - text: 'B: z = (60 − 45) / 5 = 3, compared with A''s z = 1.5'
+        correct: true
+        explains: Raw scores are not comparable across exams, but z-scores are, because each is measured in its own exam's standard deviations.
+---
+
+Two ideas let you say where a value sits within its group.
+
+## Percentile
+
+Percentiles are the values that **divide a rank-ordered set of elements into 100 equal
+parts**. They are rank-based, so they belong with the ordinal tools of Week 3.
+
+## The standard score
+
+A **standard score**, or **z-score**, says **how many standard deviations an element is from
+the mean**:
+
+`z = (X − μ) / σ`
+
+where `z` is the z-score, `X` the value, `μ` the population mean and `σ` its standard
+deviation.
+
+| Student | Score | Class mean | σ | z |
+| --- | --- | --- | --- | --- |
+| A | 85 | 70 | 10 | (85 − 70) / 10 = **1.5** |
+| B | 60 | 45 | 5 | (60 − 45) / 5 = **3.0** |
+
+A scored higher in raw points, but B is further above their own class. The raw numbers are in
+different units (each exam's own scale); the z-scores are in *standard deviations*, which are
+comparable.
+
+## Why this matters for the rest of the week
+
+Every test this week reduces your result to a z-score or something like it: *how far, in
+standard deviations, is what I saw from what a claim predicts?* The answer is then turned
+into a probability using the normal curve from Week 4, which is where the p-value comes from.
+
+| z | Roughly |
+| --- | --- |
+| 0 | Exactly at the mean |
+| ±1 | One standard deviation out: common |
+| ±2 | Two out: uncommon (about 5% of a normal distribution lies beyond ±1.96) |
+| ±3 | Three out: rare |
+
+> A z-score converts any measurement into 'how unusual is this?', in units the whole field
+> shares.
+

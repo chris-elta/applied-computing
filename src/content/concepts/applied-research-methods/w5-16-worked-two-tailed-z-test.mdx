@@ -1,0 +1,91 @@
+---
+course: applied-research-methods
+section: w5-testing
+order: 670
+title: Worked Example — Two-Tailed Test (Marketing Campaign)
+visuals:
+  - type: svg
+    src: applied-research-methods/week5/42.svg
+    caption: Slide 42 of 66 — a campaign question where change in either direction counts.
+  - type: svg
+    src: applied-research-methods/week5/43.svg
+    caption: Slide 43 of 66 — a campaign question where change in either direction counts.
+  - type: svg
+    src: applied-research-methods/week5/44.svg
+    caption: Slide 44 of 66 — a campaign question where change in either direction counts.
+  - type: svg
+    src: applied-research-methods/week5/45.svg
+    caption: Slide 45 of 66 — a campaign question where change in either direction counts.
+  - type: svg
+    src: applied-research-methods/week5/46.svg
+    caption: Slide 46 of 66 — a campaign question where change in either direction counts.
+  - type: svg
+    src: applied-research-methods/week5/47.svg
+    caption: Slide 47 of 66 — a campaign question where change in either direction counts.
+notation:
+  - symbol: 2 × normalcdf
+    reads: two times normal c-d-f
+    means: For a two-sided test, the p-value counts the tail beyond +z and the equal tail beyond −z, so double the one-tail area.
+questions:
+  - ask: Why is the p-value doubled in the marketing campaign example?
+    choices:
+      - text: Because z was positive
+        explains: The sign of z does not matter; both tails are counted either way.
+      - text: Because the sample is large
+        explains: Sample size changes z, not the number of tails.
+      - text: To make the test more conservative about α
+        explains: Doubling is a consequence of the alternative, not a choice made to be cautious.
+      - text: The alternative is 'sales changed', so unusual results in either tail count as evidence, and both tails are included
+        correct: true
+        explains: A two-sided alternative asks whether the sample is far from 3,400 in either direction. The probability of being that far, either way, is twice the area in one tail.
+  - ask: A courier's delivery time claim is 30 minutes (σ = 4). We only ask 'has it changed?'. A sample of 64 gives mean 31.2. What is the two-sided p-value, and the conclusion at α = 0.05?
+    choices:
+      - text: z = 1.2; p ≈ 0.23, so fail to reject H₀
+        explains: That uses a wrong standard deviation. σ/√n = 0.5, so z = 1.2/0.5 = 2.4.
+      - text: z = 2.4; p ≈ 0.008, so reject H₀
+        explains: That is the one-sided p-value. The question asks about any change, so double it.
+      - text: z = 2.4; p ≈ 0.016, so reject H₀ and conclude the mean delivery time differs from 30 minutes
+        correct: true
+        explains: Single tail ≈ 0.0082, doubled ≈ 0.0164. It is below 0.05.
+      - text: z = 2.4; p ≈ 0.016, so fail to reject H₀
+        explains: 0.016 is below 0.05, so the decision is to reject.
+---
+
+**The problem.** A computer shop chain sells **3,400** items a week on average (**σ = 500**). A
+new marketing campaign starts and you wonder whether sales **changed**, up or down. You
+sample **40 stores for a week** and find a mean of **3,550**.
+
+## The steps
+
+| Step | Working |
+| --- | --- |
+| **Hypotheses** | `H₀: μ = 3400`, `Hₐ: μ ≠ 3400` (a change, either way) |
+| **Sampling distribution under `H₀`** | `N(3400, 500/√40) = N(3400, 79.0569)` |
+| **Test statistic** | `z = (3550 − 3400) / 79.0569 = 1.8974` |
+| **p-value** (both tails) | `2 × P(Z ≥ 1.8974) = 2 × 0.0289 = 0.0578` |
+| **Compare** | `0.0578 > 0.05` |
+
+## Conclusions
+
+- **Statistical:** fail to reject `H₀`.
+- **Contextual:** there is not sufficient evidence to suggest that the campaign had an impact
+  on sales.
+
+## Why double?
+
+The question was *'did sales change?'*, so an *unusually low* sample would have been just as
+interesting as an unusually high one. The p-value is the probability of a result **at least as
+far from 3,400 in either direction**, so it takes the upper-tail area (beyond +1.90) and adds
+the matching lower-tail area (beyond −1.90).
+
+The consequence is important. The same z-score of 1.8974 would give `p = 0.0289` for a
+one-sided test and **reject** at 0.05, whereas the two-sided test does **not**. The choice
+between one-sided and two-sided is therefore not cosmetic: it changes the answer here.
+Which to use must follow from the question, **decided before looking at the data**.
+
+If you wanted to know only whether the campaign *increased* sales, `Hₐ: μ > 3400` would be
+the honest question. But if a drop would also have prompted action, the two-sided test is the
+one that fits.
+
+> The number of tails follows from the question you asked, not from the result you got.
+

@@ -1,0 +1,72 @@
+---
+course: applied-research-methods
+section: w4-inference
+order: 490
+title: Statistical Power and Multiple Tests
+visuals:
+  - type: svg
+    src: applied-research-methods/week4/49.svg
+    caption: Slide 49 of 52 — how to increase statistical power, and a warning about testing many hypotheses.
+notation:
+  - symbol: statistical power
+    reads: statistical power
+    means: The probability that a test detects an effect that really exists. High power means fewer Type II errors.
+questions:
+  - ask: A team can only afford 12 participants. What does the lecture suggest to boost power?
+    choices:
+      - text: Maximise the validity and reliability of the measures, and use parametric statistics when their conditions are met; a larger sample would help if it can be obtained
+        correct: true
+        explains: 'The list is: large sample as reasonably possible, valid and reliable measures, and parametric over nonparametric whenever possible.'
+      - text: Test many different hypotheses until one is significant
+        explains: Testing more than one hypothesis increases the probability of at least one Type I error.
+      - text: Nothing can be done
+        explains: Better measurement and an appropriate statistic both help.
+      - text: Raise α to 0.5 so that results are always significant
+        explains: That would flood the study with Type I errors. Power should not be bought by abandoning the cutoff.
+  - ask: A researcher tests 20 unrelated hypotheses, each at α = 0.05, and reports the one significant result. Why is that suspect?
+    choices:
+      - text: The result is invalid because the other 19 were not significant
+        explains: Non-significant results are not a flaw. Hiding them is.
+      - text: Every additional test adds another chance of a false alarm, so at least one 'significant' result is likely even when nothing is going on
+        correct: true
+        explains: If the tests are independent and every null is true, the chance of at least one false alarm is 1 minus 0.95 to the power 20, about 64%.
+      - text: A significant result can only come from a priori hypotheses
+        explains: Exploratory hypotheses are allowed, but they must be reported as such, and multiple tests must be taken into account.
+      - text: Twenty is above the number of tests permitted
+        explains: No such limit exists. The issue is the accumulating Type I risk.
+---
+
+Because a test can miss a real effect, the lecture lists ways to **increase statistical
+power**: the chance of detecting an effect that exists.
+
+## Raising power
+
+- Use **as large a sample as is reasonably possible**.
+- **Maximise the validity and reliability** of the measures. Noise hides signals.
+- Use **parametric rather than nonparametric** statistics whenever possible.
+
+Each acts on the same thing: how clearly the signal stands out from the noise. More cases
+reduce the noise from chance, better instruments reduce noise from measurement, and a
+suitable parametric test uses more of the information in the data.
+
+## The warning: more tests, more false alarms
+
+The lecture closes the slide with a note: **whenever we test more than one statistical
+hypothesis, we increase the probability of making at least one Type I error.**
+
+An example makes the size of it clear. At α = 0.05 each test has a 5% chance of a false alarm
+when the null is true. Run 20 independent tests where nothing real exists, and the chance of at
+least one false alarm is
+
+`1 − 0.95²⁰ ≈ 0.64`
+
+That is about two chances in three of finding something 'significant' in pure noise. Look at
+enough subgroups, outcomes or time windows and something will pass the cutoff.
+
+This links back to Week 1's pitfalls, in particular looking only for evidence that supports
+your hypothesis. The honest practice is to state the hypotheses and the number of tests in
+advance, and to report all of them.
+
+> Power helps you find what is there. Restraint with the number of tests protects you from
+> finding what is not.
+

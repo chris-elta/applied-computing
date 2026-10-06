@@ -1,0 +1,75 @@
+---
+course: applied-research-methods
+section: w1-problem
+order: 50
+title: Stating the Problem and Its Subproblems
+visuals:
+  - type: svg
+    src: applied-research-methods/week1/15.svg
+    caption: Slide 15 of 50 — stating the problem, and what makes a real subproblem.
+  - type: svg
+    src: applied-research-methods/week1/16.svg
+    caption: Slide 16 of 50 — stating the problem, and what makes a real subproblem.
+notation:
+  - symbol: subproblem
+    reads: sub-problem
+    means: One of the smaller, completely researchable pieces the main problem splits into. Answer all of them and you have answered the main problem.
+questions:
+  - ask: A project asks how a new compression algorithm affects load times. Which is a genuine subproblem rather than a pseudo-subproblem?
+    choices:
+      - text: What is the effect of the algorithm on load time for image-heavy pages?
+        correct: true
+        explains: It is a researchable unit, tied to interpreting the data, and together with other such pieces it adds up to the whole problem.
+      - text: Where should the raw timing data be stored?
+        explains: Another procedural decision. It has to be made, but its answer tells you nothing about compression.
+      - text: Which programming language should the experiment harness be written in?
+        explains: This is a procedural decision made before the problem can be tackled. The lecture calls such items pseudo-subproblems.
+      - text: How many test machines can be borrowed from the lab?
+        explains: A resource question, not a part of the problem. It affects the plan but does not help answer anything.
+  - ask: How should a problem statement treat the expected answer?
+    choices:
+      - text: It should state the expected result, so readers know what the project is trying to show
+        explains: That is a hypothesis, which has its own place in the proposal. The problem statement itself should not presume the answer.
+      - text: It should stay vague so that any finding can count as an answer
+        explains: 'The lecture asks for the opposite: state it clearly and completely, and say precisely what you mean.'
+      - text: It should be stated so that it reflects an open mind about the solution
+        correct: true
+        explains: Phrasing that assumes the result closes the question before the data can open it. The lecture also asks for honesty and integrity throughout.
+      - text: It should be kept as short as possible, ideally one phrase
+        explains: Clarity and completeness matter, not brevity. A problem you cannot state fully is one you have not yet thought through.
+---
+
+A problem you cannot say clearly is a problem you cannot solve. The lecture gives a short list
+of habits for **stating the problem**:
+
+- state it **clearly and completely**;
+- think through the **feasibility** of the project the problem implies;
+- say **precisely** what you mean;
+- absolute **honesty and integrity** are the rule;
+- state it so it reflects an **open mind** about its solution;
+- **edit** your work.
+
+"Open mind" is easy to violate by accident. *"Show that our new cache speeds up the site"*
+has a verdict built in. *"Determine how the new cache affects page-load time"* leaves room for
+the answer to be none.
+
+## Subproblems
+
+Most problems are too big to attack whole, so you divide them. A **subproblem** is:
+
+- a subpart of the main problem, and an integral part of it;
+- a **completely researchable unit**;
+- clearly tied to the **interpretation of data**;
+- one of a **small number** that **add up to the totality** of the problem.
+
+Then there are **pseudo-subproblems**: procedural issues, such as decisions that must be made
+before you can resolve the problem and its subproblems. *Which language do we use? How many
+machines do we have?* They are real work, but answering them yields no data, so they belong
+in the plan (step 5 of the cycle) rather than the list of subproblems.
+
+A useful test is to ask, of each candidate: *what data would answer this?* If the answer is
+"none, it is a choice we make", it is a pseudo-subproblem.
+
+> Subproblems should be answerable, few, and jointly sufficient. If you could answer all of
+> them and still not have solved the problem, you split it wrongly.
+

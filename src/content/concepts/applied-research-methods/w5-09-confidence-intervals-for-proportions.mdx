@@ -1,0 +1,90 @@
+---
+course: applied-research-methods
+section: w5-ci
+order: 600
+title: Confidence Intervals for Proportions
+visuals:
+  - type: svg
+    src: applied-research-methods/week5/19.svg
+    caption: Slide 19 of 66 — the proportion formula, its conditions, and the light-bulb example.
+  - type: svg
+    src: applied-research-methods/week5/20.svg
+    caption: Slide 20 of 66 — the proportion formula, its conditions, and the light-bulb example.
+  - type: svg
+    src: applied-research-methods/week5/21.svg
+    caption: Slide 21 of 66 — the proportion formula, its conditions, and the light-bulb example.
+notation:
+  - symbol: p̂
+    reads: p-hat
+    means: 'The sample proportion: the fraction of the sample with the property. The hat means ''estimated from a sample''.'
+  - symbol: √(p̂(1 − p̂)/n)
+    reads: square root of p-hat times one minus p-hat, over n
+    means: The standard deviation of a sample proportion. It replaces σ/√n in the formula.
+questions:
+  - ask: In a random sample of 200 users, 30 clicked a new button. What is a 95% confidence interval for the proportion of all users who would click?
+    choices:
+      - text: 30 ± 1.96, about (28, 32)
+        explains: That works on the raw count and ignores the sample size.
+      - text: 0.15 ± 1.96 × 0.15/√200, about (0.129, 0.171)
+        explains: That uses the formula for a mean. For a proportion the standard deviation is √(p̂(1 − p̂)/n).
+      - text: 0.15 ± 0.15, about (0, 0.30)
+        explains: There is no reason for the margin to equal the estimate.
+      - text: 0.15 ± 1.96 × √(0.15 × 0.85/200) ≈ 0.15 ± 0.049, about (0.101, 0.199)
+        correct: true
+        explains: p̂ = 30/200 = 0.15. The conditions hold (30 and 170 are both at least 5), so the normal-based formula applies.
+  - ask: A quality check finds 2 defective items in a random sample of 100. Can the lecture's normal-based interval for a proportion be used?
+    choices:
+      - text: No, because proportions can never have intervals
+        explains: They can, when the conditions are met.
+      - text: Yes, because 98 items were not defective
+        explains: Both counts must pass, and the defective count is 2.
+      - text: 'No: n·p̂ = 2 is below 5, so the rule of thumb fails'
+        correct: true
+        explains: Both n·p̂ and n(1 − p̂) must be at least 5 for the normal approximation to be trustworthy. Here the count of defects is too small.
+      - text: Yes, because n = 100 is large
+        explains: The rule is about the expected counts in both categories, not n alone.
+---
+
+Not everything is a mean. Often you want a **proportion**: the share of bulbs that are
+defective, users who click, requests that fail. The lecture's key observation is that it is
+**the same formula, with the standard deviation for proportions in place of the one for
+means**.
+
+| | Mean | Proportion |
+| --- | --- | --- |
+| **Estimate** | `x̄` | `p̂` |
+| **Spread of the estimate** | `σ/√n` | `√(p̂(1 − p̂)/n)` |
+| **Interval** | `x̄ ± z* · σ/√n` | `p̂ ± z* · √(p̂(1 − p̂)/n)` |
+
+## A condition to check first
+
+The interval uses the normal curve, which is only a good approximation when there are
+enough cases in both categories. The lecture's rule of thumb:
+
+`n·p̂ ≥ 5` and `n·(1 − p̂) ≥ 5`
+
+## Worked example: light bulbs
+
+A random sample of **100 bulbs** has **6 defective**. Find a **98% confidence interval** for
+the proportion of defective bulbs the plant produces.
+
+**Check the conditions.** `p̂ = 6/100 = 0.06`. Then `n·p̂ = 6 ≥ 5` ✓ and
+`n·(1 − p̂) = 94 ≥ 5` ✓.
+
+**Compute.** For 98%, `z* = 2.326`:
+
+| Step | Working |
+| --- | --- |
+| Interval | `0.06 ± 2.326 × √(0.06 × 0.94 / 100)` |
+| Margin | `2.326 × 0.02375 = 0.0552` |
+| Result | `(0.0047, 0.1152)` |
+
+**Conclusion.** Somewhere between about **0.5% and 11.5%** of bulbs are expected to be
+defective.
+
+The interval is wide, because only 6 defective bulbs were observed. A larger sample would
+narrow it, in proportion to `√n`, as with means.
+
+> A proportion is a mean of zeros and ones. That is why the machinery is the same, with its
+> own measure of spread.
+

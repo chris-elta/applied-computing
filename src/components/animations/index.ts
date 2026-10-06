@@ -20,6 +20,7 @@ export const animations: Record<string, Loader> = {
   VarianceReduction: () => import('./VarianceReduction'),
   PearsonCorrelation: () => import('./PearsonCorrelation'),
   SignificanceSampleSize: () => import('./SignificanceSampleSize'),
+  Convolution: () => import('./Convolution'),
 };
 
 export const isAnimation = (name: string) => name in animations;

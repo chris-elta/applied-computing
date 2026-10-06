@@ -1,0 +1,80 @@
+---
+course: applied-research-methods
+section: w4-sampling
+order: 380
+title: Probability Sampling
+visuals:
+  - type: svg
+    src: applied-research-methods/week4/26.svg
+    caption: Slide 26 of 52 — why we study samples, and five probability designs.
+  - type: svg
+    src: applied-research-methods/week4/27.svg
+    caption: Slide 27 of 52 — why we study samples, and five probability designs.
+notation:
+  - symbol: population
+    reads: pop-you-LAY-shun
+    means: 'The whole group you want to learn about, not necessarily people: it could be all the commits in a repository or every server in a fleet.'
+  - symbol: sample
+    reads: sample
+    means: The part of the population you actually study. A good one is a microcosm of the whole.
+  - symbol: stratum, strata
+    reads: STRAT-um, STRAT-uh
+    means: A layer of the population defined by some characteristic, such as year of study or department. The plural is strata. Stratified means sampled by layer.
+questions:
+  - ask: A company has 900 developers and 100 testers. A researcher wants 50 respondents who mirror the company's mix of roles. Which design fits?
+    choices:
+      - text: Systematic sampling of every 20th name from an alphabetical list
+        explains: That is systematic sampling and does not guarantee the right mix of roles.
+      - text: 'Proportional stratified sampling: 45 developers and 5 testers, chosen randomly within each layer'
+        correct: true
+        explains: Proportional stratified sampling takes from each layer in proportion to its size in the whole population, 90% and 10% here.
+      - text: Cluster sampling of five offices
+        explains: Cluster sampling is for populations spread over large areas. It does not control the mix of roles.
+      - text: 'Stratified sampling with an equal number from each layer: 25 and 25'
+        explains: That is plain stratified sampling, which takes equally from each layer. It would overrepresent testers if you want the sample to mirror the company.
+  - ask: A national survey must reach schools across a whole country. Visiting a random list of individual students would be impractical. Which design does the lecture recommend for this situation?
+    choices:
+      - text: Quota sampling
+        explains: A nonprobability design, and the question asks for a design that handles geography.
+      - text: Convenience sampling of the nearest school
+        explains: That is a nonprobability design with no way to claim the result represents the country.
+      - text: Simple random sampling across every student
+        explains: It is valid in principle but requires reaching individuals scattered everywhere, which is the practical problem.
+      - text: 'Cluster sampling: divide the area into smaller units, randomly select some, and study those'
+        correct: true
+        explains: The lecture describes cluster sampling as the design for a population spread over a large area.
+---
+
+Descriptive studies find out *how things are*. You rarely examine every case, so you study a
+**sample** (a population microcosm) and generalise to the **population**. The lecture's
+qualifying words for a good sample are *selected, representative, typical, certain, random*.
+
+Designs fall into two kinds. In **probability sampling**, every member has a known chance of
+being picked, and chance does the picking. The lecture lists five.
+
+| Design | How it works | When it helps |
+| --- | --- | --- |
+| **Simple random** | Choose by simple random selection | The least sophisticated; fine for a list you can reach |
+| **Stratified random** | Sample **equally** from each layer (stratum) of the population | When you need every layer represented, even small ones |
+| **Proportional stratified** | Sample from each layer **in proportion** to its size | When the sample should mirror the population's mix |
+| **Cluster** | Divide a large area into smaller units; randomly select a subset of clusters | When the population is spread over a large area |
+| **Systematic** | Select by a predetermined sequence, which must **originate by chance** | A quick way to spread selection across a list |
+
+## Stratified or proportional?
+
+The two are easy to confuse. Imagine 900 developers and 100 testers, and a sample of 50.
+
+- **Stratified** (equal): 25 from each. Both groups are well represented, but testers are
+  overrepresented relative to the company.
+- **Proportional stratified**: 45 developers, 5 testers. The sample mirrors the company, but
+  there are only five testers to analyse.
+
+Which is better depends on whether you are describing the whole or comparing the layers.
+
+For systematic sampling, note the condition in the lecture: the starting point **must come
+from chance**. Taking 'every 20th name' from a list sorted by team, after choosing a
+favourable start, is not probability sampling.
+
+> Probability sampling lets you say how far a sample can be trusted. Without it you can say
+> only what the sample said.
+

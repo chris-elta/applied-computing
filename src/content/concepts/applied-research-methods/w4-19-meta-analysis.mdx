@@ -1,0 +1,75 @@
+---
+course: applied-research-methods
+section: w4-inference
+order: 500
+title: Meta-Analysis
+visuals:
+  - type: svg
+    src: applied-research-methods/week4/50.svg
+    caption: Slide 50 of 52 — analysing other researchers' analyses.
+notation:
+  - symbol: meta-analysis
+    reads: meta-analysis
+    means: 'A study of studies: statistically combining the results of earlier research on the same question.'
+  - symbol: common statistical index
+    reads: common statistical index
+    means: A single number, such as an effect size, into which every study's results are converted so they can be compared and combined.
+questions:
+  - ask: Ten studies measure the effect of pair programming on defects, using different scales and sample sizes. What must a meta-analysis do before combining them?
+    choices:
+      - text: Average the raw numbers from every study
+        explains: Raw numbers from different measures are not comparable.
+      - text: Choose the study with the strongest result and ignore the rest
+        explains: That is the bias the literature-review concept warned against.
+      - text: Run the studies again
+        explains: A meta-analysis analyses the studies' reported results; it does not repeat them.
+      - text: Convert each study's results to a common statistical index
+        correct: true
+        explains: Results reported on different scales cannot be combined until they are expressed in the same terms.
+  - ask: How does a meta-analysis differ from a narrative literature review?
+    choices:
+      - text: It requires no search for relevant studies
+        explains: It starts with an extensive search.
+      - text: It is identical to a literature review
+        explains: They share the search step, but the meta-analysis combines the results statistically.
+      - text: It analyses other researchers' statistical results quantitatively, instead of only describing and comparing them in words
+        correct: true
+        explains: The lecture defines it as analysing and drawing conclusions about other researchers' statistical analyses.
+      - text: It collects new data from participants
+        explains: It uses the existing studies' results.
+---
+
+Week 2's literature review explained how to compare earlier studies in words. A
+**meta-analysis** does it with numbers: it **analyses and draws conclusions about other
+researchers' statistical analyses**.
+
+The researcher:
+
+1. Conducts an **extensive search** for relevant studies.
+2. **Identifies the appropriate studies** to include.
+3. **Converts each study's results to a common statistical index.**
+4. **Posits possible explanations** of discrepant findings.
+5. **Describes the research methodology and findings** in detail.
+
+## Why the conversion step matters
+
+One study reports mean task time in seconds, another reports a satisfaction score out of 7,
+a third reports a count of errors. They are about the same question, but their numbers are
+not comparable. Step 3 turns each into the same kind of number so they can be pooled. The
+textbook calls the usual choice an *effect size*; the slide does not name it.
+
+## What you gain and what you must still do
+
+Pooling many small studies has more power than any one of them (see the last concept), so a
+meta-analysis can detect an effect none of them could.
+
+But the quality of the answer depends on the quality of steps 1 and 2. A meta-analysis that
+leaves out studies that went against the hypothesis is just a biased literature review with
+more arithmetic. That is why steps 1 and 5 are about being **extensive** and **detailed**:
+a reader has to be able to see exactly what went in.
+
+Step 4 mirrors the review skill from Week 2: where findings disagree, say why that might be.
+
+> A meta-analysis is a literature review that does the sums, and so must be as honest about its
+> inclusion rules as any review.
+

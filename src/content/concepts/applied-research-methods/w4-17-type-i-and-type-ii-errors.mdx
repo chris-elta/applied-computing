@@ -1,0 +1,71 @@
+---
+course: applied-research-methods
+section: w4-inference
+order: 480
+title: Type I and Type II Errors
+visuals:
+  - type: svg
+    src: applied-research-methods/week4/48.svg
+    caption: Slide 48 of 52 — the two ways a hypothesis test can be wrong.
+notation:
+  - symbol: Type I error
+    reads: type one error
+    means: Rejecting the null hypothesis when it is actually true. A false alarm. Its probability is set by α.
+  - symbol: Type II error
+    reads: type two error
+    means: Failing to reject the null hypothesis when it is actually false. A missed detection. Also called a beta (β) error.
+questions:
+  - ask: A team tests whether a new compiler flag speeds up builds. In truth it has no effect, but the test returns a significant result and the team adopts the flag. What happened?
+    choices:
+      - text: A validity error in measurement
+        explains: Nothing suggests the measurement was invalid. This is a testing error, not a measurement one.
+      - text: No error, because the result was significant
+        explains: A significant result can be a chance result. The error is invisible from the data alone.
+      - text: 'A Type II error: they failed to reject a false null'
+        explains: That would mean the flag does work and the test missed it. The opposite happened.
+      - text: 'A Type I error: they rejected a true null hypothesis, concluding the result was not due to chance when it was'
+        correct: true
+        explains: The null (no effect) was true, and the test rejected it. A false positive.
+  - ask: A drug does reduce symptoms, but a small trial finds no significant effect and the company drops it. What kind of error is this?
+    choices:
+      - text: No error, because failing to reject the null is the correct outcome
+        explains: It would be correct if the null were true. Here it was false.
+      - text: 'A Type II error: the null hypothesis of no effect was false, but the test failed to reject it'
+        correct: true
+        explains: A missed true effect. Small samples are a common cause, which is why sample size comes up under statistical power.
+      - text: A Type I error, because the sample was small
+        explains: A small sample raises the risk of a Type II error.
+      - text: A Type I error, because a significant result was found
+        explains: No significant result was found. The error is a miss.
+---
+
+A hypothesis test makes a decision about a population from a sample, so it can be wrong in
+exactly two ways.
+
+| | **Null is actually true** (nothing is going on) | **Null is actually false** (an effect exists) |
+| --- | --- | --- |
+| **You reject the null** | **Type I error** (false alarm) | Correct |
+| **You fail to reject** | Correct | **Type II error** (miss) |
+
+The lecture's wording:
+
+- **Type I error:** the erroneous conclusion that a result was *not* due to chance when in
+  fact it was. You **incorrectly reject** the null hypothesis.
+- **Type II error:** the erroneous conclusion that a result *was* due to chance when in fact it
+  was not. You **incorrectly fail to reject** a null hypothesis that is actually false. Also
+  known as a **beta error**.
+
+## Why you cannot just avoid both
+
+Make the cutoff stricter (a smaller α) and you cut Type I errors, but you reject less often,
+so more real effects slip through as Type II errors. Make it looser and the reverse happens.
+The significance level is a choice about **which mistake you would rather risk**. Week 5
+says it directly: when you choose α, you are choosing your willingness to accept a certain
+chance of a Type I error.
+
+You never know which error you have made, because you never see the truth about the
+population. What you can do is design the study to make both less likely. That is the next
+concept.
+
+> Type I: you saw something that was not there. Type II: you missed something that was.
+

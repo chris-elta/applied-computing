@@ -1,0 +1,82 @@
+---
+course: applied-research-methods
+section: w4-inference
+order: 470
+title: Hypotheses and the Null Hypothesis
+visuals:
+  - type: svg
+    src: applied-research-methods/week4/46.svg
+    caption: Slide 46 of 52 — kinds of hypotheses, and how testing the null works.
+  - type: svg
+    src: applied-research-methods/week4/47.svg
+    caption: Slide 47 of 52 — kinds of hypotheses, and how testing the null works.
+notation:
+  - symbol: null hypothesis
+    reads: null hypothesis
+    means: The claim that any result observed is due to chance alone. The thing the test tries to reject.
+  - symbol: a priori
+    reads: ah pree-OR-ee
+    means: Latin for 'from what comes before'. A hypothesis posited before data collection began.
+  - symbol: α (alpha)
+    reads: AL-fuh
+    means: 'The significance level: the pre-set cutoff below which a result is judged too unlikely to be chance alone. A common choice is 0.05.'
+questions:
+  - ask: While analysing data, a researcher notices that one subgroup looks different and decides to test whether it really is. What type of hypothesis is this?
+    choices:
+      - text: A null hypothesis, because it concerns chance
+        explains: The null is the claim of chance alone. The researcher's subgroup idea is a research hypothesis.
+      - text: 'An exploratory hypothesis: early analysis indicated it might be worth testing'
+        correct: true
+        explains: A priori hypotheses are posited before data collection. One suggested by the data is exploratory, and deserves more caution.
+      - text: An a priori hypothesis, because the researcher planned to test it
+        explains: A priori means before data collection began. This one came from the data.
+      - text: Not a hypothesis at all
+        explains: It is a research hypothesis, of the exploratory kind.
+  - ask: What does it mean to 'reject the null hypothesis' at a significance level α?
+    choices:
+      - text: The result surpassed the pre-set cutoff, so 'chance alone' is no longer a believable explanation
+        correct: true
+        explains: Researchers reject 'chance alone' if results surpass a preset cutoff level, the significance (alpha) level.
+      - text: The research hypothesis has been proven true
+        explains: Rejecting chance as the explanation is weaker than proving the research hypothesis.
+      - text: The sample was too small
+        explains: Sample size affects power, but rejection means the result is unlikely under chance alone.
+      - text: The data were collected incorrectly
+        explains: Rejection concerns chance, not data quality.
+---
+
+Week 5 is largely about *carrying out* a hypothesis test. This concept sets out the logic.
+
+## Types of hypothesis
+
+| Type | Meaning |
+| --- | --- |
+| **A priori research hypothesis** | Posited by the researcher **before data collection** began |
+| **Exploratory hypothesis** | Early analysis indicated that it might be worth testing |
+| **Null hypothesis** | Any result observed is the result of **chance alone** |
+
+The a priori versus exploratory split matters because of Week 1's pitfall of looking only for
+confirming evidence. A hypothesis chosen *after* the data suggested it has, in effect, already
+been favoured by the data, so it is a lead to follow up rather than a finding.
+
+## Testing the null
+
+The researcher starts from the **null hypothesis** and asks whether the sample is surprising
+enough to abandon it.
+
+- Use **data from a sample** to make inferences about the population it came from.
+- Two readings of the result are on the table: it is **due to chance**, or it **accurately
+  reflects the population**.
+- The researcher **rejects 'chance alone'** if the result **surpasses a pre-set cutoff**.
+  That cutoff is the **significance level**, or **alpha level**, written α.
+
+It is an indirect argument. You never directly prove your hypothesis. You show that the
+alternative, *chance alone*, would rarely produce what you saw.
+
+Because α is chosen **before** the analysis, the researcher cannot fit it to the result. Week
+5 works through exactly this, in the soda-can and bolt examples, and returns to what α means
+in terms of errors.
+
+> The null hypothesis is the sceptic's position. A test asks whether the data can make the
+> sceptic give way.
+

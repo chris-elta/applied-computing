@@ -1,0 +1,94 @@
+---
+course: applied-research-methods
+section: w5-testing
+order: 660
+title: Worked Example — Failing to Reject (Sodium in an Energy Drink)
+visuals:
+  - type: svg
+    src: applied-research-methods/week5/36.svg
+    caption: Slide 36 of 66 — the problem and the five steps, ending in a failure to reject.
+  - type: svg
+    src: applied-research-methods/week5/37.svg
+    caption: Slide 37 of 66 — the problem and the five steps, ending in a failure to reject.
+  - type: svg
+    src: applied-research-methods/week5/38.svg
+    caption: Slide 38 of 66 — the problem and the five steps, ending in a failure to reject.
+  - type: svg
+    src: applied-research-methods/week5/39.svg
+    caption: Slide 39 of 66 — the problem and the five steps, ending in a failure to reject.
+  - type: svg
+    src: applied-research-methods/week5/40.svg
+    caption: Slide 40 of 66 — the problem and the five steps, ending in a failure to reject.
+  - type: svg
+    src: applied-research-methods/week5/41.svg
+    caption: Slide 41 of 66 — the problem and the five steps, ending in a failure to reject.
+notation:
+  - symbol: 'Hₐ: μ > 40'
+    reads: H-sub-a, mu greater than forty
+    means: 'An upper one-sided alternative: the suspicion is that the true mean is above the claimed value.'
+questions:
+  - ask: In the sodium example, p = 0.0846 at α = 0.05. A consumer group concludes 'the drink has 40 mg of sodium, as claimed'. What is wrong with that?
+    choices:
+      - text: They should have used a two-sided test
+        explains: The group suspected 'more than 40', so a one-sided alternative matches the question.
+      - text: The conclusion should be to reject the null, since 41.4 is above 40
+        explains: A higher sample mean is not enough on its own. The question is whether it is higher than chance explains.
+      - text: Failing to reject the null does not show it is true; it only says the sample did not provide sufficient evidence of more than 40 mg
+        correct: true
+        explains: The sample mean was 41.4, above the claim. The evidence was not strong enough to rule out chance, which is different from confirming the claim.
+      - text: Nothing is wrong, since p is above 0.05
+        explains: p above 0.05 means fail to reject. It does not mean accept.
+  - ask: Suppose the consumer group had sampled 200 cans instead of 50 and obtained the same sample mean of 41.4 mg (σ = 7.2). What would happen to the evidence?
+    choices:
+      - text: Nothing would change, because the sample mean is the same
+        explains: The sample mean is the same, but its precision is better, so the test statistic changes.
+      - text: The p-value would rise, because a bigger sample brings more noise
+        explains: A bigger sample reduces the noise in the mean.
+      - text: z would rise to about 2.75, the p-value would fall to about 0.003, and the null would be rejected
+        correct: true
+        explains: The standard deviation of the mean falls to 7.2/√200 ≈ 0.509, so z = 1.4/0.509 ≈ 2.75. The same gap becomes much more surprising with more data.
+      - text: z would fall to about 0.69
+        explains: The standard deviation of the mean shrinks with more data, so z grows.
+---
+
+**The problem.** An energy-drink maker claims **40 mg** of sodium per can. A consumer group
+takes a **random sample of 50 cans** and finds a **mean of 41.4 mg**; the standard deviation
+across all cans is **σ = 7.2 mg**. They suspect **more** than 40 mg.
+
+(Two slides in the deck mention a sample mean of 42.6 mg. The data in the problem and the
+calculation both use 41.4, which is what is used here.)
+
+## Step by step
+
+| Step | Working |
+| --- | --- |
+| **Hypotheses** | `H₀: μ = 40`, `Hₐ: μ > 40` |
+| **Sampling distribution under `H₀`** | `N(40, 7.2/√50) = N(40, 1.0182)` |
+| **Test statistic** | `z = (41.4 − 40) / 1.0182 = 1.3749` |
+| **p-value** (upper tail only) | `P(Z ≥ 1.3749) = 0.0846` |
+| **Compare with α** | `0.0846 > 0.05` |
+
+## Conclusions
+
+- **Statistical:** fail to reject `H₀`.
+- **Contextual:** there is **not sufficient evidence** to suggest the drink has more than
+  40 mg of sodium per can.
+
+## What this result does and does not say
+
+The sample mean *was* higher than the claim, by 1.4 mg. A gap that size would arise about
+8.5% of the time from sampling variation alone if the true mean were 40. That is
+not rare enough to be convinced, though it is not nothing either: it is the *shade of gray*
+that the lecture warns about.
+
+It does **not** say the drink contains exactly 40 mg. This is a possible Type II error, a real
+excess that the sample was too small to confirm. Collecting more data would settle it,
+since the standard deviation of the mean falls as `√n` grows. Had the same mean of 41.4 come
+from 200 cans, `z` would be about 2.75 and the null would be rejected.
+
+Compare this with the soda cans: a smaller gap in standard-deviation terms, a different
+verdict. Both used the same procedure; only the amount of surprise differed.
+
+> 'Fail to reject' is the honest conclusion when the data do not settle the question. It is
+> not a verdict for the other side.
+

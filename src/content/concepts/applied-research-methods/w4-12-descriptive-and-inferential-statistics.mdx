@@ -1,0 +1,84 @@
+---
+course: applied-research-methods
+section: w4-statistics
+order: 430
+title: Descriptive and Inferential Statistics
+visuals:
+  - type: svg
+    src: applied-research-methods/week4/35.svg
+    caption: Slide 35 of 52 — two functions of statistics, and how samples relate to populations.
+  - type: svg
+    src: applied-research-methods/week4/36.svg
+    caption: Slide 36 of 52 — two functions of statistics, and how samples relate to populations.
+notation:
+  - symbol: parameter
+    reads: puh-RAM-uh-ter
+    means: A number describing a whole population, such as its true mean. Usually unknown.
+  - symbol: statistic
+    reads: stuh-TIS-tik
+    means: A number computed from a sample, such as the sample's mean. Used to estimate a parameter.
+  - symbol: continuous, discrete
+    reads: con-TIN-you-us, dis-KREET
+    means: Continuous variables can take any value in a range (response time). Discrete ones take separate values (number of bugs).
+questions:
+  - ask: A researcher reports that the average response time of a sample of 50 requests was 220 ms, and claims the service's true average is about 220 ms. Which is the statistic and which is the parameter?
+    choices:
+      - text: The parameter is the sample's 220 ms; the statistic is the true average
+        explains: That swaps them. The parameter belongs to the population.
+      - text: The statistic is the sample's 220 ms; the parameter is the unknown true average response time of all requests
+        correct: true
+        explains: A statistic is computed on a sample; a parameter is a characteristic of the population. The first estimates the second.
+      - text: Both are parameters, since they are both averages
+        explains: Being the same kind of number does not make them the same kind of thing. What matters is where it is computed from.
+      - text: Both are statistics, because both can be estimated
+        explains: The population's true average is not computed from a sample; it is what the sample estimates.
+  - ask: Which of these tasks is inferential rather than descriptive?
+    choices:
+      - text: Reporting the median age of the 120 people surveyed
+        explains: Describes the data in hand. It is descriptive.
+      - text: Drawing a histogram of the collected response times
+        explains: Describing what the data look like is descriptive.
+      - text: Using a sample of users to estimate the satisfaction of all users
+        correct: true
+        explains: 'Inferential statistics use data from a relatively small sample to make inferences about a large population: estimating a parameter or testing a hypothesis.'
+      - text: Computing the range of the sample
+        explains: A description of this sample's spread.
+---
+
+Statistics do two different jobs, and keeping them apart prevents most confusion in later
+weeks.
+
+| | Descriptive | Inferential |
+| --- | --- | --- |
+| **Purpose** | Describe what the data look like | Make inferences about large populations from small samples |
+| **Two main functions** | | Estimate a population parameter from a random sample; test statistically based hypotheses |
+| **Claim reaches** | The data you have | Beyond the data you have |
+
+## Statistic versus parameter
+
+The vocabulary the lecture sets up here is used throughout Week 5.
+
+| | Calculated from | Example | Known? |
+| --- | --- | --- | --- |
+| **Parameter** | The whole **population** | True mean response time of all requests | Usually not |
+| **Statistic** | A **sample** | Mean of the 50 requests you timed | Yes, you computed it |
+
+A statistic is an **estimate** of the matching parameter. It will almost never equal it
+exactly, because a different sample would give a different value. How far it can be from the
+parameter, and how to say so honestly, is the subject of confidence intervals and hypothesis
+tests.
+
+## Choosing the right statistic
+
+The lecture says different statistics suit different data. It names three questions to ask:
+
+- **Single-group or multi-group** data?
+- **Continuous or discrete** variables?
+- Which **scale of measurement** (nominal, ordinal, interval or ratio)?
+
+This is the Week 3 measurement scales put to work. The next concept adds a fourth question:
+the shape of the distribution.
+
+> A statistic describes your sample. A parameter describes the world. Inference is the bridge
+> between them.
+

@@ -1,0 +1,77 @@
+---
+course: applied-research-methods
+section: w3-measurement
+order: 310
+title: Validity and Reliability
+visuals:
+  - type: svg
+    src: applied-research-methods/week3/25.svg
+    caption: Slide 25 of 26 — the two properties of a good measurement instrument.
+notation:
+  - symbol: instrument
+    reads: IN-stroo-ment
+    means: 'Anything used to measure: a questionnaire, a rating scale, a stopwatch, a profiler, a benchmark suite.'
+  - symbol: validity
+    reads: vuh-LID-it-ee
+    means: Does the instrument measure what it is intended to measure?
+  - symbol: reliability
+    reads: ri-LY-uh-BIL-it-ee
+    means: Does the instrument give the same result when the thing measured has not changed?
+questions:
+  - ask: A scale is always 2 kg heavy. Every time you weigh a 10 kg object it reads 12 kg. How would you describe it?
+    choices:
+      - text: Both reliable and valid
+        explains: The readings are wrong by a fixed 2 kg, so it is not valid.
+      - text: Valid but not reliable
+        explains: It is reliable, since it gives the same value every time. It is not valid, because the value is wrong.
+      - text: Neither, because a consistent error means random output
+        explains: A consistent error is the opposite of random. It makes the scale reliable.
+      - text: 'Reliable but not valid: it is consistent, but it does not measure the true weight'
+        correct: true
+        explains: Reliability is consistency when the thing measured has not changed. Validity is whether it measures what it should. This scale has the first and not the second.
+  - ask: A team uses the number of lines of code committed as a measure of programmer productivity. Which property is most in doubt?
+    choices:
+      - text: 'Validity: lines committed may not measure what they are intended to, which is productivity'
+        correct: true
+        explains: The count may be very consistent (reliable), but whether it captures productivity is a separate question. Padding the code raises the count and lowers quality.
+      - text: 'Reliability: the line count changes each time you count'
+        explains: Counting lines is perfectly repeatable. The doubt is about meaning.
+      - text: 'Scale: lines of code are a nominal measure'
+        explains: Counts are on a ratio scale. The problem is what they stand for.
+      - text: Neither, since a number is objective
+        explains: Being a number does not make a measure valid.
+---
+
+A measurement has to be *about the right thing* and *steady*. The lecture gives each its own
+name, and they are independent.
+
+| Property | Question | Fails when |
+| --- | --- | --- |
+| **Validity** | Does the instrument measure **what it is intended to measure**? | You measure something easy that is not the thing you care about |
+| **Reliability** | Does it yield the **same result** when the entity being measured has not changed? | Readings wobble for no reason |
+
+## The four combinations
+
+Picture a set of darts on a target. Reliability is how tightly they cluster. Validity is
+whether the cluster sits on the bullseye.
+
+| | Valid | Not valid |
+| --- | --- | --- |
+| **Reliable** | Tight cluster on the bullseye: the goal | Tight cluster off-centre: a consistent error, such as a scale that always reads 2 kg heavy |
+| **Not reliable** | Scattered around the bullseye: right on average, noisy | Scattered and off-centre: useless |
+
+A reliable instrument is not necessarily valid, because it can be consistently wrong. But an
+unreliable instrument cannot be valid: if it gives different answers about an unchanged thing,
+it cannot be measuring that thing.
+
+## Where this matters
+
+This is the problem hiding in every metric. *Lines of code committed* is reliable and may not
+be valid for productivity. A *survey about satisfaction* may be valid but unreliable if the
+wording invites random answers. Week 4 shows what to do about it: pilot-test questions, train
+raters, and have two or three people rate behaviour independently.
+
+The deck's overview also lists 'using statistics' under data and measurement, but the Week 3
+slides do not cover it. It arrives in Weeks 4 and 5.
+
+> Reliable means repeatable. Valid means right. You need to check them separately.

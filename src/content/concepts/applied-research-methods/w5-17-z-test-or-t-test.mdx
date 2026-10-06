@@ -1,0 +1,77 @@
+---
+course: applied-research-methods
+section: w5-ttests
+order: 680
+title: z-Test or t-Test?
+visuals:
+  - type: svg
+    src: applied-research-methods/week5/48.svg
+    caption: Slide 48 of 66 — the two test statistics side by side.
+notation:
+  - symbol: t = (x̄ − μ₀) / (s/√n)
+    reads: t equals x-bar minus mu-nought, over s over root n
+    means: 'The t test statistic: like z, but using the sample''s standard deviation s because the population''s is unknown.'
+  - symbol: t-distribution
+    reads: tee distribution
+    means: A bell-shaped curve like the normal one, but with heavier tails, to reflect the extra uncertainty of estimating σ from the sample. Its shape depends on the degrees of freedom.
+  - symbol: degrees of freedom (df)
+    reads: degrees of freedom
+    means: A number that selects which t-curve to use. For a one-sample test, df = n − 1.
+questions:
+  - ask: A team times 18 database queries and wants to test whether the mean time is 200 ms. They do not know the population standard deviation, only the sample's. Which test applies, and with how many degrees of freedom?
+    choices:
+      - text: A z-test, since n is bigger than 15
+        explains: Sample size is not what chooses between them. It is whether σ is known.
+      - text: A z-test, with df = 18
+        explains: A z-test needs the population standard deviation, which is not known here.
+      - text: A t-test, with df = 18 − 1 = 17
+        correct: true
+        explains: σ is unknown, so use s in place of it and the t-distribution with n − 1 degrees of freedom.
+      - text: A t-test, with df = 19
+        explains: df is n − 1, so 17, not n + 1.
+  - ask: What is the key difference between the z statistic and the t statistic?
+    choices:
+      - text: z uses the known population standard deviation σ and the normal distribution; t uses the sample standard deviation s and a t-distribution with n − 1 degrees of freedom
+        correct: true
+        explains: The formulas have the same shape; the difference is what stands in the denominator and which curve gives the p-value.
+      - text: z is for means and t is for proportions
+        explains: Both here are tests for a mean. Proportions have their own standard deviation.
+      - text: z is two-sided and t is one-sided
+        explains: Either test can be one-sided or two-sided.
+      - text: t is only for samples under 15
+        explains: t can be used at any size, and is the correct test when σ is unknown.
+---
+
+Every example so far assumed a known population standard deviation `σ`. In real work you
+rarely have it. The lecture's two-column slide sets out the choice.
+
+| | **z-test** | **t-test** |
+| --- | --- | --- |
+| **Use when** | You know the population standard deviation | You do not |
+| **Statistic** | `z = (x̄ − μ₀) / (σ/√n)` | `t = (x̄ − μ₀) / (s/√n)` |
+| **Spread used** | Population `σ` | Sample `s` |
+| **p-value from** | The normal distribution | A t-distribution with `n − 1` **degrees of freedom** |
+
+## Why a different curve?
+
+`s` is itself an estimate and varies from sample to sample, especially when `n` is small. Using
+it in place of `σ` adds uncertainty, and the **t-distribution** has heavier tails to account for
+that, so extreme values are a bit more probable than the normal curve says. The right curve
+depends on the **degrees of freedom**, `n − 1` for a single sample.
+
+As `n` grows, `s` becomes a better estimate of `σ`, and the t-distribution gets closer to the
+normal one. The slide gives no table for this; you look values up in a t-table or use software.
+
+## The practical rule
+
+- Known `σ` (a classroom exercise, or a long-established process): **z-test**.
+- Unknown `σ` (nearly every real study): **t-test**.
+
+The procedure is otherwise identical to the z-tests of the last concepts: hypotheses,
+statistic, p-value, then conclusions in two layers.
+
+Before using a t-test, check that its assumptions are reasonable. That is the next concept.
+
+> Replace what you do not know with what you measured, and pay for the swap with a fatter
+> curve.
+

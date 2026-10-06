@@ -1,0 +1,97 @@
+---
+course: applied-research-methods
+section: w5-testing
+order: 620
+title: Null and Alternative Hypotheses
+visuals:
+  - type: svg
+    src: applied-research-methods/week5/25.svg
+    caption: Slide 25 of 66 — what H₀ and Hₐ are, and the three forms of the alternative.
+  - type: svg
+    src: applied-research-methods/week5/26.svg
+    caption: Slide 26 of 66 — what H₀ and Hₐ are, and the three forms of the alternative.
+  - type: svg
+    src: applied-research-methods/week5/31.svg
+    caption: Slide 31 of 66 — the hypotheses for the soda-can problem.
+notation:
+  - symbol: H₀
+    reads: H-nought, or H-sub-oh
+    means: 'The null hypothesis: the claim assumed true at the start, usually ''no change'' or ''things are as they should be''. The subscript is a zero.'
+  - symbol: Hₐ
+    reads: H-sub-a
+    means: 'The alternative hypothesis: what you suspect is true. Also written H₁.'
+  - symbol: μ₀
+    reads: mu-nought
+    means: The value the null hypothesis claims for the mean, such as 12 oz.
+  - symbol: <, >, ≠
+    reads: less than, greater than, not equal to
+    means: The three forms the alternative can take, relative to the null value.
+questions:
+  - ask: A weight-loss centre advertises that clients lose at least 5 pounds in the first week. A consumer agency suspects they lose less. Which are the right hypotheses for the mean weight loss μ?
+    choices:
+      - text: 'H₀: μ = 5 and Hₐ: μ > 5'
+        explains: The agency suspects less loss, not more.
+      - text: 'H₀: μ = 5 and Hₐ: μ < 5'
+        correct: true
+        explains: The null is the claim being tested (5 pounds); the alternative is the agency's suspicion, which is 'less than'.
+      - text: 'H₀: μ ≠ 5 and Hₐ: μ = 5'
+        explains: The null states the specific claimed value. 'Not equal' can only be an alternative.
+      - text: 'H₀: μ < 5 and Hₐ: μ = 5'
+        explains: That swaps them. The null has the equality and represents the claim; the alternative is the suspicion.
+  - ask: A marketing team wants to know whether a new campaign changed weekly sales, in either direction, from the usual 3,400. Which alternative hypothesis fits?
+    choices:
+      - text: 'Hₐ: μ = 3400'
+        explains: That is the null, not an alternative.
+      - text: 'Hₐ: μ < 3400, because campaigns often fail'
+        explains: A one-sided guess in the wrong direction would miss an increase.
+      - text: 'Hₐ: μ ≠ 3400, because the question allows an increase or a decrease'
+        correct: true
+        explains: A change in either direction is the 'different from' alternative, which leads to a two-sided test.
+      - text: 'Hₐ: μ > 3400, because the aim is to increase sales'
+        explains: That answers 'did it increase?'. The question asked about a change in either direction.
+---
+
+Every test begins by writing two competing statements about the **population**, not about the
+sample.
+
+| | Null hypothesis | Alternative hypothesis |
+| --- | --- | --- |
+| **Symbol** | `H₀` ('H-nought') | `Hₐ` ('H-sub-a') |
+| **It is** | A belief about the world, or the population | Typically *your* or the study's suspicion |
+| **Usually says** | No change; things are as they should be; **innocence** | What you believe to be true |
+| **Role** | What you are trying to show is **false** | What you accept if the null is rejected |
+
+## Three alternatives, only three
+
+The lecture is firm that there are only three possible forms, relative to the null value
+`μ₀`:
+
+| Form | Reads | Use when you suspect |
+| --- | --- | --- |
+| `Hₐ: μ < μ₀` | The mean is **less** than the null value | A shortfall |
+| `Hₐ: μ > μ₀` | The mean is **greater** | An excess |
+| `Hₐ: μ ≠ μ₀` | The mean is **different** | A change in either direction |
+
+The first two are **one-sided** (one-tailed) and the third **two-sided** (two-tailed), a
+distinction that matters when the p-value is computed.
+
+## Writing them for the three worked examples
+
+| Problem | Suspicion | `H₀` | `Hₐ` |
+| --- | --- | --- | --- |
+| Soda cans | Less than 12 oz | `μ = 12` | `μ < 12` |
+| Energy-drink sodium | More than 40 mg | `μ = 40` | `μ > 40` |
+| Marketing campaign | Sales changed | `μ = 3400` | `μ ≠ 3400` |
+
+In each, the null is the specific claim; the alternative is the suspicion.
+
+## Choose the alternative before the data
+
+The direction comes from the **question you set out to ask**, not from which way the sample
+turned out. Picking `μ < 12` *after* seeing a low sample mean is a way of halving your
+p-value to look more convincing. This is Week 1's pitfall of favouring the evidence that
+supports you, in test form.
+
+> The null is the claim on trial. The alternative is the accusation, chosen before the
+> evidence is seen.
+

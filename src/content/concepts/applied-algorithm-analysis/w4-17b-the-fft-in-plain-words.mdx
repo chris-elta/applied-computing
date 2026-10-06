@@ -1,0 +1,78 @@
+---
+course: applied-algorithm-analysis
+section: w4-algorithm
+order: 715
+title: The FFT in Plain Words
+notation:
+  - symbol: "FFT"
+    reads: F-F-T, or fast Fourier transform
+    means: >-
+      A fast way to evaluate a polynomial with `n` coefficients at `n` cleverly chosen points,
+      in `O(n log n)` steps instead of `n²`.
+questions:
+  - ask: >-
+      `A(x) = 1 + 2x + 3x² + 4x³` splits into `E(y) = 1 + 3y` and `O(y) = 2 + 4y`. You have
+      already worked out `E(1) = 4` and `O(1) = 6`. What is `A(−1)`?
+    choices:
+      - text: "10"
+        explains: >-
+          That is `A(1) = E(1) + 1·O(1)`. For `−1` the odd part flips sign.
+      - text: "−2"
+        correct: true
+        explains: >-
+          `(−1)² = 1`, so the same two half-answers are reused: `A(−1) = E(1) − 1·O(1) = 4 − 6`.
+          No new multiplications were needed.
+      - text: "−10"
+        explains: >-
+          Only the odd part flips sign. The even powers of `−1` are still `+1`.
+      - text: It cannot be found without evaluating all four terms again
+        explains: >-
+          Reusing the half-answers is the whole trick: `x` and `−x` share a square.
+    work: |-
+      A(x) = E(x^2) + x * O(x^2).
+      A(1)  = E(1) + 1 * O(1) = 4 + 6 = 10.
+      A(-1) = E(1) - 1 * O(1) = 4 - 6 = -2.
+      Check directly: 1 - 2 + 3 - 4 = -2.
+---
+
+**The job:** multiply two long polynomials without doing all `n²` little multiplications.
+
+## 1 · Use points instead of coefficients
+
+Two points fix a line. In the same way, `n` points fix a polynomial with `n` coefficients. And
+points are easy to multiply: at each `x`, multiply the two heights. So:
+
+1. plug the same `x`-values into both polynomials;
+2. multiply the answers pair by pair;
+3. turn the resulting points back into coefficients.
+
+The catch is step 1. Plugging in `n` values at `n` steps each is `n²` again.
+
+## 2 · Pick the points in ± pairs
+
+`x` and `−x` have the same square. Sort the terms into even and odd powers:
+
+```
+A(x)  = E(x²) + x · O(x²)
+A(−x) = E(x²) − x · O(x²)
+```
+
+Work out `E` and `O` once and you get **two** answers. So `n` points for one polynomial become
+`n/2` points for two polynomials half as long.
+
+## 3 · Keep halving
+
+To do the trick again, the squares must also come in ± pairs. Ordinary numbers cannot manage
+that, because squares are never negative. Points spaced evenly round a circle of complex
+numbers can:
+
+```
+1, i, −1, −i   → square →   1, −1   → square →   1
+```
+
+Those points are the roots of unity, and this halving is the FFT.
+
+## The price
+
+The problem halves `log n` times and each level takes about `n` steps: `n log n` in total. For
+a million coefficients that is about 20 million steps instead of a trillion.

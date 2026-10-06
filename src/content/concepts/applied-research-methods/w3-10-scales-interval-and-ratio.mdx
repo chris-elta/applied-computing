@@ -1,0 +1,88 @@
+---
+course: applied-research-methods
+section: w3-measurement
+order: 300
+title: The Interval and Ratio Scales
+visuals:
+  - type: svg
+    src: applied-research-methods/week3/22.svg
+    caption: Slide 22 of 26 — interval, ratio, and a summary of the four.
+  - type: svg
+    src: applied-research-methods/week3/23.svg
+    caption: Slide 23 of 26 — interval, ratio, and a summary of the four.
+  - type: svg
+    src: applied-research-methods/week3/24.svg
+    caption: Slide 24 of 26 — interval, ratio, and a summary of the four.
+notation:
+  - symbol: interval
+    reads: IN-ter-vul
+    means: Data with equal units between values, but a zero that is only a convention, such as temperature in degrees Celsius.
+  - symbol: ratio
+    reads: RAY-shee-oh
+    means: Data with equal units and a true zero, so 'twice as much' is meaningful, such as response time in milliseconds.
+  - symbol: Pearson product moment correlation
+    reads: PEER-sun product-moment correlation
+    means: The standard correlation coefficient, computed on interval or ratio data. Covered in Week 5.
+questions:
+  - ask: It is 20 °C in one room and 10 °C in another. Why is it wrong to say the first is twice as warm?
+    choices:
+      - text: 'Celsius is an interval scale: its zero point was established arbitrarily, so ratios are not meaningful'
+        correct: true
+        explains: On the Kelvin scale, which has an absolute zero, the temperatures are 293 K and 283 K, a ratio of about 1.04 rather than 2.
+      - text: Temperature is nominal, so no arithmetic applies
+        explains: Temperature has equal units and order, which is more than nominal.
+      - text: Ratios are never meaningful in measurement
+        explains: On a ratio scale they are, such as one server being twice as fast as another.
+      - text: The scales are not equal in size
+        explains: The units are equal, which is why differences are meaningful. It is the zero that is arbitrary.
+  - ask: A survey asks users to rate satisfaction from 1 to 5. According to the lecture, how are rating scales commonly treated?
+    choices:
+      - text: They cannot be analysed
+        explains: They are analysed routinely, with the interval assumption made explicit.
+      - text: As ratio scales, because 5 is five times 1
+        explains: A rating scale has no true zero. A 4 is not twice as satisfied as a 2.
+      - text: As interval scales, so means, standard deviations and Pearson correlations are used
+        correct: true
+        explains: The lecture says rating scales such as surveys are assumed to fall on interval scales. It is an assumption rather than a fact, worth stating, as Week 1's lesson on assumptions suggests.
+      - text: As nominal scales, so only the mode may be reported
+        explains: The lecture treats them as interval.
+---
+
+The upper two scales have **equal units** between values, which is what allows you to add,
+subtract and average.
+
+## Interval
+
+**Equal units of measurement**, but the **zero point is established arbitrarily**. Temperature
+in degrees Celsius is the classic case: 10 to 20 is the same step as 20 to 30, but 0 °C does
+not mean 'no temperature'. The lecture says **rating scales** such as surveys are *assumed*
+to fall on interval scales.
+
+Statistics: **means, standard deviations, Pearson product moment correlations**.
+
+## Ratio
+
+**Equal units** and an **absolute zero**. Because zero means none, you can express values as
+**multiples and fractional parts**: 200 ms is twice 100 ms. The lecture notes that ratio
+scales are relatively rare outside the physical sciences, though in computing, time, memory
+and counts are ratio data.
+
+## All four together
+
+| Scale | A and B differ by… | Statement you may make | Example |
+| --- | --- | --- | --- |
+| **Nominal** | name | A is different from B | Database engine |
+| **Ordinal** | rank | A is bigger or better than B | Severity: low, medium, high |
+| **Interval** | a number of units | A is so many units more than B | Temperature in °C |
+| **Ratio** | a multiple | A is so many times as big as B | Response time |
+
+Each scale includes everything the one above it can say. The statistic you choose has to fit
+the *lowest* scale your data really have.
+
+The interval assumption for rating scales deserves care. Is the gap between 'agree' and
+'strongly agree' the same as between 'neutral' and 'agree'? Treating it as equal is common
+and convenient, and it should be stated as an assumption.
+
+> Ask 'what can I honestly say about the difference between two values?' The answer is your
+> scale.
+

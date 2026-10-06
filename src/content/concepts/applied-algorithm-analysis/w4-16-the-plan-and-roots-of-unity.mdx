@@ -128,3 +128,30 @@ exp(2kπi/n) = cos(2kπ/n) + i sin(2kπ/n),   k = 0, 1, …, n−1
 
 `n` points, evenly spaced around the unit circle, starting at 1. Write `ω = e^{2πi/n}`, and
 they are `ω⁰, ω¹, …, ω^{n−1}`.
+
+## Roots of unity in plain words
+
+Picture a clock face of radius 1, with the number `1` sitting at 3 o'clock.
+
+- **A point on the circle is a turn.** Multiplying by it rotates you by its angle. Multiplying
+  two points adds their angles.
+- **The `n`-th roots of unity cut the circle into `n` equal slices.** The first one, `ω`, is a
+  turn of `360°/n`. The rest are that turn done twice, three times, and so on.
+- **Do the turn `n` times and you are back at `1`.** That is all `z^n = 1` says.
+
+For `n = 4` the slices are quarter turns: `1, i, −1, −i`. So `i` is just "turn 90°", and two
+quarter turns make a half turn, which is why `i² = −1`.
+
+Two facts follow from the picture, and the FFT needs both:
+
+1. **Each point has an opposite.** Half a turn away from `z` is `−z`, and it is in the set too
+   (for even `n`).
+2. **Squaring doubles the angle.** Opposite points are 180° apart, so after doubling they are
+   360° apart, the same place. The `n` points land on only `n/2` points:
+
+```
+n = 8 angles:   0°  45°  90°  135°  180°  225°  270°  315°
+doubled:        0°  90°  180° 270°  0°    90°   180°  270°
+```
+
+Those four are the 4th roots of unity, so the trick repeats: `8 → 4 → 2 → 1`.

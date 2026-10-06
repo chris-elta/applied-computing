@@ -1,0 +1,76 @@
+---
+course: applied-research-methods
+section: w4-inference
+order: 460
+title: Point Estimates and Interval Estimates
+visuals:
+  - type: svg
+    src: applied-research-methods/week4/44.svg
+    caption: Slide 44 of 52 — inferential statistics, and two ways to estimate a parameter.
+  - type: svg
+    src: applied-research-methods/week4/45.svg
+    caption: Slide 45 of 52 — inferential statistics, and two ways to estimate a parameter.
+notation:
+  - symbol: x̄
+    reads: x-bar
+    means: The mean of a sample. The bar over a letter means 'average of'.
+  - symbol: μ
+    reads: mew (Greek letter mu)
+    means: 'The mean of the whole population: the parameter that x̄ estimates.'
+questions:
+  - ask: A survey of 100 users finds a mean daily usage of 42 minutes. A colleague reports 'users spend 42 minutes a day'. What is wrong with presenting it that way alone?
+    choices:
+      - text: It is a point estimate, which typically does not equal the true population value exactly, and it gives no sense of how far off it might be
+        correct: true
+        explains: A point estimate is a single number taken as a reasonable estimate of the parameter. An interval estimate adds the range.
+      - text: Surveys cannot estimate population values
+        explains: Estimating a population parameter from a random sample is one of the two main functions of inferential statistics.
+      - text: The mean is the wrong measure of centre
+        explains: The mean is a perfectly good point estimate of a population mean.
+      - text: Nothing, since a sample mean is always exactly the population mean
+        explains: It is almost never exactly equal. Another sample would give another mean.
+  - ask: What does an interval estimate add to a point estimate?
+    choices:
+      - text: A range within which the population parameter probably lies, with a stated level of confidence
+        correct: true
+        explains: 'That is a confidence interval: a range plus a confidence level that the range contains the parameter.'
+      - text: A second, more accurate point estimate
+        explains: It is a range, not another single number.
+      - text: A replacement for the sample
+        explains: It is computed from the sample.
+      - text: A guarantee that the parameter lies in the range
+        explains: It offers a level of confidence, not a guarantee. Week 5 explains exactly what it does promise.
+---
+
+Inferential statistics have two main jobs: estimate a population parameter from a random
+sample, and test hypotheses. The lecture's first job comes in two forms.
+
+## Point estimate
+
+A **point estimate** is a **single statistic taken as a reasonable estimate of the
+corresponding population parameter**. The sample mean `x̄` estimates the population mean `μ`.
+
+The lecture's caution: it **typically does not correspond exactly** with its true equivalent
+in the population. Draw another sample and you will get another number. A point estimate by
+itself tells you nothing about how far off it might be.
+
+## Interval estimate
+
+An **interval estimate** is a **range within which a population parameter probably lies**.
+It is also called a **confidence interval**, and it provides a certain **level of confidence**
+that the range does contain the parameter.
+
+| | Point | Interval |
+| --- | --- | --- |
+| **Form** | One number | A range |
+| **Example** | 42 minutes a day | Between 38 and 46 minutes a day, with 95% confidence |
+| **Says how precise it is?** | No | Yes: the width |
+
+The width of the interval is the useful part: a narrow interval means the sample pins the
+parameter down; a wide one says you do not know much yet.
+
+Week 5 gives the arithmetic for building one, with worked examples, and takes care with
+what 'confidence' does and does not mean. There the reading is subtler than it looks.
+
+> Report an estimate with its precision. A bare number overstates what a sample can tell you.
+

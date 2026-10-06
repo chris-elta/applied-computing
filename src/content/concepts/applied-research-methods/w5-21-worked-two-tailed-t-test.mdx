@@ -1,0 +1,94 @@
+---
+course: applied-research-methods
+section: w5-ttests
+order: 720
+title: Worked Example — a Two-Tailed t-Test (Gold Charms)
+visuals:
+  - type: svg
+    src: applied-research-methods/week5/57.svg
+    caption: Slide 57 of 66 — sixteen charms, a two-tailed test, and a note on direction.
+  - type: svg
+    src: applied-research-methods/week5/58.svg
+    caption: Slide 58 of 66 — sixteen charms, a two-tailed test, and a note on direction.
+  - type: svg
+    src: applied-research-methods/week5/59.svg
+    caption: Slide 59 of 66 — sixteen charms, a two-tailed test, and a note on direction.
+  - type: svg
+    src: applied-research-methods/week5/60.svg
+    caption: Slide 60 of 66 — sixteen charms, a two-tailed test, and a note on direction.
+notation:
+  - symbol: df = 15
+    reads: degrees of freedom equals fifteen
+    means: For a sample of 16, df = n − 1 = 15.
+questions:
+  - ask: 'A sample of 16 charms has mean 0.07798 oz and s = 0.002514 oz. Testing H₀: μ = 0.08 against Hₐ: μ ≠ 0.08, what is t?'
+    choices:
+      - text: t = −3.2 with 16 degrees of freedom
+        explains: df is n − 1 = 15.
+      - text: t = (0.07798 − 0.08) / 0.002514 ≈ −0.8
+        explains: That omits the √n and so measures a single charm rather than the mean.
+      - text: t = (0.07798 − 0.08) / (0.002514/√16) ≈ −3.2, with 15 degrees of freedom
+        correct: true
+        explains: The standard deviation of the mean is 0.002514/4 = 0.0006285; the sample mean is 0.00202 below the target, about 3.2 of those units.
+      - text: t = (0.08 − 0.07798) / 0.0006285 ≈ +3.2, which means the mean is too high
+        explains: The numerical size is right but the direction is reversed. A mean below the target gives a negative t. The sign is part of the finding.
+  - ask: In the gold-charm test the null is rejected at α = 0.01. Beyond 'the mean is not 0.08', what can the jeweler say, according to the lecture?
+    choices:
+      - text: 'Because the sample mean is below 0.08, the evidence supports a one-sided claim: the true mean gold content is less than 0.08 oz'
+        correct: true
+        explains: A rejection of a two-sided null supports the direction in which the sample fell.
+      - text: That the mean gold content is more than 0.08 oz
+        explains: The sample mean is below the target, so the supported direction is less.
+      - text: That every charm is under 0.08 oz
+        explains: The test is about the mean.
+      - text: Nothing more than 'different', because a two-sided test gives no direction
+        explains: The lecture says a one-tailed claim is supported once the null is rejected in favour of the alternative.
+---
+
+**The problem.** A jeweller's design calls for **0.08 ounces** of gold per charm. Does the
+average charm actually contain 0.08 oz? A sample of **16 charms** gives the following values
+(oz):
+
+`0.0773 0.0779 0.0756 0.0792 0.0777 0.0713 0.0818 0.0802 0.0802 0.0785 0.0764 0.0786 0.0776 0.0793 0.0755 0.0806`
+
+Test at the **0.01** level.
+
+## Step by step
+
+| Step | Working |
+| --- | --- |
+| **Parameter** | `μ` = true mean gold content of this type of charm |
+| **Hypotheses** | `H₀: μ = 0.08`, `Hₐ: μ ≠ 0.08` |
+| **Significance level** | `α = 0.01` |
+| **Summary statistics** | `n = 16`, `x̄ = 0.07798`, `s = 0.002514` |
+| **Test statistic** | `t = (0.07798 − 0.08) / (0.002514/√16) = −0.00202 / 0.0006285 ≈ −3.2` |
+| **Degrees of freedom** | `15` |
+| **p-value** | **Two-tailed**: one tail for `t = 3.2` at 15 df is about 0.003, so `p = 2 × 0.003 = 0.006` |
+| **Compare** | `0.006 < 0.01` |
+
+(The slide prints the sample mean as 0.077891; computing it from the sixteen values gives
+0.07798, which is what yields the slide's `t = −3.2`.)
+
+## Conclusions
+
+- **Statistical:** reject `H₀`.
+- **Contextual:** at the 0.01 level there is sufficient evidence that the true mean gold
+  content of this type of charm is **not** 0.08 oz.
+
+## A sharper statement
+
+The lecture adds a point that goes beyond 'different'. When a two-sided test rejects the null,
+the *direction* of the sample tells you which way the difference lies. Here `x̄` is below
+0.08 and `t` is negative, so the jeweller can say there is convincing evidence that the true
+mean is **less than** 0.08 oz.
+
+## Checking your reading
+
+- Two tails because the question was 'is it 0.08?', with no suspected direction.
+- n = 16 falls in the 15 to 40 range, so the check from the assumptions concept asks for no
+  large outliers; the charms' lowest value, 0.0713, is the one to inspect, but nothing is extreme enough to alarm.
+- Even at `α = 0.01`, a strict level, the result is rejected, so it is strong evidence by
+  the standards used in this course.
+
+> A negative t is not a mistake. It is the test telling you which way the sample missed.
+

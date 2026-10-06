@@ -1,0 +1,82 @@
+---
+course: applied-research-methods
+section: w4-statistics
+order: 440
+title: The Normal Distribution, and Parametric versus Nonparametric
+visuals:
+  - type: svg
+    src: applied-research-methods/week4/37.svg
+    caption: Slide 37 of 52 — the bell curve, and which statistics suit which data.
+  - type: svg
+    src: applied-research-methods/week4/38.svg
+    caption: Slide 38 of 52 — the bell curve, and which statistics suit which data.
+notation:
+  - symbol: normal distribution
+    reads: normal distribution
+    means: The symmetrical bell-shaped curve, with its highest point at the middle. Also called the bell curve or normal curve.
+  - symbol: parametric
+    reads: pair-uh-MET-rik
+    means: Statistics that assume interval or ratio data in a normal distribution.
+  - symbol: nonparametric
+    reads: non-pair-uh-MET-rik
+    means: Statistics that do not make those assumptions, used for ordinal data or nonnormal distributions.
+questions:
+  - ask: A researcher has Likert-scale data that is heavily skewed to one side. Which family of statistics does the lecture point to?
+    choices:
+      - text: Parametric, because any data can be treated as normal
+        explains: Normality is a property of the data, not a convenience.
+      - text: Neither family applies to rating scales
+        explains: Both families apply, depending on the data.
+      - text: 'Nonparametric: they are used when data are ordinal or the distribution is nonnormal'
+        correct: true
+        explains: 'Either condition on its own is enough: ordinal data, or a distribution that is not normal.'
+      - text: Parametric, because they are more powerful
+        explains: Parametric statistics are used when data are interval or ratio and normally distributed. Power (Week 4) is a reason to prefer them when their conditions hold, not to ignore the conditions.
+  - ask: Which of these is a defining characteristic of the normal distribution, according to the lecture?
+    choices:
+      - text: It has two peaks
+        explains: A normal distribution has one.
+      - text: Every value occurs equally often
+        explains: That is a uniform distribution.
+      - text: It is skewed to the right, with a long tail of large values
+        explains: That describes a skewed distribution, not a normal one.
+      - text: It is horizontally symmetrical, has its highest point at its midpoint, and has predictable percentages of the population in any given portion
+        correct: true
+        explains: 'The third property is why it is so useful: because of it, the proportion of cases within any distance of the middle is known.'
+---
+
+Many statistical tools assume the data follow a particular shape. This concept covers the
+shape, and the choice of tool that follows from it.
+
+## The normal distribution
+
+The **normal distribution**, also called the *bell curve* or *normal curve*, has three
+distinguishing properties in the lecture:
+
+1. It is **horizontally symmetrical**.
+2. Its **highest point is at its midpoint**.
+3. **Predictable percentages of the population lie within any given portion** of the curve.
+
+The third is what makes it useful. If you know a variable is normal, then once you know its
+centre and spread you know how rare any value is. Week 5's z-scores and p-values rest on it.
+
+## Parametric or nonparametric?
+
+| | Used when |
+| --- | --- |
+| **Parametric** statistics | Data reflect an **interval or ratio** scale, **and** fall in a **normal** distribution |
+| **Nonparametric** statistics | Data are **ordinal**, **or** the distribution is **nonnormal** |
+
+Notice *and* in the first row and *or* in the second. Parametric tools need both conditions.
+The moment either fails, you move to a nonparametric tool.
+
+The two families line up with the Week 3 scales. The mean, standard deviation and Pearson
+correlation belong with interval data (parametric); the median, percentiles and Spearman's
+rank correlation belong with ordinal data (nonparametric).
+
+Why not always choose the safer nonparametric option? Because the lecture later says a way to
+increase statistical power is to **use parametric rather than nonparametric statistics
+whenever possible**: when their assumptions hold, they find real effects more readily.
+
+> Check the scale, then check the shape. The statistic you may use depends on both.
+

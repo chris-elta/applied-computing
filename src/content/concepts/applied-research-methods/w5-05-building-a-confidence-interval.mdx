@@ -1,0 +1,98 @@
+---
+course: applied-research-methods
+section: w5-ci
+order: 560
+title: Building a Confidence Interval for a Mean
+visuals:
+  - type: svg
+    src: applied-research-methods/week5/10.svg
+    caption: Slide 10 of 66 — the ingredients of a confidence interval, and the formula.
+  - type: svg
+    src: applied-research-methods/week5/11.svg
+    caption: Slide 11 of 66 — the ingredients of a confidence interval, and the formula.
+  - type: svg
+    src: applied-research-methods/week4/45.svg
+    caption: Slide 45 of 52 — the point and interval estimates from Week 4.
+notation:
+  - symbol: x̄ ± z* · σ/√n
+    reads: x-bar plus or minus z-star times sigma over root n
+    means: 'The confidence interval for a mean: the sample mean, give or take a margin of error.'
+  - symbol: z*
+    reads: z-star
+    means: 'The critical value: how many standard deviations either side of the middle you need to cover your chosen confidence level.'
+  - symbol: σ/√n
+    reads: sigma over root n
+    means: The standard deviation of the sample mean (its standard error). It shrinks as the sample grows.
+  - symbol: ±
+    reads: plus or minus
+    means: 'Both directions: the interval runs from the estimate minus the margin to the estimate plus the margin.'
+questions:
+  - ask: A sample of 36 builds has a mean of 50 seconds. The population standard deviation is known to be 12 seconds, and z* for 95% confidence is 1.96. What is the 95% confidence interval?
+    choices:
+      - text: 50 ± 1.96 × 12/36 = (49.35, 50.65)
+        explains: The divisor is √n = 6, not n = 36.
+      - text: 50 ± 1.96 × 12 = (26.48, 73.52)
+        explains: That forgets to divide by √n. The interval for a mean uses the spread of the mean, not of individual builds.
+      - text: 50 ± 1.96 × 12/6 = 50 ± 3.92, so (46.08, 53.92)
+        correct: true
+        explains: The standard deviation of the mean is 12/√36 = 2. Multiplying by 1.96 gives a margin of 3.92.
+      - text: 50 ± 12/6 = (48, 52)
+        explains: That omits z*, so it is not yet a 95% interval.
+  - ask: To make a confidence interval half as wide, with the same confidence level, what must change?
+    choices:
+      - text: 'Nothing: the width is fixed by the population'
+        explains: The width depends on n, σ and z*.
+      - text: Halve the sample size
+        explains: That makes the interval wider.
+      - text: Double the sample size
+        explains: Doubling gives only a factor of √2, about 1.41, narrower.
+      - text: Quadruple the sample size, because the margin depends on √n
+        correct: true
+        explains: The margin of error is proportional to 1/√n. Four times the data gives √4 = 2 times the precision.
+---
+
+A point estimate is a single number. A **confidence interval** wraps it in an honest
+statement of precision. The lecture builds it in three steps, with an assumption flagged
+up front: the **population standard deviation is, for now, assumed known**. (Later this week,
+the t-test handles the realistic case where it is not.)
+
+1. Find the **mean from your sample**.
+2. Choose a **confidence level**, which sets the critical value `z*`.
+3. Compute the **margin of error** from `z*`, the standard deviation and the sample size
+   `n`.
+
+## The formula
+
+`x̄ ± z* · σ/√n`
+
+| Part | Role |
+| --- | --- |
+| `x̄` | An estimate for `μ` from your sample |
+| `z*` | Based on the level of confidence, how many standard deviations away you can tolerate |
+| `σ/√n` | The standard deviation of the estimate |
+| `z* · σ/√n` | The **margin of error** |
+
+## Why σ/√n?
+
+Individual values scatter with standard deviation `σ`. *Averages* scatter less, because highs
+and lows within a sample cancel. Averaging `n` values shrinks the scatter by a factor of
+`√n`, which is why the denominator is a square root, not `n`.
+
+That square root governs the cost of precision. To halve the margin of error you need *four*
+times the data, to cut it to a third you need nine times. This is the reason Week 4's sample
+size table levels off: past a few hundred cases, each extra case buys little.
+
+## What you control
+
+| To get a narrower interval | Effect |
+| --- | --- |
+| Larger `n` | Narrower, with diminishing returns |
+| Smaller `σ` (less noisy measurement) | Narrower |
+| Lower confidence level (smaller `z*`) | Narrower, but you are less sure it covers `μ` |
+
+The last row is a trade you cannot avoid: **confidence and precision pull in opposite
+directions**. The next concept shows the values of `z*`.
+
+> A confidence interval is an estimate plus a margin. The margin is the price of using a
+> sample.
+

@@ -1,0 +1,81 @@
+---
+course: applied-research-methods
+section: w5-ttests
+order: 710
+title: Choosing α, and Why It Changes the Answer
+visuals:
+  - type: svg
+    src: applied-research-methods/week5/55.svg
+    caption: Slide 55 of 66 — the same data at α = 0.10, and why that is not a loophole.
+  - type: svg
+    src: applied-research-methods/week5/56.svg
+    caption: Slide 56 of 66 — the same data at α = 0.10, and why that is not a loophole.
+notation:
+  - symbol: α
+    reads: alpha
+    means: 'The significance level: the Type I error rate you are willing to accept. Chosen before the test.'
+questions:
+  - ask: In the bolt problem p = 0.087. The engineer finds it fails at α = 0.05, so changes α to 0.10 after seeing the result and reports 'significant'. What is wrong?
+    choices:
+      - text: The p-value changes when α changes
+        explains: The p-value comes from the data and is the same under any α.
+      - text: 0.10 is never an allowed significance level
+        explains: 0.10 can be justified in some fields, if chosen in advance.
+      - text: α is a decision about how much Type I risk is acceptable and must be set before looking at the result; choosing it after the fact is fitting the rule to the answer
+        correct: true
+        explains: The lecture treats α as the probability of being wrong that you choose to accept. If you pick it after seeing the p-value, it no longer controls anything.
+      - text: Nothing, since the lecture shows exactly this recalculation
+        explains: The slide demonstrates how the conclusion depends on α. It does not recommend choosing α after the result.
+  - ask: A component test will decide whether a part is released, and a false alarm and a missed fault each carry a cost. How should α be chosen?
+    choices:
+      - text: Always 0.05, since it is the convention
+        explains: 0.05 is common, not obligatory, and may be too lax or too strict for a given decision.
+      - text: Whatever makes the result significant
+        explains: That is outcome-driven reasoning, the pitfall from Week 1.
+      - text: As close to 1 as possible, to avoid missing effects
+        explains: A very large α would produce Type I errors constantly.
+      - text: By weighing the cost of a Type I error against a Type II error, before collecting data, and justifying it
+        correct: true
+        explains: α is the level of Type I risk you are willing to accept; the costs of each error type should drive it, and they differ by problem.
+---
+
+The bolt problem has a coda that unsettles people. **What if the significance level had been
+0.10 instead of 0.05?**
+
+The p-value is the same, 0.087. But `0.087 < 0.10`, so **we reject `H₀`**, and the conclusion
+becomes: *at the 0.10 level of significance there is sufficient evidence that the mean
+shearing strength exceeds 110 lb.* (The slide's text says '120', which is a slip for 110.)
+
+Same data, same calculation, opposite verdict.
+
+## Why that is not a contradiction
+
+The lecture acknowledges that many people are bothered by this, and answers it directly: this
+is **natural for a process in which you control the probability of being wrong**. When you
+select the significance level, **you choose your willingness to accept a certain chance of a
+Type I error.**
+
+| | `α = 0.05` | `α = 0.10` |
+| --- | --- | --- |
+| **You accept** | A 5% chance of a false alarm | A 10% chance |
+| **Threshold for 'enough evidence'** | Stricter | Looser |
+| **With p = 0.087** | Fail to reject | Reject |
+
+The two conclusions are different *decisions* made with different tolerance for error, from
+one body of evidence. Neither is wrong: the evidence is a little suggestive, and whether
+that is enough depends on how costly each kind of mistake would be.
+
+## The rule that keeps it honest
+
+This only works if `α` is **fixed before the analysis**. The decision rule is a promise about
+the error rate. If you pick `α` after seeing `p`, you could always choose the value that gives
+the verdict you wanted, and the promise means nothing. That is why Week 4 described `α` as a
+*pre-set* cutoff.
+
+A practical habit: write the hypotheses, the significance level and the sidedness in your
+proposal (Week 1), then run the test. And report the p-value itself, so readers can apply
+their own `α`.
+
+> α is a decision about risk, made in advance. After the fact, report p and let readers
+> judge.
+
