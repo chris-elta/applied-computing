@@ -1,0 +1,104 @@
+---
+course: data-science
+section: w5-scoring
+order: 670
+title: Recognizing Good Scoring Functions
+visuals:
+  - type: svg
+    src: data-science/w5-scoring/11.svg
+    caption: Slide 11 of 29 — five properties of a good scoring function.
+notation:
+  - symbol: "monotonic"
+    reads: mono-TON-ic
+    means: >-
+      Always moving in one direction. A score is monotonic in an input if raising that input
+      never makes the score go the opposite way to what you expect.
+  - symbol: "normalized"
+    reads: normalized
+    means: >-
+      Rescaled so that different variables are on comparable scales, for example as z-scores
+      or as values between 0 and 1.
+questions:
+  - ask: "A job-applicant score is `years of experience + interview rating`, where experience runs 0 to 40 and the rating runs 1 to 5. What is wrong with it?"
+    choices:
+      - text: "The variables are not normalized, so experience swamps the rating"
+        correct: true
+        explains: >-
+          The best possible interview adds 4 points over the worst, which is the same as
+          four years of experience. Put both on a common scale first, then choose weights on
+          purpose.
+      - text: "It is not monotonic"
+        explains: >-
+          It is. More experience and a better rating both raise the score. The directions
+          are right and the sizes are not.
+      - text: "It is too hard to compute"
+        explains: >-
+          It is one addition. Ease of computation is the property it satisfies best.
+      - text: "Scores should never add two variables"
+        explains: >-
+          Linear combinations of normalized values are the standard way to build a score.
+          The missing word is normalized.
+  - ask: "In a proposed fitness score, people who exercise 10 hours a week score lower than people who exercise 6 hours, with everything else equal. Which property fails?"
+    choices:
+      - text: "Monotonic interpretation of variables"
+        correct: true
+        explains: >-
+          An input that should help is hurting over part of its range. Either the formula
+          has a bug or it encodes a claim that needs defending out loud.
+      - text: "Easily computable"
+        explains: >-
+          Nothing here says the score is hard to calculate.
+      - text: "Systematic normalization"
+        explains: >-
+          Normalization is about scales between variables. Here a single variable moves the
+          score the wrong way.
+      - text: "Satisfying results on outliers"
+        explains: >-
+          Ten hours a week is not an extreme case, and the complaint is about direction, not
+          about absurd values at the edges.
+---
+
+With no right answer to test against, how do you decide whether a score is any good? You
+cannot compute its error. What you can do is check its behaviour against a short list. The
+slide gives five properties.
+
+| property | what to check | example |
+| --- | --- | --- |
+| **Easily computable** | Can it be worked out from data people actually have? | BMI needs a scale, a tape measure and one division |
+| **Easily understandable** | Can a user say what a higher value means? | "Higher BMI means heavier for your height" |
+| **Monotonic interpretation of variables** | When one input goes up, does the score move in one consistent, sensible direction? | More mass at the same height always raises BMI |
+| **Produces satisfying results on outliers** | Do extreme cases come out where common sense puts them? | The best and worst items you know should land near the top and bottom |
+| **Uses systematically normalized variables** | Are the inputs on comparable scales before being combined? | z-scores, or everything rescaled to 0–1 |
+
+## Monotonicity
+
+Suppose a grading formula could give you a lower mark for answering one more question
+correctly. You would call that a bug without needing to know the right grade. Monotonicity
+turns that instinct into a test: fix all inputs but one, slide that one up, and watch the
+score. If it reverses direction, either the formula is wrong or it is making a claim that
+needs to be defended in the open.
+
+## Outliers
+
+You may not know the right score for a typical item, but you usually have firm opinions
+about a few extreme ones. A ranking of basketball players that does not place the players
+everyone agrees were great near the top has a problem. This is the nearest thing to
+validation a score gets: you check the cases you are sure about. The football players in the
+BMI plots are a case of this test failing.
+
+## Normalization
+
+This connects to last week. Add "years of experience" (0 to 40) to "satisfaction rating" (1
+to 5) and the first variable decides almost everything, because its numbers are bigger.
+Nobody chose that. Converting each variable to a z-score first puts them on the same
+footing, and then any weights you apply mean what you intend. The lecture's default recipe
+for a score is a linear combination of normalized values.
+
+## What the list is for
+
+None of the five says the score is *correct*. They say it is usable, explainable and free of
+obvious faults. A score can pass all five and still stand for the wrong thing. That question
+needs the idea of a gold standard, in the next section.
+
+> You cannot prove a score right. You can check that it is computable, explainable,
+> monotonic, sensible at the extremes and built from normalized inputs.

@@ -1,0 +1,139 @@
+---
+course: data-science
+section: w5-elo
+order: 740
+title: "Elo Worked Example: Carlsen vs. Nakamura"
+visuals:
+  - type: svg
+    src: data-science/w5-scoring/17.svg
+    caption: Slide 17 of 29 — computing the expected score from the two ratings.
+  - type: svg
+    src: data-science/w5-scoring/18.svg
+    caption: Slide 18 of 29 — the upset, and both ratings updated with K = 20.
+notation:
+  - symbol: "R_A, R_B"
+    reads: R sub A, R sub B
+    means: >-
+      The ratings of players A and B before the match. The same thing the earlier slide
+      wrote as `r(A)` and `r(B)`.
+  - symbol: "E_A"
+    reads: E sub A
+    means: >-
+      A's expected score, between 0 and 1. With a win scored as 1 and a loss as 0 it is the
+      same number as A's probability of winning.
+  - symbol: "K"
+    reads: K
+    means: >-
+      The most a rating can move in one match. The example uses 20.
+  - symbol: "R′_A"
+    reads: R prime sub A
+    means: >-
+      A's rating after the match.
+questions:
+  - ask: "A is rated 1900 and B is rated 1500. Using `E_A = 1 / (1 + 10^((R_B − R_A)/400))`, what is A's expected score?"
+    choices:
+      - text: "About 0.91"
+        correct: true
+        explains: >-
+          The exponent is `(1500 − 1900)/400 = −1`, and `10⁻¹ = 0.1`, so
+          `E_A = 1 / 1.1 ≈ 0.91`. A 400-point gap means roughly ten-to-one odds.
+      - text: "About 0.09"
+        explains: >-
+          That is B's expected score, `1 − 0.91`. It is what you get if the subtraction in
+          the exponent is done the other way round.
+      - text: "0.5"
+        explains: >-
+          That needs the exponent to be 0, which happens only when the ratings are equal.
+      - text: "1.0"
+        explains: >-
+          The curve never reaches 1. Even with a 400-point gap, B wins about one game in
+          eleven.
+  - ask: "In that match `K = 20` and B, the underdog, wins. What happens to the ratings?"
+    choices:
+      - text: "A drops about 18 and B gains about 18"
+        correct: true
+        explains: >-
+          A: `20 × (0 − 0.91) ≈ −18`. B: `20 × (1 − 0.09) ≈ +18`. A big upset moves both
+          ratings by nearly the full `K`.
+      - text: "A drops 20 and B gains 20"
+        explains: >-
+          `K` is the ceiling, reached only if the result had been judged impossible. A had
+          an expected score of 0.91, not 1.
+      - text: "A drops about 2 and B gains about 2"
+        explains: >-
+          That is the size of the change if A had won as expected: `20 × (1 − 0.91)`.
+      - text: "A drops 10 and B gains 10"
+        explains: >-
+          That is the update for an even match, where each expected score is 0.5.
+---
+
+All the pieces are in place: an update rule driven by surprise, and an S-shaped curve to
+turn a rating gap into a probability. The slides now run real numbers through both.
+
+| player | rating before |
+| --- | --- |
+| Magnus Carlsen (A) | 2840 |
+| Hikaru Nakamura (B) | 2700 |
+
+## A change of convention
+
+This example scores a **win as 1 and a loss as 0**, where the earlier slide used `+1` and
+`−1`. The idea is the same. The practical effect is that the expected score `E_A` is now
+simply A's probability of winning. This is the convention chess uses.
+
+## Step 1: the expected score
+
+```
+E_A = 1 / (1 + 10^((R_B − R_A) / 400))
+E_B = 1 − E_A
+```
+
+This is the curve from the last concept with two adjustments for chess: base 10 in place of
+`e`, and the difference divided by 400 so that ratings in the thousands give sensible
+probabilities. A 400-point gap corresponds to ten-to-one odds.
+
+The slide substitutes `(2700 − 2840)/400` and reports `E_A = 0.76`, `E_B = 0.24`:
+**Magnus is expected to win 76% of the time, Hikaru only 24%.**
+
+## Step 2: the result and the update
+
+Magnus **loses**. So `S_A = 0` and `S_B = 1`, and with `K = 20`:
+
+```
+R′_A = 2840 + 20 · (0 − 0.76) = 2825
+R′_B = 2700 + 20 · (1 − 0.24) = 2715
+```
+
+| player | new rating | change |
+| --- | --- | --- |
+| Magnus Carlsen | 2825 | −15 |
+| Hikaru Nakamura | 2715 | +15 |
+
+## Check the arithmetic yourself
+
+Work the exponent by hand: `(2700 − 2840)/400 = −0.35`, and `10^−0.35 ≈ 0.447`, so
+`E_A = 1 / 1.447 ≈ 0.69`. The slide's 0.76 is what the formula gives for a gap of 200
+points, not 140.
+
+| | `E_A` | Magnus | Hikaru |
+| --- | --- | --- | --- |
+| As printed on the slide | 0.76 | 2840 − 15.2 → 2825 | 2700 + 15.2 → 2715 |
+| Evaluating the formula for 140 points | 0.69 | 2840 − 13.8 → 2826 | 2700 + 13.8 → 2714 |
+
+The method and the conclusion are the same in both rows. If you are asked to reproduce a
+calculation like this, show the exponent step so that a marker can follow your arithmetic.
+
+## What to notice
+
+- **The changes are equal and opposite.** What Magnus loses, Hikaru gains. Ratings are
+  passed between the two players, and none are created.
+- **The upset cost more than half of `K`.** Had they been evenly matched, each expected
+  score would be 0.5 and the swing would be `20 × 0.5 = 10`. Magnus was the favourite, so
+  losing costs him more.
+- **Had Magnus won**, he would have gained `20 × (1 − 0.76) ≈ 5`. For a favourite, a win
+  gains less than a loss costs.
+- **`K` caps the damage.** No single match can move a rating by more than 20, so one bad day
+  does not erase a career.
+
+> Expected score from the rating gap, then rating plus `K` times actual minus expected. That
+> is the whole Elo system.

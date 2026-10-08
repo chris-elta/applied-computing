@@ -1,7 +1,7 @@
 ---
 course: data-science
 title: "Data Science · Final Exam"
-minutes: 75
+minutes: 90
 passMark: 60
 questions:
   - topic: "Week 1 · Thinking about data"
@@ -925,8 +925,237 @@ questions:
       Search for an existing scraper.
       Read the terms of service.
       Only then use BeautifulSoup or Selenium, within what is permitted.
+  - topic: "Week 5 · Scores and rankings"
+    ask: "A volleyball player has mass 90 kg and height 2.00 m. What is her BMI, and which band does it fall in?"
+    choices:
+      - text: "45.0, obese"
+        explains: "That is `90 / 2.00`. The height must be squared before dividing."
+      - text: "22.5, normal"
+        correct: true
+        explains: "Right. `2.00² = 4.00` and `90 / 4.00 = 22.5`, which is between 18.5 and 25."
+      - text: "11.25, underweight"
+        explains: "That divides by `2.00³ = 8`. The slide's formula uses the square of height."
+      - text: "180, obese"
+        explains: "That multiplies mass by height. BMI divides mass by height squared."
+    work: |-
+      BMI = mass / height², with mass in kg and height in metres.
+      `2.00² = 4.00`.
+      `90 / 4.00 = 22.5`.
+      Bands: below 18.5 underweight, 18.5 to 25 normal, 25 to 30 overweight, over 30 obese. So 22.5 is normal.
+  - topic: "Week 5 · Scores and rankings"
+    ask: "A course score is `0.6 × exam z-score + 0.4 × lab z-score`. A student is 1.0 standard deviations above the mean on the exam and 0.5 below the mean on labs. What is the score, and why were z-scores used?"
+    choices:
+      - text: "0.4, and z-scores put both inputs on a comparable scale so the weights mean what they say"
+        correct: true
+        explains: "Right. `0.6 × 1.0 + 0.4 × (−0.5) = 0.6 − 0.2 = 0.4`. Without normalization the input with the larger raw range would dominate whatever the weights were."
+      - text: "0.8, and z-scores make the score easier to compute"
+        explains: "That adds 0.2 where it should be subtracted: the lab z-score is negative. Normalizing also adds a step, so ease is not the reason."
+      - text: "0.5, and z-scores remove outliers"
+        explains: "That adds the two z-scores and ignores the weights. Z-scores rescale values and remove nothing."
+      - text: "0.4, and z-scores guarantee the score is correct"
+        explains: "The arithmetic is right, but nothing can guarantee a score is correct, because there is no right answer to check it against."
+    work: |-
+      Exam z-score: +1.0. Lab z-score: −0.5.
+      `0.6 × 1.0 = 0.6`.
+      `0.4 × (−0.5) = −0.2`.
+      Score: `0.6 − 0.2 = 0.4`.
+      Good scoring functions use systematically normalized variables, so no input dominates because of its units.
+  - topic: "Week 5 · Scores and rankings"
+    ask: "A support team pays bonuses by rank on tickets closed per day. Within a month the count doubles, while customers report more unsolved problems. In the lecture's terms, what happened?"
+    choices:
+      - text: "The scoring function was not monotonic"
+        explains: "It is monotonic: more tickets closed always gives a higher score. The trouble is what the count stands for."
+      - text: "The data needed to be normalized first"
+        explains: "There is one variable, so there is nothing to put on a common scale."
+      - text: "Rankings should have been replaced by raw scores"
+        explains: "Showing the raw counts would not change what is being counted."
+      - text: "A proxy for good support was treated as a gold standard, and people raised the proxy without raising the goal"
+        correct: true
+        explains: "Right. Tickets closed is available and correlated with helping customers, but it is not the same thing. Rewarding it as though it were the truth broke the correlation."
+    work: |-
+      Goal: customers' problems get solved. There is no direct, trusted measure of that, so there is no gold standard.
+      Tickets closed per day is a proxy: available, and usually correlated with the goal.
+      Paying on the proxy treats it as the gold standard.
+      Agents can close tickets without solving them, so the proxy rises while the goal falls.
+      This is the confusion the lecture calls a weapon of math destruction.
+  - topic: "Week 5 · Scores and rankings"
+    ask: "Which situation lets you train a regression function, and not merely design and evaluate a score?"
+    choices:
+      - text: "Scoring how talented job applicants are, using their CVs"
+        explains: "Nobody has a trusted talent value for each applicant, so there is nothing to fit to."
+      - text: "Scoring the quality of universities from their published statistics"
+        explains: "There is no agreed true quality per university, which is why published rankings disagree."
+      - text: "Predicting whether a loan is repaid, using 10,000 past loans whose outcomes are recorded"
+        correct: true
+        explains: "Right. Each past loan carries a trusted answer that is the thing you want to predict. That is a gold standard, so a model can be trained on it."
+      - text: "Scoring how important a historical figure is, from the length of their biography"
+        explains: "Biography length is a proxy, and no table of true importance exists."
+    work: |-
+      With a gold standard you can train a regression function to predict it.
+      With only proxies, all you can do is evaluate a scoring function you designed.
+      Talent, university quality and historical importance have no trusted answer per item.
+      Loan repayment does: each past loan was repaid or it was not, and that outcome is the goal itself.
+  - topic: "Week 5 · Scores and rankings"
+    ask: "A newspaper reports that a university 'plunged from 40th to 58th'. Its score moved from 71.3 to 70.9, and thirty universities have scores between 70.5 and 71.5. What is the best reading?"
+    choices:
+      - text: "The university got much worse, since it lost 18 places"
+        explains: "Eighteen places sounds large, but the score moved by 0.4 on a scale where thirty institutions sit within one point."
+      - text: "A small change in score, in a crowded part of the distribution, produced a large change in rank"
+        correct: true
+        explains: "Right. Ranks exaggerate differences where scores are bunched. The score shows how little actually changed."
+      - text: "The ranking must contain an error, because a 0.4 change cannot move a rank"
+        explains: "It can and does. Rank depends only on order, and many neighbours are within 0.4."
+      - text: "Scores are always better than rankings and the rank should be ignored"
+        explains: "Neither is always better. The rank gave context for the score, and here the score shows the size of the change."
+    work: |-
+      Score change: `71.3 − 70.9 = 0.4`.
+      Thirty universities lie within a one-point band, so on average one every 0.03 points.
+      A 0.4 move can therefore pass many of them: a drop of 18 places is unsurprising.
+      Small changes in score can cause big rank differences in the middle of a distribution.
+  - topic: "Week 5 · Scores and rankings"
+    ask: "Elo with outcomes scored `+1` for a win and `−1` for a loss: A has probability 0.75 of beating B, and `k = 16`. A loses. What is the change in A's rating?"
+    choices:
+      - text: "−4"
+        explains: "That is `16 × (0.75 − 1)`, which mixes the probability with the score and has the wrong outcome. The expected score is 0.5 and the actual score is −1."
+      - text: "−16"
+        explains: "That would be the change if the expected score were 0, as for evenly matched players. A was the favourite, so losing costs more."
+      - text: "−8"
+        explains: "That is `16 × 0.5`, the expected score times `k`, leaving out the actual result."
+      - text: "−24"
+        correct: true
+        explains: "Right. Expected score `0.75 − 0.25 = 0.5`, surprise `−1 − 0.5 = −1.5`, and `16 × (−1.5) = −24`."
+    work: |-
+      Expected score: `μ_A = 1 × 0.75 + (−1) × 0.25 = 0.5`.
+      Actual score: A lost, so `S_A = −1`.
+      Surprise: `S_A − μ_A = −1 − 0.5 = −1.5`.
+      Change: `k × surprise = 16 × (−1.5) = −24`.
+  - topic: "Week 5 · Scores and rankings"
+    ask: "Chess-style Elo with a win scored 1 and a loss 0: A is rated 1400 and B is rated 1800. Using `E_A = 1 / (1 + 10^((R_B − R_A)/400))` and `K = 30`, A wins. What is A's new rating, to the nearest point?"
+    choices:
+      - text: "1427"
+        correct: true
+        explains: "Right. The exponent is `400/400 = 1`, so `E_A = 1/11 ≈ 0.09`, and `1400 + 30 × (1 − 0.09) ≈ 1427`."
+      - text: "1403"
+        explains: "That uses `E_A ≈ 0.91`, which is B's expected score. The exponent is `(R_B − R_A)/400 = +1`, not −1."
+      - text: "1430"
+        explains: "That adds the full `K`. The full amount is only approached when the win was judged nearly impossible, and A had about a 9% chance."
+      - text: "1415"
+        explains: "That is the update for evenly matched players, `30 × 0.5`. A was a heavy underdog, so the win is worth more."
+    work: |-
+      Exponent: `(1800 − 1400) / 400 = 1`.
+      `10¹ = 10`, so `E_A = 1 / (1 + 10) = 1/11 ≈ 0.091`.
+      A won, so `S_A = 1`.
+      `R′_A = 1400 + 30 × (1 − 0.091) = 1400 + 27.3 ≈ 1427`.
+  - topic: "Week 5 · Scores and rankings"
+    ask: "A win probability is computed from the rating gap with an S-shaped curve that passes through ½ at a gap of 0. Which change in the gap moves the win probability more?"
+    choices:
+      - text: "From 600 to 800, because the gap is larger"
+        explains: "By 600 the curve is already nearly flat, close to 1. Further points add very little."
+      - text: "Both move it equally, since each adds 200 points"
+        explains: "That would be true of a straight line. The curve is steep in the middle and flat at the ends."
+      - text: "From 0 to 200, because the curve is steepest in the middle"
+        correct: true
+        explains: "Right. Near an even match a rating edge shifts the odds a lot. Between mismatched players the stronger one was already almost sure to win."
+      - text: "Neither, since probability depends on the ratings and not on the gap"
+        explains: "A meaningful rating system makes the probability a function of the difference between the two ratings."
+    work: |-
+      The curve must satisfy `f(0) = ½`, approach 1 for a huge positive gap and approach 0 for a huge negative gap.
+      To stay between 0 and 1 it has to flatten at both ends, so its steepest part is in the middle.
+      With the chess formula: a gap of 0 gives 0.50 and a gap of 200 gives about 0.76, a rise of 0.26.
+      A gap of 600 gives about 0.97 and a gap of 800 gives about 0.99, a rise of about 0.02.
+  - topic: "Week 5 · Scores and rankings"
+    ask: "Three reviewers rank four proposals. Reviewer 1: W, X, Y, Z. Reviewer 2: X, W, Z, Y. Reviewer 3: X, Y, W, Z. With Borda's method and positions scored 1 to 4, what is the merged order?"
+    choices:
+      - text: "W, X, Y, Z"
+        explains: "That is reviewer 1's ballot. X is placed first twice and second once, for a better total than W."
+      - text: "X, W, Y, Z"
+        correct: true
+        explains: "Right. Totals are X = 4, W = 6, Y = 9, Z = 11, and the lowest total ranks first."
+      - text: "Z, Y, W, X"
+        explains: "The totals are read upside down. With first place scoring 1, the largest total is the worst."
+      - text: "X, Y, W, Z"
+        explains: "That is reviewer 3's ballot. Y's total is 9 against W's 6."
+    work: |-
+      W: `1 + 2 + 3 = 6`.
+      X: `2 + 1 + 1 = 4`.
+      Y: `3 + 4 + 2 = 9`.
+      Z: `4 + 3 + 4 = 11`.
+      Lowest total first: X (4), W (6), Y (9), Z (11).
+  - topic: "Week 5 · Scores and rankings"
+    ask: "Pairwise votes give K > L, L > M, K > M and N > M, with no other comparisons. What can a topological sort tell you about N?"
+    choices:
+      - text: "N is tied with K for first place"
+        explains: "Nothing says they are equal. No vote compares them, which is not the same as a tie."
+      - text: "N must be ranked third, just above M"
+        explains: "N, K, L, M and K, N, L, M are also valid. Only N before M is required."
+      - text: "The votes are inconsistent, so no order exists"
+        explains: "There is no cycle. The graph is a DAG and several orders respect every vote."
+      - text: "Only that N comes before M: its position relative to K and L is not determined by the data"
+        correct: true
+        explains: "Right. K, L, N, M and K, N, L, M and N, K, L, M all point every edge forward. Several valid orders mean missing comparisons."
+    work: |-
+      Edges: K → L, L → M, K → M, N → M. No cycle, so this is a DAG.
+      Constraints: K before L, L before M, N before M.
+      Valid orders: K, L, N, M; K, N, L, M; N, K, L, M.
+      N is constrained only by its edge to M, so the data leaves its place among K and L open.
+  - topic: "Week 5 · Scores and rankings"
+    ask: "A round of matches contains cycles, so no order agrees with every result. Records are P: 5 wins, 1 loss; Q: 2 wins, 4 losses; R: 4 wins, 2 losses; S: 1 win, 5 losses. What order does the lecture's heuristic give?"
+    choices:
+      - text: "P, R, Q, S"
+        correct: true
+        explains: "Right. Out-degree minus in-degree gives P = +4, R = +2, Q = −2, S = −4, sorted from highest to lowest."
+      - text: "P, Q, R, S"
+        explains: "That is alphabetical order. R's difference is +2 and Q's is −2."
+      - text: "S, Q, R, P"
+        explains: "That sorts from lowest to highest, putting the player with the most losses first."
+      - text: "No order can be given, because the exact problem is NP-complete"
+        explains: "NP-complete means the best order is expensive to find. It is the reason for using a heuristic, and the heuristic still gives an order."
+    work: |-
+      Score = out-degree − in-degree = wins − losses.
+      P: `5 − 1 = +4`.
+      Q: `2 − 4 = −2`.
+      R: `4 − 2 = +2`.
+      S: `1 − 5 = −4`.
+      Sorted from highest: P, R, Q, S.
+  - topic: "Week 5 · Scores and rankings"
+    ask: "Three pages link as follows: A → B, A → C, B → C, C → A. All start with PageRank 1/3. After one iteration of the basic formula, what are the scores?"
+    choices:
+      - text: "A = 1/3, B = 1/3, C = 1/3"
+        explains: "That is the starting point. C has two pages linking in and B receives only half of A's score, so they cannot stay equal."
+      - text: "A = 1/3, B = 1/3, C = 2/3"
+        explains: "That passes A's full score along both of its links. A has two outgoing links, so each carries half. These also sum to more than 1."
+      - text: "A = 1/3, B = 1/6, C = 1/2"
+        correct: true
+        explains: "Right. A gets all of C's score. B gets half of A's. C gets half of A's plus all of B's: `1/6 + 1/3 = 1/2`. The total is still 1."
+      - text: "A = 2/3, B = 1/3, C = 1/3"
+        explains: "That gives each page score for its outgoing links. The formula sums over incoming links."
+    work: |-
+      Who links in: A ← C. B ← A. C ← A and B.
+      Out-degrees: A has 2, B has 1, C has 1.
+      `PR(A) = PR(C)/1 = 1/3`.
+      `PR(B) = PR(A)/2 = 1/6`.
+      `PR(C) = PR(A)/2 + PR(B)/1 = 1/6 + 1/3 = 1/2`.
+      Check: `1/3 + 1/6 + 1/2 = 1`.
+  - topic: "Week 5 · Scores and rankings"
+    ask: "A hiring committee's method ranks candidate Ada above Ben. A third candidate, Cy, then applies, nobody changes their view of Ada against Ben, and the method now ranks Ben above Ada. Which of Arrow's properties has been violated?"
+    choices:
+      - text: "Completeness"
+        explains: "The method still gives a verdict on every pair, so it is complete."
+      - text: "Transitivity"
+        explains: "Nothing here shows a cycle. The order is consistent each time and changes between the two times."
+      - text: "No dictator"
+        explains: "No single committee member is deciding the outcome alone."
+      - text: "Independence: the preference between two candidates should not depend on preferences for others"
+        correct: true
+        explains: "Right. Only Cy's presence changed, and the order of Ada and Ben flipped. Arrow's theorem says every method gives up at least one of the properties."
+    work: |-
+      Arrow's properties: complete, transitive, unanimity respected, no dictator, independence from other candidates.
+      Opinions on Ada against Ben did not change.
+      The only change was the arrival of Cy.
+      The Ada and Ben order flipped, so their order depended on a third candidate: independence fails.
+      By Arrow's theorem no system satisfies all the properties, so some such failure is unavoidable.
 ---
-55 multiple-choice questions across all four weeks. Nothing is revealed until you submit: pick an answer for
+68 multiple-choice questions across all five weeks. Nothing is revealed until you submit: pick an answer for
 each question (you can change it as often as you like), then submit to see your score, the correct answer,
 an explanation for the one you chose, and a worked solution.
 

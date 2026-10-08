@@ -1,0 +1,133 @@
+---
+course: data-science
+section: w5-pagerank
+order: 810
+title: Arrow's Impossibility Theorem
+visuals:
+  - type: svg
+    src: data-science/w5-scoring/28.svg
+    caption: Slide 28 of 29 — five desirable properties, and three voters who form a cycle.
+notation:
+  - symbol: "transitive"
+    reads: TRAN-si-tiv
+    means: >-
+      If A is ahead of B and B is ahead of C, then A is ahead of C. Ordinary numbers behave
+      this way, and group preferences may not.
+  - symbol: "complete"
+    reads: complete
+    means: >-
+      Able to give a verdict on every pair: A is preferred, B is preferred, or they are
+      equal. It never answers "cannot say".
+  - symbol: "dictator"
+    reads: dictator
+    means: >-
+      A single voter whose preferences alone decide the outcome whatever everyone else
+      wants.
+questions:
+  - ask: "In the slide's table, voter X ranks Red, Green, Blue; voter Y ranks Blue, Red, Green; voter Z ranks Green, Blue, Red. What happens under pairwise majority voting?"
+    choices:
+      - text: "Red beats Green, Green beats Blue and Blue beats Red, each by 2 to 1, so there is no consistent group order"
+        correct: true
+        explains: >-
+          Every voter is individually consistent and the group is not. The majority
+          preference forms a cycle, which breaks transitivity.
+      - text: "Red wins, since it beats Green and Green beats Blue"
+        explains: >-
+          That reasoning assumes transitivity. Check the remaining pair: Blue beats Red 2 to
+          1, by voters Y and Z.
+      - text: "It is a three-way tie, so the system reports equal preference"
+        explains: >-
+          Each pairwise contest has a clear 2 to 1 winner. Nothing is tied. The results
+          contradict each other.
+      - text: "One of the voters must have made an inconsistent ballot"
+        explains: >-
+          Each ballot is a clean order of three colours. The inconsistency appears only when
+          the ballots are combined.
+  - ask: "A colleague says they will find a ranking method with none of the flaws of Borda, Elo or PageRank. What does Arrow's theorem say about that plan?"
+    choices:
+      - text: "No method satisfies all the desirable properties at once, so the real task is choosing which property to give up for this problem"
+        correct: true
+        explains: >-
+          The theorem turns a search for the perfect method into a choice among trade-offs,
+          and that choice can be made carefully and stated openly.
+      - text: "Ranking is meaningless and should be avoided"
+        explains: >-
+          Imperfect is not meaningless. Rankings work well in practice, and the theorem says
+          none is beyond criticism.
+      - text: "The plan will work with enough voters"
+        explains: >-
+          The impossibility does not depend on the number of voters. The slide's cycle needs
+          only three.
+      - text: "Only a method based on machine learning can succeed"
+        explains: >-
+          The theorem is about any rule that combines individual orders into a group order,
+          however the rule was produced.
+---
+
+By this point you have a toolbox: weighted scores, Elo, Borda, graph orderings, PageRank.
+Each had some weakness. It is reasonable to ask whether a better method exists that has
+none. The slide's answer is a theorem: **there is no ranking system that satisfies all
+desirable properties.**
+
+## The properties
+
+What would you ask of a fair way to combine many voters' rankings into one? The slide lists
+five requirements, and each sounds too obvious to dispute.
+
+| property | in words |
+| --- | --- |
+| **Complete** | Given A and B, it must pick one or say equal preference |
+| **Transitive** | If A > B and B > C, then A > C |
+| **Unanimity** | If every voter prefers A to B, then A wins over B |
+| **No dictator** | The outcome cannot depend only on one voter's preferences |
+| **Independence** | The preference of A to B should not depend on preferences for other candidates |
+
+Arrow's theorem says no system has all five at once. This is not a matter of nobody having
+found one yet. It is proved that none can exist.
+
+## The slide's three voters
+
+| voter | Red | Green | Blue |
+| --- | --- | --- | --- |
+| X | 1 | 2 | 3 |
+| Y | 2 | 3 | 1 |
+| Z | 3 | 1 | 2 |
+
+Each cell is the position that voter gave that colour. So X prefers Red, then Green, then
+Blue. Now hold three two-way contests by majority.
+
+- **Red vs Green.** X and Y put Red ahead. Red wins 2 to 1.
+- **Green vs Blue.** X and Z put Green ahead. Green wins 2 to 1.
+- **Blue vs Red.** Y and Z put Blue ahead. Blue wins 2 to 1.
+
+**Red beats Green, Green beats Blue, Blue beats Red.** That is a cycle. Each voter was
+perfectly consistent, and the group is not. Transitivity fails although nobody did anything
+unreasonable.
+
+This also explains the cycles in the graph-ordering concept. They need not be upsets or
+noise. A group of consistent individuals can produce one.
+
+## What breaks if you force an answer
+
+Try to escape and you give up some other property.
+
+- Declare Red the winner because X said so, and X is a dictator.
+- Use Borda. Here every colour gets `1 + 2 + 3 = 6`, a tie. In general a Borda result can
+  change when a candidate is added or removed, which breaks independence.
+- Refuse to rank them, and the system is not complete.
+
+Every way out costs one of the five.
+
+## What to take from it
+
+The theorem does not say ranking is pointless. Search engines, chess ratings and elections
+work well enough to run the world on. It says that every ranking method contains a
+compromise, so "which method is correct?" is the wrong question. The useful question is
+which property you can best afford to lose for the problem in front of you.
+
+This matches the start of the week. Scores had no gold standard to be checked against, and
+rankings have no perfect method to be built with. In both cases you make a choice, say what
+it was, and test it on cases you understand.
+
+> No ranking method is beyond criticism. Choose the compromise that suits the problem, and
+> say which one you chose.

@@ -1,0 +1,131 @@
+---
+course: data-science
+section: w5-merging
+order: 770
+title: "Directed Graph Orderings: Topological Sort"
+visuals:
+  - type: svg
+    src: data-science/w5-scoring/22.svg
+    caption: Slide 22 of 29 — votes as edges, and a DAG with its valid orders.
+notation:
+  - symbol: "directed graph"
+    reads: directed graph, or digraph
+    means: >-
+      A set of points (vertices) joined by arrows (edges). Each arrow has a direction, here
+      from the preferred item to the other one.
+  - symbol: "(A,B)"
+    reads: the edge from A to B
+    means: >-
+      An arrow starting at A and ending at B. On this slide it records the vote `A > B`.
+  - symbol: "DAG"
+    reads: dag, directed acyclic graph
+    means: >-
+      A directed graph with no cycles: you can never follow the arrows and return to where
+      you started.
+  - symbol: "topological sort"
+    reads: topological sort
+    means: >-
+      A way of listing the vertices of a DAG in a line so that every arrow points forward in
+      the list.
+questions:
+  - ask: "A set of votes gives the edges P→Q, P→R, Q→S and R→S. Which of these is NOT a valid topological order?"
+    choices:
+      - text: "Q, P, R, S"
+        correct: true
+        explains: >-
+          The edge P→Q says P must come before Q. This order puts Q first, so that arrow
+          points backward.
+      - text: "P, Q, R, S"
+        explains: >-
+          Every arrow points forward here: P before Q and R, and both before S. It is valid.
+      - text: "P, R, Q, S"
+        explains: >-
+          Also valid. No vote compares Q with R, so they may go either way round.
+      - text: "None of them, since a DAG has exactly one valid order"
+        explains: >-
+          A DAG often has several. The slide itself lists two for its example, because G is
+          only compared with D.
+  - ask: "The slide's graph allows both ABCGDEF and GABCDEF. What does that tell you about the data?"
+    choices:
+      - text: "The comparisons do not say where G stands relative to A, B and C, so the ranking is partly undetermined"
+        correct: true
+        explains: >-
+          G's only arrow goes to D. Anything consistent with G before D is allowed. The
+          method is reporting that it has no evidence about G against the others.
+      - text: "The graph contains a cycle"
+        explains: >-
+          A cycle would mean no valid order at all. Two valid orders means missing
+          comparisons, not contradictory ones.
+      - text: "G is tied for first with A"
+        explains: >-
+          Nothing says they are equal. Nothing compares them at all, which is a different
+          situation from a tie.
+      - text: "One of the two orders is a mistake"
+        explains: >-
+          Both put every arrow pointing forward, so both are consistent with every vote
+          cast.
+---
+
+Elo processed match results one at a time. Another way to use them is to lay out every
+result at once as a picture. Draw a dot for each team. Whenever A beats B, draw an arrow
+from A to B. The slide: **treating the vote (A>B) as an edge (A,B) yields a directed
+graph.**
+
+A ranking is then a way of lining the dots up from left to right. A good ranking has the
+arrows pointing forward, from better to worse.
+
+## The consistent case
+
+Suppose the results never contradict each other. There is no loop where A beats B, B beats
+C, and C beats A. **If there are no inconsistencies, we get a directed acyclic graph
+(DAG).** Acyclic means that following the arrows can never bring you back to where you
+began.
+
+For a DAG a perfect line-up always exists: an order in which **every** arrow points
+forward. Finding one is called a *topological sort*. The slide: **topologically sorting this
+DAG gives a reasonable order.**
+
+## The slide's graph
+
+The graph has seven vertices and these arrows:
+
+- A → B
+- B → C, B → D, B → E
+- C → E
+- D → E
+- G → D
+- E → F
+
+Build an order by repeatedly taking a vertex that has no arrows coming in from vertices
+still waiting.
+
+1. Nothing beats A, and nothing beats G. Either can go first.
+2. Take A. Now B is free. Take B, then C.
+3. D still waits for G. Take G, then D.
+4. E needed B, C and D, and all are placed. Take E, then F.
+
+That gives **ABCGDEF**, one of the two orders on the slide. Take G first in step 1 and you
+get the other, **GABCDEF**.
+
+## Two answers
+
+The data does not settle where G belongs. G was compared with D and nobody else, so the
+votes say G is above D and say nothing about G against A, B or C. Both orders respect every
+vote cast.
+
+A topological sort tells you which orderings are consistent with the evidence. When several
+are, the evidence is incomplete, and the algorithm's choice among them is arbitrary. Elo and
+PageRank will always give you a single number per item. A DAG ordering shows you where the
+comparisons run out.
+
+It is also easy to explain. For any two items joined by a path of arrows you can point to
+the chain of results that puts one above the other.
+
+## The condition
+
+All of this depends on the word *acyclic*. Real results contain upsets, and one upset can
+close a loop. Then no order puts every arrow forward, and a topological sort does not exist.
+The next concept deals with that case.
+
+> If the comparisons never contradict each other, a topological sort gives an order that
+> respects all of them, and there may be more than one.

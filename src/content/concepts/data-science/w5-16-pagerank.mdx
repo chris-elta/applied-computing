@@ -1,0 +1,149 @@
+---
+course: data-science
+section: w5-pagerank
+order: 790
+title: "PageRank: Importance from Links"
+visuals:
+  - type: svg
+    src: data-science/w5-scoring/24.svg
+    caption: Slide 24 of 29 — the random walk and the basic PageRank formula.
+  - type: svg
+    src: data-science/w5-scoring/25.svg
+    caption: Slide 25 of 29 — the iteration in four steps.
+  - type: svg
+    src: data-science/w5-scoring/27.svg
+    caption: Slide 27 of 29 — top Wikipedia pages by PageRank, over all pages and over people only.
+notation:
+  - symbol: "PR_j(v)"
+    reads: P R sub j of v
+    means: >-
+      The PageRank score of page `v` after `j` rounds of updating. The subscript counts
+      rounds and is not a multiplication.
+  - symbol: "Σ"
+    reads: sigma, or the sum of
+    means: >-
+      Add up the expression that follows, once for each item named underneath the symbol.
+  - symbol: "(u,v) ∈ E"
+    reads: the edge u to v is in E
+    means: >-
+      There is a link from page `u` to page `v`. `E` is the set of all links, and `∈` means
+      "is a member of".
+  - symbol: "out-degree(u)"
+    reads: out degree of u
+    means: >-
+      The number of links leaving page `u`.
+  - symbol: "G"
+    reads: G
+    means: >-
+      The whole graph: every page together with every link.
+questions:
+  - ask: "Page X has a score of 0.6 and links to three pages, one of which is V. How much does X contribute to V's score in the next round?"
+    choices:
+      - text: "0.2"
+        correct: true
+        explains: >-
+          X divides its score equally among its outgoing links: `0.6 / 3 = 0.2`. A page
+          that links to many pages passes less along each link.
+      - text: "0.6"
+        explains: >-
+          That would hand X's full score to every page it links to, creating score from
+          nothing. The formula divides by out-degree.
+      - text: "1.8"
+        explains: >-
+          That multiplies by the out-degree. More outgoing links make each one worth less.
+      - text: "It depends on how many pages link to V"
+        explains: >-
+          That affects V's total, which sums over all pages linking in. X's own contribution
+          depends only on X's score and X's out-degree.
+  - ask: "Page P has 50 incoming links from pages nobody links to. Page Q has 3 incoming links from very high-scoring pages. Why might Q get the higher PageRank?"
+    choices:
+      - text: "Each link passes on a share of the linking page's own score, so links from important pages are worth more"
+        correct: true
+        explains: >-
+          This is what sets PageRank apart from counting links. It is the fix for the vote
+          counting problem: who points to you matters, not only how many.
+      - text: "PageRank ignores pages that have many links"
+        explains: >-
+          It ignores nothing. Fifty small contributions can still add up to less than three
+          large ones.
+      - text: "Q's links are newer"
+        explains: >-
+          Time does not appear in the formula. Only the link structure does.
+      - text: "PageRank counts outgoing links, and Q has more"
+        explains: >-
+          A page's own outgoing links do not raise its score. They determine how its score
+          is shared out.
+---
+
+A tourist is wandering around Wikipedia. They start on a random page, click a random link on
+it, then a random link on the page they land on, and keep going for a very long time. Where
+are they likely to be?
+
+They are probably not on an obscure page that nothing links to. They are probably on a page
+that many paths lead to. The slide defines PageRank this way: **PageRank(v,G) corresponds to
+the probability that a random walk on G ends up at vertex v.** A page is important if a
+random walker is often found there.
+
+## The formula
+
+```
+PR_j(v) = Σ over links (u,v) of   PR_{j−1}(u) / out-degree(u)
+```
+
+In words: to get page `v`'s new score, look at every page `u` that links to `v`. Each such
+page passes on its own previous score, divided by the number of links it has. Add up what
+arrives.
+
+| symbol | meaning |
+| --- | --- |
+| `v` | The page we are computing PageRank for |
+| `(u,v) ∈ E` | An edge from page `u` to page `v` |
+| `PR_{j−1}(u)` | PageRank of `u` from the previous iteration |
+| `out-degree(u)` | Number of outgoing links from `u` |
+
+The division comes from the walker. From page `u` they pick one of its links at random. If
+`u` has four links, a quarter of the time they come to `v`. So `u` sends a quarter of its
+score along each link.
+
+## It is circular, and that is fine
+
+A page's score depends on the scores of the pages linking to it, which depend on the scores
+of the pages linking to *them*. The slide calls it a **recursive formula** that **defines an
+iterative algorithm, which quickly converges in practice.**
+
+1. **Start** by giving all pages an equal score, such as `1/N` for `N` pages.
+2. **In each iteration**, update each page's score using the formula. Pages receive
+   fractional contributions from the pages that link to them.
+3. **Repeat** until the scores stop changing much. The algorithm has then converged.
+4. **After convergence**, the scores are the steady-state probabilities of the random walk.
+
+You begin with a guess everyone knows is wrong, that all pages are equal, and each pass
+makes it less wrong.
+
+## Why this beats counting links
+
+Counting incoming links is vote counting again. PageRank weights each link by the score of
+the page it comes from. One link from a highly ranked page can outweigh fifty links from
+pages nobody visits. Elo handled the same problem for match results.
+
+## All roads lead to Rome
+
+The slide's title continues: **"…then Rome must be an important place."** It then shows the
+top Wikipedia pages by PageRank.
+
+- **Over all pages:** Napoleon, George W. Bush, Carl Linnaeus, Jesus, Barack Obama,
+  Aristotle and so on.
+- **Over links between people only:** George W. Bush, Bill Clinton, William Shakespeare,
+  Ronald Reagan and so on.
+
+The lists differ because the graphs differ. Carl Linnaeus, who named a great many species,
+is linked from a huge number of species pages. Restrict the graph to people and those links
+vanish, and so does he.
+
+The slide calls PageRank **a good feature to measure centrality or importance of
+vertices.** Note the word *feature*. PageRank measures how connected a page is in one
+particular graph. It does not measure fame, merit or truth. It is a proxy, and which graph
+you feed it changes the answer.
+
+> A page is important if important pages link to it. Start with equal scores and keep
+> passing them along the links until they settle.

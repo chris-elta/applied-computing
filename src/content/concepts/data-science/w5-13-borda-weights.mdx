@@ -1,0 +1,113 @@
+---
+course: data-science
+section: w5-merging
+order: 760
+title: Weights for Borda's Method
+visuals:
+  - type: svg
+    src: data-science/w5-scoring/21.svg
+    caption: Slide 21 of 29 — linear weights, and weights spaced along a normal curve.
+notation:
+  - symbol: "linear weights"
+    reads: linear weights
+    means: >-
+      Position scores that go up by the same amount each step, such as 1, 2, 3, 4, 5. Every
+      one-place difference is worth the same.
+  - symbol: "normally distributed"
+    reads: normally distributed
+    means: >-
+      Following the bell curve from week 2: most values bunched near the middle, few far out
+      at either end.
+questions:
+  - ask: "What does using linear position weights (1, 2, 3, 4, 5) assume?"
+    choices:
+      - text: "That we are equally confident about every position, so 1st versus 2nd means as much as 3rd versus 4th"
+        correct: true
+        explains: >-
+          Equal steps in score say equal steps in quality and equal trust in each one. The
+          slide's objection is that this is often untrue of how people rank.
+      - text: "That the items' true scores are normally distributed"
+        explains: >-
+          That is the assumption behind the alternative. Linear weights assume even spacing.
+      - text: "That every voter ranked the items in the same order"
+        explains: >-
+          Borda's method exists because voters disagree. The weights say nothing on that.
+      - text: "That only first place matters"
+        explains: >-
+          That would be a weight on first place and zero elsewhere. Linear weights count
+          every position.
+  - ask: "A panel ranks 100 essays. Judges are sure of their top and bottom few, but say that ordering essays 45 to 55 was close to guessing. What does the lecture suggest?"
+    choices:
+      - text: "Use normally distributed weights, so middle positions get nearly equal scores and the extremes are well separated"
+        correct: true
+        explains: >-
+          The weights should match the confidence. Small weight differences in the middle
+          stop near-guesses from deciding the totals.
+      - text: "Use linear weights, since they treat all essays fairly"
+        explains: >-
+          Linear weights would let a judge's coin-flip between 48th and 49th count as much
+          as a firm 1st against 2nd.
+      - text: "Throw out the middle of each ranking"
+        explains: >-
+          That discards information. Down-weighting keeps the middle while trusting it less.
+      - text: "Give the middle positions the largest differences so they get sorted out"
+        explains: >-
+          That amplifies the least reliable judgements, the opposite of what you want.
+---
+
+Borda's method on the last slide gave first place 1 point, second place 2 and so on. That
+looks like the only natural choice. It is one of many, and it carries an assumption.
+
+## What linear weights say
+
+With scores 1, 2, 3, 4, 5, moving up one place is always worth exactly one point. The slide
+states the assumption: **linear position weights make sense when we have equal confidence
+across all positions.** The gap between 1st and 2nd is treated as just as real, and just as
+well judged, as the gap between 3rd and 4th.
+
+## Are you that confident?
+
+Rank ten films you have seen. Your favourite and your least favourite come to mind
+immediately. Is the film you put 5th really better than the one you put 6th? Ask yourself
+tomorrow and you may swap them.
+
+The slide says the same: **we presumably trust our distinctions among the best/worst more
+than the middle elements.** Voters are fairly reliable at the ends and unreliable in the
+middle. Linear weights ignore that. A coin-flip between 5th and 6th moves the total by a
+full point, exactly as much as a firm judgement between 1st and 2nd.
+
+## The alternative: weights from a normal curve
+
+The slide suggests **normally distributed weights**, and the figure shows how to build them.
+It is a bell curve cut by vertical lines into slices of equal area. Look at where the lines
+fall on the horizontal axis.
+
+- In the **middle** the curve is tall, so the lines are packed close together.
+- In the **tails** the curve is low, so the lines are far apart.
+
+Use the positions of those lines as the scores for ranks 1, 2, 3 and so on. The middle ranks
+get scores that are almost equal, and the top and bottom ranks get scores that are well
+separated.
+
+| | step between neighbouring ranks |
+| --- | --- |
+| Linear weights | The same everywhere |
+| Normal weights | Large at the top and bottom, small in the middle |
+
+Swapping two middle items now barely changes a total, and swapping the top two changes it a
+lot. The weights carry the confidence.
+
+There is a second way to see it, using week 2. If the underlying quality of the items is
+roughly bell-shaped, most items really are close together in the middle, and only a few
+stand apart at the ends. Linear scores turn ranks back into evenly spaced qualities. Normal
+weights turn them back into something shaped like the qualities probably were.
+
+## Which to use
+
+Neither is correct in general. Linear weights are easier to explain and suit cases where
+each position reflects an objective measurement. Normal weights suit subjective rankings of
+many items. As with the transcript score, the choice of weights is a claim about your data,
+and you should be able to state it.
+
+> Weights encode how much you trust each distinction. If the middle of a ranking is close to
+> guesswork, give it small differences.

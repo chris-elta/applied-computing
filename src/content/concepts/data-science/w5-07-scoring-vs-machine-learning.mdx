@@ -1,0 +1,115 @@
+---
+course: data-science
+section: w5-proxies
+order: 700
+title: Scoring vs. Machine Learning
+visuals:
+  - type: svg
+    src: data-science/w5-scoring/04.svg
+    caption: Slide 4 of 29 — scoring vs. regression, and why training data is usually missing.
+  - type: svg
+    src: data-science/w5-scoring/09.svg
+    caption: Slide 9 of 29 — train with a gold standard, evaluate with proxies.
+notation:
+  - symbol: "regression"
+    reads: regression
+    means: >-
+      A machine learning method that learns a formula from examples with known answers, so
+      it can predict the answer for new cases. The real treatment comes later in the course.
+  - symbol: "training data"
+    reads: training data
+    means: >-
+      Examples that come with the right answer attached, which a learning method uses to fit
+      its formula.
+questions:
+  - ask: "You want a score for how good a restaurant is. You have price, number of reviews and distance from downtown, and no agreed list of true quality values. Why can you not train a regression to produce the score?"
+    choices:
+      - text: "Regression needs training data with the right answer for each example, and there is no gold standard for quality here"
+        correct: true
+        explains: >-
+          Learning a function means fitting it to known answers. Without them you design the
+          score by hand and then evaluate it against proxies.
+      - text: "Regression only works with one input variable"
+        explains: >-
+          It takes many features. The missing piece is the target it would learn to predict.
+      - text: "Three features are too few for machine learning"
+        explains: >-
+          The number of features is not the obstacle. A thousand features with no answers
+          would leave you in the same place.
+      - text: "Scores and regression functions are different kinds of formula"
+        explains: >-
+          They can be the same kind: a weighted combination of features. The difference is
+          whether the weights are learned from answers or chosen by a designer.
+  - ask: "A school district ranks teachers by their students' test scores and dismisses the lowest ranked. In the lecture's terms, what went wrong?"
+    choices:
+      - text: "A proxy was treated as a gold standard"
+        correct: true
+        explains: >-
+          Test scores are correlated with teaching quality and are also driven by resources,
+          background and much else. Acting on them as though they were the truth is the
+          pattern the slide calls a weapon of math destruction.
+      - text: "The district should have used regression instead of a score"
+        explains: >-
+          Regression would need true teaching quality to train on, which is exactly what
+          nobody has.
+      - text: "Test scores are unrelated to teaching"
+        explains: >-
+          They are related, which is why they work as a proxy. The mistake is treating a
+          related quantity as the thing itself.
+      - text: "Rankings should never be used for decisions"
+        explains: >-
+          Rankings are used for decisions all the time. The trouble here is what the ranking
+          was built from and how much weight it was given.
+---
+
+If you already know some machine learning, the last few concepts may have seemed strange.
+Why design a scoring formula by hand and argue about weights? Why not let an algorithm learn
+the best weights from data?
+
+The slides answer directly: **the critical issue in designing scoring functions is that
+there is no gold standard / right answer.**
+
+## What learning needs
+
+A method like linear regression can learn a scoring function from features. It needs
+*training data* to do so: a pile of examples, each with the right answer attached. It
+adjusts its weights until its outputs match those answers. The slide adds: **which
+generally you don't** have.
+
+| you have | you can | example |
+| --- | --- | --- |
+| A gold standard | **Train** a regression function to predict it accurately | Images labelled "cancer" or "no cancer" by doctors |
+| Only proxies | **Evaluate** your scoring function, and no more | A student-potential score checked against later results |
+
+The second row describes most of this week. With proxies you can design a score and then
+ask whether it lines up with things you would expect it to line up with. You cannot fit it
+to the truth, because the truth is not in your data.
+
+## Google is a partial exception
+
+The slide gives one line: **Google's ranking algorithms train on click data.** Nobody knows
+the true best page for a search. But when millions of people click the third result and not
+the first, that behaviour is close enough to an answer to train on. Large amounts of
+behaviour can stand in for a gold standard, which is why companies with that kind of data
+learn their rankings while everyone else designs theirs.
+
+Clicks are still a proxy, though. People also click on what is eye-catching.
+
+## Weapons of math destruction
+
+The last line of the slide: **"Weapons of *Math* Destruction" happen when you confuse
+proxies for gold standards**, for example student test scores for teaching quality. The
+phrase is the title of Cathy O'Neil's book.
+
+Student test scores are a reasonable proxy for teaching quality, in that the two are
+related. They are also driven by class size, home resources, what students knew the year
+before and plain luck. Use them to prompt a conversation and little harm is done. Use them
+as the truth, and rank, reward and dismiss teachers on them, and you are making consequential
+decisions on a number that mostly measures other things. Because it is a number, it is
+harder to argue with than a person's judgement would be.
+
+What makes a score dangerous is how firmly people act on it compared with how well it
+tracks the goal.
+
+> A gold standard lets you train a predictor. A proxy only lets you evaluate a score. The
+> damage comes from treating the second situation as the first.

@@ -1,0 +1,112 @@
+---
+course: data-science
+section: w5-scoring
+order: 640
+title: Scores and Rankings
+visuals:
+  - type: svg
+    src: data-science/w5-scoring/02.svg
+    caption: Slide 2 of 29 — scoring functions and rankings defined.
+  - type: svg
+    src: data-science/w5-scoring/03.svg
+    caption: Slide 3 of 29 — course grades as a scoring function.
+notation:
+  - symbol: "scoring function"
+    reads: scoring function
+    means: >-
+      A rule that takes several measurements about one item and returns a single number,
+      chosen to bring out one property. A course grade computed from labs, quizzes and an
+      exam is one.
+  - symbol: "ranking"
+    reads: ranking
+    means: >-
+      An ordering of items from first to last, usually made by sorting their scores.
+  - symbol: "validation data"
+    reads: validation data
+    means: >-
+      Cases where the right answer is already known, so a method's output can be checked
+      against it.
+questions:
+  - ask: "What does a scoring function do to the data it is given?"
+    choices:
+      - text: "Reduces several dimensions to a single value, to highlight one particular property"
+        correct: true
+        explains: >-
+          That is the slide's definition. The reduction is deliberate: you give up detail to
+          get one number you can compare and sort.
+      - text: "Sorts the items from best to worst"
+        explains: >-
+          That is a ranking. A ranking is usually made from scores, by sorting them, but the
+          score comes first.
+      - text: "Predicts a known right answer from features"
+        explains: >-
+          That describes a trained model. A score is normally designed precisely because no
+          right answer is on hand.
+      - text: "Removes the dimensions that do not matter"
+        explains: >-
+          It combines dimensions rather than removing them. Every input can still move the
+          result.
+  - ask: "Two instructors weight the same course differently and give one student a B+ and an A−. Which property of grading does this show, and why does grading still work?"
+    choices:
+      - text: "Arbitrariness, and it still works because grading is generally robust, so students land in similar places across their classes"
+        correct: true
+        explains: >-
+          Each teacher's formula differs and there is no right grade to check against, yet
+          the outcomes agree broadly. Many reasonable scoring functions give similar orders.
+      - text: "A bug, since two correct scoring functions must agree exactly"
+        explains: >-
+          That assumes a right grade exists. The slide says there is none, so no formula can
+          be checked for exactness.
+      - text: "Lack of validation data, and it means grades carry no information"
+        explains: >-
+          There is no validation data, but that does not make grades empty. They are
+          consistent across classes, which is evidence they measure something.
+      - text: "Robustness, meaning every instructor uses the same weights"
+        explains: >-
+          Robustness is about the results agreeing despite different weights, not about the
+          weights being the same.
+---
+
+Think about how your grade in a course gets made. There are lab marks, quiz marks, an exam
+mark, perhaps participation. Somebody decides the labs are worth 30% and the exam 40%, adds
+it up, and you become one number. Then the class list is sorted by that number.
+
+Those are the two objects this week is about.
+
+| | what it is | example |
+| --- | --- | --- |
+| **Scoring function** | A measure that reduces multi-dimensional data to a single value, to highlight some particular property | Your percentage in a course |
+| **Ranking** | An ordering of items, usually made by sorting scores | Your position in the class |
+
+The slide shows a wall of logos: college rankings, FIFA world rankings, tennis rankings.
+Every one of them is a formula somebody chose, followed by a sort.
+
+## What grading shows about scores
+
+The lecture uses grades because you already know them from the inside. It points out three
+things about grading systems.
+
+- **Degrees of arbitrariness.** Each teacher differs. One drops the lowest quiz, another
+  does not. Neither is wrong.
+- **Lack of validation data.** There is no *right* grade. Nobody can look up what you
+  deserved and compare it with what the formula produced.
+- **General robustness.** Students tend to get similar grades in all their classes anyway.
+  Different formulas, written by different people, mostly agree about who is doing well.
+
+The third point is what keeps the first two from being fatal. If scores were arbitrary and
+also disagreed wildly, they would be noise. Because sensible formulas tend to agree, a
+score that is not provably right can still be useful.
+
+## Scores and statistics
+
+The slide ends with: **calling scores *statistics* lends them more dignity.** A batting
+average, a GPA and a credit score are all computed the same way a grade is: someone chose
+inputs and weights. The name does not change what the number is. When you meet a statistic,
+ask what was combined, with what weights, and who decided.
+
+The rest of the week follows from the missing right answer. With no answer to check against,
+you cannot test a score the way you test a prediction, so you need other ways to tell a good
+one from a bad one.
+
+> A score is a designed number, not a measured one. Someone chose what goes in and how much
+> each part counts.

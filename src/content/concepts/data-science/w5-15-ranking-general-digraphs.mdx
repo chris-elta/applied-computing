@@ -1,0 +1,128 @@
+---
+course: data-science
+section: w5-merging
+order: 780
+title: "Ranking General Digraphs: When Results Contradict"
+visuals:
+  - type: svg
+    src: data-science/w5-scoring/23.svg
+    caption: Slide 23 of 29 — wrong-way edges, NP-completeness and the degree heuristic.
+notation:
+  - symbol: "out-degree"
+    reads: out degree
+    means: >-
+      The number of arrows leaving a vertex. With arrows drawn from winner to loser, it is
+      the number of wins.
+  - symbol: "in-degree"
+    reads: in degree
+    means: >-
+      The number of arrows arriving at a vertex. With the same convention, the number of
+      losses.
+  - symbol: "NP-complete"
+    reads: N P complete
+    means: >-
+      A class of problems for which no efficient exact method is known. In practice: do not
+      expect to find the guaranteed best answer for large inputs.
+  - symbol: "heuristic"
+    reads: hyoo-RIS-tic
+    means: >-
+      A practical rule that usually gives a good answer quickly, with no guarantee that it is
+      the best one.
+questions:
+  - ask: "Results: A beats B, B beats C, C beats A, and A beats D. Sorting by out-degree minus in-degree gives the order A, B, C, D. How many wrong-way edges does that order have?"
+    choices:
+      - text: "One: C beats A points backward"
+        correct: true
+        explains: >-
+          A, B and C form a cycle, so at least one of its three arrows must point backward
+          in any order. This order keeps it to one, the minimum possible.
+      - text: "Zero, since the heuristic produces a valid topological sort"
+        explains: >-
+          A topological sort exists only for a DAG. The cycle A, B, C rules out an order
+          with every arrow forward.
+      - text: "Three, one for each edge of the cycle"
+        explains: >-
+          A beats B and B beats C both point forward in A, B, C, D. Only the edge that closes
+          the loop points back.
+      - text: "Two: C beats A and A beats D"
+        explains: >-
+          A is before D in the order, so A beats D points forward.
+  - ask: "Why does the lecture use a heuristic here and not compute the best order exactly?"
+    choices:
+      - text: "Finding the fewest edges to cut to leave a DAG is NP-complete, so no efficient exact method is known"
+        correct: true
+        explains: >-
+          For a handful of teams you could try every order. For hundreds of items that is
+          hopeless, and a fast rule that is usually good is the practical choice.
+      - text: "The exact answer does not exist"
+        explains: >-
+          It exists: some order has the fewest wrong-way edges. The difficulty is the cost
+          of finding it.
+      - text: "The heuristic always finds the exact answer anyway"
+        explains: >-
+          It carries no such guarantee. That is the difference between a heuristic and an
+          exact algorithm.
+      - text: "Exact methods only work on undirected graphs"
+        explains: >-
+          The direction of the edges is not the obstacle. The number of possible orders is.
+---
+
+The topological sort needed results that never contradict each other. A real season is not
+like that. A beats B, B beats C, and then C beats A. Follow the arrows and you return to
+where you started. That is a cycle, and with a cycle no line-up puts every arrow pointing
+forward. Wherever you place those three teams, at least one result will say the lower team
+beat the higher one.
+
+## A new goal
+
+Since perfection is impossible, look for the least bad order. The slide: **for general
+directed graphs, we seek the order minimizing the number of "wrong way" edges.** A wrong-way
+edge is a result your ranking contradicts, where the lower-ranked team won. Fewer of them
+means a ranking that agrees with more of the evidence.
+
+Put another way: find the smallest set of results to disregard so that the remainder is
+consistent, then topologically sort what is left.
+
+## The exact answer is too expensive
+
+The slide gives the bad news in one line: **cutting the minimum number of edges to leave a
+DAG is NP-complete.** You do not need the formal definition here. The practical meaning is
+that no efficient method is known that always finds the best answer. You could try every
+possible order, but ten teams already have more than three million orders and the number
+explodes from there.
+
+## A heuristic
+
+The slide: **reasonable heuristics start by sorting by the difference between in/out
+degree.**
+
+Count each vertex's arrows. With arrows drawn from winner to loser:
+
+- **out-degree** = arrows leaving = wins
+- **in-degree** = arrows arriving = losses
+- **score** = out-degree − in-degree
+
+| player | wins (out-degree) | losses (in-degree) | score |
+| --- | --- | --- | --- |
+| A | 4 | 1 | +3 |
+| B | 3 | 2 | +1 |
+| C | 2 | 3 | −1 |
+| D | 1 | 4 | −3 |
+
+Sort by score: A, B, C, D. A player who beats many and loses to few goes near the top. That
+tends to make most arrows point forward, which was the goal.
+
+## What it gives up
+
+This score is wins minus losses, which is close to the vote counting the lecture warned
+about. It treats every opponent as equal, so a schedule full of weak opponents still
+inflates a score. The slide says heuristics *start* here. It is a quick, explainable first
+ordering, and you can refine it afterwards, for example by swapping neighbours when a swap
+reduces the wrong-way count.
+
+You have now seen the same data handled two ways. A DAG gets an exact answer by topological
+sort. A graph with cycles gets an approximate answer by a degree count. The first job with
+real comparison data is therefore to check for cycles.
+
+> When results contradict each other, no ranking agrees with all of them. Aim for the fewest
+> wrong-way results, and accept a good heuristic, because the exact optimum is too costly.

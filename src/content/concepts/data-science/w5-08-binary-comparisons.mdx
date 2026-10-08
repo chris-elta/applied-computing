@@ -1,0 +1,98 @@
+---
+course: data-science
+section: w5-elo
+order: 710
+title: Ranking from Binary Comparisons
+visuals:
+  - type: svg
+    src: data-science/w5-scoring/12.svg
+    caption: Slide 12 of 29 — four advanced ranking techniques and where each is used.
+  - type: svg
+    src: data-science/w5-scoring/13.svg
+    caption: Slide 13 of 29 — binary comparisons, and why vote counts fail.
+notation:
+  - symbol: "binary comparison"
+    reads: binary comparison
+    means: >-
+      One judgement between two items that says which is preferred: a match result, a vote
+      for one candidate over another, a choice of one offer over another.
+  - symbol: "A > B"
+    reads: A beats B, or A is preferred to B
+    means: >-
+      In this week's slides the `>` sign means preferred or won, not numerically greater.
+questions:
+  - ask: "Team A has 3 wins, all against top teams. Team B has 5 wins, all against weak teams. A table sorted by wins puts B first. What is the problem?"
+    choices:
+      - text: "Win counts treat every opponent as equally hard, so they fail when teams face different levels of competition"
+        correct: true
+        explains: >-
+          The slide puts this point in red. A count records how many you beat and nothing
+          about who they were.
+      - text: "Nothing is wrong, since more wins always means a better team"
+        explains: >-
+          That holds only if everyone plays the same opponents. With different schedules the
+          counts are not comparable.
+      - text: "Binary comparisons cannot be used for ranking"
+        explains: >-
+          They are the raw material of many ranking systems. The fault is in the counting.
+      - text: "Three wins is too few to rank a team"
+        explains: >-
+          More games would help, but a team with 30 wins over weak opponents has the same
+          problem.
+---
+
+The scores so far this week had a common shape: take some measurements of an item, normalize
+them, and combine them with weights. The slide says so: **linear combinations of normalized
+values generally yield reasonable scores.** For much of data science that recipe is enough.
+
+Some things come with no measurements, though. A chess player has no height, weight or
+speed that makes them good at chess. What you have is a record of who they beat and who beat
+them. To rank chess players you have to work from those results.
+
+## The raw material
+
+**Rankings are often formed by analyzing series of binary comparisons.** A binary comparison
+is one judgement between two items:
+
+- Team A beats team B.
+- An expert votes for A instead of B.
+- A student chooses university A over B.
+
+Each one is a small piece of evidence about the order. The slides write it `A > B`, which
+you read as "A is preferred to B".
+
+## Counting wins
+
+The simplest thing to do is count wins and sort by the count. The slide warns against it in
+red: **vote counts fail to pick the best when different teams face different levels of
+competition.**
+
+| team | wins | opponents |
+| --- | --- | --- |
+| A | 3 | all top teams |
+| B | 5 | all weak teams |
+
+Counting says B is better. Most people would say A is. A count treats every win as the same
+size, and wins are not the same size: beating a strong opponent is better evidence than
+beating a weak one. If every team played every other team equally often the counts would be
+fair. Real schedules, expert panels and search results are rarely that tidy.
+
+Every technique in the rest of the week is a way of making a comparison count for more or
+less depending on who it involved.
+
+## Four techniques
+
+| technique | core idea | example use |
+| --- | --- | --- |
+| **Elo** | Pairwise competition and probability updates | Sports, games |
+| **Merging ranks** | Combining multiple ranking lists | Voting, meta-search |
+| **Graph orderings** | Use directional relationships | Tournaments, citations |
+| **PageRank** | Importance through network links | Web search, influence detection |
+
+They take different inputs. Elo takes a stream of match results over time. Merging takes
+several complete rankings and produces one. Graph orderings and PageRank take the whole web
+of who-beat-whom, or who-links-to-whom, at once. Part of the skill is seeing which shape
+your data has.
+
+> A list of who beat whom is enough to build a ranking, provided you account for the
+> strength of the opponents and do not simply count wins.

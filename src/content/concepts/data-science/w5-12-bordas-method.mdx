@@ -1,0 +1,123 @@
+---
+course: data-science
+section: w5-merging
+order: 750
+title: "Merging Rankings: Borda's Method"
+visuals:
+  - type: svg
+    src: data-science/w5-scoring/19.svg
+    caption: Slide 19 of 29 — merging rankings from voters or from different features.
+  - type: svg
+    src: data-science/w5-scoring/20.svg
+    caption: Slide 20 of 29 — four voters ranking five items, and the Borda totals.
+notation:
+  - symbol: "Borda"
+    reads: BOR-da
+    means: >-
+      Jean-Charles de Borda, the eighteenth-century French mathematician the method is named
+      after.
+  - symbol: "position score"
+    reads: position score
+    means: >-
+      The points an item gets for where one voter placed it. On the slide, first place
+      scores 1, second scores 2 and so on, so a lower total is better.
+questions:
+  - ask: "Three voters rank three items. Voter 1: X, Y, Z. Voter 2: Y, X, Z. Voter 3: X, Z, Y. Scoring each position by its number (1st = 1), what are the Borda totals?"
+    choices:
+      - text: "X: 4, Y: 6, Z: 8, so the merged order is X, Y, Z"
+        correct: true
+        explains: >-
+          X is placed 1st, 2nd, 1st for `1 + 2 + 1 = 4`. Y gets `2 + 1 + 3 = 6`. Z gets
+          `3 + 3 + 2 = 8`. The lowest total ranks first.
+      - text: "X: 2, Y: 1, Z: 0, so the merged order is X, Y, Z"
+        explains: >-
+          Those are counts of first-place votes. Borda uses every position on every ballot.
+      - text: "X: 8, Y: 6, Z: 4, so the merged order is Z, Y, X"
+        explains: >-
+          The totals are attached to the wrong items. Z was never placed first and cannot
+          have the best total.
+      - text: "X: 4, Y: 6, Z: 8, so the merged order is Z, Y, X"
+        explains: >-
+          The totals are right and the reading is reversed. With first place scoring 1, a
+          small total means the item was placed near the top.
+  - ask: "Five voters rank A, B and C. Three vote A, B, C. Two vote B, C, A. A has the most first-place votes. Which item wins under Borda's method with positions scored 1, 2, 3?"
+    choices:
+      - text: "B, with a total of 8 against A's 9"
+        correct: true
+        explains: >-
+          A: `3 × 1 + 2 × 3 = 9`. B: `3 × 2 + 2 × 1 = 8`. C: `3 × 3 + 2 × 2 = 13`. B is
+          never placed last, and Borda rewards that. Two voters put A at the bottom.
+      - text: "A, because it has the most first-place votes"
+        explains: >-
+          That is a count of first places. Borda also charges A for the two ballots that
+          placed it last.
+      - text: "A and B tie"
+        explains: >-
+          The totals are 9 and 8. They are close but not equal.
+      - text: "C, with the highest total of 13"
+        explains: >-
+          With first place scoring 1, the highest total is the worst.
+---
+
+Four friends each write down their order of preference for five restaurants. The lists
+disagree. You need one list. How do you combine them?
+
+The slide frames the same problem two ways.
+
+- **An election.** Determine the winner of a multiparty election where each voter ranks the
+  candidates in order of preference: 1. BCIT, 2. MIT, 3. Illinois and so on.
+- **Features.** Merge rankings independently drawn on different features. Rank laptops by
+  price, by battery life and by weight, then combine the three orderings.
+
+In the second framing each feature acts as a voter. This approach also avoids the
+normalization problem: once every feature has been turned into ranks, price in dollars and
+battery life in hours are on the same footing.
+
+## Borda's method
+
+**By assigning an increasing score per position, the resulting point total ranks the
+items.** First place scores 1, second scores 2 and so on. Add up each item's scores across
+all voters and sort by the total.
+
+The slide's example has four voters, each ranking five items. Each column is one voter's
+ballot, read from top to bottom.
+
+| position | voter 1 | voter 2 | voter 3 | voter 4 |
+| --- | --- | --- | --- | --- |
+| 1 | A | B | A | A |
+| 2 | C | A | B | B |
+| 3 | B | C | C | D |
+| 4 | D | D | E | C |
+| 5 | E | E | D | E |
+
+Now find each item on every ballot and add its positions.
+
+| item | positions | total |
+| --- | --- | --- |
+| A | 1 + 2 + 1 + 1 | **5** |
+| B | 3 + 1 + 2 + 2 | **8** |
+| C | 2 + 3 + 3 + 4 | **12** |
+| D | 4 + 4 + 5 + 3 | **16** |
+| E | 5 + 5 + 4 + 5 | **19** |
+
+The lowest total wins, so the merged ranking is A, B, C, D, E.
+
+## Which way the points run
+
+Here a **low** total is good, because first place earns 1. Many descriptions of Borda's
+method score the other way, with first place earning the most points and a high total being
+good. Both give the same order. When you read someone's Borda totals, check which way the
+points run before you name the winner.
+
+## Why not count first-place votes?
+
+Counting first places uses one line of each ballot and discards the rest. Borda uses all of
+it. An item that many voters place second, and nobody places last, can beat an item that
+some voters love and others put at the bottom. Borda favours broad acceptability over
+intense support from a few.
+
+That may or may not be what you want. It is a design choice, like the others this week, and
+there are cases where different methods name different winners.
+
+> To merge rankings, give each position a score and add them up. Every line of every ballot
+> counts.

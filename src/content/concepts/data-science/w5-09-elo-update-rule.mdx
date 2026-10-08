@@ -1,0 +1,141 @@
+---
+course: data-science
+section: w5-elo
+order: 720
+title: "Elo Rankings: Adjusting for Surprise"
+visuals:
+  - type: svg
+    src: data-science/w5-scoring/14.svg
+    caption: Slide 14 of 29 — the Elo update rule.
+  - type: svg
+    src: data-science/w5-scoring/15.svg
+    caption: Slide 15 of 29 — the expected match score in terms of the win probability.
+notation:
+  - symbol: "r(A)"
+    reads: r of A
+    means: >-
+      Player A's rating before the match. `r′(A)`, read "r prime of A", is the rating after
+      it. The small mark means the updated version of the same quantity.
+  - symbol: "S_A"
+    reads: S sub A
+    means: >-
+      The actual score of the match for A. On this slide it is `1` for a win and `−1` for a
+      loss. The subscript labels whose score it is and is not a multiplication.
+  - symbol: "μ_A"
+    reads: mew sub A
+    means: >-
+      The expected score for A, worked out from the two ratings before the match. `μ` is the
+      Greek letter mu, the usual symbol for an expected value.
+  - symbol: "k"
+    reads: k
+    means: >-
+      A constant chosen by whoever runs the system. It sets how far a rating can move in one
+      match.
+  - symbol: "P(A>B)"
+    reads: the probability that A beats B
+    means: >-
+      A number between 0 and 1 estimating how likely A is to win.
+questions:
+  - ask: "A is thought to have a 90% chance of beating B. With outcomes scored `+1` and `−1`, what is A's expected score `μ_A`?"
+    choices:
+      - text: "0.8"
+        correct: true
+        explains: >-
+          `1 × 0.9 + (−1) × 0.1 = 0.9 − 0.1 = 0.8`. A loss subtracts, so the expected score
+          is below the win probability.
+      - text: "0.9"
+        explains: >-
+          That is the win probability. It would be the expected score if a loss counted as 0,
+          but on this slide a loss counts as −1.
+      - text: "1.0"
+        explains: >-
+          That is the score of a certain win. A still loses one time in ten.
+      - text: "0.1"
+        explains: >-
+          That is the probability of losing, not an expected score.
+  - ask: "Using the same match with `k = 10`, compare A's rating change if A wins with the change if A loses."
+    choices:
+      - text: "A win gives +2 and a loss gives −18, because the loss is the surprising result"
+        correct: true
+        explains: >-
+          Win: `10 × (1 − 0.8) = +2`. Loss: `10 × (−1 − 0.8) = −18`. The expected result
+          moves the rating a little and the upset moves it a lot.
+      - text: "+10 for a win and −10 for a loss, since `k` fixes the size of the change"
+        explains: >-
+          `k` multiplies the surprise. The change is `k` only when the expected score is 0,
+          which happens for evenly matched players.
+      - text: "+18 for a win and −2 for a loss"
+        explains: >-
+          That is the wrong way round. A favourite gains little for doing what was expected.
+      - text: "+8 for a win and −8 for a loss"
+        explains: >-
+          That uses `k × μ_A` and leaves out the actual result. The update is
+          `k × (S_A − μ_A)`.
+---
+
+A beginner beats another beginner. Separately, a beginner beats a grandmaster. Each of those
+is one win. Should both winners move up the ladder by the same amount?
+
+Clearly not. The first result tells you almost nothing new. The second tells you that your
+ranking was wrong about someone. Elo is a rating system built on that difference. The slide
+puts it this way: **after starting equally ranked, scores are then adjusted to reflect the
+surprise of each match.**
+
+## The update rule
+
+```
+r′(A) = r(A) + k · (S_A − μ_A)
+```
+
+Reading from the left:
+
+- `r(A)` is A's rating before the match and `r′(A)` is the rating after it.
+- `S_A` is what happened: on this slide, `1` if A won and `−1` if A lost.
+- `μ_A` is what the ratings predicted would happen, the *expected score*.
+- `S_A − μ_A` is the **surprise**: actual minus expected.
+- `k` is a dial. The slide says it **modulates the maximum possible swing in any one
+  match.**
+
+So the new rating is the old rating plus `k` times the surprise. If the result matches the
+prediction, the bracket is near zero and little changes. If the result contradicts the
+prediction, the bracket is large and the rating moves a long way.
+
+## The expected score
+
+To use the rule you need `μ_A`. Suppose you have an estimate `P(A>B)` of the probability that
+A beats B. A match scores `+1` with that probability and `−1` otherwise, so the average
+score over many such matches is
+
+```
+μ_A = 1 · P(A>B) + (−1) · (1 − P(A>B))
+```
+
+Three cases:
+
+| `P(A>B)` | `μ_A` | meaning |
+| --- | --- | --- |
+| 0.5 | `0.5 − 0.5 = 0` | Evenly matched |
+| 0.9 | `0.9 − 0.1 = 0.8` | A is a strong favourite |
+| 0.1 | `0.1 − 0.9 = −0.8` | A is a heavy underdog |
+
+## The surprise at work
+
+Take the favourite, with `μ_A = 0.8`, and `k = 10`.
+
+- A wins: `10 × (1 − 0.8) = +2`.
+- A loses: `10 × (−1 − 0.8) = −18`.
+
+Win counts could not do this. The favourite gains little from winning and loses a lot from
+losing, and the underdog's numbers are the mirror image. Beating a strong opponent now
+counts for more than beating a weak one, and nobody had to label opponents as strong or weak
+by hand. The ratings carry that information.
+
+## What is still missing
+
+Where does `P(A>B)` come from? The slide gives a condition: **if the ranking system is
+meaningful, this probability should be a function of the difference between the scores
+`r(A)` and `r(B)`.** A larger rating gap should mean a more lopsided match. The next concept
+finds a function that does this.
+
+> Elo moves a rating by the surprise, actual minus expected. An expected result changes
+> little and an upset changes a lot.

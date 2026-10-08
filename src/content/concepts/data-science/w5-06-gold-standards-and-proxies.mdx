@@ -1,0 +1,112 @@
+---
+course: data-science
+section: w5-proxies
+order: 690
+title: Gold Standards and Proxies
+visuals:
+  - type: svg
+    src: data-science/w5-scoring/08.svg
+    caption: Slide 8 of 29 — gold standards and proxies defined.
+notation:
+  - symbol: "gold standard"
+    reads: gold standard
+    means: >-
+      A label or answer you trust to be correct and that reflects the thing you are really
+      trying to score. A biopsy result is the gold standard for whether a tumour is
+      cancerous.
+  - symbol: "proxy"
+    reads: PROK-see
+    means: >-
+      A quantity you can get hold of that is correlated with what you want to measure, used
+      in place of it. A step count is a proxy for fitness.
+questions:
+  - ask: "A fitness app wants to score how fit its users are. It has daily step counts. What is the step count?"
+    choices:
+      - text: "A proxy: available and correlated with fitness, but not fitness itself"
+        correct: true
+        explains: >-
+          It tends to go up with fitness, and it can also go up for unrelated reasons, such
+          as shaking the watch. A full medical and endurance assessment would be nearer a
+          gold standard.
+      - text: "A gold standard, because it is measured precisely by a sensor"
+        explains: >-
+          Precision is not the test. A gold standard must reflect the scoring goal, and
+          steps are precise about steps, not about fitness.
+      - text: "Neither, since only labels given by experts count as data"
+        explains: >-
+          Proxies are data and are often all you have. What matters is knowing which kind
+          you hold.
+      - text: "A gold standard for users who walk a lot"
+        explains: >-
+          Walking more does not turn a correlated quantity into the truth. It remains a
+          stand-in for every user.
+  - ask: "What makes one proxy better than another?"
+    choices:
+      - text: "How closely it tracks the thing you actually want to measure"
+        correct: true
+        explains: >-
+          A proxy is useful to the extent that it is correlated with the goal. The definition
+          on the slide is built on that correlation.
+      - text: "How many decimal places it has"
+        explains: >-
+          A number can be very precise and still be about the wrong thing.
+      - text: "How easy it is to collect"
+        explains: >-
+          Ease is why you reach for a proxy. It is not what makes the proxy good.
+      - text: "Whether it comes from a large data set"
+        explains: >-
+          A million readings of a weakly related quantity are still weakly related.
+---
+
+A doctor wants to know whether a lump is cancerous. One way is a biopsy: cut out a sample
+and examine it. That is slow, expensive and unpleasant, and its answer is trusted. Another
+way is a blood marker that tends to be raised in patients with cancer. That is quick and
+cheap, and sometimes wrong.
+
+The slide gives the two kinds of answer names.
+
+| | definition | examples |
+| --- | --- | --- |
+| **Gold standard** | Labels or answers we trust to be correct, reflecting the scoring goal | A biopsy result |
+| **Proxy** | An available quantity correlated with what we want to measure | A blood marker; a step count; a GPA |
+
+The slide's own example is aimed at you: **your GPA or SAT/GRE is a proxy for how you
+should do in my class.** The instructor cannot observe how you will do. What exists is a
+number from your past that tends to go along with future performance. It tends to, and that
+is all.
+
+## Two conditions for a gold standard
+
+Read the definition closely. It has two parts.
+
+1. **Trusted to be correct.** You would settle an argument by looking it up.
+2. **Reflecting the scoring goal.** It is the thing you care about, not a neighbour of it.
+
+A measurement can pass the first and fail the second. A step count from a good sensor is
+very accurate about steps. If your goal is fitness, it is still a proxy, because steps are
+not fitness. Accuracy does not make a proxy into a gold standard.
+
+## Why proxies are everywhere
+
+For most things worth scoring, the gold standard is hard, slow or expensive to get, or does
+not exist. There is no place to look up a student's true understanding, a team's true
+strength or a web page's true importance. So you measure what is available and hope it
+moves with the goal.
+
+That is a reasonable thing to do. The scores earlier this week are all built from proxies:
+BMI stands in for body fat, a transcript score for ability. The risk comes when you forget
+which kind of number you are holding.
+
+## How a proxy fails
+
+A proxy is tied to the goal only by correlation, and correlation can break.
+
+- **In a different population.** BMI tracks body fat in most people and misreads muscular
+  athletes.
+- **When people aim at it.** Shaking your wrist adds steps without adding fitness. Once a
+  proxy is rewarded, people can raise it without raising the goal.
+
+In both cases the proxy keeps producing values that look as reliable as before.
+
+> A gold standard is what you want to know. A proxy is what you can measure. Be clear about
+> which one a number is before you rely on it.

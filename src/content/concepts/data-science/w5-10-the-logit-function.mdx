@@ -1,0 +1,127 @@
+---
+course: data-science
+section: w5-elo
+order: 730
+title: "The Logit Function: From Rating Gap to Probability"
+visuals:
+  - type: svg
+    src: data-science/w5-scoring/16.svg
+    caption: Slide 16 of 29 — the three requirements and the S-shaped curve that meets them.
+notation:
+  - symbol: "f(x)"
+    reads: f of x
+    means: >-
+      A function: a rule that takes the number `x` and returns another number. Here `x` is a
+      rating difference and `f(x)` is a win probability.
+  - symbol: "e"
+    reads: e
+    means: >-
+      A fixed number, about 2.718, the base of natural logarithms. `e⁻ˣ` is `1 / eˣ`: large
+      when `x` is very negative and close to zero when `x` is large.
+  - symbol: "∞"
+    reads: infinity
+    means: >-
+      Not a number you plug in. `f(∞) = 1` is shorthand for: as `x` grows without limit,
+      `f(x)` gets as close to 1 as you like.
+questions:
+  - ask: "Two players have the same rating, so the rating difference is 0. What must a sensible win-probability function return?"
+    choices:
+      - text: "½, since neither player is favoured"
+        correct: true
+        explains: >-
+          This is the first requirement, `f(0) = ½`. In the formula, `e⁰ = 1`, so
+          `1 / (1 + 1) = ½`.
+      - text: "0, since the difference is 0"
+        explains: >-
+          The input is 0 and the output is a probability. Zero would mean A never wins,
+          which is not true of equal players.
+      - text: "1, since `e⁰ = 1`"
+        explains: >-
+          `e⁰ = 1` is only the bottom-right part of the fraction. The whole expression is
+          `1 / (1 + 1)`.
+      - text: "It depends on how high the two ratings are"
+        explains: >-
+          Only the difference goes into the function. Two players at 1200 and two at 2800
+          are both even matches.
+  - ask: "Why not use the straight line `f(x) = ½ + x/800` to turn a rating gap into a win probability?"
+    choices:
+      - text: "For a large enough gap it returns values above 1 or below 0, which are not probabilities"
+        correct: true
+        explains: >-
+          At a gap of 600 it gives 1.25. The S-shaped curve flattens out and so stays
+          between 0 and 1 whatever the gap.
+      - text: "A straight line cannot satisfy `f(0) = ½`"
+        explains: >-
+          This one does. That requirement is easy to meet. The requirements at the two ends
+          are the hard ones.
+      - text: "Straight lines cannot increase"
+        explains: >-
+          This line rises steadily. Its fault is that it never stops rising.
+      - text: "Rating differences are never larger than 400"
+        explains: >-
+          They can be much larger, and a function that breaks on legal inputs is not
+          acceptable.
+---
+
+The Elo update needs a number that the last concept left open: the probability that A beats
+B, given their two ratings. The slide before required it to depend only on the rating
+difference. So you need a machine that takes a difference, which can be any number, positive
+or negative, and returns a probability, which must lie between 0 and 1.
+
+## Requirements first
+
+Before looking for a formula, write down what it has to do. The slide lists three things for
+a function `f(x)` that takes `x` and gives a probability.
+
+| requirement | in words |
+| --- | --- |
+| `f(0) = ½` | Equal ratings: a coin flip |
+| `f(∞) = 1` | A vastly stronger player is almost sure to win |
+| `f(−∞) = 0` | A vastly weaker player is almost sure to lose |
+
+One more is implied: the function should rise smoothly in between, so that a bigger gap
+always means a better chance.
+
+## A straight line fails
+
+The obvious candidate is a line through `(0, ½)` with an upward slope. Follow it far enough
+to the right and it passes 1, and a probability of 1.2 has no meaning. A line cannot level
+off. The function has to rise in the middle and flatten at both ends, which makes an S
+shape.
+
+## The curve on the slide
+
+```
+f(x) = 1 / (1 + e⁻ˣ)
+```
+
+Check it against the requirements.
+
+- At `x = 0`: `e⁰ = 1`, so `f(0) = 1 / (1 + 1) = ½`.
+- As `x` becomes large and positive: `e⁻ˣ` shrinks towards 0, so `f(x)` approaches
+  `1 / (1 + 0) = 1`.
+- As `x` becomes large and negative: `e⁻ˣ` becomes huge, so `f(x)` approaches `1 / huge = 0`.
+
+The plot on the slide shows it running from 0 on the left, through ½ at the centre, to 1 on
+the right. It is steepest in the middle and nearly flat by `x = ±6`.
+
+A note on the name: the slide calls this the logit function. You will also see the same
+S-shaped curve called the *logistic function* or the *sigmoid*, and it appears again when
+the course reaches logistic regression.
+
+## What the shape says
+
+The curve is steep in the middle and flat at the ends, and that has a meaning. Between
+closely matched players, a small rating edge shifts the odds noticeably. Between badly
+mismatched players, extra rating points hardly matter, because the stronger player was
+already going to win nearly every time. The probability never reaches exactly 0 or 1, so an
+upset is always possible. Elo needs that, since an upset is what moves ratings most.
+
+## Units
+
+In `f(x)` a difference of 1 is already a big edge. Chess ratings are in the thousands, so
+rating systems rescale the difference before putting it through the curve. That is the only
+change in the worked example that follows.
+
+> To turn any number into a probability, use a curve that passes through ½ at zero and
+> flattens towards 0 and 1 at the ends.

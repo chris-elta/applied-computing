@@ -87,4 +87,24 @@ sections:
     title: Week 4 · Outliers
     summary: >-
       Finding extreme points, and when removing them helps or hurts.
+  - id: w5-scoring
+    title: Week 5 · Scoring functions
+    summary: >-
+      Reducing many measurements to one number, and how to judge a score when there is no right answer.
+  - id: w5-proxies
+    title: Week 5 · Gold standards and proxies
+    summary: >-
+      Trusted answers against available stand-ins, and what each lets you do.
+  - id: w5-elo
+    title: Week 5 · Pairwise comparisons and Elo
+    summary: >-
+      Building rankings from who beat whom, with ratings that move by the surprise of each result.
+  - id: w5-merging
+    title: Week 5 · Merging rankings
+    summary: >-
+      Borda's method for combining ballots, and ordering a graph of votes with or without cycles.
+  - id: w5-pagerank
+    title: Week 5 · PageRank and Arrow's theorem
+    summary: >-
+      Importance from network links, and why no ranking method can have every desirable property.
 ---

@@ -1,0 +1,92 @@
+---
+course: data-science
+section: w5-scoring
+order: 660
+title: "Designing a Score: The Transcript Exercise"
+visuals:
+  - type: svg
+    src: data-science/w5-scoring/07.svg
+    caption: Slide 7 of 29 — propose a statistic that maps a transcript to one number.
+notation:
+  - symbol: "GPA"
+    reads: G P A, grade point average
+    means: >-
+      The average of your course grades, with each course counted in proportion to its
+      credits.
+  - symbol: "weight"
+    reads: weight
+    means: >-
+      A multiplier that says how much one input counts towards the total. Doubling a
+      course's weight makes its grade count twice.
+questions:
+  - ask: "Two students both average 80%. One took mostly first-year courses with steady marks. The other took harder third-year courses and rose from 72% to 88%. Which statement is right?"
+    choices:
+      - text: "A plain GPA ties them, while a difficulty-weighted or recency-weighted score ranks the second higher, so the ranking depends on what the designer chose to value"
+        correct: true
+        explains: >-
+          The data did not change, only the formula. Each formula is a statement about what
+          counts as better performance.
+      - text: "The plain GPA is the true score and the others distort it"
+        explains: >-
+          There is no true score to distort. Plain GPA also makes a choice: that all courses
+          are equally hard and that timing does not matter.
+      - text: "The second student is objectively better, so any correct score must rank them first"
+        explains: >-
+          That is one defensible value judgement. A score that rewards consistency would
+          rank the first student higher and would not be incorrect.
+      - text: "The tie shows the two students performed identically"
+        explains: >-
+          It shows that one formula cannot tell them apart. The transcripts differ in
+          difficulty and trend, which that formula ignores.
+---
+
+The slide sets a task and gives no answer: **propose a statistic to map a student's grade
+transcript at BCIT to a single numerical score such that better performance gets a higher
+score.**
+
+Try it before reading on. A transcript is a list of courses, each with a grade, a credit
+count, a level and a term. What do you do with it?
+
+## There are several reasonable answers
+
+| score | what it rewards | what it costs |
+| --- | --- | --- |
+| Credit-weighted average (plain GPA) | Doing well overall | Treats every course as equally hard and ignores whether you are improving |
+| Difficulty-weighted average | Taking harder, higher-level courses | Someone has to choose the weights, and early-program students are at a disadvantage |
+| Recency-weighted average | Improvement | Plays down strong early terms |
+| Trimmed average (drop the highest and lowest grades) | Consistency, with one bad day forgiven | Throws data away, and needs enough courses to be fair |
+| Average minus a penalty for spread | Being reliably good | Punishes a student for risking a hard elective |
+| Score relative to the cohort | Standing among classmates | Needs cohort statistics, and is shaky for small groups |
+
+Every row is defensible, and every row has a cost.
+
+## Same students, different order
+
+Take two students who both average 80%. One took mostly first-year courses and scored
+evenly. The other took a heavy third-year load and climbed from 72% to 88%.
+
+- Plain GPA: a tie.
+- Difficulty-weighted: the second student is ahead.
+- Recency-weighted: the second student is ahead.
+- Average minus a spread penalty: the first student is ahead.
+
+Nothing about the students changed between those lines. The formula changed, and the
+ranking followed.
+
+## The exercise has no answer key
+
+The question says "better performance" as if everyone agreed what that means. They do not.
+Before you can write the formula you have to decide whether you value difficulty,
+improvement, consistency or standing. That decision is not a statistical one. It belongs to
+whoever will use the score, and for what: a scholarship committee and a co-op employer may
+reasonably want different things.
+
+This is the same position BMI was in with its exponent. The choice is hidden inside the
+formula, and the output looks equally authoritative whichever way you chose.
+
+So when you design a score, write down what it is meant to reward first. When you read
+someone else's, work out from the formula what they decided to reward, and ask who loses
+under that choice.
+
+> Choosing a scoring function is choosing what you value. Different reasonable choices
+> give different rankings of the same data.

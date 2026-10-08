@@ -1,0 +1,111 @@
+---
+course: data-science
+section: w5-scoring
+order: 650
+title: "The Body-Mass Index: A Score Up Close"
+visuals:
+  - type: svg
+    src: data-science/w5-scoring/05.svg
+    caption: Slide 5 of 29 — the BMI formula, its bands, and a worked value.
+  - type: svg
+    src: data-science/w5-scoring/06.svg
+    caption: Slide 6 of 29 — BMI bands for pro basketball and US football players.
+notation:
+  - symbol: "BMI"
+    reads: B M I, body-mass index
+    means: >-
+      Mass in kilograms divided by the square of height in metres. A person of 68 kg and
+      1.727 m has a BMI of about 22.8.
+  - symbol: "height²"
+    reads: height squared
+    means: >-
+      Height multiplied by itself. The small raised 2 is a power, so 1.727² is
+      1.727 × 1.727 ≈ 2.98.
+questions:
+  - ask: "A person has mass 81 kg and height 1.80 m. What is their BMI, and which band is it in?"
+    choices:
+      - text: "25.0, on the boundary between normal and overweight"
+        correct: true
+        explains: >-
+          `1.80² = 3.24` and `81 / 3.24 = 25.0`. The height is squared before dividing.
+      - text: "45.0, obese"
+        explains: >-
+          That is `81 / 1.80`, dividing by height rather than by height squared.
+      - text: "22.5, normal"
+        explains: >-
+          That divides by 3.6, which is `1.80 × 2`. Squaring multiplies height by itself, it
+          does not double it.
+      - text: "0.04, underweight"
+        explains: >-
+          That is the fraction upside down, `3.24 / 81`. Mass goes on top.
+  - ask: "On the slide's football plot, many professional players fall in the obese band. What does that say about BMI?"
+    choices:
+      - text: "BMI correlates with body fat but cannot tell muscle from fat, so it misreads very muscular people"
+        correct: true
+        explains: >-
+          The score only sees mass and height. Heavy for your height reads the same whether
+          the mass is muscle or fat.
+      - text: "Most professional football players are unhealthy"
+        explains: >-
+          That treats the score as the thing it stands for. BMI is a stand-in for body fat,
+          and here the stand-in breaks down.
+      - text: "The formula was computed wrongly for athletes"
+        explains: >-
+          The arithmetic is the same for everyone. The formula is correct and its meaning
+          is what fails.
+      - text: "BMI is useless as a score"
+        explains: >-
+          It is easy to compute and interpret and works for general populations. It fails on
+          a group far from the people it was designed around.
+---
+
+You step on a scale and it says 68 kg. Is that a lot? You cannot say without knowing the
+person's height: 68 kg is light for someone two metres tall and heavy for a child. Two
+measurements are needed, and people want one number. That is the job of a scoring function.
+
+## The formula
+
+**BMI is a score designed to capture whether your weight is under control.**
+
+```
+BMI = mass / height²        (mass in kg, height in metres)
+```
+
+The slide works one case: `68.0 / 1.727² = 68.0 / 2.98 ≈ 22.8`.
+
+The single number is then read against fixed bands.
+
+| BMI | band |
+| --- | --- |
+| below 18.5 | underweight |
+| 18.5 to 25 | normal |
+| 25 to 30 | overweight |
+| over 30 | obese |
+
+So 22.8 is in the normal band.
+
+## Why divide by height squared
+
+Dividing by plain height would not be enough. A taller person is also wider and deeper, so
+their mass grows faster than their height does. The slide says **mass should scale with the
+square (or cube) of height.** Dividing by `height²` is the designer's choice for cancelling
+that growth, so that tall and short people can be compared on one scale. The words "or cube"
+show that the exponent is a decision, not a law of nature.
+
+## Where it works and where it does not
+
+The slide gives the case for BMI in one line: it **is easy to interpret, and correlates with
+body fat.** Two numbers anyone can measure, one division, four bands.
+
+Then it shows the limit. The two plots put each athlete at their height and weight, coloured
+by band. Basketball players are tall and mostly land in normal or overweight. Football
+players are shorter and heavier, and many land in overweight or obese. They are not carrying
+excess fat. They carry a lot of muscle, and the formula sees only mass and height.
+
+BMI is not body fat. It is a cheap quantity that goes up and down with body fat in most
+people. For a group unlike most people, the link breaks, and the score keeps reporting
+numbers as confidently as before. The lecture names this kind of stand-in a *proxy* later
+this week.
+
+> A score answers the question its formula asks, which may not be the question you care
+> about. Check the population before you trust the bands.
