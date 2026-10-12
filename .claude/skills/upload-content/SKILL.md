@@ -170,7 +170,8 @@ week gives about 15). Then:
 - **One correct answer per question**, every wrong option with an `explains`, and a `work`
   block that shows the reasoning or arithmetic. Check the arithmetic.
 - Set `topic` to one label for the whole week, in the same form as the others
-  (`Week 4 · Assembling data sets`), so the review groups it.
+  (`Week 4 · Assembling data sets`). The label is what makes the week a section of the paper
+  that can be submitted on its own, so it must match exactly across the week's questions.
 - Append after the last question, **before** the closing `---`, so the instructions body stays
   intact. Then update the question count and week count in that body text.
 - Reconsider `minutes`; raise it if the paper has grown substantially.

@@ -175,8 +175,9 @@ questions:
       The roofline decides whether arithmetic or memory traffic limits a kernel.
       Each law takes one line to state and rules out a whole category of wasted effort.
 ---
-10 multiple-choice questions. Nothing is revealed until you submit: pick an answer for each question (you
-can change it as often as you like), then submit to see your score, the correct answer, an explanation
-for the one you chose, and a worked solution.
+10 multiple-choice questions. The paper is divided into sections, and nothing is revealed until you
+submit: pick an answer for each question (you can change it as often as you like), then submit a
+section to see your score for it, the correct answers, an explanation for each one you chose, and a
+worked solution. You can submit one section at a time, in any order, or the whole exam at once.
 
-There is no penalty for a wrong answer. Questions you leave blank count as wrong.
+There is no penalty for a wrong answer. Questions you leave blank in a section you submit count as wrong.

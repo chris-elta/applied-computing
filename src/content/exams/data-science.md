@@ -1155,8 +1155,9 @@ questions:
       The Ada and Ben order flipped, so their order depended on a third candidate: independence fails.
       By Arrow's theorem no system satisfies all the properties, so some such failure is unavoidable.
 ---
-68 multiple-choice questions across all five weeks. Nothing is revealed until you submit: pick an answer for
-each question (you can change it as often as you like), then submit to see your score, the correct answer,
-an explanation for the one you chose, and a worked solution.
+68 multiple-choice questions across all five weeks. The paper is divided into sections, and nothing is revealed until you
+submit: pick an answer for each question (you can change it as often as you like), then submit a
+section to see your score for it, the correct answers, an explanation for each one you chose, and a
+worked solution. You can submit one section at a time, in any order, or the whole exam at once.
 
-There is no penalty for a wrong answer. Questions you leave blank count as wrong.
+There is no penalty for a wrong answer. Questions you leave blank in a section you submit count as wrong.

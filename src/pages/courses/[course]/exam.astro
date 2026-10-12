@@ -2,6 +2,7 @@
 import { render } from 'astro:content';
 import Base from '../../../layouts/Base.astro';
 import Exam from '../../../components/Exam';
+import { groupByTopic } from '../../../lib/exam-sections';
 import { shuffleChoices } from '../../../lib/shuffle-choices';
 import { getCourses, getExam, coursePath, withBase, type Course, type Exam as ExamEntry } from '../../../lib/course';
 
@@ -20,6 +21,7 @@ interface Props { course: Course; exam: ExamEntry }
 const { course, exam } = Astro.props;
 const { Content } = await render(exam);
 const { title, minutes, passMark, questions } = exam.data;
+const sections = groupByTopic(questions).length;
 ---
 
 <Base title={`${title} · ${course.data.title}`} description={`Exam for ${course.data.title}`}>
@@ -27,7 +29,7 @@ const { title, minutes, passMark, questions } = exam.data;
     <p class="eyebrow"><a href={coursePath(course.id)}>{course.data.title}</a></p>
     <h1>{title}</h1>
     <p class="examhead__facts">
-      {questions.length} questions · {passMark}% to pass{minutes && ` · about ${minutes} minutes`}
+      {questions.length} questions{sections > 1 && ` · ${sections} sections`} · {passMark}% to pass{minutes && ` · about ${minutes} minutes`}
     </p>
     <div class="prose"><Content /></div>
     <Exam client:load courseId={course.id} courseTitle={course.data.title} title={title}

@@ -190,7 +190,10 @@ const exams = defineCollection({
     passMark: z.number().min(0).max(100).default(60),
     questions: z.array(
       question.extend({
-        /** Which part of the course this tests — shown in the review, so a miss points back to something. */
+        /**
+         * Which part of the course this tests. Questions sharing a topic form one
+         * section of the paper, which can be submitted for feedback on its own.
+         */
         topic: z.string().optional(),
       }),
     ).min(1),

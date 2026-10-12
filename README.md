@@ -135,6 +135,11 @@ is revealed until the learner submits; then they get a score, the right answers,
 the option they chose, and each question's `work`. It appears at `/courses/<course-id>/exam`, with a
 button on the course page. The best score is kept in the browser only.
 
+The paper is divided into sections by `topic`: questions sharing a label form one section, in order
+of first appearance. Each section can be submitted on its own for feedback (and retaken) while the
+others stay open, or the whole paper submitted at once. The best score is recorded only once every
+section is in. A downloaded results file covers the sections submitted so far.
+
 ```yaml
 ---
 course: data-science
@@ -142,7 +147,7 @@ title: Data Science · Final Exam
 minutes: 60          # suggested, not enforced
 passMark: 60         # percent
 questions:
-  - topic: Week 2 · Probability   # shown in the review
+  - topic: Week 2 · Probability   # the section this question belongs to
     ask: ...
     choices: [...]   # same shape as a concept's questions
     work: |-
