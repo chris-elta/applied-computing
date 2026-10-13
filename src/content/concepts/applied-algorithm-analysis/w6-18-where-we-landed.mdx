@@ -1,0 +1,119 @@
+---
+course: applied-algorithm-analysis
+section: w6-review
+order: 1140
+title: Where We Landed
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week6.html?hash=true#/31
+    caption: Slides 32–34 of 34 — the summary table for both parts, four self-check questions, then the reading.
+notation:
+  - symbol: indexed by
+    reads: indexed by
+    means: >-
+      What you have to supply to name one subproblem. The unlimited knapsack's are indexed
+      by a capacity; the matrix chain's by the two ends of a stretch.
+  - symbol: "O(|V|)"
+    reads: big O of V
+    means: >-
+      Proportional to the number of vertices in the graph. The bars mean "the number of
+      things in".
+questions:
+  - ask: >-
+      A new problem: given coin denominations (unlimited supply of each, `n`
+      denominations) and an amount `A`, find the fewest coins that add up to exactly `A`.
+      What is the subproblem indexed by, and what does the table cost?
+    choices:
+      - text: >-
+          An amount `a` from 0 to `A`; `O(nA)`, which is pseudo-polynomial
+        correct: true
+        explains: >-
+          Coins are reusable, so after spending one you face the same problem on a smaller
+          amount: one index, like the knapsack with repetition. The table is as wide as
+          the value of `A`, so the cost is exponential in the number of digits of `A`.
+      - text: >-
+          An amount `a` and a position `j` in the list of coins; `O(nA)`, which is
+          polynomial
+        explains: >-
+          A second index is needed when using a coin removes it from the supply. Here
+          every coin stays available. And a bound containing the value `A` is
+          pseudo-polynomial, not polynomial.
+      - text: >-
+          A stretch of the coin list from `i` to `j`; `O(n³)`
+        explains: >-
+          Stretches suit problems whose solutions split a sequence into a left part and a
+          right part. Nothing here depends on coins being neighbours in a list.
+      - text: >-
+          A subset of the coins; `O(2ⁿ)`
+        explains: >-
+          That enumerates which denominations are used rather than naming a subproblem,
+          and it does not say how many of each. The amount still to be made is the thing
+          that shrinks.
+    work: |-
+      Step 1: `M(a)` = fewest coins that make amount `a` exactly.
+      Step 2: `M(a) = 1 + min over coins c ≤ a of M(a − c)`; `M(0) = 0`.
+      Step 3: fill `a = 1, 2, …, A`; the answer is `M(A)`.
+      Cells: `A`. Work each: up to `n` coins. Total `O(nA)`.
+      `A` is a value, not a length → pseudo-polynomial.
+---
+
+Two weeks, eight problems, one method.
+
+## The table
+
+| Problem | Subproblem is indexed by | Time |
+| --- | --- | --- |
+| Fibonacci | one integer | `O(n)` |
+| Shortest path in a dag | a vertex | `O(∣V∣ + ∣E∣)` |
+| Longest increasing subsequence | an ending position | `O(n²)` |
+| Edit distance | a pair of prefixes | `O(mn)` |
+| Knapsack, unlimited copies | a capacity | `O(nW)` |
+| Knapsack, one of each | a capacity and a position in the item list | `O(nW)` |
+| Chain matrix multiplication | a stretch of the chain | `O(n³)` |
+| Independent set in a tree | a subtree | `O(∣V∣)` |
+
+The middle column is the exam skill. Name what the subproblem is indexed by, and the
+recurrence usually follows. The three questions — subproblem, recurrence, filling order —
+stayed the same all week. What changed was the index.
+
+## Check yourself
+
+Try each before reading the answer under it.
+
+**Why does knapsack with repetition need one index and without repetition need two?**
+With repetition, every item is still available after a take, so the bag size alone
+describes what is left. Without repetition, you must also know which items remain: that is
+`j`.
+
+**`O(nW)` looks polynomial. Why is it not?**
+Add three zeros to `W`: you type only three more digits, but the table gets 1,000 times
+wider. The work follows the value of `W`, not the number of digits it takes to write it.
+
+**Why must the chain matrix table be filled by increasing length rather than row by row?**
+`C(i, j)` reads shorter stretches only. Row by row, `C(1, 4)` would need `C(2, 4)`, which
+is still empty.
+
+**In the tree problem, why does the "take `u`" case sum over grandchildren instead of
+using the children's `I` values?**
+A child's `I(w)` may include `w`, and `w` is joined to `u`. Grandchildren are the nearest
+free vertices.
+
+## What carried over from week 5
+
+- **The dag.** The knapsack with repetition is literally a longest path through one.
+- **Cost and solution are different things.** The one-row knapsack gives the value and
+  forgets the items; the walk back needs the 2-D table.
+- **Overlap.** 1.7 billion bracketings share 210 stretches.
+
+## Reading
+
+- Dasgupta, Papadimitriou & Vazirani, *Algorithms* — 6.4 knapsack, 6.5 chain matrix
+  multiplication, 6.7 independent sets in trees.
+- Cormen, Leiserson, Rivest & Stein, *Introduction to Algorithms* — chapter 15, for optimal
+  substructure and the matrix chain.
+- Tutorial Part 6 — §6.1 to §6.4, the written version of this lecture; §6.4.3 is the
+  self-check above.
+- Practice: LeetCode 322, 518, 279, 416, 494.
+
+Next: greedy algorithms — when the best choice at each step also gives the best overall
+answer.

@@ -1,0 +1,128 @@
+---
+course: applied-algorithm-analysis
+section: w6-trees
+order: 1110
+title: Take the Root or Leave It
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week6.html?hash=true#/27
+    caption: Slides 28–29 of 34 — the subtree subproblem, then the two cases and the recurrence.
+notation:
+  - symbol: "I(u)"
+    reads: I of u
+    means: >-
+      The size of the largest independent set in the subtree below `u`, counting `u`
+      itself as part of that subtree. For a leaf, `I(u) = 1`.
+  - symbol: "∑ over children w of u"
+    reads: the sum over all children w of u
+    means: >-
+      Add up the expression once for each child of `u`. If `u` has no children the sum is
+      empty and equals 0.
+  - symbol: post-order
+    reads: post-order
+    means: >-
+      A way of walking a tree in which a vertex is handled only after all of its children
+      have been. Leaves first, root last.
+questions:
+  - ask: >-
+      A classmate writes the "take `u`" case as `1 + ∑ I(w)` over the **children** `w` of
+      `u`, instead of over the grandchildren. What is wrong with it?
+    choices:
+      - text: >-
+          A child's `I(w)` may count a set that contains `w` itself, and `w` is joined to
+          `u`, so the result may not be independent
+        correct: true
+        explains: >-
+          `I(w)` is the best for the subtree below `w` with no promise about whether `w`
+          is in it. Once `u` is taken its children are forbidden, and the nearest
+          subproblems that cannot involve a child are the grandchildren's.
+      - text: >-
+          It counts `u` twice, once as the 1 and once inside each child's value
+        explains: >-
+          `u` is not in any child's subtree, so no `I(w)` counts it. The vertex at risk of
+          being wrongly included is the child `w`, not `u`.
+      - text: >-
+          Nothing; children and grandchildren give the same total
+        explains: >-
+          Take a root with two leaf children. Over grandchildren the case gives
+          `1 + 0 = 1`. Over children it gives `1 + 1 + 1 = 3`, which claims all three
+          vertices are independent although the root is joined to both leaves.
+      - text: >-
+          It is slower, because every vertex has more children than grandchildren
+        explains: >-
+          Vertices often have more grandchildren than children, and either way each vertex
+          is read a constant number of times. The fault is in correctness, not speed.
+    work: |-
+      Root `u` with two leaf children `a` and `b`. `I(a) = I(b) = 1` (each leaf takes itself).
+      Correct: `I(u) = max{ 1 + 0, I(a) + I(b) } = max{1, 2} = 2` → `{a, b}`.
+      Buggy: `I(u) = max{ 1 + I(a) + I(b), I(a) + I(b) } = max{3, 2} = 3` → `{u, a, b}`.
+      But `u–a` and `u–b` are edges, so that set is not independent.
+---
+
+To use dynamic programming on a tree, first give it a top. Pick any vertex as the root.
+The answer does not depend on which one. Now every vertex `u` has a subtree hanging below
+it: `u`, its children, their children, and so on.
+
+## The subproblem
+
+```
+I(u) = size of the largest independent set in the subtree below u
+```
+
+The answer for the whole tree is `I(r)` at the root `r`.
+
+## The order
+
+Suppose `I(w)` is already known for every vertex `w` below `u`. Then `I(u)` can be worked
+out from those. So children must be finished before their parents. A walk of the tree that
+does this is a **post-order traversal**: leaves first, root last.
+
+## Two cases
+
+Either `u` is in the independent set or it is not. This is the committee trade-off, applied
+to one vertex.
+
+| Case | Consequence | Value |
+| --- | --- | --- |
+| `u` included | no child may be used, so jump to the grandchildren | 1 + the sum of `I(w)` over grandchildren `w` |
+| `u` excluded | each child's subtree can use its own best answer | the sum of `I(w)` over children `w` |
+
+Take the better of the two:
+
+```
+I(u) = max{ 1 + ∑ I(w) over grandchildren w of u,
+                ∑ I(w) over children w of u }
+```
+
+Why are sums allowed? The subtrees below different children share no vertices and no edges
+with each other. An independent set chosen in one cannot conflict with one chosen in
+another, so the best for each can be added together.
+
+A leaf has no children and no grandchildren. Both sums are empty, so `I(leaf)` is
+`max{1 + 0, 0} = 1`: take the leaf.
+
+## The bug to avoid
+
+A common mistake is to take `u` and then add the **children's** `I` values:
+
+```
+1 + ∑ I(w) over children w        ← wrong
+```
+
+`I(w)` is the best answer for the subtree below `w`, and that best answer may include `w`
+itself. But `w` is joined to `u`. Taking `u` rules out every child, and `I(w)` does not
+know that.
+
+The grandchildren's values are safe. A grandchild is not joined to `u`, and its subtree
+contains none of `u`'s children. They are the nearest subproblems that are guaranteed to be
+compatible with taking `u`.
+
+## Cost
+
+Each vertex's `I` value is read at most twice: once by its parent, in the "excluded" sum,
+and once by its grandparent, in the "included" sum. So the total work is proportional to
+the number of vertices: linear time, `O(∣V∣)`.
+
+> A subproblem's value can be reused only where its definition matches what you need.
+> `I(w)` means "best in this subtree, with `w` free to be used". When `w` is not free,
+> reach past it to subproblems that do not care.

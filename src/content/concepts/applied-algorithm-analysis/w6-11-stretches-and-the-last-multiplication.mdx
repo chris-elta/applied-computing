@@ -1,0 +1,130 @@
+---
+course: applied-algorithm-analysis
+section: w6-chain
+order: 1070
+title: Stretches and the Last Multiplication
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week6.html?hash=true#/20
+    caption: Slides 21–22 of 34 — the subproblem, then the recurrence taken apart term by term.
+notation:
+  - symbol: "C(i, j)"
+    reads: C of i and j
+    means: >-
+      The minimum cost, in scalar multiplications, of multiplying the stretch
+      `Aᵢ × Aᵢ₊₁ × ⋯ × Aⱼ`. `C(2, 3)` is the cheapest way to multiply `A₂` by `A₃`.
+  - symbol: "k"
+    reads: k
+    means: >-
+      Where the last multiplication splits the stretch: `Aᵢ…Aₖ` on the left, `Aₖ₊₁…Aⱼ` on
+      the right. It runs from `i` up to `j − 1`.
+  - symbol: "mᵢ₋₁ · mₖ · mⱼ"
+    reads: m sub i minus one, times m sub k, times m sub j
+    means: >-
+      The cost of the last multiplication: rows of the left result, times the dimension
+      the two results share, times columns of the right result.
+  - symbol: "min over i ≤ k < j"
+    reads: the minimum over all k from i up to but not including j
+    means: >-
+      Work out the bracket for each allowed split `k` and keep the smallest.
+questions:
+  - ask: >-
+      The dimensions are `m = 50, 20, 1, 10, 100`, so `A₁` is `50 × 20`, `A₂` is `20 × 1`,
+      `A₃` is `1 × 10` and `A₄` is `10 × 100`. In computing `C(2, 4)` with the split
+      `k = 3`, what does the *last* multiplication cost?
+    choices:
+      - text: "`20 · 10 · 100 = 20,000`"
+        correct: true
+        explains: >-
+          The left piece `A₂A₃` is `m₁ × m₃ = 20 × 10` and the right piece `A₄` is
+          `m₃ × m₄ = 10 × 100`. Multiplying them costs `m₁ · m₃ · m₄`.
+      - text: "`1 · 10 · 100 = 1,000`"
+        explains: >-
+          That starts from `m₂ = 1`, using `mᵢ` for the rows of the left piece. `Aᵢ` is
+          `mᵢ₋₁ × mᵢ`, so the rows of a stretch starting at `A₂` are `m₁ = 20`.
+      - text: "`20 · 1 · 100 = 2,000`"
+        explains: >-
+          That is the last multiplication for the split `k = 2`, where the shared
+          dimension is `m₂ = 1`. The question fixes `k = 3`, so the shared dimension is
+          `m₃ = 10`.
+      - text: "`50 · 10 · 100 = 50,000`"
+        explains: >-
+          That uses `m₀ = 50`, the rows of `A₁`. But `A₁` is not part of the stretch
+          `A₂ … A₄`.
+    work: |-
+      `i = 2`, `j = 4`, `k = 3`.
+      Left piece `A₂A₃`: `mᵢ₋₁ × mₖ = m₁ × m₃ = 20 × 10`.
+      Right piece `A₄`: `mₖ × mⱼ = m₃ × m₄ = 10 × 100`.
+      Last multiplication: `m₁ · m₃ · m₄ = 20 · 10 · 100 = 20,000`.
+---
+
+The tree picture says what the subproblems should be. Every subtree multiplies a block of
+neighbouring matrices, so make one subproblem per block.
+
+## The subproblem
+
+A **stretch** is a block of consecutive matrices `Aᵢ, Aᵢ₊₁, …, Aⱼ` with `1 ≤ i ≤ j ≤ n`.
+
+```
+C(i, j) = minimum cost of multiplying  Aᵢ × Aᵢ₊₁ × ⋯ × Aⱼ
+```
+
+This needs two indices, and it is worth seeing why. In the knapsack and in edit distance,
+every subproblem was a *prefix*: the first `j` items, the first `i` letters. One number
+said where it stopped, because it always started at the beginning. A stretch can start in
+the middle of the chain, so it needs a number for each end.
+
+The answer to the whole problem is `C(1, n)`.
+
+## The recurrence
+
+Ask the usual question: what was the last decision? Here it is the last multiplication, the
+root of the tree. It splits the stretch into two parts at some `k` with `i ≤ k < j`:
+
+```
+(Aᵢ ⋯ Aₖ)   and   (Aₖ₊₁ ⋯ Aⱼ)
+```
+
+By optimal substructure each part is multiplied in its own cheapest way. Then the two
+results are multiplied together. So:
+
+```
+C(i, j) = min over i ≤ k < j of { C(i, k) + C(k+1, j) + mᵢ₋₁ · mₖ · mⱼ }
+```
+
+| Term | What it is |
+| --- | --- |
+| `C(i, k)` | cost of the left stretch; its result is one `mᵢ₋₁ × mₖ` matrix |
+| `C(k+1, j)` | cost of the right stretch; its result is one `mₖ × mⱼ` matrix |
+| `mᵢ₋₁ · mₖ · mⱼ` | cost of multiplying those two results together |
+
+The base case is `C(i, i) = 0`: a single matrix needs no multiplication.
+
+## Where the three `m`s come from
+
+This is the part that gets misread. Recall that `Aᵢ` is `mᵢ₋₁ × mᵢ`.
+
+- The left result has the rows of its first matrix, `Aᵢ`, which is `mᵢ₋₁`, and the columns
+  of its last, `Aₖ`, which is `mₖ`.
+- The right result has the rows of `Aₖ₊₁`, also `mₖ`, and the columns of `Aⱼ`, which is
+  `mⱼ`.
+
+Multiplying an `mᵢ₋₁ × mₖ` matrix by an `mₖ × mⱼ` matrix costs `mᵢ₋₁ · mₖ · mⱼ`. The
+subscript on the first one is `i − 1`, not `i`.
+
+## A tiny check
+
+Two matrices, `A₁` of `50 × 20` and `A₂` of `20 × 1`, so `m = 50, 20, 1`. The only split
+is `k = 1`:
+
+```
+C(1, 2) = C(1, 1) + C(2, 2) + m₀ · m₁ · m₂ = 0 + 0 + 50 · 20 · 1 = 1,000
+```
+
+which is the `pqr` cost of one multiplication, as it should be.
+
+The algorithm does not know which `k` is best. It tries every split and keeps the cheapest.
+
+> What a subproblem is indexed by follows from what the pieces of a solution look like.
+> Pieces that always start at the beginning need one index. Pieces that can start anywhere
+> need two.

@@ -1,0 +1,115 @@
+---
+course: applied-algorithm-analysis
+section: w6-trees
+order: 1120
+title: A Worked Tree
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week6.html?hash=true#/29
+    caption: Slide 30 of 34 — six vertices, every I value computed from the leaves up.
+notation:
+  - symbol: "I(u)"
+    reads: I of u
+    means: >-
+      The size of the largest independent set in the subtree below `u`, with `u` itself
+      part of that subtree.
+  - symbol: "max{1 + 0, …}"
+    reads: the larger of one plus zero and …
+    means: >-
+      The first entry is the "take this vertex" case: 1 for the vertex, plus the
+      grandchildren's values. The 0 appears when there are no grandchildren to add.
+questions:
+  - ask: >-
+      Take the lecture's tree (1 is the root with children 2 and 3; 2 has children 4 and
+      5; 3 has child 6) and **remove vertex 5**, so that 2 has the single child 4. What is
+      `I(1)` now?
+    choices:
+      - text: "3"
+        correct: true
+        explains: >-
+          `I(2)` drops to `max{1 + 0, I(4)} = 1`. At the root, taking it gives
+          `1 + I(4) + I(6) = 3` and leaving it gives `I(2) + I(3) = 2`. One such set is
+          `{1, 4, 6}`.
+      - text: "4"
+        explains: >-
+          That is the answer for the original tree, which had three grandchildren under
+          the root. With 5 gone there are two, so the "take the root" case is
+          `1 + 1 + 1 = 3`.
+      - text: "2"
+        explains: >-
+          That is the "leave the root out" case, `I(2) + I(3) = 1 + 1`. It has to be
+          compared with taking the root, which gives 3.
+      - text: "5"
+        explains: >-
+          That is every vertex left in the tree. They cannot all be chosen: 1 is joined to
+          2, and 2 to 4.
+    work: |-
+      Leaves: `I(4) = I(6) = 1`
+      `I(2) = max{1 + 0, I(4)} = max{1, 1} = 1`
+      `I(3) = max{1 + 0, I(6)} = max{1, 1} = 1`
+      `I(1) = max{1 + I(4) + I(6), I(2) + I(3)} = max{3, 2} = 3`
+---
+
+A tree with six vertices. Vertex 1 is the root. Its children are 2 and 3. Vertex 2 has
+children 4 and 5. Vertex 3 has one child, 6.
+
+```
+        1
+       / \
+      2   3
+     / \   \
+    4   5   6
+```
+
+Work in post-order: leaves first, then their parents, then the root.
+
+## The values
+
+| Vertex | Calculation | `I` |
+| --- | --- | --- |
+| 4, 5, 6 | leaves | 1 each |
+| 2 | `max{1 + 0, I(4) + I(5)} = max{1, 2}` | 2 |
+| 3 | `max{1 + 0, I(6)} = max{1, 1}` | 1 |
+| 1 | `max{1 + I(4) + I(5) + I(6), I(2) + I(3)} = max{4, 3}` | 4 |
+
+The 0 in the lines for 2 and 3 is the grandchildren's sum. Those vertices have no
+grandchildren, so there is nothing to add.
+
+**Vertex 2.** Taking 2 gives just 2 itself, since its children 4 and 5 are then forbidden.
+Leaving 2 out frees both children: 2 seats. Leaving it out wins.
+
+**Vertex 3.** Taking 3 gives 1. Leaving it out and taking 6 gives 1. A tie, so `I(3) = 1`
+either way.
+
+**Vertex 1.** Taking the root forbids 2 and 3, and reaches past them to the grandchildren
+4, 5 and 6: `1 + 1 + 1 + 1 = 4`. Leaving the root out uses the children's best answers:
+`I(2) + I(3) = 2 + 1 = 3`. Taking the root wins.
+
+The largest independent set is `{1, 4, 5, 6}`, of size 4.
+
+## The surprise
+
+Before computing `I(1)`, most people guess 3. Taking the root looks expensive, because it
+throws away two children. But the price is two children and the reward is the root plus
+access to all three grandchildren. We lose 2 and gain the freedom to keep 3 that were
+already the best choices below.
+
+Notice which values the root's "included" case read. It never looked at `I(2)` or `I(3)`.
+Those answers might use vertex 2 or vertex 3, which are now forbidden, so it read `I(4)`,
+`I(5)` and `I(6)` instead.
+
+## Change the tree
+
+Add a vertex 7 as a child of 6. What changes?
+
+- 7 is a leaf, so `I(7) = 1`. Vertex 6 now has a child: `I(6) = max{1 + 0, I(7)} = 1`.
+- `I(3) = max{1 + I(7), I(6)} = max{2, 1} = 2`. Vertex 3 now has a grandchild worth
+  reaching for.
+- `I(1) = max{1 + I(4) + I(5) + I(6), I(2) + I(3)} = max{4, 4} = 4`. A tie.
+
+The two cases now lead to different sets of the same size 4: `{1, 4, 5, 7}` with the root,
+and `{3, 4, 5, 7}` without it. The table gives the size. As with every table this term, which set achieves
+it has to be recovered separately, by recording at each vertex which case won.
+
+> Work a small tree by hand before trusting the formula. The step worth watching is the
+> root's "included" case: it skips a generation, and that is the step intuition gets wrong.

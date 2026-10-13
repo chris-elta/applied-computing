@@ -1,0 +1,127 @@
+---
+course: applied-algorithm-analysis
+section: w6-knapsack
+order: 1020
+title: Filling the 0/1 Table
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week6.html?hash=true#/11
+    caption: Slide 12 of 34 — the full table for four items and a 10-pound bag.
+notation:
+  - symbol: "K(w, j)"
+    reads: K of w and j
+    means: >-
+      The best value in a bag of capacity `w` using only the first `j` items, one copy
+      each. In the table, `j` picks the row and `w` picks the column.
+  - symbol: row + C
+    reads: row plus C
+    means: >-
+      The row for `j = 3`: items A, B and C are allowed, D is not yet. Each row adds one
+      more item to those permitted.
+questions:
+  - ask: >-
+      Row C of the table reads `0, 0, 0, 14, 16, 16, 30, 30, 30, 44, 46` for `w = 0` to
+      `10`. Item D weighs 2 lb and is worth $9. What is the cell in row D at `w = 8`?
+    choices:
+      - text: "39"
+        correct: true
+        explains: >-
+          Leaving D out keeps the cell above, 30. Taking D reads row C two columns to the
+          left, at `w = 6`, and adds 9: `30 + 9 = 39`. The larger is 39, which is A and D.
+      - text: "30"
+        explains: >-
+          That is the "leave D out" option, the cell directly above. It has to be compared
+          with taking D, which gives 39.
+      - text: "53"
+        explains: >-
+          That adds 9 to the cell one column to the left, `K(9, C) = 44`. D weighs 2
+          pounds, so the bag that receives it must be 2 smaller: column 6, not column 9.
+      - text: "25"
+        explains: >-
+          That reads column 4 of row C, `16 + 9`. Column 4 would be right for an item
+          weighing 4 pounds. D weighs 2, so the shift is 2 columns.
+    work: |-
+      Leave D out: `K(8, C) = 30`
+      Take D: `K(8 − 2, C) + 9 = K(6, C) + 9 = 30 + 9 = 39`
+      `K(8, D) = max{30, 39} = 39`
+      Check: A (6 lb, $30) + D (2 lb, $9) = 8 lb, $39.
+  - ask: >-
+      Walking back from the corner of the lecture's table: `K(10, D) = 46`,
+      `K(10, C) = 46`, `K(10, B) = 44`, `K(6, B) = 30`, `K(6, A) = 30`, and row "no items"
+      is all 0. Which items are in the best packing?
+    choices:
+      - text: A and C
+        correct: true
+        explains: >-
+          Row D equals the row above, so D was left out. Row C differs from row B, so C
+          was taken and the walk moves 4 columns left to `w = 6`. There row B equals row
+          A, so B is out, and row A differs from the empty row, so A is in.
+      - text: A and B
+        explains: >-
+          That is the $44 packing sitting in `K(10, B)`. Row C improved on it, 46 against
+          44, and that difference is the sign that C was taken.
+      - text: C and D
+        explains: >-
+          `K(10, D) = K(10, C)`: adding D to the permitted items did not change the value,
+          so D was left out.
+      - text: It cannot be determined from the values alone
+        explains: >-
+          It can. Comparing each cell with the one above says whether that row's item was
+          taken, and the recurrence says which cell to move to next.
+    work: |-
+      `(10, D)`: 46 = `K(10, C)` → D left out. Stay at `w = 10`.
+      `(10, C)`: 46 ≠ `K(10, B) = 44` → C taken. Move to `w = 10 − 4 = 6`.
+      `(6, B)`: 30 = `K(6, A)` → B left out. Stay at `w = 6`.
+      `(6, A)`: 30 ≠ 0 → A taken. Move to `w = 0`.
+      Packing: A + C = 10 lb, $46.
+---
+
+Here is the whole table for the lecture's four items and a 10-pound bag, one of each. Each
+row permits one more item than the row above.
+
+| `K(w, j)` | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| no items | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| + A (6 lb, $30) | 0 | 0 | 0 | 0 | 0 | 0 | 30 | 30 | 30 | 30 | 30 |
+| + B (3 lb, $14) | 0 | 0 | 0 | 14 | 14 | 14 | 30 | 30 | 30 | 44 | 44 |
+| + C (4 lb, $16) | 0 | 0 | 0 | 14 | 16 | 16 | 30 | 30 | 30 | 44 | 46 |
+| + D (2 lb, $9) | 0 | 0 | 9 | 14 | 16 | 23 | 30 | 30 | 39 | 44 | 46 |
+
+## How one cell is filled
+
+Each cell takes the larger of two numbers:
+
+- the cell **directly above** — leave this row's item out;
+- the cell **one row up and `wⱼ` columns to the left**, plus `vⱼ` — take the item, if it
+  fits.
+
+Row `j` reads only row `j − 1`. Nothing in its own row, and nothing higher up.
+
+Try row C at `w = 10`. Above is 44. One row up and 4 columns left is `K(6, B) = 30`, and
+`30 + 16 = 46`. So the cell is `max{44, 46} = 46`.
+
+Now the corner, row D at `w = 10`. Above is 46. One row up and 2 columns left is
+`K(8, C) = 30`, and `30 + 9 = 39`. So the corner is `max{46, 39} = 46`, and D is left out.
+
+The answer is $46. Value per pound found only $44, the number sitting in row B. And with
+unlimited copies the best was $48, one A and two D, which this table cannot reach because
+row D may use D only once.
+
+## Getting the items back
+
+The corner says $46 but not which items. To list them, walk back through the table from
+the corner, one row at a time:
+
+- if `K(w, j) = K(w, j−1)`, item `j` was left out: move up;
+- if not, item `j` was taken: record it, and move up and `wⱼ` columns to the left.
+
+From `(10, D)`: 46 equals the cell above, so D is out. At `(10, C)`: 46 is not 44, so C is
+in, and the walk moves to `w = 6`. At `(6, B)`: 30 equals the cell above, so B is out. At
+`(6, A)`: 30 is not 0, so A is in. The packing is A and C.
+
+This is the same move as recovering the alignment from the edit-distance table in week 5:
+the table holds costs, and the decisions are read back by asking which option produced each
+cell.
+
+> Fill forwards to get the value, walk backwards to get the choice. Each step of the walk
+> asks one question: did this row change the number?

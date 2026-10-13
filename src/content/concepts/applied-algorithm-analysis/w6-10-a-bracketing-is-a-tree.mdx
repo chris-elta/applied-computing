@@ -1,0 +1,121 @@
+---
+course: applied-algorithm-analysis
+section: w6-chain
+order: 1060
+title: A Bracketing Is a Tree
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week6.html?hash=true#/19
+    caption: Slide 20 of 34 — three of the five trees for four matrices, and the swap argument.
+notation:
+  - symbol: full binary tree
+    reads: full binary tree
+    means: >-
+      A tree in which every node has either 0 or 2 children, never 1. A multiplication
+      always joins exactly two things, so its node always has two children.
+  - symbol: stretch
+    reads: stretch
+    means: >-
+      A block of neighbouring matrices from the chain, such as `B, C, D`. Every subtree
+      multiplies together one stretch.
+  - symbol: optimal substructure
+    reads: optimal substructure
+    means: >-
+      The property that the best solution to a problem is made of best solutions to its
+      subproblems. It is what allows a table of best answers to be combined.
+questions:
+  - ask: >-
+      In the cheapest tree for `A B C D E`, one subtree computes the stretch `B C D`.
+      Suppose that subtree were not the cheapest way to multiply `B C D`. Why can you swap
+      in the cheapest one without disturbing the rest of the tree?
+    choices:
+      - text: >-
+          Any bracketing of `B C D` produces a matrix of the same shape, so every
+          multiplication above it costs exactly what it did before
+        correct: true
+        explains: >-
+          The rest of the tree only ever sees the result of the subtree, and its cost
+          depends only on that result's dimensions. Those are fixed by the stretch, not by
+          how it was bracketed. So the swap lowers the total, which contradicts the tree
+          being cheapest.
+      - text: Because the subtree for `B C D` is always the cheapest part of the tree
+        explains: >-
+          Nothing makes it so. The argument is not about how much the subtree costs
+          compared with the rest; it is that changing it leaves the rest unaffected.
+      - text: Because matrix multiplication is commutative, so the pieces can be rearranged
+        explains: >-
+          It is not commutative: `AB` and `BA` are generally different, and often only one
+          of them is even defined. The property in use is associativity, which permits
+          regrouping without reordering.
+      - text: You cannot; changing a subtree changes the shapes of the products above it
+        explains: >-
+          The product of `B C D` has as many rows as `B` and as many columns as `D`,
+          however it is bracketed. The shapes above are untouched.
+    work: |-
+      `B C D` multiplied in any order is the same matrix: rows of `B` by columns of `D`.
+      Cost of the whole tree = cost inside the subtree + cost of everything else.
+      "Everything else" depends only on shapes, which are unchanged by the swap.
+      So a cheaper subtree gives a cheaper whole tree.
+      The cheapest tree therefore cannot contain a subtree that is not cheapest for its stretch.
+---
+
+Brackets are awkward to reason about. A picture is easier. Every way of bracketing a chain
+can be drawn as a tree:
+
+| Part of the tree | What it stands for |
+| --- | --- |
+| Leaves | the individual matrices, left to right |
+| Interior nodes | intermediate products |
+| Root | the final product: the last multiplication performed |
+
+For four matrices there are five trees. Three of them:
+
+```
+((AB)C)D         A((BC)D)         (A(BC))D
+```
+
+In the first, the root joins `(AB)C` with `D`. In the second it joins `A` with `(BC)D`.
+Reading the root tells you where the last multiplication splits the chain.
+
+Each multiplication order is a **full binary tree** with `n` leaves: every node has 0 or 2
+children, because a multiplication joins exactly two things.
+
+## What a subtree is
+
+Take any interior node and look at the leaves below it. They are always neighbours in the
+chain: a **stretch** such as `B C D`. The subtree is one particular way of multiplying that
+stretch together, and it is itself a bracketing of a shorter chain.
+
+So the tree for the whole chain is made of trees for stretches. That suggests the
+subproblems. What makes them usable is the next fact.
+
+## Optimal substructure
+
+**In the cheapest tree, every subtree is also the cheapest for its stretch.**
+
+The argument is a swap. Suppose the cheapest tree for the whole chain contained a subtree
+that was *not* the cheapest way to multiply its stretch. Cut it out and put the cheapest one
+in its place.
+
+- The new subtree computes the same product, so its result has the same shape.
+- Everything above it in the tree multiplies by that result. Those costs depend only on
+  shapes, so none of them changes.
+- The subtree itself got cheaper.
+
+The whole tree is now cheaper than before. But it was supposed to be the cheapest already.
+That is a contradiction, so the supposition was wrong.
+
+## Why this matters
+
+Without this fact, knowing the best way to multiply `B C D` would tell you nothing about the
+best way to multiply `A B C D E`: perhaps the best overall plan needs a deliberately
+wasteful middle. The swap argument rules that out. The only thing the outside world sees of
+a stretch is the shape of its product, and that shape is the same however the stretch was
+multiplied.
+
+Compare the knapsack. There the argument was "take the last item out and what is left must
+be a best packing of the smaller bag". Same swap, different object.
+
+> Optimal substructure is what you check before trusting a recurrence. Ask what the rest of
+> the solution can see of a subproblem. If it sees only something the subproblem's
+> definition already fixes, best pieces combine into a best whole.

@@ -100,4 +100,21 @@ sections:
       recovers the alignment.
   - id: w5-review
     title: Week 5 · Where we landed
+  - id: w6-knapsack
+    title: Week 6 · The knapsack problem
+    summary: >-
+      Subproblems indexed by a capacity. One index when items can be reused, two when they
+      cannot, and a running time that only looks polynomial.
+  - id: w6-chain
+    title: Week 6 · Chain matrix multiplication
+    summary: >-
+      Subproblems indexed by a stretch of the chain, and the first table that cannot be
+      filled left to right.
+  - id: w6-trees
+    title: Week 6 · Independent sets in trees
+    summary: >-
+      Subproblems indexed by a subtree: a problem that is hard on general graphs and takes
+      linear time on a tree.
+  - id: w6-review
+    title: Week 6 · Where we landed
 ---

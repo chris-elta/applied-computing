@@ -1,0 +1,114 @@
+---
+course: applied-algorithm-analysis
+section: w6-trees
+order: 1100
+title: Independent Sets
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week6.html?hash=true#/26
+    caption: Slide 27 of 34 — a six-vertex graph, the definition, and the committee picture.
+notation:
+  - symbol: independent set
+    reads: independent set
+    means: >-
+      A set of vertices in which no two are joined by an edge. Vertices that are linked
+      only through some third vertex are still allowed together.
+  - symbol: "{1, 4, 6}"
+    reads: the set containing 1, 4 and 6
+    means: >-
+      Curly brackets list the members of a set. Order does not matter and nothing is
+      repeated.
+  - symbol: tree
+    reads: tree
+    means: >-
+      A connected graph with no cycles. Between any two vertices there is exactly one
+      route.
+questions:
+  - ask: >-
+      Four vertices in a line, with edges `a–b`, `b–c` and `c–d`. Which statement about
+      independent sets in this graph is correct?
+    choices:
+      - text: >-
+          `{a, c}` is independent although `a` and `c` are linked through `b`; the largest
+          independent set has 2 vertices
+        correct: true
+        explains: >-
+          Only a direct edge between two chosen vertices breaks independence, and there is
+          no edge `a–c`. Any three of the four vertices include two neighbours, so 2 is the
+          most: `{a, c}`, `{a, d}` or `{b, d}`.
+      - text: >-
+          `{a, c}` is not independent, because there is a path from `a` to `c`
+        explains: >-
+          Independence is about edges, not paths. In a connected graph every pair of
+          vertices has a path between them, so under this reading no set of two could ever
+          be independent.
+      - text: >-
+          `{a, d}` is the only independent set of size 2, since they are the only pair far
+          enough apart
+        explains: >-
+          Distance beyond one edge is irrelevant. `{a, c}` and `{b, d}` have no edge
+          inside them either, so they are independent too.
+      - text: >-
+          `{a, c, d}` is independent, so the largest has 3 vertices
+        explains: >-
+          `c` and `d` are joined by an edge. In the committee picture, those two refuse to
+          sit together.
+    work: |-
+      Edges: `a–b`, `b–c`, `c–d`.
+      `{a, c}`: no edge `a–c` → independent.
+      `{a, d}`: no edge `a–d` → independent. `{b, d}`: no edge `b–d` → independent.
+      Any 3 of 4 vertices on a line contain two neighbours → not independent.
+      Largest size: 2.
+---
+
+Picture a committee to be chosen from a group of people, where some pairs refuse to sit
+together. Draw each person as a vertex and each refusal as an edge. A committee with no
+conflicts is a set of vertices with no edge between any two of them.
+
+That is an **independent set**: a set of vertices such that no two of them are joined by an
+edge.
+
+In the lecture's six-vertex graph, `{1, 4, 6}` is independent and `{1, 2}` is not, because
+1 and 2 are joined. The largest independent set in that graph has three vertices.
+
+## What the definition does and does not forbid
+
+It forbids a *direct* edge between two chosen vertices. It says nothing about vertices that
+are connected by a longer route. Two people who each refuse to sit with a third person can
+perfectly well sit with each other.
+
+So "independent" does not mean "disconnected from each other" or "far apart". It means: no
+edge inside the set.
+
+## The trade-off
+
+The goal is the **largest** independent set. Think about adding one person to the
+committee:
+
+- you gain 1 seat;
+- you lose everyone who refuses to sit with them.
+
+Sometimes that is a good trade and sometimes not. Someone with many refusals costs a lot of
+future seats for one seat now. The recurrence in the next concept is built directly on this
+trade: for each vertex, compare the best you can do with it against the best you can do
+without it.
+
+## Hard in general, easy on trees
+
+On a general graph, finding the largest independent set is NP-hard. Nobody knows a method
+that is fast on every graph.
+
+On a **tree** it takes linear time.
+
+The question is identical. The definition is identical. What changes is the shape of the
+input. A tree has no cycles, so removing a vertex breaks it into pieces that have nothing
+more to do with each other, and each piece is a smaller tree. Those pieces are the
+subproblems. A general graph offers no such clean pieces: remove a vertex and what is left
+can still be tangled together through other routes.
+
+This is the third kind of index this week. The knapsack's subproblems were indexed by a
+capacity, the matrix chain's by a stretch, and here they will be indexed by a subtree.
+
+> Dynamic programming needs structure to hold on to. A problem that is intractable in
+> general can become easy on inputs that break apart into independent smaller copies of
+> themselves.

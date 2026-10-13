@@ -1,0 +1,120 @@
+---
+course: applied-algorithm-analysis
+section: w6-knapsack
+order: 1030
+title: One Row, Counting Down
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week6.html?hash=true#/12
+    caption: Slides 13–15 of 34 — the one-row version, why the inner loop runs backwards, then practice.
+notation:
+  - symbol: "K[w]"
+    reads: K at w
+    means: >-
+      One cell of a single array that is overwritten as each item is added. Square
+      brackets mark it as an array in code rather than the two-index table `K(w, j)`.
+  - symbol: "O(W)"
+    reads: big O of W
+    means: >-
+      Proportional to the capacity. Here, the memory for one row of the table instead of
+      all `n + 1` rows.
+  - symbol: old / new
+    reads: old, new
+    means: >-
+      While item `j` is being added, a cell is *old* if it still holds its row `j − 1`
+      value and *new* once it has been overwritten with its row `j` value.
+questions:
+  - ask: >-
+      The row `K[0..10]` is all 0. You add item B (3 lb, $14) with
+      `K[w] = max(K[w], K[w − 3] + 14)`, but the loop counts `w` **up** from 3 to 10. What
+      does `K[9]` hold afterwards, and what should it hold for one copy of B?
+    choices:
+      - text: 42, where it should be 14
+        correct: true
+        explains: >-
+          Counting up, `K[3]` becomes 14, then `K[6]` reads the new `K[3]` and becomes 28,
+          then `K[9]` reads the new `K[6]` and becomes 42. B has gone in three times.
+      - text: 14, which is correct
+        explains: >-
+          That is what counting down produces. Counting up, `K[9]` reads `K[6]`, which has
+          already been overwritten with a value that includes B.
+      - text: 28, where it should be 14
+        explains: >-
+          28 is `K[6]`, two copies of B. `K[9]` is three places further on and picks up a
+          third copy.
+      - text: 0, where it should be 14
+        explains: >-
+          That is the swapped-loops mistake seen from the other side. Here the cell it
+          reads has already been filled, with too much rather than too little.
+    work: |-
+      Up: `K[3] = K[0] + 14 = 14`
+      `K[6] = K[3] + 14 = 14 + 14 = 28` (reads a new cell)
+      `K[9] = K[6] + 14 = 28 + 14 = 42` (reads a new cell)
+      Down: `K[9] = K[6] + 14 = 0 + 14 = 14` (`K[6]` is still old)
+---
+
+In the filled table, row `j` reads only row `j − 1`. Week 5 met this situation with edit
+distance and kept two rows instead of the whole table. The knapsack can go one step
+further and keep **one** row, overwritten in place:
+
+```
+K[0…W] = 0
+for j = 1 to n:
+    for w = W down to w_j:
+        K[w] = max(K[w], K[w − w_j] + v_j)
+return K[W]
+```
+
+Space drops from `O(nW)` to `O(W)`. Time is unchanged. Before the assignment, `K[w]` holds
+the row `j − 1` value, the "leave it out" option, so the `max` compares the same two
+numbers as before.
+
+The inner loop runs from `W` **down**. That direction is the entire difference between the
+two knapsack variants.
+
+## Why count down
+
+While item `j` is being added, the one row holds two versions of the table at once. Going
+right to left, the cells already visited are *new* (row `j`) and the cells not yet visited
+are *old* (row `j − 1`):
+
+```
+old  old  old  old | new  new  new
+```
+
+To take item `j`, `K[w]` reads `K[w − wⱼ]`, a cell to its **left**. That smaller bag must
+not contain item `j` yet, so the cell has to be old. Counting down changes the right side
+first, so everything to the left is still old. Counting up reads cells that are already
+new, and item `j` can go in again.
+
+Test it. The row is all 0 and you add D (2 lb, $9):
+
+| Direction | First | Then | Result |
+| --- | --- | --- | --- |
+| Up (`w = 2`, then 4) | `K[2] = 0 + 9 = 9` | `K[4] = K[2] + 9 = 18` | D taken twice |
+| Down (`w = 4`, then 2) | `K[4] = K[2] + 9 = 0 + 9 = 9` | `K[2] = 0 + 9 = 9` | D taken once |
+
+It is the same hazard as shifting an array one place to the right in place with
+`a[i] = a[i−1]`. Left to right copies `a[0]` into every cell. Right to left works.
+
+So: **down** gives the 0/1 knapsack, **up** gives unlimited copies. Counting up is not a
+bug in general; it is the one-index recurrence from earlier in the week.
+
+## Two things the one row costs
+
+**The item loop must stay outside.** In the 2-D version the loops could be swapped. Here,
+swap them and each cell is filled while the cells it reads are still 0, so it sees one item
+only: `K[10]` comes out as $30, not $46.
+
+**The row forgets which items were taken.** It holds the best value and nothing else. To
+list the items you need the 2-D table and the walk back from its corner.
+
+## Practice
+
+LeetCode 416 (Partition Equal Subset Sum) and 494 (Target Sum) both ask whether a subset
+can reach an exact total, which is a 0/1 knapsack where each value equals its weight. In
+416 the total to reach is half the sum. In 494 the numbers given a `+` sign must add up to
+`(total + target) / 2`, so it is the same subset-sum question.
+
+> When you overwrite a table in place, ask of every read: is this cell supposed to be the
+> old value or the new one? Then choose the loop direction that gives you that.

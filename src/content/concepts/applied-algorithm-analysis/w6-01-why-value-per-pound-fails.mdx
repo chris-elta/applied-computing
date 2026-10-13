@@ -1,0 +1,110 @@
+---
+course: applied-algorithm-analysis
+section: w6-knapsack
+order: 970
+title: Why Value per Pound Fails
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week6.html?hash=true#/3
+    caption: Slides 4–5 of 34 — the burglar's problem, then the obvious method losing by $2.
+notation:
+  - symbol: "W"
+    reads: capital W
+    means: >-
+      The most weight the bag can carry, a whole number. In the running example `W = 10`
+      pounds.
+  - symbol: "wᵢ, vᵢ"
+    reads: w sub i, v sub i
+    means: >-
+      The weight and the value of item number `i`. The small `i` is a label saying which
+      item; it does not multiply anything.
+  - symbol: 0/1 knapsack
+    reads: zero-one knapsack
+    means: >-
+      The version with one copy of each item: every item is either left (0) or taken (1).
+      The version with unlimited copies is called the unbounded knapsack.
+questions:
+  - ask: >-
+      In the lecture's example, value per pound picks A then B for $44, and the best packing
+      is A and C for $46. A classmate proposes a repair: when two items are tied on value
+      per pound, prefer the one that fills the bag better. Does that fix it here?
+    choices:
+      - text: >-
+          No. Nothing was tied: A at 5.00 and B at 4.67 are clearly ranked, and it is the
+          ranking itself that loses
+        correct: true
+        explains: >-
+          A tie-breaking rule only acts when there is a tie. Here the method did exactly
+          what it promises, took the two best ratios, and still lost. The fault is that a
+          ratio describes one item alone and says nothing about the space left over.
+      - text: Yes. B and C are close enough that the rule would choose C
+        explains: >-
+          Close is not tied. B is 4.67 and C is 4.00, and C is in fact the *worst* ratio on
+          the list. A rule that picks the worst-ranked item is no longer value per pound.
+      - text: Yes, as long as the items are sorted by weight first
+        explains: >-
+          Sorting by weight is another rule that looks at each item alone. It would take D
+          and B first and then C, 9 pounds for $39, which is worse still.
+      - text: No, because the example has too few items for any rule to work
+        explains: >-
+          Four items are enough for a correct method: comparing whole packings finds A and
+          C. The number of items is not what defeats the ratio rule.
+    work: |-
+      Ratios: A 5.00, B 4.67, D 4.50, C 4.00. No two are equal.
+      Ratio order: A (6 lb), then B (3 lb) → 9 lb, $44. One pound left; nothing weighs 1 lb.
+      Best: A + C → 6 + 4 = 10 lb, $30 + $16 = $46.
+      The repair never triggers, because there is no tie to break.
+---
+
+A burglar finds more than the bag can hold. The bag carries at most `W` pounds. There are
+`n` items; item `i` weighs `wᵢ` pounds and is worth `vᵢ` dollars, and every weight is a
+whole number. Which items give the most value without going over the limit?
+
+There are two versions of the question, and they turn out to need different tables:
+
+| Version | Copies of each item | Also called |
+| --- | --- | --- |
+| With repetition | as many as you like | unbounded knapsack |
+| Without repetition | one | 0/1 knapsack |
+
+## The method everyone reaches for
+
+Take the item worth the most per pound, then the next, until nothing fits. Try it with a
+10-pound bag and one of each:
+
+| Item | Weight | Value | Per lb |
+| --- | --- | --- | --- |
+| A | 6 lb | $30 | 5.00 |
+| B | 3 lb | $14 | 4.67 |
+| C | 4 lb | $16 | 4.00 |
+| D | 2 lb | $9 | 4.50 |
+
+- **Best value per pound.** A, then B. That is 9 pounds and $44, with one pound spare and
+  nothing light enough to use it.
+- **Best packing.** A and C. Exactly 10 pounds and $46.
+
+The winning packing contains C, which is the *worst* item on the list by value per pound.
+
+## Why it loses
+
+After A goes in, 4 pounds are left. B fits but wastes a pound. C fills the 4 pounds exactly.
+A ratio is a fact about one item on its own, so it cannot see how well the remaining space
+gets used. That depends on which other items are in the bag.
+
+It is tempting to patch the rule: break ties by weight, or look one step ahead. But nothing
+was tied here. 5.00 and 4.67 are clearly ranked, and following that ranking is what loses.
+No tie-breaking rule repairs it.
+
+Methods that commit to the best-looking choice at each step are called greedy, and they get
+a lecture of their own. Some problems they solve exactly. This is not one of them.
+
+## What has to happen instead
+
+To know that A and C beats A and B, you have to compare *whole packings*. Listing every
+packing is hopeless, because `n` items have `2ⁿ` subsets. The table does the comparison
+without the listing: it records the best value for every smaller bag once, and builds larger
+bags out of those answers.
+
+> A rule that scores each item separately cannot see wasted space. When the quality of a
+> choice depends on what else gets chosen, you need the best answer to every smaller
+> problem, and that is a table.

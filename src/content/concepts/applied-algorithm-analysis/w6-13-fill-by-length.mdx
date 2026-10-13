@@ -1,0 +1,127 @@
+---
+course: applied-algorithm-analysis
+section: w6-chain
+order: 1090
+title: Fill by Length
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week6.html?hash=true#/23
+    caption: Slides 24–25 of 34 — the loop that fills one diagonal at a time, then what it costs.
+notation:
+  - symbol: len
+    reads: len, or length
+    means: >-
+      How many matrices are in the stretch. `C(2, 4)` covers three matrices, so its `len`
+      is 3. In general `len = j − i + 1`.
+  - symbol: "j = i + len − 1"
+    reads: j equals i plus len minus one
+    means: >-
+      Where a stretch ends, given where it starts and how long it is. A stretch of 3
+      starting at 2 ends at 4.
+  - symbol: "O(n³)"
+    reads: big O of n cubed
+    means: >-
+      Proportional to `n × n × n`. Here: about `n²/2` cells, with up to `n − 1` splits
+      tried in each.
+questions:
+  - ask: >-
+      For a chain of `n = 6` matrices, how many cells does the pass `len = 3` fill, and
+      why can all of them be computed at that point?
+    choices:
+      - text: >-
+          4 cells, and each reads only stretches of length 1 or 2, which earlier passes
+          filled
+        correct: true
+        explains: >-
+          `i` runs from 1 to `n − len + 1 = 4`, giving `C(1,3)`, `C(2,4)`, `C(3,5)`,
+          `C(4,6)`. A split cuts a stretch of 3 into pieces of 1 and 2, both already done.
+      - text: 6 cells, one for each matrix in the chain
+        explains: >-
+          A stretch of length 3 cannot start at matrix 5 or 6, since it would run past the
+          end. That is what the bound `i ≤ n − len + 1` enforces.
+      - text: 3 cells, because the stretch has length 3
+        explains: >-
+          The length is how many matrices each cell covers, not how many cells there are.
+          The number of cells is the number of places such a stretch can start: 4.
+      - text: 4 cells, and each reads the other cells of the same pass
+        explains: >-
+          The count is right, but a cell never reads one of the same length. Both pieces
+          of a split are strictly shorter than the stretch they came from.
+    work: |-
+      `len = 3`, `n = 6`: `i = 1 … n − len + 1 = 1 … 4`.
+      Cells: `C(1,3)`, `C(2,4)`, `C(3,5)`, `C(4,6)` → 4 cells.
+      `C(2,4)` reads `C(2,2)` + `C(3,4)` and `C(2,3)` + `C(4,4)`: lengths 1 and 2.
+      Lengths 1 and 2 were completed before `len = 3` began.
+---
+
+Every table so far this term was filled left to right, or row by row. This one cannot be.
+
+Try rows. To fill `C(1, 4)`, at the end of row 1, the recurrence reads `C(2, 4)` and
+`C(3, 4)`. Those sit in rows 2 and 3, which have not been started. Row by row fails.
+
+## What a cell actually depends on
+
+`C(i, j)` reads `C(i, k)` and `C(k+1, j)`. Both are pieces of the stretch from `i` to `j`,
+so both are **shorter** than it. That is the only dependency there is. Any order that
+finishes all the short stretches before the longer ones is a valid linearization of the
+dag.
+
+```
+// step 1: length-1 stretches cost nothing
+C(1,1) = C(2,2) = … = C(n,n) = 0
+
+// step 2: longer stretches, shortest first
+for len = 2 to n:
+    for i = 1 to n − len + 1:
+        j = i + len − 1
+        C(i, j) = min over k = i … j−1 of
+                      C(i, k) + C(k+1, j) + m[i−1]·m[k]·m[j]
+return C(1, n)
+```
+
+| Variable | Meaning |
+| --- | --- |
+| `len` | how many matrices are in the stretch |
+| `i` | where the stretch starts |
+| `j` | where it ends, so `j = i + len − 1` |
+| `k` | where the last multiplication splits it |
+
+`i` stops at `n − len + 1` so that `j` never goes past `n`.
+
+## The order for four matrices
+
+```
+len 1:  C(1,1)  C(2,2)  C(3,3)  C(4,4)     = 0
+len 2:  C(1,2)  C(2,3)  C(3,4)
+len 3:  C(1,3)  C(2,4)
+len 4:  C(1,4)                              ← the answer
+```
+
+Each line is one diagonal of the triangular table, starting from the main diagonal and
+moving up and to the right. The answer is the last cell filled, alone in the corner.
+
+## Cost
+
+- **Cells.** One per stretch with `i ≤ j`: about `n²/2` of them.
+- **Work per cell.** A stretch of `len` matrices has `len − 1` places to cut, never more
+  than `n − 1`. For instance `C(1, 4)` is `A B C D`, cut as `A | BCD`, `AB | CD` or
+  `ABC | D`: three tries. Each try is a fixed amount of work: read two cells, multiply,
+  add.
+- **Total.** Three nested loops, `len`, `i` and `k`, each up to `n`. Time `O(n³)`, memory
+  `O(n²)`.
+
+Unlike the knapsack bound, this one is honestly polynomial. `n` counts the matrices, so it
+is a measure of how much input there is. The dimensions themselves never enter the running
+time.
+
+## Why it is worth it
+
+For 20 matrices there are `20 × 21 / 2 = 210` stretches, each with at most 19 splits: under
+4,000 steps. The alternative was checking 1,767,263,190 bracketings.
+
+The saving comes from overlap. The same stretch appears in many different trees, and the
+table computes its cost once.
+
+> The fill order is not a convention. It is read off the recurrence: find what each cell
+> depends on, and finish those first. When cells depend on shorter stretches, you fill by
+> length.

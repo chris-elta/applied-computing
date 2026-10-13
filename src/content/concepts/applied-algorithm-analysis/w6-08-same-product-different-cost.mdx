@@ -1,0 +1,114 @@
+---
+course: applied-algorithm-analysis
+section: w6-chain
+order: 1040
+title: Same Product, Different Cost
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week6.html?hash=true#/16
+    caption: Slides 17–18 of 34 — the problem, then one product computed two ways.
+notation:
+  - symbol: "p × q"
+    reads: p by q
+    means: >-
+      The shape of a matrix: `p` rows and `q` columns. A `50 × 20` matrix has 50 rows and
+      20 columns. Here `×` describes a shape and is not a multiplication to carry out.
+  - symbol: "pqr"
+    reads: p q r
+    means: >-
+      The three numbers multiplied together: the cost, in scalar multiplications, of
+      multiplying a `p × q` matrix by a `q × r` matrix.
+  - symbol: "mᵢ₋₁ × mᵢ"
+    reads: m sub i minus one by m sub i
+    means: >-
+      The shape of matrix `Aᵢ`. The subscripts number the entries of the list
+      `m₀, m₁, …, mₙ`; so `A₁` is `m₀ × m₁`, `A₂` is `m₁ × m₂`, and neighbours share a
+      number.
+  - symbol: associative
+    reads: associative
+    means: >-
+      Regrouping does not change the result: `(AB)C = A(BC)`. It says nothing about the
+      work needed to get there.
+questions:
+  - ask: >-
+      `X` is `2 × 30`, `Y` is `30 × 4`, `Z` is `4 × 5`. What is the cheapest way to
+      compute `XYZ`, and what does it cost in scalar multiplications?
+    choices:
+      - text: "`(XY)Z`, costing 280"
+        correct: true
+        explains: >-
+          `XY` costs `2·30·4 = 240` and is a small `2 × 4` matrix. Multiplying that by `Z`
+          costs `2·4·5 = 40`. The large dimension, 30, is used once and then disappears.
+      - text: "`X(YZ)`, costing 900"
+        explains: >-
+          That is the cost of the other order: `30·4·5 = 600` for `YZ`, then
+          `2·30·5 = 300`. It is more than three times the cheaper one.
+      - text: "Either order, costing 240"
+        explains: >-
+          240 is the cost of `XY` alone. A second multiplication is still needed, and its
+          cost depends on which order was chosen.
+      - text: "`(XY)Z`, costing 1,200"
+        explains: >-
+          The order is right, but 1,200 is all four dimensions multiplied together,
+          `2·30·4·5`. Cost each multiplication separately as rows × shared dimension ×
+          columns, then add the two.
+    work: |-
+      `(XY)Z`: `XY` is `2×30` by `30×4` → `2·30·4 = 240`, result `2 × 4`.
+      Then `2×4` by `4×5` → `2·4·5 = 40`. Total `240 + 40 = 280`.
+      `X(YZ)`: `YZ` is `30×4` by `4×5` → `30·4·5 = 600`, result `30 × 5`.
+      Then `2×30` by `30×5` → `2·30·5 = 300`. Total `600 + 300 = 900`.
+---
+
+You have a row of matrices to multiply together: `A₁ × A₂ × ⋯ × Aₙ`. Matrix multiplication
+is associative, so you may put the brackets wherever you like and the answer is the same
+matrix. What is not the same is how much arithmetic it takes.
+
+## What one multiplication costs
+
+Multiplying a `p × q` matrix by a `q × r` matrix gives a `p × r` matrix. Each of its `p·r`
+entries is a row of `q` numbers times a column of `q` numbers, which is `q` scalar
+multiplications. So the cost is
+
+```
+p × q × r   scalar multiplications
+```
+
+rows of the left, times the shared dimension, times columns of the right.
+
+## One product, two prices
+
+`A` is `50 × 20`, `B` is `20 × 1`, `C` is `1 × 10`.
+
+| Order | First product | Second product | Total |
+| --- | --- | --- | --- |
+| `(AB)C` | `50·20·1 = 1,000` | `50·1·10 = 500` | 1,500 |
+| `A(BC)` | `20·1·10 = 200` | `50·20·10 = 10,000` | 10,200 |
+
+Same result, almost 7 times the work.
+
+`AB` is cheap because `B` has only 1 column. And the result `AB` is a thin `50 × 1` matrix,
+so multiplying it by `C` is cheap too. The other order starts with the cheaper first step,
+200 against 1,000, and then pays for it: `BC` is a `20 × 10` matrix, and multiplying `A` by
+that drags all three large dimensions into one product.
+
+So picking the cheapest multiplication available right now is not a safe rule. The first
+step decides the *shape* of what you are left holding, and that shape sets the price of
+everything after.
+
+## The input is just a list of numbers
+
+Neighbouring matrices must share a dimension, or they could not be multiplied. So write
+matrix `Aᵢ` as `mᵢ₋₁ × mᵢ`. Then the whole problem is described by `n + 1` numbers:
+
+```
+m₀, m₁, …, mₙ
+```
+
+For the example, `m = 50, 20, 1, 10`. The entries of the matrices never matter. Only the
+shapes do, and the order of the matrices is fixed. The single thing you get to choose is
+where the brackets go.
+
+**The problem.** Given `m₀, …, mₙ`, find the bracketing with the lowest total cost.
+
+> When every order gives the same answer, the order is still a decision. Associativity
+> tells you the choices are all correct; it does not tell you they all cost the same.

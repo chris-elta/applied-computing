@@ -1,0 +1,106 @@
+---
+course: applied-algorithm-analysis
+section: w6-review
+order: 1130
+title: Three Things That Go Wrong
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week6.html?hash=true#/30
+    caption: Slide 31 of 34 — three mistakes that survive a first reading.
+notation:
+  - symbol: "dp[i]"
+    reads: d p at i
+    means: >-
+      A generic name for one cell of a dynamic-programming table. What it holds is
+      whatever your one-sentence definition of the subproblem says.
+  - symbol: "K(w)"
+    reads: K of w
+    means: >-
+      The one-index knapsack table: the best value in a bag of capacity `w` when items may
+      be reused without limit.
+questions:
+  - ask: >-
+      A student must solve the **one-of-each** knapsack for the lecture's items (A 6 lb
+      $30, B 3 lb $14, C 4 lb $16, D 2 lb $9). They use the one-index recurrence `K(w)`
+      and test it on a 5-pound bag. It returns $23, which is the correct 0/1 answer (B and
+      D). Should they trust it?
+    choices:
+      - text: >-
+          No. `K(w)` allows repeats; it agreed here only because no repeat happened to
+          help. On a 10-pound bag it returns $48, using D twice, where the 0/1 answer is
+          $46
+        correct: true
+        explains: >-
+          The subproblem "best value in capacity `w`" does not record which items are used
+          up, so it cannot enforce one of each. A passing example is not evidence that the
+          definition matches the problem.
+      - text: >-
+          Yes. The recurrence produced the right packing, B and D, so it is modelling the
+          problem correctly
+        explains: >-
+          It produced the right number on one input. For `W = 4` the same table already
+          gives `K(4) = 18`, two copies of D, which is not a legal 0/1 packing at all.
+      - text: >-
+          Yes, provided they switch from tabulation to memoization
+        explains: >-
+          Those are two orders for evaluating the same recurrence. If the recurrence
+          answers a different question, both evaluate the wrong thing identically.
+      - text: >-
+          No, because they should have returned the maximum over the table instead of the
+          last cell
+        explains: >-
+          `K(w)` never decreases as `w` grows, so the last cell is already the maximum.
+          Reading a different cell cannot stop an item being taken twice.
+    work: |-
+      `K(5) = max{K(2) + 14, K(1) + 16, K(3) + 9} = max{23, 16, 23} = 23` → B + D. Matches 0/1.
+      `K(4) = max{K(1) + 14, K(0) + 16, K(2) + 9} = max{14, 16, 18} = 18` → D + D. Not 0/1.
+      `K(10) = 48` → A + D + D. The 0/1 answer is `K(10, 4) = 46` → A + C.
+      The definition, not the test, shows the fault: `K(w)` has no way to say D is used up.
+---
+
+Three mistakes that are still being made after one careful reading of the material. The
+first two carried over from week 5. The third now has a sharper example.
+
+## 1 · Reading the answer off the wrong cell
+
+Re-read your definition of `dp[i]`, then ask which cell holds the answer. The definition
+decides, not habit.
+
+| Table | A cell means | The answer is |
+| --- | --- | --- |
+| `K(w, j)` | best value, capacity `w`, first `j` items | the corner `K(W, n)` |
+| `C(i, j)` | cheapest cost of the stretch `i` to `j` | `C(1, n)`, the top-right corner |
+| `I(u)` | largest independent set below `u` | `I(r)` at the root |
+| LIS `dp[i]` | longest increasing subsequence *ending at* `i` | the maximum over all cells |
+
+The longest increasing subsequence from week 5 is the case where `dp[n−1]` is wrong. And
+notice that for the matrix chain, "the last cell" is not at the bottom-right of anything:
+it is wherever the definition puts the whole chain.
+
+## 2 · Treating memoization and tabulation as different algorithms
+
+They share the same subproblems, the same recurrence and the same asymptotic cost. What
+differs is the order of evaluation, the constants, the use of the call stack, and whether
+subproblems that turn out not to be needed get solved.
+
+This week adds a practical angle. The matrix-chain table has an awkward fill order, by
+length. A memoized version never has to work that order out: it recurses on whatever the
+recurrence asks for and the order emerges. It is still the same `O(n³)` algorithm.
+
+## 3 · Believing a recurrence because it passes the examples
+
+The one-index `K(w)` is a correct recurrence, for the unlimited-copies problem. Applied to
+the one-of-each problem it gives the right answer whenever no item happens to be worth
+taking twice, and so it can pass a set of small tests.
+
+With the lecture's items and a 5-pound bag, `K(5) = 23`, which is B and D: one of each, and
+also the correct 0/1 answer. With a 10-pound bag it returns 48, using D twice, where the
+correct 0/1 answer is 46.
+
+More test cases are not the cure, since a few more might pass as well. Check the
+**definition of the subproblem** first. "Best value in a bag of capacity `w`" says nothing
+about which items remain. A recurrence built on it cannot respect a one-copy limit,
+whatever it prints.
+
+> Every one of these is caught the same way: say in one sentence what a cell means, and
+> check each term of the recurrence, and the cell you return, against that sentence.

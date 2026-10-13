@@ -1,0 +1,121 @@
+---
+course: applied-algorithm-analysis
+section: w6-knapsack
+order: 1010
+title: Knapsack Without Repetition
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week6.html?hash=true#/10
+    caption: Slide 11 of 34 — the two-index subproblem, its recurrence and the loop that fills it.
+notation:
+  - symbol: "K(w, j)"
+    reads: K of w and j
+    means: >-
+      The best value that fits in a bag of capacity `w` when only the first `j` items of
+      the list may be used, one copy each. `K(10, 2) = 44` uses A and B.
+  - symbol: "j"
+    reads: j
+    means: >-
+      How far down the list of items you are allowed to look. `j = 0` means no items at
+      all; `j = n` means every item.
+  - symbol: "wⱼ, vⱼ"
+    reads: w sub j, v sub j
+    means: >-
+      The weight and value of item number `j`, the last item the subproblem is allowed to
+      use.
+questions:
+  - ask: >-
+      In `K(w, j) = max{ K(w, j−1), K(w − wⱼ, j−1) + vⱼ }`, the "take item `j`" option
+      reads `K(w − wⱼ, j−1)`. What would go wrong if it read `K(w − wⱼ, j)` instead?
+    choices:
+      - text: >-
+          The smaller bag would be allowed to contain item `j` already, so the item could
+          be taken more than once
+        correct: true
+        explains: >-
+          `K(·, j)` is a packing that may use item `j`. Adding item `j` on top of it can
+          give two copies. Reading row `j − 1` is the whole mechanism that enforces one of
+          each; with `j` there it becomes the unlimited-copies recurrence.
+      - text: Nothing; the two cells always hold the same value
+        explains: >-
+          They differ exactly when item `j` is worth taking in the smaller bag. With D
+          (2 lb, $9) alone, `K(2, 0) = 0` but `K(2, 1) = 9`.
+      - text: The cell would not be filled yet, so the loop would read an empty value
+        explains: >-
+          With `w` increasing inside each row, `K(w − wⱼ, j)` is to the left in the same
+          row and already filled. The program runs without complaint, which is what makes
+          this mistake hard to spot.
+      - text: Item `j` could never be taken, since the cell excludes it
+        explains: >-
+          The other way round. Row `j − 1` is the one that excludes item `j`; row `j`
+          permits it.
+    work: |-
+      Correct: take `j` → `K(w − wⱼ, j−1) + vⱼ`. Row `j − 1` cannot contain item `j`. One copy at most.
+      Changed: take `j` → `K(w − wⱼ, j) + vⱼ`. Row `j` may contain item `j`. Two or more copies.
+      Example, D alone (2 lb, $9), `w = 4`:
+      correct `K(2, 0) + 9 = 9`; changed `K(2, 1) + 9 = 18`, which is D twice.
+---
+
+Now give the burglar one of each item. The table from the unlimited version breaks at
+once. `K(w)` said: put an item in, then solve the same problem on a smaller bag. With one
+copy each, the smaller bag does *not* face the same problem, because the item just taken is
+gone. Knowing the capacity is no longer enough. The subproblem also has to say which items
+are still available.
+
+Recording an arbitrary set of remaining items would need `2ⁿ` subproblems. The fix is to
+put the items in a line and only ever ask about a prefix of it.
+
+## The three steps
+
+Line the items up: A, B, C, D.
+
+**Subproblem.** `K(w, j)` is the best value that fits in a bag of capacity `w` if you may
+use only the first `j` items. For example `K(10, 2)` uses only A and B in a 10-pound bag,
+so it is $44.
+
+**Recurrence.** Look at item `j`, the last one allowed. Either it is left out or it is
+taken:
+
+```
+K(w, j) = max{ K(w, j−1),  K(w − wⱼ, j−1) + vⱼ }
+```
+
+| Option | What remains | Value |
+| --- | --- | --- |
+| Leave item `j` out | same bag, first `j − 1` items | `K(w, j−1)` |
+| Take item `j` | bag smaller by `wⱼ`, first `j − 1` items | `K(w − wⱼ, j−1) + vⱼ` |
+
+If `wⱼ > w` the item does not fit and only the first option exists.
+
+**Order.**
+
+```
+Initialize all K(0, j) = 0 and all K(w, 0) = 0
+for j = 1 to n:
+    for w = 1 to W:
+        if w_j > w:  K(w, j) = K(w, j−1)
+        else:        K(w, j) = max{ K(w, j−1),  K(w − w_j, j−1) + v_j }
+return K(W, n)
+```
+
+## What the second index does
+
+Both options read row `j − 1`, where item `j` is not allowed. That is what stops an item
+from going in twice. Compare the unlimited version, where every item stayed available after
+it was taken: there the "take" branch read the same one-dimensional table it was writing.
+Here item `j` is used up, and reading the row above is how the table knows.
+
+The order of the items does not matter. Any line-up gives the same final answer; the index
+`j` only needs *some* fixed order so that "the first `j`" means something.
+
+## Cost
+
+There are `(n + 1)(W + 1)` cells and each takes a constant amount of work: two lookups, an
+addition and a comparison. Time and space are both `O(nW)`, the same pseudo-polynomial
+bound as before.
+
+Swapping the two loops also works. Every cell reads two cells in the row above it, and with
+either nesting those are filled first.
+
+> When a choice uses something up, the subproblem has to record what is left. Ordering the
+> choices and indexing by a prefix records it with one extra number instead of a whole set.

@@ -1,7 +1,7 @@
 ---
 course: applied-algorithm-analysis
 title: "Applied Algorithm Analysis · Final Exam"
-minutes: 100
+minutes: 120
 passMark: 60
 questions:
   - topic: "Week 1 · Big-O and growth"
@@ -1121,8 +1121,226 @@ questions:
       Read the definition: "ends at `i`" fixes where the run stops.
       The question asked has no fixed ending, so it is `max{dp[0], …, dp[n−1]}`.
       Same reasoning as the LIS: an "ending at" state buys a recurrence and moves the answer out of the last cell.
+  - topic: "Week 6 · Dynamic programming, part II"
+    ask: "A 7-pound bag, one of each item: X is 5 lb for $20, Y is 4 lb for $15, Z is 3 lb for $11. What does 'best value per pound first' collect, and what is the best packing worth?"
+    choices:
+      - text: "$20 by value per pound; $26 is the best"
+        correct: true
+        explains: "Right. X has the best ratio and goes in first, leaving 2 pounds that nothing fits. Y and Z together fill the bag exactly for $26, although they are the two worst ratios."
+      - text: "$26 by value per pound; $26 is the best"
+        explains: "Value per pound takes X first, at 4.00 per pound. After that only 2 pounds remain, and Y and Z need 4 and 3."
+      - text: "$20 by value per pound; $20 is the best"
+        explains: "Y and Z weigh 4 + 3 = 7 pounds, which fits, and are worth $15 + $11 = $26."
+      - text: "$20 by value per pound; $31 is the best"
+        explains: "$31 would be X and Z, which weigh 8 pounds. The bag holds 7."
+    work: |-
+      Ratios: X `20/5 = 4.00`, Y `15/4 = 3.75`, Z `11/3 ≈ 3.67`.
+      By ratio: X (5 lb). 2 lb left; Y needs 4, Z needs 3. Total $20.
+      Best: Y + Z = 4 + 3 = 7 lb, $15 + $11 = $26.
+      The ratio rule cannot see the 2 wasted pounds.
+  - topic: "Week 6 · Dynamic programming, part II"
+    ask: "Unlimited copies of two items: one is 3 lb for $5, the other 4 lb for $7. The table so far is `K(0..8) = 0, 0, 0, 5, 7, 7, 10, 12, 14`. What is `K(9)`?"
+    choices:
+      - text: "15"
+        correct: true
+        explains: "Right. The 3-lb item as the last one in gives `K(6) + 5 = 15`. The 4-lb item gives `K(5) + 7 = 14`. Three of the 3-lb item fill the bag exactly."
+      - text: "14"
+        explains: "That is two of the 4-lb item with a pound wasted, the candidate `K(5) + 7`. The other candidate, `K(6) + 5`, is larger."
+      - text: "12"
+        explains: "That is one of each item, 7 pounds for $12. Copies are unlimited here, and a 9-pound bag has room for more."
+      - text: "19"
+        explains: "That adds $5 to the previous cell, `K(8) = 14`. The 3-lb item must be added to the bag 3 pounds smaller, `K(6)`."
+    work: |-
+      3-lb item last: `K(9 − 3) + 5 = K(6) + 5 = 10 + 5 = 15`
+      4-lb item last: `K(9 − 4) + 7 = K(5) + 7 = 7 + 7 = 14`
+      `K(9) = max{15, 14} = 15` → three 3-lb items.
+  - topic: "Week 6 · Dynamic programming, part II"
+    ask: "A knapsack program fills the `O(nW)` table for 20 items and a 15-kilogram bag, with weights in whole kilograms. To be more precise, someone re-enters every weight and the capacity in grams. Nothing else changes. What happens to the running time?"
+    choices:
+      - text: "It grows about 1,000 times, although each number in the input is only three digits longer"
+        correct: true
+        explains: "Right. The table has one column per unit of capacity, so it goes from 15 columns to 15,000. The work follows the value of `W`, which is exponential in the number of digits used to write it."
+      - text: "It is unchanged, because the items and the bag are physically the same"
+        explains: "The algorithm sees numbers, not objects. `W` went from 15 to 15,000, and the table is as wide as `W`."
+      - text: "It grows by a small constant amount, since each number is only three digits longer"
+        explains: "That would be true of an algorithm whose work followed the length of its input. This one's follows the value of one of the numbers."
+      - text: "It grows about 3 times, once for each extra digit"
+        explains: "Each extra digit multiplies `W` by 10, so three digits multiply the table width by 1,000, not by 3."
+    work: |-
+      Kilograms: `n × W = 20 × 15 = 300` cell-tries.
+      Grams: `n × W = 20 × 15,000 = 300,000` cell-tries.
+      Ratio: 1,000. Extra input: three digits per number.
+      `O(nW) = O(n · 10ᵈ)` for a `d`-digit `W`: pseudo-polynomial.
+  - topic: "Week 6 · Dynamic programming, part II"
+    ask: "Draw the capacity graph for a knapsack with repetition: `W = 7`, one item weighing 2 and one weighing 3. Each capacity 0 to 7 is a vertex, and there is an edge `(w − wᵢ) → w` for every item `i` and every capacity `w ≥ wᵢ`. How many edges are there?"
+    choices:
+      - text: "11"
+        correct: true
+        explains: "Right. The 2-lb item gives an edge into each of the capacities 2 to 7, which is 6 edges. The 3-lb item gives one into each of 3 to 7, which is 5. That is at most `n × W = 14`, which is where `O(nW)` comes from."
+      - text: "14"
+        explains: "That is `n × W`, the upper bound. It counts edges into capacities too small to hold the item, such as a 3-lb item arriving at capacity 2."
+      - text: "7"
+        explains: "That is one edge per capacity. Each capacity can be reached by adding either item, so most vertices have two incoming edges."
+      - text: "5"
+        explains: "That counts something like the items in one full bag. An edge exists for every item at every capacity it fits, whether or not the best path uses it."
+    work: |-
+      2-lb item: `w = 2, 3, 4, 5, 6, 7` → 6 edges (`0→2` up to `5→7`).
+      3-lb item: `w = 3, 4, 5, 6, 7` → 5 edges (`0→3` up to `4→7`).
+      Total `6 + 5 = 11`, and `11 ≤ n × W = 2 × 7 = 14`.
+      Every edge points to a larger capacity, so the graph is a dag.
+  - topic: "Week 6 · Dynamic programming, part II"
+    ask: "One of each: P is 2 lb for $5, Q is 3 lb for $8, R is 4 lb for $9, in that order. Row Q of the table (P and Q allowed) reads `0, 0, 5, 8, 8, 13, 13` for `w = 0` to `6`. What is `K(6, 3)`, the cell in row R at `w = 6`?"
+    choices:
+      - text: "14"
+        correct: true
+        explains: "Right. Leaving R out keeps the 13 above. Taking R reads row Q four columns to the left, `K(2, 2) = 5`, and adds 9. The larger is 14: P and R."
+      - text: "13"
+        explains: "That is the cell above, the 'leave R out' option. Taking R gives `5 + 9 = 14`, which is larger."
+      - text: "22"
+        explains: "That adds R's $9 to the cell directly above, 13. The bag receiving R must be 4 pounds smaller: column 2, not column 6."
+      - text: "17"
+        explains: "That is Q and R, $8 + $9. They weigh 3 + 4 = 7 pounds and the bag holds 6."
+    work: |-
+      Leave R out: `K(6, 2) = 13` (P + Q)
+      Take R: `K(6 − 4, 2) + 9 = K(2, 2) + 9 = 5 + 9 = 14` (P + R)
+      `K(6, 3) = max{13, 14} = 14`
+  - topic: "Week 6 · Dynamic programming, part II"
+    ask: "A subset-sum checker keeps one row of true/false values, `can[0] = true` and the rest false, and for each number `x` runs `can[s] = can[s] or can[s − x]` with `s` counting **up** from `x` to the target. Given the numbers 3 and 5, one of each, and target 6, it reports true. What happened?"
+    choices:
+      - text: "Counting up let `can[6]` read `can[3]` after it had already been updated for the same 3, so the 3 was used twice"
+        correct: true
+        explains: "Right. The cell to the left must still hold its value from before this number was added. Counting up overwrites it first. Counting `s` down from the target fixes it."
+      - text: "The answer is correct: 3 and 5 can make 6"
+        explains: "The sums available from one 3 and one 5 are 0, 3, 5 and 8. Six needs two 3s."
+      - text: "The numbers should be in the inner loop and the sums in the outer loop"
+        explains: "With a single row the numbers must stay in the outer loop. The fault is the direction of the inner loop, not the nesting."
+      - text: "One row is not enough to solve subset sum; the full table is required"
+        explains: "One row is enough for a yes-or-no answer, provided it is filled from the right. The full table is only needed to list which numbers were used."
+    work: |-
+      Start: `can[0] = true`.
+      `x = 3`, counting up: `can[3] = can[0] = true`; then `can[6] = can[3] = true` ← reads a new cell.
+      That path is `0 → 3 → 6`: the 3 twice.
+      Counting down: `can[6] = can[3]` (still false), then `can[3] = can[0] = true`.
+      After `x = 5` counting down: `can[8]`, `can[5]` true. `can[6]` stays false.
+  - topic: "Week 6 · Dynamic programming, part II"
+    ask: "A 0/1 table for X (3 lb, $6), Y (2 lb, $5), Z (4 lb, $9), in that order, for `w = 0` to `6`. Row X: `0, 0, 0, 6, 6, 6, 6`. Row Y: `0, 0, 5, 6, 6, 11, 11`. Row Z: `0, 0, 5, 6, 9, 11, 14`. Walking back from the corner, which items make up the $14?"
+    choices:
+      - text: "Y and Z"
+        correct: true
+        explains: "Right. Row Z differs from row Y at `w = 6`, so Z was taken and the walk moves to `w = 2`. There row Y differs from row X, so Y was taken, and the walk reaches `w = 0`."
+      - text: "X and Y"
+        explains: "That is the $11 packing in row Y. The corner improved on it, 14 against 11, which is the sign that Z was taken."
+      - text: "X and Z"
+        explains: "They weigh 3 + 4 = 7 pounds, which does not fit, and would be worth $15, not $14."
+      - text: "Z alone"
+        explains: "Z is worth $9. After taking it the walk is at `w = 2` in row Y, where the value 5 differs from row X's 0: Y was taken too."
+    work: |-
+      `(6, Z)`: 14 ≠ `K(6, Y) = 11` → Z taken. Move to `w = 6 − 4 = 2`.
+      `(2, Y)`: 5 ≠ `K(2, X) = 0` → Y taken. Move to `w = 2 − 2 = 0`.
+      `(0, X)`: 0 = 0 → X left out.
+      Packing: Y + Z = 6 lb, $5 + $9 = $14.
+  - topic: "Week 6 · Dynamic programming, part II"
+    ask: "`A` is `10 × 100`, `B` is `100 × 5`, `C` is `5 × 50`. How many scalar multiplications does the cheaper order for `ABC` take?"
+    choices:
+      - text: "7,500, as `(AB)C`"
+        correct: true
+        explains: "Right. `AB` costs 5,000 and leaves a small `10 × 5` matrix, so the second multiplication is only 2,500. The dimension 100 is used once and is gone."
+      - text: "75,000, as `A(BC)`"
+        explains: "That is the dearer order: `BC` costs 25,000 and leaves a `100 × 50` matrix, which then costs 50,000 to multiply by `A`."
+      - text: "5,000, as `(AB)C`"
+        explains: "That is the first multiplication only. `(AB)` still has to be multiplied by `C`, costing `10·5·50 = 2,500` more."
+      - text: "Both orders cost the same, since the product is the same matrix"
+        explains: "Associativity makes the results equal. The work differs by a factor of ten here."
+    work: |-
+      `(AB)C`: `10·100·5 = 5,000`, result `10 × 5`; then `10·5·50 = 2,500`. Total 7,500.
+      `A(BC)`: `100·5·50 = 25,000`, result `100 × 50`; then `10·100·50 = 50,000`. Total 75,000.
+  - topic: "Week 6 · Dynamic programming, part II"
+    ask: "Three matrices with dimensions `m = 10, 5, 20, 2`, so `A₁` is `10 × 5`, `A₂` is `5 × 20` and `A₃` is `20 × 2`. Given `C(1, 2) = 1,000` and `C(2, 3) = 200`, what is `C(1, 3)`?"
+    choices:
+      - text: "300"
+        correct: true
+        explains: "Right. Splitting after `A₁` costs `0 + 200 + 10·5·2 = 300`. Splitting after `A₂` costs `1,000 + 0 + 10·20·2 = 1,400`. The minimum is 300."
+      - text: "1,400"
+        explains: "That is the split `k = 2`. It is one of the two candidates, and the recurrence keeps the smaller."
+      - text: "200"
+        explains: "That is `C(2, 3)` alone. The result of `A₂A₃` still has to be multiplied by `A₁`, at a cost of `10·5·2 = 100`."
+      - text: "1,200"
+        explains: "That adds `C(1, 2)` and `C(2, 3)`. Those stretches overlap at `A₂`, so they are not the two sides of any split."
+    work: |-
+      `k = 1`: `C(1,1) + C(2,3) + m₀·m₁·m₃ = 0 + 200 + 10·5·2 = 300`
+      `k = 2`: `C(1,2) + C(3,3) + m₀·m₂·m₃ = 1,000 + 0 + 10·20·2 = 1,400`
+      `C(1, 3) = min{300, 1,400} = 300` → `A₁(A₂A₃)`
+  - topic: "Week 6 · Dynamic programming, part II"
+    ask: "A student sets every `C(i, i) = 0` and then fills the rest of the chain-matrix table row by row: row 1 from left to right, then row 2, and so on. For `n = 5`, which is the first cell whose recurrence reads a cell that has not been filled?"
+    choices:
+      - text: "`C(1, 3)`, which needs `C(2, 3)`"
+        correct: true
+        explains: "Right. Its split at `k = 1` reads `C(1, 1)` and `C(2, 3)`. The first is a base case; the second is in row 2, which has not been started. Filling by increasing length would have done all the pairs first."
+      - text: "`C(1, 2)`, which needs `C(2, 2)`"
+        explains: "`C(2, 2)` is a base case and was set to 0 before the loop began. `C(1, 2)` reads only base cases, so it is fine."
+      - text: "`C(1, 5)`, the last cell of row 1"
+        explains: "It does fail, but it is not the first. The trouble starts as soon as a stretch of three is reached."
+      - text: "None; every cell reads only cells to its left"
+        explains: "A cell reads `C(i, k)` to its left and also `C(k+1, j)` in a lower row. The second kind is what row-by-row has not reached."
+    work: |-
+      Row 1 order: `C(1,2)`, `C(1,3)`, `C(1,4)`, `C(1,5)`.
+      `C(1,2)`: `k = 1` reads `C(1,1)`, `C(2,2)` → both base cases. Fine.
+      `C(1,3)`: `k = 1` reads `C(1,1)`, `C(2,3)` → `C(2,3)` is in row 2, still empty.
+      By length: `len = 2` fills `C(1,2)`, `C(2,3)`, `C(3,4)`, `C(4,5)` before any stretch of 3.
+  - topic: "Week 6 · Dynamic programming, part II"
+    ask: "For a chain of 10 matrices, how many cells `C(i, j)` with `i ≤ j` does the table have, and at most how many splits does any one cell try?"
+    choices:
+      - text: "55 cells, at most 9 splits"
+        correct: true
+        explains: "Right. There are `10 × 11 / 2 = 55` stretches, and the longest has 10 matrices and 9 places to cut. That is under 500 steps in all."
+      - text: "100 cells, at most 10 splits"
+        explains: "100 is the full square. Half of it does not exist, because a stretch cannot end before it starts. And 10 matrices have 9 gaps between them, not 10."
+      - text: "45 cells, at most 9 splits"
+        explains: "45 leaves out the ten length-1 stretches on the diagonal. They are cells of the table too, each holding 0."
+      - text: "1,000 cells, at most 10 splits"
+        explains: "1,000 is `n³`, a bound on the running time. The number of cells is about `n²/2`."
+    work: |-
+      Stretches of length 1: 10. Length 2: 9. … Length 10: 1.
+      `10 + 9 + … + 1 = 10 × 11 / 2 = 55` cells.
+      A stretch of `len` matrices has `len − 1` splits; the longest has `10 − 1 = 9`.
+      Total work: at most `55 × 9 = 495` steps.
+  - topic: "Week 6 · Dynamic programming, part II"
+    ask: "A tree with root `r`. The children of `r` are `a`, `b` and `c`. `a` has two leaf children `d` and `e`. `b` has one child `f`, and `f` has one leaf child `h`. `c` is a leaf. What is `I(r)`, the size of the largest independent set?"
+    choices:
+      - text: "5"
+        correct: true
+        explains: "Right. Leaving `r` out gives `I(a) + I(b) + I(c) = 2 + 2 + 1 = 5`. Taking it gives `1 + I(d) + I(e) + I(f) = 4`. One such set is `{d, e, b, h, c}`."
+      - text: "4"
+        explains: "That is the 'take the root' case, `1 + I(d) + I(e) + I(f)`. It has to be compared with leaving the root out, which gives 5."
+      - text: "6"
+        explains: "That is `1 + I(a) + I(b) + I(c)`: taking `r` and then adding the children's values. Those values may count the children themselves, and here `I(b)` and `I(c)` do, although `b` and `c` are joined to `r`."
+      - text: "3"
+        explains: "That counts the three children `a`, `b`, `c` as a set. They are independent of each other, but the subtrees below them hold more."
+    work: |-
+      Leaves: `I(d) = I(e) = I(h) = I(c) = 1`
+      `I(f) = max{1 + 0, I(h)} = 1`
+      `I(a) = max{1 + 0, I(d) + I(e)} = max{1, 2} = 2`
+      `I(b) = max{1 + I(h), I(f)} = max{2, 1} = 2`
+      `I(r) = max{1 + I(d) + I(e) + I(f), I(a) + I(b) + I(c)} = max{4, 5} = 5`
+  - topic: "Week 6 · Dynamic programming, part II"
+    ask: "A new problem: `n` piles of stones stand in a row. A move merges two **neighbouring** piles into one and costs the size of the merged pile. Find the cheapest way to merge everything into a single pile. What should the subproblem be indexed by, and in what order is the table filled?"
+    choices:
+      - text: "A stretch of piles `i` to `j`; by increasing length of stretch"
+        correct: true
+        explains: "Right. The last merge joins a left block and a right block of neighbouring piles, exactly as the last multiplication does in the matrix chain. Each cell reads shorter stretches, so those must be filled first."
+      - text: "A prefix of the piles, the first `j`; left to right"
+        explains: "The last merge can leave a right-hand block that starts in the middle of the row. A prefix cannot describe that block, so the recurrence would have nothing to look up."
+      - text: "A capacity `w`; from 0 up to the total number of stones"
+        explains: "That is the knapsack's index. Nothing here has a weight limit, and which piles are neighbours matters, which a capacity cannot record."
+      - text: "A stretch of piles `i` to `j`; row by row, with `i` increasing"
+        explains: "Right index, wrong order. `M(1, n)` in row 1 would need stretches that begin at 2, 3, … which lie in rows not yet filled."
+    work: |-
+      Step 1: `M(i, j)` = cheapest cost of merging piles `i … j` into one.
+      Step 2: `M(i, j) = min over i ≤ k < j of { M(i, k) + M(k+1, j) } + (stones in piles i … j)`; `M(i, i) = 0`.
+      Step 3: both `M(i, k)` and `M(k+1, j)` are shorter stretches → fill by length.
+      Same shape as chain matrix multiplication: `O(n²)` cells, `O(n)` splits each.
 ---
-67 multiple-choice questions across all five weeks. The paper is divided into sections, and nothing is revealed until you
+80 multiple-choice questions across all six weeks. The paper is divided into sections, and nothing is revealed until you
 submit: pick an answer for each question (you can change it as often as you like), then submit a
 section to see your score for it, the correct answers, an explanation for each one you chose, and a
 worked solution. You can submit one section at a time, in any order, or the whole exam at once.

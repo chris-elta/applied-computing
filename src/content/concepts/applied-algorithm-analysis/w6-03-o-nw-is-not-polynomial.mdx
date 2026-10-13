@@ -1,0 +1,118 @@
+---
+course: applied-algorithm-analysis
+section: w6-knapsack
+order: 990
+title: O(nW) Is Not Polynomial
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week6.html?hash=true#/6
+    caption: Slide 7 of 34 — the same four items, with only W changing.
+notation:
+  - symbol: "d"
+    reads: d
+    means: >-
+      The number of digits it takes to write `W`. For `W = 10,000`, `d = 5`. This, not `W`
+      itself, is how much room `W` takes up in the input.
+  - symbol: "10ᵈ"
+    reads: ten to the d
+    means: >-
+      Roughly the size of a number that has `d` digits. Each extra digit multiplies it by
+      ten.
+  - symbol: pseudo-polynomial
+    reads: SOO-doh polynomial
+    means: >-
+      Polynomial in the *value* of a number in the input, but exponential in the number of
+      digits needed to write it. Fast only while the number stays small.
+  - symbol: NP-hard
+    reads: N P hard
+    means: >-
+      A class of problems for which nobody knows an algorithm that is fast on every input.
+      A working reading is enough here; the definition comes later in the course.
+questions:
+  - ask: >-
+      Two knapsack inputs have the same 50 items. In the first `W = 999`; in the second
+      `W = 999,999`. How do the input sizes and the running times of the `O(nW)` table
+      compare?
+    choices:
+      - text: >-
+          The second input is three characters longer, and the table does about 1,000 times
+          the work
+        correct: true
+        explains: >-
+          Three more digits to type, and a table a thousand times wider. Work that
+          multiplies by a fixed factor for each extra character of input is exponential in
+          the input size.
+      - text: >-
+          The second input is about 1,000 times longer, and the table does about 1,000
+          times the work
+        explains: >-
+          The value of `W` grew a thousandfold, but writing it down took only three more
+          digits. Input size counts characters, not the quantity they stand for.
+      - text: >-
+          The second input is three characters longer, and the table does about three times
+          the work
+        explains: >-
+          That would be true of an algorithm whose work followed the length of the input.
+          This table has one column per unit of capacity, so its width is the value 999,999.
+      - text: The inputs are the same size and the running times are the same, since `n` is unchanged
+        explains: >-
+          `n` is one of two factors in `O(nW)`. The other is `W`, and it went from about a
+          thousand to about a million.
+    work: |-
+      First: `50 × 999 ≈ 50,000` cell-tries. `W` takes 3 digits.
+      Second: `50 × 999,999 ≈ 50,000,000` cell-tries. `W` takes 6 digits.
+      Input grew by 3 characters. Work grew by a factor of about 1,000.
+      In general `O(nW) = O(n · 10ᵈ)`: exponential in `d`.
+---
+
+`O(nW)` has two letters multiplied together and no exponent in sight. It looks polynomial.
+It is not, and the reason is the idea week 2 was built on: **input size is how much you have
+to type, not the value of what you typed**.
+
+Polynomial means that typing a little more input makes the work grow only a little. Keep the
+same four items and change nothing but `W`:
+
+| `W` you type | Extra characters | Table cells (`4 × W`) |
+| --- | --- | --- |
+| 10 | — | 40 |
+| 10,000 | 3 zeros | 40,000 |
+| 10,000,000 | 3 more zeros | 40,000,000 |
+
+Every three extra keystrokes multiply the work by 1,000. That happens because the table has
+one column per pound of capacity, so it is as wide as the *value* of `W`.
+
+## In general
+
+If `W` has `d` digits then `W` is about `10ᵈ`. So `O(nW)` is really
+
+```
+O(n · 10ᵈ)
+```
+
+which is exponential in `d`. It is not `d²` or `d³` or any fixed power of `d`. An algorithm
+like this, polynomial in a number's value and exponential in its length, is called
+**pseudo-polynomial**.
+
+## Why sorting is different
+
+Sorting also takes numbers as input, but 37 and 37,000,000 each cost it one comparison. Its
+work follows *how many* numbers you give it, so making the numbers themselves larger changes
+almost nothing. The knapsack table's work follows *how big* one of the numbers is.
+
+Counting sort, at `O(n + k)` for keys up to `k`, is pseudo-polynomial for the same reason
+as the knapsack: it builds an array as long as the largest key.
+
+## Why it matters
+
+The knapsack problem is NP-hard: nobody knows an algorithm that is fast on every input. If
+`O(nW)` were truly polynomial, this table would be such an algorithm, and one of the central
+open questions of the field would have been settled by a ten-line loop. It has not been.
+The table is fast only when `W` is small.
+
+That is still useful. A bag measured in whole pounds, or a budget in whole dollars, often
+has a small `W`. But change the units from kilograms to milligrams and the same problem
+needs a table a million times wider, although nothing about the burglar's situation has
+changed.
+
+> Before calling a running time polynomial, ask what each letter measures. A letter that
+> stands for the value of an input number hides an exponential in the number of digits.

@@ -1,0 +1,109 @@
+---
+course: applied-algorithm-analysis
+section: w6-knapsack
+order: 980
+title: Knapsack With Repetition
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week6.html?hash=true#/5
+    caption: Slide 6 of 34 — the subproblem, the recurrence, and the table for a 10-pound bag.
+notation:
+  - symbol: "K(w)"
+    reads: K of w
+    means: >-
+      The best total value that fits in a bag of capacity `w`, when every item may be used
+      as often as you like. `K(5) = 23` says a 5-pound bag can hold $23 and no more.
+  - symbol: "max over i : wᵢ ≤ w"
+    reads: the maximum over all i such that w sub i is at most w
+    means: >-
+      Try every item that fits in a bag of size `w`, work out the bracket for each, and keep
+      the largest result. Items heavier than `w` are skipped.
+  - symbol: "O(nW)"
+    reads: big O of n W
+    means: >-
+      Proportional to the number of items times the capacity. `W` cells, up to `n` tries in
+      each.
+questions:
+  - ask: >-
+      Items: A 6 lb $30, B 3 lb $14, C 4 lb $16, D 2 lb $9, unlimited copies. The table so
+      far reads `K(0..6) = 0, 0, 9, 14, 18, 23, 30`. What is `K(7)`?
+    choices:
+      - text: "32"
+        correct: true
+        explains: >-
+          Each item is tried as the last one in, and each reads the cell `wᵢ` places back.
+          B gives `K(4) + 14 = 32` and D gives `K(5) + 9 = 32`; A and C both give 30.
+      - text: "30"
+        explains: >-
+          That is A with one pound wasted, `K(1) + 30`. It is one of the four candidates,
+          but the recurrence takes the largest, and two others reach 32.
+      - text: "39"
+        explains: >-
+          That adds D's $9 to the cell just before, `K(6) = 30`. D weighs 2 pounds, so it
+          must be added to the bag that is 2 smaller: `K(5) + 9 = 32`.
+      - text: "23"
+        explains: >-
+          That copies `K(5)` forward unchanged. A bigger bag can always hold what a smaller
+          one did, but here the extra 2 pounds also leave room for another D.
+    work: |-
+      A (6 lb): `K(7 − 6) + 30 = K(1) + 30 = 0 + 30 = 30`
+      B (3 lb): `K(7 − 3) + 14 = K(4) + 14 = 18 + 14 = 32`
+      C (4 lb): `K(7 − 4) + 16 = K(3) + 16 = 14 + 16 = 30`
+      D (2 lb): `K(7 − 2) + 9 = K(5) + 9 = 23 + 9 = 32`
+      `K(7) = max{30, 32, 30, 32} = 32`
+---
+
+Start with the version where every item comes in unlimited copies. Use the same four items:
+A is 6 lb for $30, B is 3 lb for $14, C is 4 lb for $16, D is 2 lb for $9.
+
+Suppose the bag is packed in the best possible way, and look at the last item that went in.
+Say it was D. Take it back out. What remains is a packing of a bag 2 pounds smaller, and it
+must be the *best* packing of that smaller bag, since a better one plus D would beat what
+you had. And because copies are unlimited, the smaller bag faces exactly the same choice of
+items as the big one did.
+
+So the only thing that changes from one subproblem to the next is the size of the bag.
+
+## The three steps
+
+**Subproblem.** `K(w)` is the best value that fits in a bag of capacity `w`.
+
+**Recurrence.** Try every item that fits as the last one in:
+
+```
+K(w) = max over items i with wᵢ ≤ w of { K(w − wᵢ) + vᵢ }
+```
+
+**Order.** `K(0) = 0`, then `w = 1, 2, …, W`. Every cell reads only cells to its left.
+
+## The table
+
+| `w` | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `K(w)` | 0 | 0 | 9 | 14 | 18 | 23 | 30 | 32 | 39 | 44 | 48 |
+
+Take `K(5)`. Three items fit in 5 pounds: B, C and D.
+
+```
+K(5) = max{ K(2) + 14,  K(1) + 16,  K(3) + 9 }
+     = max{ 9 + 14,     0 + 16,     14 + 9 }
+     = max{ 23, 16, 23 } = 23
+```
+
+Two candidates tie at 23, and they are the same bag, B and D, reached by putting the items
+in a different order. The final answer is `K(10) = 48`: one A and two D.
+
+Notice `K(1) = 0`. Nothing weighs one pound, so no item fits and the `max` has nothing to
+choose from. An empty choice is worth 0.
+
+## Cost
+
+There are `W` cells to fill, `K(1)` to `K(W)`. Filling one means trying each of the `n`
+items once. That is `W × n` steps, `O(nW)`. Here it is 10 cells with at most 4 tries each.
+
+The same recurrence solves any problem where a supply can be reused: coins are items you may
+spend again and the amount is the capacity. LeetCode 322 (Coin Change) and 279 (Perfect
+Squares) are this table with `min` in place of `max`.
+
+> One index is enough when taking an item leaves you facing the same problem with a smaller
+> bag. The next variant breaks that, and has to pay for it with a second index.

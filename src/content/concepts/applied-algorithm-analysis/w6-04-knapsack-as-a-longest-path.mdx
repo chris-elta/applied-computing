@@ -1,0 +1,109 @@
+---
+course: applied-algorithm-analysis
+section: w6-knapsack
+order: 1000
+title: Knapsack as a Longest Path
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week6.html?hash=true#/7
+    caption: Slides 8–10 of 34 — capacities as vertices, a 6-pound example, then practice problems.
+notation:
+  - symbol: "(w − wᵢ) → w"
+    reads: an edge from w minus w sub i to w
+    means: >-
+      An arrow from a smaller bag to the bag you get by adding item `i`. With a 2-pound
+      item there is an arrow from 3 to 5.
+  - symbol: dag
+    reads: dag (rhymes with bag)
+    means: >-
+      Directed acyclic graph: arrows between vertices, with no way to follow arrows round
+      in a circle. Introduced in week 5.
+  - symbol: longest path
+    reads: longest path
+    means: >-
+      The route between two vertices whose edge labels add up to the most. Here the labels
+      are item values, so the longest path is the most valuable packing.
+questions:
+  - ask: >-
+      Week 5 gave an algorithm for the shortest path in a dag: visit the vertices in
+      linearized order and set each `dist` to the `min` over incoming edges. What has to
+      change to solve knapsack with repetition on the capacity graph?
+    choices:
+      - text: Replace `min` with `max`; the graph, the order and the loop stay the same
+        correct: true
+        explains: >-
+          The capacities `0, 1, …, W` are already in linearized order, since every edge
+          points to a larger capacity. Taking the best incoming edge with `max` is exactly
+          the recurrence for `K(w)`.
+      - text: Reverse every edge, so that paths run from `W` down to 0
+        explains: >-
+          Reversing the edges gives the same paths read backwards, with the same totals.
+          It would still find the *shortest* one. The direction is not what picks short
+          over long.
+      - text: Nothing; the shortest path is already the best packing
+        explains: >-
+          The shortest path collects the *least* value. In the 6-pound example it would
+          prefer the route worth 8 to the route worth 9, or an empty bag over both.
+      - text: A different algorithm is needed, because longest paths are much harder than shortest paths
+        explains: >-
+          That is true of graphs with cycles. In a dag there is no way to loop round and
+          collect an edge twice, so the same one-pass algorithm works with `max`.
+    work: |-
+      Shortest path: `dist(v) = min over edges (u, v) of { dist(u) + l(u, v) }`
+      Knapsack: `K(w) = max over items i of { K(w − wᵢ) + vᵢ }`
+      Match them up: vertex `v` ↔ capacity `w`; edge `(u, v)` ↔ adding item `i`; length ↔ value `vᵢ`.
+      The only difference left is `min` against `max`.
+---
+
+Week 5 ended its treatment of dags with a claim: every dynamic program is a dag, with
+subproblems as vertices and dependencies as edges. The knapsack with repetition is a clean
+place to check that, because its dag can be drawn in full.
+
+## Building the graph
+
+- Each capacity `0, 1, …, W` is a vertex.
+- For each item `i` and each capacity `w ≥ wᵢ`, draw an edge from `w − wᵢ` to `w`, labelled
+  with the value `vᵢ`. Following that edge means "add one copy of item `i`".
+- Every weight is a positive whole number, so every edge points to a strictly larger
+  capacity. You can never come back to where you were. There are no cycles: it is a dag.
+
+A path from 0 is then a sequence of items going into the bag, and the labels along it add
+up to the value of that packing. The best packing is the path with the largest total.
+
+**Knapsack with repetition is the longest path in this dag.** Week 5 found the shortest
+path in a dag with one pass in linearized order. Use `max` instead of `min` and the
+algorithm is the same.
+
+## A small example
+
+Capacity `W = 6`. Item 1 weighs 2 and is worth 3. Item 2 weighs 3 and is worth 4.
+
+Item 1 gives the edges `0→2`, `1→3`, `2→4`, `3→5`, `4→6`, each labelled +3. Item 2 gives
+`0→3`, `1→4`, `2→5`, `3→6`, each labelled +4. Two of the routes that arrive at 6:
+
+| Route | Items | Total |
+| --- | --- | --- |
+| `0 → 3 → 6` | two of item 2 | 4 + 4 = 8 |
+| `0 → 2 → 4 → 6` | three of item 1 | 3 + 3 + 3 = 9 |
+
+The longest path wins, and it uses only item 1, although item 2 is worth more per copy.
+Three cheap steps beat two dear ones. Counting edges also explains the cost: 5 + 4 = 9 of
+them here, at most `n × W` in general, and the algorithm looks at each once.
+
+## What the picture is for
+
+The recurrence for `K(w)` and the dag algorithm are the same computation. `K(w)` takes a
+`max` over items; the dag algorithm takes a `max` over incoming edges; and there is one
+incoming edge per item that fits. Seeing the graph tells you why filling `w = 1, 2, …, W`
+is a legal order: it is a linearization, with every arrow pointing rightwards.
+
+## Practice
+
+LeetCode 322 (Coin Change), 518 (Coin Change II) and 279 (Perfect Squares) are all
+knapsacks with repetition: coins are reusable items and the amount is the capacity. In 518,
+which counts the ways to make an amount, the loop order matters. Put the coins in the outer
+loop and the amounts inside. The other order counts `1 + 2` and `2 + 1` separately, giving
+permutations instead of combinations. Run it both ways and watch the answer change.
+
+> If you can draw the subproblems as a dag, you already have the algorithm: one pass in an
+> order that follows the arrows. Changing the problem often changes only the graph.
