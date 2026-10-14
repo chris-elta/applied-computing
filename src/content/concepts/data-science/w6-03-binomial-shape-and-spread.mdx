@@ -1,0 +1,122 @@
+---
+course: data-science
+section: w6-binomial
+order: 840
+title: Shape and Spread of the Binomial
+visuals:
+  - type: svg
+    src: data-science/w6-distributions/07.svg
+    caption: Slide 7 of 26 — a full bell for coin flips, half a bell for rare lightbulb burnouts.
+  - type: svg
+    src: data-science/w6-distributions/08.svg
+    caption: Slide 8 of 26 — the standard deviation, and why exactly half heads is unlikely.
+notation:
+  - symbol: "σ"
+    reads: sigma
+    means: >-
+      The standard deviation, from Week 2. Here it measures how far the count of successes
+      typically lands from its centre.
+  - symbol: "np"
+    reads: n p, or n times p
+    means: >-
+      The number of trials times the success probability: the expected count. 200 fair flips
+      gives `np = 100` heads.
+  - symbol: "O(1/√n)"
+    reads: big O of one over root n
+    means: >-
+      Shrinks in proportion to `1/√n`. Quadrupling `n` roughly halves the quantity. The
+      notation ignores constant factors.
+  - symbol: "mode"
+    reads: mode
+    means: >-
+      The single most likely value.
+questions:
+  - ask: "You flip a fair coin 200 times. What is the probability of exactly 100 heads, roughly?"
+    choices:
+      - text: "About 0.06"
+        correct: true
+        explains: >-
+          100 is the most likely single count, but about 7 is a typical distance from it
+          (`σ = √(200 × 0.5 × 0.5) ≈ 7.1`). The probability is shared among many nearby
+          counts, and each gets only a little. The slide's coin-flip chart peaks just under
+          0.06.
+      - text: "About 0.5"
+        explains: >-
+          This confuses "most likely value" with "likely". Exactly 100 beats any other single
+          count, but 99, 101, 98 and so on are almost as likely, and together they take most
+          of the probability.
+      - text: "About 0.95"
+        explains: >-
+          95% is roughly the chance of landing within about 14 heads (two standard
+          deviations) of 100, not of hitting 100 exactly.
+  - ask: "Which change makes the binomial count most spread out, measured by `σ`?"
+    choices:
+      - text: "`n = 400, p = 0.5`"
+        correct: true
+        explains: >-
+          `σ = √(400 × 0.25) = 10`. More trials and a probability near one half both widen
+          the distribution.
+      - text: "`n = 400, p = 0.01`"
+        explains: >-
+          `σ = √(400 × 0.01 × 0.99) ≈ 2`. When success is rare, `p(1−p)` is tiny and the
+          count stays close to its small mean.
+      - text: "`n = 100, p = 0.5`"
+        explains: >-
+          `σ = √(100 × 0.25) = 5`. Same `p`, but a quarter of the trials gives half the
+          spread.
+---
+
+Flip a fair coin 200 times, then do it again, and again. The head counts bunch around 100
+and rarely stray below 80 or above 120. Now test 1,000 lightbulbs that each burn out with
+probability 0.001. Most batches have 0 or 1 failures and a few have 3 or 4. Both are
+binomial, but they look very different.
+
+## Shape
+
+The slide's description: **discrete, but bell (or half-bell) shaped.**
+
+- *Discrete* because the count is a whole number. There is no 100.5 heads.
+- **Coin flips** (`p = 0.5`, `n = 200`): a symmetric bell centred on 100.
+- **Lightbulb burnouts** (`p = 0.001`, `n = 1000`): the bell is centred on 1 and squashed
+  against zero, since there cannot be −1 failures. Only the right half shows.
+
+As the slide notes, **the distribution is a function of `n` and `p`**. Those two numbers
+determine everything else.
+
+## Centre and spread
+
+The centre is `np`. The slide notes that **the mode, mean and median are all `np`** when
+that is a whole number. 200 flips centre on 100; 1,000 bulbs on 1.
+
+The spread has a closed form:
+
+```
+σ = √(np(1 − p))
+```
+
+| case | `np(1−p)` | `σ` |
+| --- | --- | --- |
+| 200 coin flips | `200 × 0.5 × 0.5 = 50` | about 7.1 |
+| 1,000 bulbs | `1000 × 0.001 × 0.999 ≈ 1` | about 1 |
+
+Two things to notice. `p(1−p)` is largest at `p = 0.5`, so fair coins are as spread out as
+binomials get for a given `n`. And `σ` grows with `√n`, not `n`: four times the flips gives
+twice the spread.
+
+## Exactly half is unlikely
+
+The slide's last point is surprising: **the probability of getting exactly `n/2` heads is
+`O(1/√n)`, so it is actually quite low.**
+
+Why: the counts spread over a band about `σ` wide on each side of the centre, and `σ` grows
+like `√n`. Roughly `√n` values share most of the probability between them, so each one
+gets something like `1/√n`. For 200 flips the exact figure is about 0.056. The single most
+likely outcome happens less than one time in seventeen. At 20,000 flips it is about 0.006.
+
+This matters when you read data. A result that is "exactly as expected" is itself rare, and
+small deviations from `np` are what chance normally produces. They are not evidence that
+anything is wrong.
+
+> A binomial count centres on `np` and wanders by about `√(np(1−p))`. The most likely
+> single value is still unlikely, because the probability is spread over a band that grows
+> with `√n`.

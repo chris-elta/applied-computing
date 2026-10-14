@@ -107,4 +107,28 @@ sections:
     title: Week 5 · PageRank and Arrow's theorem
     summary: >-
       Importance from network links, and why no ranking method can have every desirable property.
+  - id: w6-distributions
+    title: Week 6 · Classical distributions
+    summary: >-
+      Why a handful of named distributions keep turning up, and why a similar shape is not proof.
+  - id: w6-binomial
+    title: Week 6 · The binomial distribution
+    summary: >-
+      Counting successes in repeated yes-or-no trials, and how its spread grows with the number of trials.
+  - id: w6-normal
+    title: Week 6 · The normal distribution
+    summary: >-
+      The bell curve, the 68–95–99.7 rule, and bell shapes that are not normal.
+  - id: w6-clt
+    title: Week 6 · The central limit theorem
+    summary: >-
+      Why averages of almost anything come out normal, and what that does to a head count.
+  - id: w6-rare
+    title: Week 6 · Waiting times and rare events
+    summary: >-
+      The geometric distribution for lifespans, the Poisson for counts of rare events, and when each fails.
+  - id: w6-powerlaw
+    title: Week 6 · Power laws
+    summary: >-
+      Distributions with no typical value, the 80-20 rule, and the straight line on a log-log plot.
 ---

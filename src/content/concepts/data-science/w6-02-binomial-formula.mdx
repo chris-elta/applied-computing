@@ -1,0 +1,118 @@
+---
+course: data-science
+section: w6-binomial
+order: 830
+title: The Binomial Distribution
+visuals:
+  - type: svg
+    src: data-science/w6-distributions/06.svg
+    caption: Slide 6 of 26 — n identical, independent yes-or-no trials, and the probability of x successes.
+notation:
+  - symbol: "n"
+    reads: n
+    means: >-
+      The number of trials, such as 4 coin flips or 500 at-bats in a season.
+  - symbol: "p"
+    reads: p
+    means: >-
+      The probability of success on one trial. A fair coin has `p = 0.5`; a .300 hitter has
+      `p = 0.3`. Failure then has probability `1 − p`.
+  - symbol: "x"
+    reads: x
+    means: >-
+      The number of successes you are asking about. It is a whole number from 0 to `n`.
+  - symbol: "P{X = x}"
+    reads: the probability that X equals x
+    means: >-
+      `X` (capital) is the random count of successes. Lower-case `x` is one particular value
+      it might take. The braces only group the event and do nothing else.
+  - symbol: "(n choose x)"
+    reads: n choose x
+    means: >-
+      The number of different ways to pick which `x` of the `n` trials are the successes.
+      Written on the slide as `n` stacked over `x` in tall brackets. Computed as
+      `n! / (x! (n−x)!)`; for example, 4 choose 2 is 6.
+  - symbol: "n!"
+    reads: n factorial
+    means: >-
+      `n × (n−1) × … × 2 × 1`. For example, `4! = 24`. By convention `0! = 1`.
+questions:
+  - ask: "A fair coin is flipped 4 times. What is the probability of exactly 2 heads?"
+    choices:
+      - text: "6/16 = 0.375"
+        correct: true
+        explains: >-
+          Each sequence has probability `0.5⁴ = 1/16`, and 4 choose 2 = 6 sequences have
+          exactly two heads.
+      - text: "1/16 = 0.0625"
+        explains: >-
+          That is the probability of one particular sequence, such as HHTT. It leaves out the
+          (n choose x) factor, which counts the other five orders.
+      - text: "0.5"
+        explains: >-
+          This assumes that half heads is the likely outcome and gives it the probability of
+          one flip. Exactly 2 of 4 is the most likely count, but 0, 1, 3 and 4 heads take
+          the remaining 10/16.
+      - text: "2/4 = 0.5"
+        explains: >-
+          That is the proportion of heads in the outcome, not the probability of getting that
+          outcome.
+---
+
+A baseball player gets a hit 30% of the time. In a game they come to bat 5 times. How likely
+are exactly 2 hits?
+
+Each at-bat is a yes-or-no **trial**. The slide sets out what a binomial experiment needs:
+**`n` identical, independent trials, which have two possible outcomes, with probabilities
+`p` and `1−p`**, like heads or tails. Here `n = 5` and `p = 0.3`.
+
+## Building the formula
+
+Take one particular way of getting 2 hits: hit, hit, out, out, out. Because the at-bats are
+independent, multiply:
+
+```
+0.3 × 0.3 × 0.7 × 0.7 × 0.7 = 0.3² × 0.7³ = 0.03087
+```
+
+Any other order with 2 hits, such as out, hit, out, out, hit, has the same probability,
+because it multiplies the same numbers in a different order. So the answer is that
+probability times **the number of orders**. Choosing which 2 of the 5 at-bats are the hits
+can be done in 5 choose 2 = 10 ways.
+
+```
+P{X = 2} = 10 × 0.03087 ≈ 0.309
+```
+
+That is the whole formula from the slide:
+
+```
+P{X = x} = (n choose x) · pˣ · (1 − p)ⁿ⁻ˣ
+```
+
+The slide's table names each piece:
+
+| piece | meaning |
+| --- | --- |
+| `(n choose x)` | number of ways to choose `x` successes out of `n` trials |
+| `pˣ` | probability of getting the `x` successes |
+| `(1 − p)ⁿ⁻ˣ` | probability of getting the remaining `n − x` failures |
+
+## The batting average example
+
+The slide's blue line: **the observed season batting averages of a `p = 0.300` hitter were
+drawn from a binomial distribution.** The player's true ability is fixed at 0.300, but in a
+season of a few hundred at-bats the number of hits varies with luck. One season they bat
+.320, the next .285. Neither number is the player's real ability. Both are draws from the
+binomial with that `p`.
+
+## The assumptions do the work
+
+Both conditions matter. If the trials are **not independent**, as when a hitter in a slump
+keeps missing, multiplying the probabilities is no longer allowed. If they are **not
+identical**, as with a different pitcher each time, there is no single `p`. The formula is
+exact only when the setup really matches it. That is the warning from the previous concept
+applied to a particular distribution.
+
+> Binomial: count the successes in `n` independent, identical yes-or-no trials. Multiply
+> the probability of one such sequence by the number of orders it can come in.

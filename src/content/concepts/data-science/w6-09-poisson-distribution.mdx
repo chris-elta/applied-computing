@@ -1,0 +1,133 @@
+---
+course: data-science
+section: w6-rare
+order: 900
+title: The Poisson Distribution
+visuals:
+  - type: svg
+    src: data-science/w6-distributions/16.svg
+    caption: Slide 16 of 26 — the Poisson formula, parameterized by its mean.
+  - type: svg
+    src: data-science/w6-distributions/17.svg
+    caption: Slide 17 of 26 — a call centre averaging 4 calls an hour.
+notation:
+  - symbol: "μ"
+    reads: mew
+    means: >-
+      The average number of events per interval, such as 4 calls per hour. It is the only
+      parameter.
+  - symbol: "x"
+    reads: x
+    means: >-
+      The number of events you are asking about: 0, 1, 2, … with no upper limit.
+  - symbol: "x!"
+    reads: x factorial
+    means: >-
+      `x × (x−1) × … × 1`. For example, `6! = 720`. By convention `0! = 1`.
+  - symbol: "e⁻ᵘ"
+    reads: e to the minus mu
+    means: >-
+      The constant `e ≈ 2.718` raised to `−μ`. It is the probability of seeing zero events.
+      For `μ = 4` it is about 0.018.
+  - symbol: "Σ"
+    reads: sigma, or sum
+    means: >-
+      Capital sigma means add up. `Σ k · Pr(k)` over all `k` from 0 upward is the mean of
+      the distribution.
+questions:
+  - ask: "A website averages 3 errors per day. Assuming a Poisson distribution, what is the standard deviation of the daily error count?"
+    choices:
+      - text: "About 1.7"
+        correct: true
+        explains: >-
+          A Poisson's variance equals its mean, so `σ = √μ = √3 ≈ 1.73`.
+      - text: "3"
+        explains: >-
+          That is the variance, which equals the mean. The standard deviation is its square
+          root. The slide's `σ = μ` is a slip.
+      - text: "9"
+        explains: >-
+          That squares the mean. For a Poisson it is the variance, not the standard
+          deviation, that equals `μ`.
+      - text: "It cannot be found without more data"
+        explains: >-
+          The Poisson has only one parameter. Once the mean is known, the spread is fixed.
+  - ask: "The call centre averages 4 calls an hour. What is the probability of an hour with no calls at all?"
+    choices:
+      - text: "`e⁻⁴ ≈ 0.018`"
+        correct: true
+        explains: >-
+          With `x = 0`, `μ⁰ = 1` and `0! = 1`, so the formula reduces to `e⁻ᵘ`.
+      - text: "0"
+        explains: >-
+          An average of 4 does not rule out a quiet hour. It is rare, about one hour in 55,
+          but it happens.
+      - text: "`1/4 = 0.25`"
+        explains: >-
+          This treats the count as one of four equally likely values. Counts run from 0 with
+          no upper limit, and 0 is far less likely than 3 or 4.
+---
+
+A call centre receives on average 4 calls per hour. Calls come from many people, each of
+whom is unlikely to call in any given hour. How likely is an hour with exactly 6 calls?
+
+## Rare events, counted
+
+This is the setting from the end of the previous section: **many opportunities, each with a
+small chance**. The binomial formula would need the number of potential callers and each
+one's probability, and you know neither. You know only the average. The Poisson
+distribution needs nothing else.
+
+The slide says it **measures the frequency of intervals between rare events**. In practice
+that means counting how many events land in a fixed interval: calls per hour, typos per
+page, failures per month.
+
+```
+Pr(x) = e⁻ᵘ μˣ / x!
+```
+
+## Parameterized by the mean
+
+The slide: **instead of event probability `p`, it is parameterized by mean `μ`**, which is
+equivalent because
+
+```
+μ = Σ k · Pr(k)   (sum over k = 0, 1, 2, …)
+```
+
+That sum is the definition of a mean, the average of every count weighted by its
+probability. The point is that `μ` alone fixes the distribution. You do not need to know how
+many potential callers there are, only how many calls arrive on average.
+
+## The call centre
+
+The slide's example, with `μ = 4` and `x = 6`:
+
+```
+Pr(6) = e⁻⁴ × 4⁶ / 6!
+      = 0.0183 × 4096 / 720
+      ≈ 0.104
+```
+
+About a 10.4% chance of exactly 6 calls. Some other values:
+
+| calls | probability |
+| --- | --- |
+| 0 | `e⁻⁴` ≈ 0.018 |
+| 4 | ≈ 0.195 |
+| 6 | ≈ 0.104 |
+
+## Spread
+
+The slide's last line is **the Poisson distribution is normal with `σ = μ`.** The idea is
+right but the formula is off by a square root. A Poisson's **variance** equals its mean, so
+its standard deviation is `σ = √μ`. For the call centre, `σ = 2`. With a large mean the
+Poisson looks like a normal curve with that spread, by the same reasoning that made the
+binomial normal.
+
+This makes a quick test. If a count is supposed to be Poisson but its variance is much bigger
+than its mean, something else is going on: events arriving in bursts, or a rate that changes
+over time.
+
+> Poisson: counts of rare, independent events in an interval, set entirely by the average
+> `μ`. Variance equals the mean, so `σ = √μ`.

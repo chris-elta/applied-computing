@@ -1,0 +1,127 @@
+---
+course: data-science
+section: w6-powerlaw
+order: 930
+title: The Power Law Formula
+visuals:
+  - type: svg
+    src: data-science/w6-distributions/23.svg
+    caption: Slide 23 of 26 — wealth tiers. Halve the fortune, multiply the number of people by five.
+  - type: svg
+    src: data-science/w6-distributions/24.svg
+    caption: Slide 24 of 26 — the definition, and what doubling x does to its probability.
+notation:
+  - symbol: "P(X = x) = c x⁻ᵃ"
+    reads: the probability that X equals x is c times x to the minus a
+    means: >-
+      The power law. `x⁻ᵃ` is the same as `1/xᵃ`, so the probability shrinks as `x` grows.
+  - symbol: "a"
+    reads: a
+    means: >-
+      The exponent, a positive number. It sets how quickly large values become rare.
+  - symbol: "c"
+    reads: c
+    means: >-
+      The normalization constant, chosen so that all the probabilities add up to 1. Once `a`
+      is fixed there is no choice in it.
+  - symbol: "2ᵃ"
+    reads: two to the a
+    means: >-
+      The factor by which the probability falls when `x` doubles. With `a = 2`, doubling `x`
+      makes it 4 times rarer.
+questions:
+  - ask: "A quantity follows a power law with `a = 3`. How does the probability of the value 20 compare with the probability of the value 10?"
+    choices:
+      - text: "It is 8 times smaller"
+        correct: true
+        explains: >-
+          `c·20⁻³ / c·10⁻³ = (20/10)⁻³ = 2⁻³ = 1/8`. Doubling `x` divides the probability by
+          `2ᵃ`, and the constant `c` cancels.
+      - text: "It is 3 times smaller"
+        explains: >-
+          This multiplies by the exponent instead of raising to it. The factor is `2³`, not
+          `2 × 3` or `3`.
+      - text: "It is 2 times smaller"
+        explains: >-
+          That would be true only for `a = 1`.
+      - text: "It depends on `c`"
+        explains: >-
+          `c` appears in both probabilities and cancels in the ratio. The slide's point is
+          that `c` is unimportant.
+  - ask: "In the slide's wealth tiers, halving the fortune multiplies the number of people by 5. Roughly what exponent `a` does that imply?"
+    choices:
+      - text: "About 2.3, since `2ᵃ = 5`"
+        correct: true
+        explains: >-
+          Going from `x` to `x/2` multiplies the count by `2ᵃ`. Setting `2ᵃ = 5` gives
+          `a = log₂ 5 ≈ 2.32`.
+      - text: "5"
+        explains: >-
+          5 is the factor, not the exponent. The exponent is what 2 must be raised to in order
+          to get 5.
+      - text: "2.5, since 5 divided by 2"
+        explains: >-
+          The relationship is a power, not a ratio. `2²·⁵ ≈ 5.66`, a little too much.
+---
+
+The slide on wealth lists a ladder of fortunes:
+
+| people | wealth each |
+| --- | --- |
+| 1 (Bill Gates) | $80 billion |
+| 5 | $40 billion |
+| 25 | $20 billion |
+| 125 | $10 billion |
+| 625 | $5 billion |
+
+Every step down halves the fortune and multiplies the number of people by 5. The slide's
+summary: **as you multiply the value by `x`, you divide the number of people by `y`.** That
+fixed trade between size and count is the defining property of a power law.
+
+## The definition
+
+From the slide, for a power-law distributed variable `X`:
+
+```
+P(X = x) = c x⁻ᵃ
+```
+
+Two numbers:
+
+- **`a`**, the exponent, does all the work.
+- **`c`** is, in the slide's words, **unimportant: for a given `a`, this constant ensures the
+  probability sums to 1.** It is bookkeeping, not a choice.
+
+## What doubling does
+
+Compare a value `x` with one twice as big:
+
+```
+P(2x) / P(x) = c(2x)⁻ᵃ / c x⁻ᵃ = 2⁻ᵃ
+```
+
+The `c`s cancel, and so does `x`. **Doubling `x` reduces the probability by a factor of
+`2ᵃ`**, no matter where you start: from 10 to 20, or from a million to two million. The slide
+says **larger values keep getting rarer at a steady rate.**
+
+| `a` | doubling `x` divides the probability by |
+| --- | --- |
+| 1 | 2 |
+| 2 | 4 |
+| 3 | 8 |
+
+## Reading the exponent off the wealth ladder
+
+Halving the fortune multiplies the count by 5, so `2ᵃ = 5` and `a = log₂ 5 ≈ 2.3`.
+
+## Why this is different from a normal
+
+A normal distribution has a scale built in: `σ`. Each extra standard deviation makes values
+dramatically rarer. Going from 2σ to 4σ cuts the probability of being that far out by a factor of
+several hundred. A power
+law has no such scale. Going from $5 billion to $10 billion costs the same factor of 5 as
+going from $40 billion to $80 billion. This is why the tail never runs out, and why the
+richest person or biggest city is never as far-fetched as a normal model says.
+
+> A power law trades size for count at a fixed rate: double the value and the probability
+> falls by `2ᵃ`, wherever you are on the scale. The exponent `a` is the whole story.

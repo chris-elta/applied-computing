@@ -1,0 +1,98 @@
+---
+course: data-science
+section: w6-clt
+order: 880
+title: The Binomial Is Approximately Normal
+visuals:
+  - type: svg
+    src: data-science/w6-distributions/13.svg
+    caption: Slide 13 of 26 — head counts plotted against the normal curve with the same mean and spread.
+notation:
+  - symbol: "0-1 random variable"
+    reads: zero-one random variable
+    means: >-
+      A variable that is 1 for a success and 0 for a failure, such as 1 for heads. Adding up
+      `n` of them counts the successes.
+  - symbol: "√(p(1 − p))"
+    reads: root of p times one minus p
+    means: >-
+      The standard deviation of a single 0-1 trial. For a fair coin it is
+      `√0.25 = 0.5`.
+  - symbol: "Normal(50, 25)"
+    reads: normal, fifty, twenty-five
+    means: >-
+      The chart's label for the normal with mean 50 and *variance* 25, so standard deviation
+      5. The same convention as `N(μ, σ²)`.
+questions:
+  - ask: "A fair coin is flipped 100 times. Using the normal approximation, roughly how likely is it to get 60 or more heads?"
+    choices:
+      - text: "About 2.5%"
+        correct: true
+        explains: >-
+          Mean `np = 50`, `σ = √(100 × 0.5 × 0.5) = 5`. 60 is `z = (60 − 50)/5 = 2`, and about
+          2.5% of a normal lies above 2σ.
+      - text: "About 16%"
+        explains: >-
+          That is the share above 1σ. It uses `σ = 10`, taking `√n` without the `p(1−p)`
+          factor.
+      - text: "About 40%"
+        explains: >-
+          This treats 60 as only a little above 50. On a scale where a typical wobble is 5
+          heads, 10 extra heads is a large deviation.
+      - text: "Under 0.1%"
+        explains: >-
+          That is about the share beyond 3σ, which would be 65 heads.
+---
+
+The binomial formula gives exact probabilities, but it gets clumsy. The chance of 60 or more
+heads in 100 flips needs 41 terms, each with a large "choose" coefficient. The central limit
+theorem gives a shortcut.
+
+## A count is a sum
+
+The slide's argument: **the number of heads in `n` tosses is the sum of `n` independent
+samples of a 0-1 random variable with mean `p` and `σ = √(p(1−p))`.**
+
+Write each flip as 1 for heads and 0 for tails. Then
+
+```
+heads = flip₁ + flip₂ + … + flipₙ
+```
+
+Each flip is a tiny distribution of its own: two values, with mean `p` and standard
+deviation `√(p(1−p))`. It looks nothing like a bell. But the flips are independent, and
+the central limit theorem says sums and averages of independent values come out normal.
+So, as the slide says, **the average number of heads is approximated by the normal
+distribution.**
+
+## Matching the parameters
+
+Use the binomial's own mean and standard deviation:
+
+| | formula | 100 fair flips |
+| --- | --- | --- |
+| mean | `np` | 50 |
+| standard deviation | `√(np(1−p))` | 5 |
+
+The slide's right-hand chart plots exactly this: `Bin(100, 0.5)` bars under a
+`Normal(50, 25)` curve. The two are hard to tell apart. Its last line is **head count
+Z-scores are normal**. Convert a count to a Z-score and the 68–95–99.7 rule applies.
+
+## Using it
+
+60 heads in 100 flips: `z = (60 − 50)/5 = 2`. About 2.5% of the time. That is a borderline
+result: suspicious, but it will happen about once in every 40 honest experiments.
+
+55 heads: `z = 1`, which happens about 16% of the time and is nothing to worry about.
+
+## When it is poor
+
+The approximation needs the bell to have room on both sides. For the coin, `np = 50` sits
+far from 0 and from 100, so it works well. For the lightbulbs (`n = 1000`, `p = 0.001`)
+the mean is 1 and the distribution is the half-bell from earlier this week, jammed against
+zero. A normal centred on 1 with σ about 1 would put real probability on negative failure
+counts. That situation, many trials and a rare event, is what the Poisson distribution is
+for.
+
+> A binomial count is a sum of independent 0-1 trials, so it is close to normal with mean
+> `np` and spread `√(np(1−p))`, provided the mean is not crowded against 0 or `n`.

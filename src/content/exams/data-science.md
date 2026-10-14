@@ -1,7 +1,7 @@
 ---
 course: data-science
 title: "Data Science · Final Exam"
-minutes: 90
+minutes: 100
 passMark: 60
 questions:
   - topic: "Week 1 · Thinking about data"
@@ -1154,8 +1154,177 @@ questions:
       The only change was the arrival of Cy.
       The Ada and Ben order flipped, so their order depended on a third candidate: independence fails.
       By Arrow's theorem no system satisfies all the properties, so some such failure is unavoidable.
+  - topic: "Week 6 · Statistical distributions"
+    ask: "Page-load times from a web service form a smooth bell-shaped histogram. An engineer proposes using the 68–95–99.7 rule to set alert thresholds. The service runs on two kinds of server, one much faster than the other. What should come first?"
+    choices:
+      - text: "Nothing: a bell-shaped histogram is enough to justify the normal's percentages"
+        explains: "A similar shape does not prove the distribution. Fat tails or a hidden mixture can both produce a bell."
+      - text: "Check the load times for each kind of server separately, and test whether the data is normal before trusting the percentages"
+        correct: true
+        explains: "Right. Two server types make this a likely mixture of two distributions, and a mixture of normals is not normal. Split by group and test before using the rule."
+      - text: "Remove the slowest 5% of load times, then apply the rule to what remains"
+        explains: "Trimming the tail hides exactly the information the alerts are meant to catch, and does nothing about the mixture."
+      - text: "Use Chebyshev's bound instead, since it is tighter than the normal's"
+        explains: "Chebyshev's bound holds for any distribution but is looser: 75% within 2σ compared with the normal's 95%."
+    work: |-
+      A bell-shaped histogram suggests a normal; it does not establish one.
+      Two server types mean the data is likely a mixture of two distributions.
+      A mixture of normals is not normal, so its tail percentages will be wrong.
+      Check each group, and test for normality, before relying on 68–95–99.7.
+  - topic: "Week 6 · Statistical distributions"
+    ask: "Each chip off a production line is defective with probability 0.1, independently. An inspector tests 3 chips. What is the probability that exactly 1 is defective?"
+    choices:
+      - text: "0.081"
+        explains: "That is `0.1 × 0.9²`, the probability of one particular order such as defective, good, good. There are 3 such orders."
+      - text: "0.243"
+        correct: true
+        explains: "Right. 3 choose 1 = 3 orders, each with probability `0.1 × 0.9² = 0.081`."
+      - text: "0.3"
+        explains: "That is `3 × 0.1`, the expected number of defects. It leaves out the requirement that the other two chips are good."
+      - text: "0.1"
+        explains: "That is the probability for a single chip, not for exactly one defect among three."
+    work: |-
+      Binomial with `n = 3`, `p = 0.1`, `x = 1`.
+      `P{X = 1} = (3 choose 1) × 0.1¹ × 0.9²`.
+      `(3 choose 1) = 3`, and `0.1 × 0.81 = 0.081`.
+      `3 × 0.081 = 0.243`.
+  - topic: "Week 6 · Statistical distributions"
+    ask: "A poll asks 400 randomly chosen voters a yes-or-no question on which the population is split exactly 50:50. Within what range will the number of yes answers fall in about 95% of such polls?"
+    choices:
+      - text: "190 to 210"
+        explains: "That is one standard deviation either side of 200, which covers only about 68% of polls."
+      - text: "180 to 220"
+        correct: true
+        explains: "Right. The count has mean 200 and `σ = √(400 × 0.5 × 0.5) = 10`. 95% falls within 2σ."
+      - text: "160 to 240"
+        explains: "That uses `σ = √400 = 20`, leaving out the `p(1−p)` factor in the binomial's standard deviation."
+      - text: "198 to 202"
+        explains: "Far too narrow. Exactly 200 is the single most likely count but has only about a 4% chance. Chance moves the count much further than this."
+    work: |-
+      The count of yes answers is binomial, `n = 400`, `p = 0.5`.
+      Mean `np = 200`. SD `√(np(1−p)) = √(400 × 0.25) = √100 = 10`.
+      A binomial count is approximately normal, so about 95% lies within 2σ of the mean.
+      `200 ± 2 × 10` gives 180 to 220.
+  - topic: "Week 6 · Statistical distributions"
+    ask: "Loaves from a bakery weigh a normally distributed 500 g on average, with standard deviation 10 g. About what share of loaves weigh between 490 g and 520 g?"
+    choices:
+      - text: "About 68%"
+        explains: "That is the share within one standard deviation on both sides, 490 to 510. The range here reaches two standard deviations above the mean."
+      - text: "About 95%"
+        explains: "That would be 480 to 520, two standard deviations on both sides. The lower end here is only one below."
+      - text: "About 82%"
+        correct: true
+        explains: "Right. Half of 68% (490 to 500) plus half of 95% (500 to 520) gives `34% + 47.5% ≈ 82%`."
+      - text: "About 47.5%"
+        explains: "That is only the upper part, 500 to 520. The 490 to 500 part must be added."
+    work: |-
+      Z-scores: `(490 − 500)/10 = −1` and `(520 − 500)/10 = 2`.
+      By symmetry, half of each band lies on each side of the mean.
+      `μ − 1σ` to `μ`: half of 68% = 34%.
+      `μ` to `μ + 2σ`: half of 95% = 47.5%.
+      Total: `34% + 47.5% = 81.5%`, about 82%.
+  - topic: "Week 6 · Statistical distributions"
+    ask: "Phone battery life varies with standard deviation 40 hours. How many batteries must you test so that the standard deviation of their average lifetime is 5 hours?"
+    choices:
+      - text: "8"
+        explains: "8 is `√n`. The standard deviation of the mean is `σ/√n`, so `n` itself is `8² = 64`."
+      - text: "64"
+        correct: true
+        explains: "Right. `40/√n = 5` gives `√n = 8`, so `n = 64`."
+      - text: "320"
+        explains: "That is `40 × 8`. It multiplies the standard deviation instead of solving `σ/√n = 5`."
+      - text: "1,600"
+        explains: "That is `40²`, the variance of a single battery. It is unrelated to the sample size needed."
+    work: |-
+      By the central limit theorem, the mean of `n` samples has SD `σ/√n`.
+      Set `40/√n = 5`.
+      `√n = 40/5 = 8`.
+      `n = 8² = 64`.
+  - topic: "Week 6 · Statistical distributions"
+    ask: "A server crashes on any given day with probability 0.02, independently of how long it has been running. What is the probability that it runs 30 days in a row without crashing?"
+    choices:
+      - text: "About 0.40"
+        explains: "That is `1 − 30 × 0.02`. Adding the daily risks overcounts, because the server can only crash once. Multiply the survival chances instead."
+      - text: "About 0.55"
+        correct: true
+        explains: "Right. It must survive each day, so `0.98³⁰ ≈ 0.55`."
+      - text: "About 0.011"
+        explains: "That is `0.98²⁹ × 0.02`, the geometric probability of crashing for the first time *on* day 30, not of surviving all 30."
+      - text: "0.98"
+        explains: "That is the chance of surviving a single day."
+    work: |-
+      Surviving 30 days means surviving every day, independently.
+      `P = 0.98³⁰`.
+      `ln 0.98 ≈ −0.0202`, so `30 × −0.0202 = −0.606`, and `e^−0.606 ≈ 0.545`.
+      About 0.55. (Expected lifespan, for reference, is `1/0.02 = 50` days.)
+  - topic: "Week 6 · Statistical distributions"
+    ask: "A maternity ward averages 2 births per hour, and births are well described by a Poisson distribution. What is the probability of exactly 3 births in the next hour?"
+    choices:
+      - text: "About 0.135"
+        explains: "That is `e⁻²` alone, the probability of zero births. It leaves out the `μˣ / x!` factor."
+      - text: "About 0.180"
+        correct: true
+        explains: "Right. `e⁻² × 2³ / 3! = 0.1353 × 8 / 6 ≈ 0.180`."
+      - text: "About 0.271"
+        explains: "That is the probability of exactly 2 births (or exactly 1), the most likely counts. 3 births is a little less likely."
+      - text: "About 1.08"
+        explains: "That is `e⁻² × 2³` without dividing by `3! = 6`. A probability cannot exceed 1."
+    work: |-
+      Poisson: `Pr(x) = e⁻ᵘ μˣ / x!`, with `μ = 2`, `x = 3`.
+      `e⁻² ≈ 0.1353`, `2³ = 8`, `3! = 6`.
+      `0.1353 × 8 / 6 = 1.0827 / 6 ≈ 0.180`.
+  - topic: "Week 6 · Statistical distributions"
+    ask: "A help desk receives on average 10 tickets a day. Over a year, the daily counts have a variance of about 45. What does that suggest?"
+    choices:
+      - text: "The counts are Poisson, because the mean of 10 is what a Poisson needs"
+        explains: "Any Poisson can be given the right mean. The test is the spread, and a Poisson with mean 10 has variance 10, not 45."
+      - text: "The counts are Poisson with standard deviation 10"
+        explains: "A Poisson's variance equals its mean, so its standard deviation is `√10 ≈ 3.2`, not 10."
+      - text: "The counts are not well modelled as Poisson: tickets probably arrive in bursts or at a rate that changes"
+        correct: true
+        explains: "Right. Variance far above the mean breaks the Poisson's assumption of independent events at a constant rate. Outages that bring a flood of tickets would do this."
+      - text: "The counts are less spread out than a Poisson, so they must be binomial"
+        explains: "They are more spread out, not less. A Poisson with mean 10 has variance 10, and 45 is far above that."
+    work: |-
+      A Poisson's variance equals its mean.
+      Mean 10 predicts variance 10, standard deviation `√10 ≈ 3.2`.
+      Observed variance is 45, more than four times as large.
+      Excess variance means events are not independent at a constant rate: bursts, or a rate that changes from day to day.
+  - topic: "Week 6 · Statistical distributions"
+    ask: "Follower counts on a social network follow a power law with exponent `a = 2`. How much rarer is it for an account to have 4,000 followers than 1,000?"
+    choices:
+      - text: "4 times rarer"
+        explains: "That would hold only for `a = 1`. With `a = 2` the ratio is squared."
+      - text: "8 times rarer"
+        explains: "That is `2³`, the factor for doubling with `a = 3`. Here the value is multiplied by 4 and the exponent is 2."
+      - text: "16 times rarer"
+        correct: true
+        explains: "Right. `(4000/1000)⁻² = 4⁻² = 1/16`. Equivalently, two doublings, each dividing by `2² = 4`."
+      - text: "It depends on the constant `c`"
+        explains: "`c` appears in both probabilities and cancels in the ratio."
+    work: |-
+      `P(x) = c x⁻ᵃ`, so `P(4000) / P(1000) = (4000/1000)⁻² = 4⁻²`.
+      `4⁻² = 1/16`.
+      Check by doubling: 1,000 to 2,000 divides by `2² = 4`; 2,000 to 4,000 by another 4. `4 × 4 = 16`.
+  - topic: "Week 6 · Statistical distributions"
+    ask: "An analyst computes the mean and standard deviation of daily visits across 10,000 websites, then flags every site more than 3 standard deviations above the mean as a data error. Dozens are flagged. What is the best response?"
+    choices:
+      - text: "Delete the flagged sites, since values beyond 3σ almost never occur"
+        explains: "That is true for a normal distribution. Website traffic follows a power law, where very large values are rare but always present."
+      - text: "Plot the visits on log-log axes; a roughly straight line would show a power law, where such sites are expected"
+        correct: true
+        explains: "Right. Traffic is a classic power law: inlinks and visits grow when the rich get richer. A straight log-log line confirms the shape, and the large sites are real."
+      - text: "Use 5 standard deviations instead of 3, so fewer sites are flagged"
+        explains: "A higher threshold keeps the wrong model. Under a power law the mean and standard deviation are dragged around by the largest sites, and no σ cut-off is meaningful."
+      - text: "Average the visits over a longer period, so the central limit theorem makes them normal"
+        explains: "The central limit theorem makes averages normal; it does not change how visits are distributed *across sites*. Big sites stay big."
+    work: |-
+      The 3σ rule assumes a normal distribution.
+      Web traffic (like inlinks) is a textbook power-law quantity: no typical size, a heavy tail.
+      Under a power law, many values far beyond 3σ are expected, not errors.
+      Test the shape: on log-log axes a power law appears as a straight line with slope `−a`.
 ---
-68 multiple-choice questions across all five weeks. The paper is divided into sections, and nothing is revealed until you
+78 multiple-choice questions across all six weeks. The paper is divided into sections, and nothing is revealed until you
 submit: pick an answer for each question (you can change it as often as you like), then submit a
 section to see your score for it, the correct answers, an explanation for each one you chose, and a
 worked solution. You can submit one section at a time, in any order, or the whole exam at once.

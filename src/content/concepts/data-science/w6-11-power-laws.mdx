@@ -1,0 +1,100 @@
+---
+course: data-science
+section: w6-powerlaw
+order: 920
+title: Power Laws and the 80-20 Rule
+visuals:
+  - type: svg
+    src: data-science/w6-distributions/20.svg
+    caption: Slide 20 of 26 — no clustering around a mean, and the 80-20 rule.
+  - type: svg
+    src: data-science/w6-distributions/21.svg
+    caption: Slide 21 of 26 — US city populations, where a normal model says New York cannot exist.
+notation:
+  - symbol: "p(x) = c x⁻ᵃ"
+    reads: p of x equals c times x to the minus a
+    means: >-
+      The power law. The probability of a value `x` falls as `x` raised to a power. The next
+      concept takes it apart.
+  - symbol: "a"
+    reads: a
+    means: >-
+      The exponent. A bigger `a` makes large values rarer.
+  - symbol: "80-20 rule"
+    reads: eighty-twenty rule
+    means: >-
+      A rough pattern where about 20% of the items account for about 80% of the total: 20% of
+      customers bring 80% of revenue, for example.
+questions:
+  - ask: "City populations have mean 165,719 and standard deviation 410,730. A normal model puts New York's 8 million at about 19 standard deviations above the mean. What should you conclude?"
+    choices:
+      - text: "City sizes are not normal; their tail is far heavier, as a power law's is"
+        correct: true
+        explains: >-
+          Under a normal, 19σ is effectively impossible, yet the city exists. The model is
+          wrong, not New York.
+      - text: "New York is an outlier and should be removed before analysis"
+        explains: >-
+          Under a power law, values like New York are expected: rare, but consistently
+          present. Deleting them removes the most important part of the data. Week 4's
+          outlier concepts warn about exactly this.
+      - text: "The standard deviation is too large to be meaningful, so use the median instead"
+        explains: >-
+          The median is more robust, but this misses the point. The data is not shaped like a
+          bell around any centre, so no single summary of centre tells the whole story.
+---
+
+The average large US city has 165,719 people. The standard deviation is a huge 410,730. Using
+the normal distribution, the slide works out that the biggest city ought to be about the size
+of Indianapolis, around 780,000 people.
+
+**New York had 8,008,278 people in the 2000 census.**
+
+## How wrong is the normal model?
+
+Put New York on the normal model's scale:
+
+```
+z = (8,008,278 − 165,719) / 410,730 ≈ 19
+```
+
+The 68–95–99.7 rule stops at 3σ. A 19σ value under a normal distribution is so unlikely
+that it would not happen once in the age of the universe. Yet the city exists, and Los
+Angeles and Chicago are far beyond 3σ too. The data is not normal. Its upper tail is
+enormously heavier.
+
+## Power laws
+
+The slide's definition: power laws are **`p(x) = c x⁻ᵃ`**, for an exponent `a` and a
+normalization constant `c`. The key difference from the distributions so far:
+
+> They do not cluster around a mean like a normal distribution, instead having very large
+> values rarely but consistently.
+
+| | normal | power law |
+| --- | --- | --- |
+| typical value | the mean | none, really |
+| very large values | effectively never | rare, but always some |
+| mean and SD | describe the data well | dragged around by the largest values |
+
+Week 3 met power laws for a different reason, as data to take the log of before analysis.
+This week says what the shape is.
+
+## The 80-20 rule
+
+The slide's blue line: power laws **define 80-20 rules: 20% of the X get 80% of the Y.** A few
+cities hold a large share of the urban population. A few websites get most of the traffic.
+A few customers bring in most of the revenue. The exact split depends on `a`, but the
+pattern is the same: the total is dominated by a small number of very large items.
+
+## Where they come from
+
+The slide's explanation: **power laws arise when the rich get richer.** A big city attracts
+more jobs, so more people, so more jobs. A popular website is linked to more, so found more,
+so linked to more. Growth in proportion to current size compounds differences rather than
+averaging them out. That is the opposite of the central limit theorem, where many small
+independent effects cancel into a bell.
+
+> If a few values are many standard deviations out and keep turning up, the data is not
+> normal. It may be a power law, where there is no typical size and the largest items
+> dominate the total.

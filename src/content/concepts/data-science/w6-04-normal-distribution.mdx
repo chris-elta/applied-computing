@@ -1,0 +1,131 @@
+---
+course: data-science
+section: w6-normal
+order: 850
+title: The Normal Distribution and the 68–95–99.7 Rule
+visuals:
+  - type: svg
+    src: data-science/w6-distributions/09.svg
+    caption: Slide 9 of 26 — the density formula, set by a mean and a standard deviation.
+  - type: svg
+    src: data-science/w6-distributions/10.svg
+    caption: Slide 10 of 26 — reading probabilities off Z-scores, with IQ as the example.
+notation:
+  - symbol: "N(μ, σ²)"
+    reads: normal with mean mu and variance sigma squared
+    means: >-
+      A normal distribution with centre `μ` and spread `σ`. The second number is the
+      variance, so `N(100, 15²)` has standard deviation 15, not 225.
+  - symbol: "X ∼ N(100, 15²)"
+    reads: X is distributed as normal, one hundred, fifteen squared
+    means: >-
+      The squiggle `∼` (tilde) reads "is distributed as". It says which distribution the
+      random variable `X` follows.
+  - symbol: "μ"
+    reads: mew
+    means: >-
+      The mean, where the bell peaks.
+  - symbol: "σ"
+    reads: sigma
+    means: >-
+      The standard deviation, which sets the width of the bell.
+  - symbol: "f(x; μ, σ²)"
+    reads: f of x, given mu and sigma squared
+    means: >-
+      The probability density at `x`. Anything after the semicolon is a fixed setting of the
+      curve, not an input that varies.
+  - symbol: "e"
+    reads: e
+    means: >-
+      The constant 2.718…, the base of natural logarithms.
+  - symbol: "z"
+    reads: z, or zed
+    means: >-
+      The Z-score `(x − μ)/σ`: how many standard deviations `x` is from the mean. Met first
+      in Week 4's normalization concept.
+questions:
+  - ask: "Exam scores are normal with mean 70 and standard deviation 8. About what share of students score above 86?"
+    choices:
+      - text: "About 2.5%"
+        correct: true
+        explains: >-
+          `z = (86 − 70)/8 = 2`. 95% lie within 2σ, so 5% lie outside, split equally: 2.5%
+          above and 2.5% below.
+      - text: "About 5%"
+        explains: >-
+          5% is outside ±2σ on *both* sides together. Only the upper tail counts here, which
+          is half of that.
+      - text: "About 16%"
+        explains: >-
+          That is the share above 1σ (78). 86 is two standard deviations up, not one.
+      - text: "About 0.15%"
+        explains: >-
+          That is the share above 3σ (94).
+---
+
+IQ scores are built to average 100 with a standard deviation of 15. How rare is an IQ of
+130? If IQ follows a normal distribution, the answer comes from one subtraction and one
+division.
+
+## The bell curve
+
+The slide's opening line: **the bell-shaped distribution of height, IQ, etc.** It is
+**completely parameterized by mean and standard deviation.** Once you know `μ` and `σ`
+there is nothing else to choose. Every normal distribution is the same curve, shifted and
+stretched.
+
+The curve itself:
+
+```
+f(x; μ, σ²) = 1 / (√(2π) σ) · e^(−(x − μ)² / 2σ²)
+```
+
+You will rarely compute this by hand, but its parts are readable:
+
+- `(x − μ)²` is the squared distance from the mean. The minus sign in the exponent means the
+  density falls off fast as you move away, which gives the bell its shape.
+- Dividing by `2σ²` measures that distance in units of `σ`. A wider bell falls off more
+  slowly.
+- `1/(√(2π) σ)` is a scaling constant that makes the total area exactly 1.
+
+`f` is a **probability density**, not a probability. For a continuous variable the
+probability of hitting exactly 130.000… is zero. The density says how crowded the values are
+near 130, and probabilities come from areas under the curve.
+
+## Z-scores and the rule of thumb
+
+Because every normal is the same shape, you only need one table, measured in standard
+deviations. Convert to a **Z-score**:
+
+```
+z = (x − μ) / σ
+```
+
+The slide notes that **tight bounds on probability follow for Z-scores** from normal
+variables:
+
+| region | approx. share of data |
+| --- | --- |
+| `μ ± 1σ` | 68% |
+| `μ ± 2σ` | 95% |
+| `μ ± 3σ` | 99.7% |
+
+Compare Week 2's Chebyshev inequality, which guaranteed only 75% within 2σ for *any*
+distribution. Knowing the distribution is normal buys a much tighter bound.
+
+## The IQ example
+
+For IQ 130: `z = (130 − 100)/15 = 2`. 95% of people are within 2σ, so 5% are outside, and by
+symmetry half of that is in each tail. That is the slide's conclusion: **about 2.5% of people
+have IQs above 130.**
+
+The same reasoning gives an IQ above 115 (`z = 1`) as about 16%: 68% inside, 32% outside,
+half of it above.
+
+## A reasonable start
+
+The slide adds a caution in red: **not all bell-shaped distributions are normal, but it is
+generally a reasonable start.** The 68–95–99.7 rule is only as accurate as that assumption.
+The next concept shows where it breaks.
+
+> Convert to a Z-score, then read the 68–95–99.7 rule. Remember to halve for one tail.

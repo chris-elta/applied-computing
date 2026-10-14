@@ -1,0 +1,115 @@
+---
+course: data-science
+section: w6-powerlaw
+order: 940
+title: Spotting Power Laws on Log-Log Plots
+visuals:
+  - type: svg
+    src: data-science/w6-distributions/22.svg
+    caption: Slide 22 of 26 — city populations by rank, on linear axes and on log-log axes.
+  - type: svg
+    src: data-science/w6-distributions/25.svg
+    caption: Slide 25 of 26 — twelve real data sets, each roughly a straight line on log-log axes.
+notation:
+  - symbol: "log-log plot"
+    reads: log-log plot
+    means: >-
+      A chart where both axes are on a logarithmic scale, so each gridline is ten times the
+      one before: 1, 10, 100, 1,000.
+  - symbol: "log"
+    reads: log
+    means: >-
+      The logarithm from Week 3. `log 1000 = 3` in base 10. It turns multiplying into adding.
+  - symbol: "slope −a"
+    reads: slope minus a
+    means: >-
+      The straight line on a log-log plot slopes downward, and its steepness is the power
+      law's exponent `a`.
+questions:
+  - ask: "Why does a power law appear as a straight line on a log-log plot?"
+    choices:
+      - text: "Taking logs of `P = c x⁻ᵃ` gives `log P = log c − a log x`, a straight line in `log x`"
+        correct: true
+        explains: >-
+          The log turns the power into a multiplication by `−a`, which is a slope. `log c`
+          is the intercept.
+      - text: "Log scales make every curve look straight"
+        explains: >-
+          They do not. A normal distribution on log-log axes curves sharply downward. That
+          contrast is what makes the plot useful as a test.
+      - text: "Because large values are removed by the log"
+        explains: >-
+          Nothing is removed. Large values are compressed onto a readable scale, which is
+          different from removing them.
+  - ask: "You plot the frequency of file sizes on log-log axes and get a straight line with slope −2. What does that tell you?"
+    choices:
+      - text: "File sizes follow roughly a power law with `a = 2`: doubling the size makes it about 4 times rarer"
+        correct: true
+        explains: >-
+          The slope is `−a`, so `a = 2`, and doubling divides the frequency by `2² = 4`.
+      - text: "File sizes are normally distributed with standard deviation 2"
+        explains: >-
+          A normal does not give a straight line on log-log axes. Its log-log plot drops
+          away ever more steeply.
+      - text: "Each file is half as common as the next smaller one"
+        explains: >-
+          This reads the slope as a fixed ratio between neighbouring sizes. The slope relates
+          *proportional* changes: doubling the size, not adding one.
+---
+
+Plot US city populations from largest to smallest on ordinary axes. New York sits in the
+top-left corner and the rest fall into a flat line along the bottom. The slide notes that
+**the biggest values are out of scale on linear plots.** You can see that the data is
+skewed, but not what shape it has.
+
+Put both axes on a log scale and the same data becomes a nearly straight line. As the slide
+puts it, **straight lines on log-log plots say power law.**
+
+## Why straight
+
+Take logs of both sides of the power law:
+
+```
+P(x)      = c · x⁻ᵃ
+log P(x)  = log c − a · log x
+```
+
+That is the equation of a line, `y = intercept + slope × x`, where
+
+| line | power law |
+| --- | --- |
+| horizontal axis | `log x` |
+| vertical axis | `log P(x)` |
+| slope | `−a` |
+| intercept | `log c` |
+
+The log turns the power into a multiplication, which is the Week 3 idea that logs turn
+products into sums. So the plot is a test and a measuring tool at once. If the points fall on
+a line the data is power-law-like, and the line's slope gives the exponent.
+
+A normal distribution fails this test badly. On log-log axes it curves steeply downward,
+because its probabilities collapse faster than any power once you are a few `σ` out.
+
+## They are everywhere
+
+The slide lists a few of the many quantities that follow power laws:
+
+- internet sites with `x` incoming links
+- frequency of earthquakes at `x` on the Richter scale
+- words used with a relative frequency of `x`
+- wars which kill `x` people
+
+The grid of twelve charts on the slide shows each data set as an approximate straight line
+on **log value, log frequency** plots. They are not perfectly straight. Several bend at the
+ends, where data runs thin. The pattern is clear even so.
+
+## A caution
+
+A straight-ish line on a log-log plot is evidence, not proof. Log axes compress a lot of
+variation, and several other skewed distributions can look nearly straight over a limited
+range. This is the warning from the start of the week again: a similar shape does not prove a
+distribution. But a log-log plot is the quickest first check, and a line that is clearly
+curved rules a power law out.
+
+> To check for a power law, plot log frequency against log value. A straight line suggests
+> one, and its slope is `−a`.

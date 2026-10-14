@@ -1,0 +1,86 @@
+---
+course: data-science
+section: w6-normal
+order: 860
+title: What's Not Normal?
+visuals:
+  - type: svg
+    src: data-science/w6-distributions/11.svg
+    caption: Slide 11 of 26 — two normal curves, women's and men's heights, add up to one curve that is not normal.
+notation:
+  - symbol: "mixture"
+    reads: mixture
+    means: >-
+      A population made of several groups, each with its own distribution. Pooling them
+      gives a combined distribution that is the weighted sum of the parts.
+  - symbol: "fat tails"
+    reads: fat tails
+    means: >-
+      Extreme values happen much more often than a normal distribution with the same mean
+      and standard deviation would predict.
+  - symbol: "log normal"
+    reads: log normal
+    means: >-
+      A variable whose logarithm is normal. It is skewed, with a long tail on the high side.
+questions:
+  - ask: "You measure the heights of everyone in a city, men and women together, and fit one normal distribution. Where does the fitted curve go wrong?"
+    choices:
+      - text: "It assumes one group, so it misplaces the peak and the spread"
+        correct: true
+        explains: >-
+          The real distribution is a sum of two normals with different means. The combined
+          curve is flatter or even two-humped, and a single normal fitted to it gets both the
+          centre and the tails wrong.
+      - text: "Nowhere: heights are normal, so a mix of heights is too"
+        explains: >-
+          Each group's heights may be close to normal, but the slide's point is that
+          mixtures of normals are not normal.
+      - text: "Only in the extreme tails, since the middle of any bell is close to normal"
+        explains: >-
+          A mixture can be wrong in the middle too. With two well-separated groups the
+          middle is a dip between two peaks.
+---
+
+Women's heights are roughly normal. Men's heights are roughly normal. Measure everyone in a
+city and plot the combined histogram, and you get a bell — and that bell is **not** normal.
+
+## Two ways a bell can fool you
+
+The slide gives two cases.
+
+**Fat tails.** **Not all bell-shaped distributions are normal (e.g. stock returns are log
+normal with fat tails).** Daily stock returns look like a bell, but very large moves, crashes
+in particular, happen far more often than a normal distribution allows. A normal model
+might say a move of 5σ happens once in thousands of years. Markets produce them every
+decade or two. Anyone using the 68–95–99.7 rule on returns underestimates risk at exactly
+the moments it matters.
+
+**Mixtures.** **Mixtures of normal distributions are not normal, like full population
+heights.** The slide's chart shows women's heights peaking near 162 cm and men's near
+176 cm. The combined population curve (the blue line) is wider and flatter at the top than
+either. If the two groups were further apart it would have two humps.
+
+## Why mixtures are everywhere
+
+The slide's closing point: **statistical tests exist to establish whether data is drawn from
+a normal distribution, but populations are generally mixtures of multiple distributions:
+height, weight, IQ.**
+
+Most populations you measure are made of subgroups: ages, sexes, regions, customer types.
+Each might be close to normal on its own. Pooled together they are not, and the summary
+statistics of the pool can describe nobody. A mean height of 169 cm for the city describes
+neither group's typical member.
+
+## What to do about it
+
+- **Plot before you assume.** A histogram shows two humps or a long tail immediately.
+- **Split by known groups** and check each one. If the groups look normal and the whole does
+  not, you have found a mixture.
+- **Test, if it matters.** Formal tests of normality exist. They answer the question the
+  shape alone cannot.
+
+This is the general warning from the start of the week in its most common form. The normal
+is a reasonable start, as the previous concept says, but only a start.
+
+> A bell shape is not proof of normality. Look for heavy tails and hidden subgroups before
+> trusting the normal's tidy percentages.

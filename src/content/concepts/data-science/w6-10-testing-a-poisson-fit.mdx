@@ -1,0 +1,99 @@
+---
+course: data-science
+section: w6-rare
+order: 910
+title: "Testing a Poisson Fit: Lifespans and Family Sizes"
+visuals:
+  - type: svg
+    src: data-science/w6-distributions/18.svg
+    caption: Slide 18 of 26 — a Poisson with mean 80 against the real distribution of ages at death.
+  - type: svg
+    src: data-science/w6-distributions/19.svg
+    caption: Slide 19 of 26 — a Poisson with mean 2.2 against the number of children per family.
+notation:
+  - symbol: "μ"
+    reads: mew
+    means: >-
+      The Poisson's mean: 80 years on the lifespan slide, 2.2 children on the family slide.
+  - symbol: "P(X = x)"
+    reads: the probability that X equals x
+    means: >-
+      The Poisson probability of exactly `x`, from `e⁻ᵘ μˣ / x!`.
+questions:
+  - ask: "Why is a Poisson distribution with mean 80 a poor model of human lifespans?"
+    choices:
+      - text: "It assumes the risk of dying is the same every year, but risk rises with age"
+        correct: true
+        explains: >-
+          This is the slide's question. Constant risk is the Poisson's built-in assumption.
+          People face low risk for decades and then sharply rising risk, which produces a
+          different shape.
+      - text: "Lifespans are continuous, and the Poisson only handles whole numbers"
+        explains: >-
+          Ages at death are usually recorded in whole years, so this is not the main
+          problem. The model's assumption about risk is.
+      - text: "The mean of 80 is wrong"
+        explains: >-
+          The mean was chosen to match. The trouble is the shape: with `σ = √80 ≈ 9`, almost
+          nobody would die before 60, and real deaths are skewed toward younger ages.
+---
+
+A distribution with the right mean can still be the wrong distribution. The lecture tests
+the Poisson on two real quantities, both with known averages, and gets one near-success and
+one clear warning.
+
+## Kids per family
+
+The slide asks: **the average U.S. family has 2.2 kids, but how are they distributed?** Its
+argument for a Poisson: **if families repeatedly decide whether to have any more children
+with fixed probability `p`**, the count follows a Poisson.
+
+With `μ = 2.2`:
+
+| children | `P(X = x)` | share of families |
+| --- | --- | --- |
+| 0 | 0.11 | 11% |
+| 1 | 0.24 | 24% |
+| 2 | 0.26 | 26% |
+| 3 | 0.19 | 19% |
+| 4 | 0.10 | 10% |
+| 5+ | ≈ 0.07 | about 7% |
+
+You can check the first row by hand: `e⁻²·² ≈ 0.111`. The slide's chart draws these
+predictions as a line, with real data as dots. The overall shape is right: a peak at 2 and a
+quick fall after it. The clearest miss is one child. The Poisson predicts about 24% of
+families, and the data shows about half that. Families planning a sibling for their first
+child are not tossing a coin after each birth, so "fixed probability" is only an
+approximation.
+
+## Human lifespans
+
+The other slide: **from an average lifespan of 80, the Poisson distribution looks kind of
+reasonable.** A Poisson with `μ = 80` is a neat bell around 80.
+
+Then the question that undoes it: **but is the probability of dying each day constant over
+all ages?**
+
+It is not. The slide's lower chart shows the real distribution of ages at death: lopsided,
+with a long tail to the left, a peak in the 80s, and a small spike at age 1 from infant
+deaths. The Poisson cannot produce that shape.
+Its spread is `√80 ≈ 9` years, so it predicts that hardly anyone dies before 60. In reality,
+risk is low for decades and then climbs steeply with age, and that is a different model.
+
+The same objection applied to the geometric lightbulb model earlier in this section. Both
+assume the chance of the event never changes. For bulbs that is plausible. For people it is
+not.
+
+## How to judge a fit
+
+Both examples follow the same steps:
+
+1. **Write down the mechanism the distribution assumes.** For the Poisson: independent
+   events at a constant rate.
+2. **Ask if the real process works that way.** Constant risk of death at every age? No.
+3. **Compare the predicted shape with data,** not only the mean. Any model can match a
+   mean, because the mean is what you plug in.
+
+> Matching the mean is free; matching the shape is the test. Check whether the
+> distribution's assumption, a constant rate for the Poisson, describes how the data was
+> actually produced.

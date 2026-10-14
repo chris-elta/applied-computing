@@ -1,0 +1,103 @@
+---
+course: data-science
+section: w6-distributions
+order: 820
+title: Populations, Samples and the Classical Distributions
+visuals:
+  - type: svg
+    src: data-science/w6-distributions/03.svg
+    caption: Slide 3 of 26 — the central dogma. Probability goes from population to sample; inference comes back.
+  - type: svg
+    src: data-science/w6-distributions/04.svg
+    caption: Slide 4 of 26 — the four distributions this week covers.
+  - type: svg
+    src: data-science/w6-distributions/05.svg
+    caption: Slide 5 of 26 — why they matter, and the warning that comes with them.
+notation:
+  - symbol: "population"
+    reads: population
+    means: >-
+      Everything you would like to know about: every voter, every lightbulb the factory will
+      ever make. Usually too big or too expensive to measure in full.
+  - symbol: "sample"
+    reads: sample
+    means: >-
+      The part of the population you actually measured, such as 1,000 voters phoned or 50
+      bulbs tested.
+  - symbol: "closed form"
+    reads: closed form
+    means: >-
+      A formula you can evaluate directly, such as `σ = √(np(1−p))`, rather than a quantity
+      you have to estimate by simulation or counting.
+questions:
+  - ask: "A histogram of your data has a smooth, symmetric bell shape. What can you conclude?"
+    choices:
+      - text: "That a normal distribution is a reasonable first guess, still to be checked"
+        correct: true
+        explains: >-
+          The slide's warning: data does not come from a particular distribution just because
+          the shape looks similar. The shape suggests a candidate. A statistical test or a
+          look at how the data was produced has to confirm it.
+      - text: "That the data is normally distributed, so the normal's formulas apply"
+        explains: >-
+          This is the mistake the slide warns against. Several other distributions are also
+          bell-shaped, and a mixture of normals can look like one bell.
+      - text: "Nothing at all, because shape carries no information about the distribution"
+        explains: >-
+          Too strong. Shape is how you spot a candidate in the first place. It is evidence,
+          only not proof.
+---
+
+A polling company phones 1,000 voters and finds 52% support a policy. What it wants to know
+is what *all* voters think. Getting from one to the other is the job of statistics, and this
+week's distributions are the main tools for it.
+
+## The central dogma
+
+The lecture's diagram has two arrows between a **population** and a **sample**:
+
+| direction | question | tool |
+| --- | --- | --- |
+| population → sample | If the population looks like this, what samples should I expect? | probability |
+| sample → population | Given the sample I got, what does the population probably look like? | inferential statistics |
+
+Summarising the sample itself, with a mean, a median or a standard deviation, is
+**descriptive statistics**, the subject of Week 2.
+
+The arrow that matters in practice is inference, and it depends on the probability arrow.
+You can only judge whether 52% from 1,000 calls is surprising if you know how much samples of
+1,000 tend to wander. That is a question about a distribution.
+
+## Four distributions that keep turning up
+
+Week 2 described a random variable by its distribution: how likely each value is. Any
+distribution is possible, but a few shapes recur so often in practice and in theory that
+they have names. This week covers four:
+
+| distribution | typical question |
+| --- | --- |
+| binomial | How many heads in 200 coin flips? |
+| normal | How unusual is an IQ of 130? |
+| Poisson | How many calls will arrive in the next hour? |
+| power law | How big is the biggest city likely to be? |
+
+## Why name them
+
+The slide gives two reasons to look out for them:
+
+1. They **arise often**, so recognising one saves you modelling from scratch.
+2. **Closed-form formulas and special statistical tests** exist for them. If a count is
+   binomial, its spread is `√(np(1−p))` and you do not have to estimate it.
+
+## The warning
+
+The slide puts its caution in a different colour: **your observed data does not necessarily
+come from a particular distribution just because the shape looks similar.**
+
+A bell-shaped histogram might be normal. It might also be two normals added together, or a
+distribution with much heavier tails. Using the normal's formulas on such data gives
+confident numbers that are wrong. Later concepts this week show both failures: the bell
+curves that are not normal, and city sizes that a normal distribution says are impossible.
+
+> A named distribution is a hypothesis about where your data came from. Its formulas are
+> only as good as that hypothesis.

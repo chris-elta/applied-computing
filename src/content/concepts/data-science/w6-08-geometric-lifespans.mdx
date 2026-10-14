@@ -1,0 +1,128 @@
+---
+course: data-science
+section: w6-rare
+order: 890
+title: Lifespans and the Geometric Distribution
+visuals:
+  - type: svg
+    src: data-science/w6-distributions/14.svg
+    caption: Slide 14 of 26 — a lifespan of n days means surviving n − 1 days and then failing.
+  - type: svg
+    src: data-science/w6-distributions/15.svg
+    caption: Slide 15 of 26 — LED bulbs with a 1% daily failure chance, and their expected lifespan.
+notation:
+  - symbol: "Pr(n)"
+    reads: P r of n
+    means: >-
+      The probability that the lifespan is exactly `n` days: survive the first `n − 1`, fail
+      on day `n`.
+  - symbol: "p"
+    reads: p
+    means: >-
+      A daily probability, but watch which one. On slide 14, `p` is the chance of
+      **surviving** a day. On slide 15, `p` is the chance of **failing** on a day. This page
+      uses `q` for survival and `p` for failure throughout.
+  - symbol: "q"
+    reads: q
+    means: >-
+      The chance of surviving one day, `q = 1 − p`. Introduced on this page to keep the two
+      slides' uses of `p` apart.
+  - symbol: "E[X]"
+    reads: E of X, or the expected value of X
+    means: >-
+      The mean of the random variable `X`: the long-run average lifespan over many bulbs.
+questions:
+  - ask: "A machine part fails with probability 0.05 on any given day, independently of its age. What is its expected lifespan?"
+    choices:
+      - text: "20 days"
+        correct: true
+        explains: >-
+          `E[X] = 1/p = 1/0.05 = 20`. With a 1-in-20 daily chance of failure you wait 20 days
+          on average.
+      - text: "About 14 days, when half of the parts have failed"
+        explains: >-
+          That is roughly the median (`0.95ⁿ = 0.5` at `n ≈ 13.5`). The geometric
+          distribution is skewed right: a few parts last a long time and pull the mean above
+          the median.
+      - text: "0.05 days"
+        explains: >-
+          That is the daily failure probability itself. The expected wait is its reciprocal.
+      - text: "1/0.95 ≈ 1.05 days"
+        explains: >-
+          This uses the survival probability in the mean formula. Here `p` in `1/p` is the
+          chance of failing, as on slide 15.
+  - ask: "For the same part, what is the probability it fails for the first time on day 3?"
+    choices:
+      - text: "`0.95² × 0.05 ≈ 0.045`"
+        correct: true
+        explains: >-
+          It must survive days 1 and 2 (`0.95 × 0.95`) and then fail on day 3 (`0.05`).
+      - text: "`0.05³ ≈ 0.000125`"
+        explains: >-
+          That is the chance of failing on three days in a row. A part can only fail once.
+      - text: "`3 × 0.05 = 0.15`"
+        explains: >-
+          That is roughly the chance of failing *by* day 3, not *on* day 3, and it slightly
+          overcounts even that.
+---
+
+Each LED bulb from a factory has a 1% chance of burning out on any given day. How long will
+a bulb last?
+
+## Building the distribution
+
+The slide frames it as a question about you: **if your chance of surviving any given day is
+probability `p`, what is your lifespan distribution?** The answer comes from one
+observation: **a lifespan of `n` days means dying for the first time on day `n`.**
+
+So you need `n − 1` survivals followed by one failure. With independent days, multiply. The
+slide writes it with `p` for survival:
+
+```
+Pr(n) = pⁿ⁻¹ (1 − p)
+```
+
+**A note on `p`.** The next slide reuses `p` for the chance of *failing*, which is
+`p = 0.01` for the bulbs. Both conventions are common. This page writes `q` for survival and
+`p` for failure, so the formula reads `Pr(n) = qⁿ⁻¹ p`.
+
+For the bulbs, `p = 0.01` and `q = 0.99`:
+
+| lifespan (days) | formula | probability |
+| --- | --- | --- |
+| 1 | `0.01` | 0.0100 |
+| 2 | `0.99 × 0.01` | 0.0099 |
+| 3 | `0.99² × 0.01` | 0.0098 |
+| 10 | `0.99⁹ × 0.01` | 0.0091 |
+| 100 | `0.99⁹⁹ × 0.01` | 0.0037 |
+
+The single most likely lifespan is 1 day. Every later day requires surviving all the days
+before, so each probability is a little smaller than the last.
+
+## Expected lifespan
+
+The mean has a simple form:
+
+```
+E[X] = 1/p = 1/0.01 = 100 days
+```
+
+It makes sense: an event with a 1-in-100 chance per day takes 100 days on average to happen.
+
+## Why not "dead bulbs per 1,000 hours"?
+
+The slide says **lightbulb lifespans are better modeled with such a distribution, not dead
+bulbs per 1,000 hours.** A failure rate tells you how many bulbs die in a period. The
+geometric distribution tells you how long *one* bulb lasts, which is what a buyer wants to
+know. It also shows the spread: some bulbs die in the first week, and a few last for years.
+
+## The assumption
+
+Everything rests on the failure chance being **the same every day**, regardless of age. A
+bulb that has lasted 200 days is no more likely to fail tomorrow than a new one. That suits
+some electronics. It is a poor fit for people, who age, and for machines that wear out. The
+human-lifespan concept later in this section returns to this.
+
+> Waiting for a first event with a fixed chance `p` per try gives the geometric
+> distribution: `Pr(n) = (1−p)ⁿ⁻¹ p`, mean `1/p`. It holds only when that chance does not
+> change with age.
