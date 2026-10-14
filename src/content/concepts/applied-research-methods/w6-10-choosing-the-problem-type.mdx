@@ -1,0 +1,91 @@
+---
+course: applied-research-methods
+section: w6-ml
+order: 830
+title: Matching the Question to a Problem Type
+visuals:
+  - type: svg
+    src: applied-research-methods/week6-data/05.svg
+    caption: Slide 5 of 24 — five questions, five problem types, three kinds of learning.
+questions:
+  - ask: A hospital wants to predict how many days each admitted patient will stay, using past admissions where the stay is recorded. Which problem type is this?
+    choices:
+      - text: Regression, with supervised learning
+        correct: true
+        explains: >-
+          Length of stay is a continuous value, and past admissions provide labelled examples
+          of it.
+      - text: Classification, with supervised learning
+        explains: >-
+          It would be classification if the question were a category, such as "short or long
+          stay". Number of days is a continuous value.
+      - text: Clustering, with unsupervised learning
+        explains: >-
+          Clustering finds groups when no labels exist. Here the outcome is recorded for every
+          past patient.
+      - text: Reinforcement learning, because the hospital makes decisions over time
+        explains: >-
+          The model predicts one value per patient. It does not act in an environment and get
+          rewards for a sequence of decisions.
+  - ask: A team has 2 million support tickets with no categories and wants to see what kinds of problem customers raise. Which problem type fits?
+    choices:
+      - text: Clustering
+        correct: true
+        explains: >-
+          They want to discover groupings that are not defined in advance. With no labels,
+          that is unsupervised clustering.
+      - text: Classification
+        explains: >-
+          Classification needs predefined categories and labelled examples to learn them from.
+          The team has neither, which is why they are asking.
+      - text: Dimensionality reduction
+        explains: >-
+          It might help as a preparation step, but the question is about groupings, not about
+          compressing features.
+---
+
+Step 2 of the ML workflow is choosing the problem type. The lecture turns that into a set of
+questions about **what you need the output to be**:
+
+| Question | Problem type | Algorithm type |
+| --- | --- | --- |
+| Do you need to predict a **category or label**? *(spam or not spam, cat or dog)* | **Classification** | Supervised |
+| Do you need to predict a **continuous value**? *(house price, temperature, stock value)* | **Regression** | Supervised |
+| Do you need to discover **inherent groupings** or structure in data **without predefined labels**? *(market segmentation, grouping similar documents)* | **Clustering** | Unsupervised |
+| Do you need to **reduce the number of features** while preserving information? *(data compression, noise reduction)* | **Dimensionality reduction** | Unsupervised |
+| Do you need a system to make a **sequence of decisions** or maximise a **reward** through interaction with an environment? *(robotics, game playing)* | **Reinforcement learning** | Reinforcement |
+
+## Two questions underneath
+
+The table looks like five choices, but two questions sort most cases:
+
+1. **Do you have labels?** If your data includes the right answer for each example, the
+   learning is supervised. If not, it is unsupervised. (*Semi-Supervised Learning* covers
+   having a few.)
+2. **What shape is the answer?** A category means classification. A number on a continuous
+   scale means regression. A grouping means clustering.
+
+Reinforcement learning is different from both. There is no fixed data set of answers. The
+system **acts**, and learns from the rewards that follow.
+
+## The same topic, different types
+
+The problem type comes from the **question**, not the subject area. Take one data set of
+customer purchases:
+
+| Question | Type |
+| --- | --- |
+| Will this customer cancel next month? | Classification |
+| How much will this customer spend next month? | Regression |
+| What kinds of customer do we have? | Clustering |
+
+This connects back to the problem deck. A vague topic ("customer behaviour") cannot choose an
+algorithm for you. A question stated precisely enough to be answered — what you predict, for
+whom, from what — usually settles the problem type on its own.
+
+It also echoes Week 3's scales of measurement. A label is a **nominal** value, which is why it
+calls for classification. A continuous value is **interval** or **ratio**, which calls for
+regression.
+
+> Ask what the output must be and whether you have the right answers to learn from. The
+> problem type follows from those two facts.

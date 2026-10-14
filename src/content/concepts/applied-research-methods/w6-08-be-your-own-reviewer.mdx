@@ -1,0 +1,78 @@
+---
+course: applied-research-methods
+section: w6-problem
+order: 810
+title: Be Your Own Reviewer
+visuals:
+  - type: svg
+    src: applied-research-methods/week6-problem/10.svg
+    caption: Slide 10 of 10 — six reviewer comments and the fix for each.
+questions:
+  - ask: 'A draft''s related-work section has one paragraph per paper, in date order. Which fix does the lecture give?'
+    choices:
+      - text: Build a comparison table and organise the prose by assumption, not by paper
+        correct: true
+        explains: >-
+          A list of papers gives the reader no way to see the gap. Grouping by assumption
+          shows the pattern of empty cells that justifies your work.
+      - text: Add more papers so the coverage looks complete
+        explains: >-
+          More rows in a list is a longer list. The complaint is about structure, not coverage.
+      - text: Move the related work to the end of the paper
+        explains: >-
+          Where it sits does not change the fact that it does not compare anything.
+  - ask: 'Which addition best answers "This is not feasible in the time"?'
+    choices:
+      - text: A milestone plan with a go/no-go gate, a compute estimate and a buffer
+        correct: true
+        explains: >-
+          The gate shows you would find out early if it is not working. The estimate and the
+          buffer show you have costed it.
+      - text: A paragraph explaining that the student is highly motivated
+        explains: >-
+          Motivation is effort, not evidence. The reviewer wants to see the plan, not the
+          commitment.
+      - text: A risk table with mitigations
+        explains: >-
+          That answers "No risks are considered", a separate comment. Feasibility is answered
+          by the schedule and the resources.
+---
+
+The lecture ends where it began, with reviewers. The second slide listed three comments
+reviewers write over and over. The last one gives six, each paired with the fix you can apply
+*before* submitting.
+
+| What a reviewer might say | The fix |
+| --- | --- |
+| *"The contribution is unclear."* | A **one-sentence claim** in the abstract, repeated at the end of Section 2. |
+| *"Related work is a list of papers."* | A **comparison table**; prose organised **by assumption, not by paper**. |
+| *"Why does this matter?"* | **Heilmeier Q4 as its own paragraph**: who, what decision, what changes. |
+| *"The evaluation is vague."* | **Baselines and datasets named**; metrics **derived from the goal**; **threats listed**. |
+| *"This is not feasible in the time."* | **Milestone plan with a go/no-go gate**, compute estimate and buffer. |
+| *"No risks are considered."* | **Risk table** with mitigations and **fallback contributions**. |
+
+## Each fix is a tool from this week
+
+The table is mostly a summary of the lecture:
+
+- the **one-sentence claim** is the *question* level from *Topic, Problem and Question*,
+  stated so it can be wrong;
+- the **comparison table** is the gap-finding table, reused as the structure of the related
+  work;
+- **Q4 as its own paragraph** is Heilmeier and FINER's *Relevant*: name the person and the
+  decision;
+- the **go/no-go gate** is Heilmeier Q8, and the stop rule in the hypothesis;
+- **fallback contributions** are the characterization fallback from the hypothesis example.
+
+The evaluation fix ties back to earlier weeks. Metrics **derived from the goal** means
+choosing the measure because it answers your question, not because it is customary. That is
+Week 4's "statistics serve the question". **Threats listed** means naming the threats to
+validity from Week 3 before a reviewer does.
+
+## How to use it
+
+Before you hand in a proposal, read it as the reviewer would and go down the left column. For
+each comment, find the sentence, table or paragraph in your draft that answers it. If you
+cannot point to one, the reviewer will not find one either.
+
+> Every common reviewer complaint has a known fix. Apply them before someone else has to ask.

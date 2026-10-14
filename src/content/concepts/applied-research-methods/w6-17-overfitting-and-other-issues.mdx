@@ -1,0 +1,81 @@
+---
+course: applied-research-methods
+section: w6-data
+order: 900
+title: Overfitting and Other Design Issues
+visuals:
+  - type: svg
+    src: applied-research-methods/week6-data/21.svg
+    caption: Slide 21 of 24 — six further issues to plan for.
+questions:
+  - ask: 'Model A: 98% training accuracy, 72% validation. Model B: 64% training, 63% validation. Which diagnosis is right?'
+    choices:
+      - text: A is overfitting and B is underfitting
+        correct: true
+        explains: >-
+          A has memorised its training data, shown by the large gap. B does poorly even on the
+          data it trained on, so it is too simple to capture the pattern.
+      - text: A is underfitting and B is overfitting
+        explains: >-
+          That is backwards. Overfitting shows up as a model that does far better on data it
+          has seen than on data it has not.
+      - text: B is the better model because its two scores agree
+        explains: >-
+          Agreement alone is not enough. B is consistently poor. You want a model that does
+          well on both sets.
+      - text: Both are fine; only the test set can tell
+        explains: >-
+          The validation set exists to make exactly this diagnosis before the test set is
+          touched.
+---
+
+Beyond splitting and bias, the lecture lists six issues an ML study has to plan for.
+
+| Issue | The question it raises |
+| --- | --- |
+| **Overfitting and underfitting** | Has the model learned the pattern, or the noise, or neither? |
+| **Model complexity and interpretability** | Can you explain *why* it predicts what it does? |
+| **Computational resources and scalability** | Can you afford to train it, and will it work at full size? |
+| **Feature selection** | Which inputs should the model use? |
+| **Hyperparameter tuning** | How will you choose the settings, and on what data? |
+| **Ethical considerations and transparency** | Who could be harmed, and can others see how it was done? |
+
+## Overfitting and underfitting
+
+These are the two ways a model can fail to **generalise**, meaning work well on new data.
+
+| | Training performance | New-data performance | What happened |
+| --- | --- | --- | --- |
+| **Overfitting** | Very high | Much lower | Learned the training examples, noise included |
+| **Underfitting** | Low | Also low | Too simple to capture the pattern |
+| **Good fit** | High | Close to training | Learned the pattern |
+
+You can only see this if you have separate data to compare with, which is one reason for the
+validation set in *Training, Validation and Test Sets*. The symptom of overfitting is the
+**gap**. Regularisation, simpler models and more data are the usual remedies, and the lecture
+lists overfitting as a con of supervised learning for this reason.
+
+## Complexity against interpretability
+
+More complex models can fit more complicated patterns, and can more easily overfit. They are
+also harder to explain. For research this is a real cost. If your question is *why*
+something happens, a model whose reasoning you cannot inspect may answer "what" without
+answering "why". It is one of the selection criteria in step 3 of the workflow.
+
+## The practical three
+
+- **Compute and scalability** are FINER's *Feasible* in ML terms. Estimate the compute
+  before committing. *Be Your Own Reviewer* asks for a compute estimate in the milestone plan.
+- **Feature selection** decides what the model is allowed to know. Too many features invites
+  overfitting. A feature that secretly encodes the answer (a "discharge date" when predicting
+  length of stay) is leakage.
+- **Hyperparameter tuning** must use the validation set, never the test set.
+
+## Ethics and transparency
+
+This connects to *Bias in ML Data* and to *Planning ML Research*. A study whose methods
+cannot be inspected cannot be checked or replicated. Week 1 named replication as one of the
+two tests every project should pass.
+
+> A model must fit the pattern, not the noise. You must also be able to afford it, explain
+> it, and show others how it was built.

@@ -1,0 +1,89 @@
+---
+course: applied-research-methods
+section: w6-data
+order: 880
+title: Training, Validation and Test Sets
+visuals:
+  - type: svg
+    src: applied-research-methods/week6-data/19.svg
+    caption: Slide 19 of 24 — the three sets and what each is for.
+questions:
+  - ask: 'A student tries 40 hyperparameter settings, keeps the one with the best test-set accuracy, and reports that accuracy. What is wrong?'
+    choices:
+      - text: The test set was used for tuning, so the reported accuracy is optimistically biased
+        correct: true
+        explains: >-
+          Choosing the best of 40 on the test set picks partly for luck on those particular
+          examples. Tuning belongs on the validation set. The test set should be used once, at
+          the end.
+      - text: Nothing, as long as the test set was never used for training
+        explains: >-
+          Using the test set to choose between models is a form of training: information from
+          it has shaped the final model.
+      - text: 40 settings is too few to find a good model
+        explains: >-
+          The number of settings is not the problem. The problem is which data was used to
+          choose between them.
+  - ask: 'A model predicts next-day server load. The data covers 2023–2025, and rows are shuffled at random before splitting. Why might this split give misleading results?'
+    choices:
+      - text: The model trains on days after the ones it is tested on, so it gets information it would not have in practice
+        correct: true
+        explains: >-
+          A random shuffle puts future days in training and past days in test. For a forecast,
+          split by time: train on earlier dates and test on later ones.
+      - text: Shuffling always makes the test set too small
+        explains: >-
+          Shuffling does not change the sizes. It changes which rows land in which set.
+      - text: Server-load data cannot be split at all
+        explains: >-
+          It can, but the split has to respect time order.
+---
+
+An ML study divides its data into three sets, each with one job:
+
+| Set | Used to |
+| --- | --- |
+| **Training set** | **Train** the model: the algorithm fits its parameters to these examples |
+| **Validation set** | **Tune hyperparameters**: choose between settings and model variants |
+| **Test set** | **Evaluate final model performance**, once |
+
+A **hyperparameter** is a setting you choose rather than one the algorithm learns, such as
+the number of clusters, the depth of a decision tree or a learning rate.
+
+The lecture's warning: **improper splitting can lead to biased or misleading results.**
+
+## Why three, and not two
+
+Imagine only a training set and a test set. You train ten models with different
+hyperparameters, score each on the test set, and report the best. That best score is
+**optimistic**. You chose the model *because* it did well on those particular test examples,
+so part of its score is luck that will not repeat on new data.
+
+The validation set takes on the job of choosing. The test set is kept aside until every
+decision is made, and it is then used **once**. Its score is the only one that estimates
+performance on truly new data. This is the same logic as Week 5's warning about choosing the
+alternative hypothesis after seeing the data: any decision made by looking at the result
+inflates the result.
+
+## How splits go wrong
+
+"Improper splitting" covers more than misusing the test set. Common forms:
+
+| Mistake | Why it misleads |
+| --- | --- |
+| **Tuning on the test set** | Picks the model that got lucky on those examples |
+| **Random split of time-ordered data** | The model trains on the future and is tested on the past |
+| **Same person, patient or device in more than one set** | The model recognises the individual instead of learning the pattern |
+| **Pre-processing before splitting** | Statistics from the test set (such as the mean used to scale) leak into training |
+| **Unrepresentative split** | A rare class may be absent from the test set entirely |
+
+The common thread is **leakage**: information from the evaluation data reaching the model
+before it is evaluated. It is a threat to internal validity in Week 3's sense. Something
+other than the model's real ability is producing the score.
+
+The pipeline in *AI, Machine Learning and the ML Workflow* splits the data **at
+pre-processing**, before model building, so that the testing data never passes through
+training.
+
+> Train on one set, choose on another, and judge on a third you have not looked at. A test
+> set used twice is no longer a test.

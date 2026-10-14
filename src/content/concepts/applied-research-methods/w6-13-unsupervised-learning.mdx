@@ -1,0 +1,87 @@
+---
+course: applied-research-methods
+section: w6-ml
+order: 860
+title: Unsupervised Learning
+visuals:
+  - type: svg
+    src: applied-research-methods/week6-data/13.svg
+    caption: Slide 13 of 24 — no labels, so the model outputs cluster labels it invents.
+  - type: svg
+    src: applied-research-methods/week6-data/14.svg
+    caption: Slide 14 of 24 — clustering, dimensionality reduction and examples.
+  - type: svg
+    src: applied-research-methods/week6-data/15.svg
+    caption: Slide 15 of 24 — pros and cons.
+questions:
+  - ask: 'A study clusters app users into five groups and reports "We discovered five user types." What is the main weakness of that claim, according to the lecture''s cons?'
+    choices:
+      - text: Clusters may not be meaningful, and the result is hard to evaluate objectively
+        correct: true
+        explains: >-
+          The algorithm will produce five groups because it was asked for five. Whether they
+          are real types needs evidence beyond the clustering, such as checking them against
+          known behaviour or with domain experts.
+      - text: The study needed labelled data to cluster
+        explains: >-
+          Clustering is unsupervised. It needs no labels, which is its main advantage.
+      - text: Clustering cannot be used for exploratory analysis
+        explains: >-
+          The lecture lists exploratory analysis as a strength. The problem is treating
+          exploratory output as a confirmed finding.
+---
+
+**Unsupervised learning** trains on **unlabelled** data. Nobody has said what the right
+answer is, so the goal is to **find hidden patterns or groupings** in the data itself.
+
+## How it runs
+
+The flow looks like supervised learning with the labels taken away:
+
+| Pass | Flow |
+| --- | --- |
+| **Training** | Input data → feature extraction → **feature matrix** → ML algorithm |
+| **Applying** | Input data → feature extraction → feature vectors → **pattern recognition model** → **cluster labels** |
+
+The **cluster labels** on the output are not the kind of label used in supervised learning.
+The model invents them: "group 1", "group 2". Nobody told it what the groups mean, and the
+output does not either. Naming them is a separate step, done by people.
+
+## Two jobs
+
+| Job | What it does | Example |
+| --- | --- | --- |
+| **Clustering** | Discovers inherent groupings without predefined labels | **Customer segmentation**: group customers by purchasing behaviour |
+| **Dimensionality reduction** | Reduces the number of features while preserving information | **Noise reduction**: keep the main signal, drop the rest |
+
+Dimensionality reduction is often a step *inside* a larger study. Fifty correlated
+measurements can be compressed into a few that carry most of the variation, before
+clustering or a supervised model.
+
+## Pros and cons
+
+| Pros | Cons |
+| --- | --- |
+| **No labelled data needed** (cheaper) | **Hard to evaluate results objectively** |
+| Useful for **exploratory analysis** and pattern discovery | **May produce clusters that are not meaningful** |
+| Can reveal **hidden structure** | **Sensitive to parameter choices and scaling** |
+
+## What the cons mean for a study
+
+The cons all come from the missing labels. In supervised learning you can compare predictions
+with known answers. Here there is nothing to compare against, so:
+
+- **Hard to evaluate.** There is no accuracy score. A clustering is "good" only by indirect
+  measures or by whether the groups turn out to be useful.
+- **Clusters that are not meaningful.** Most clustering algorithms return as many groups as
+  you ask for, whether or not the data has that structure. Getting five clusters is not
+  evidence of five types.
+- **Parameter and scaling sensitivity.** Measure income in dollars and age in years, and
+  income will dominate any distance calculation simply because its numbers are bigger. A
+  different number of clusters or a different scaling can give a different answer.
+
+This makes unsupervised learning a natural fit for **characterization** and exploratory
+questions. A claim built on its output needs support from elsewhere, such as **validating
+the groups with domain experts**, as *Analysing ML Results* recommends.
+
+> Unsupervised learning will always find structure. Your job is to show the structure is real.

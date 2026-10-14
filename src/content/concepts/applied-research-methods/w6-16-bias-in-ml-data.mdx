@@ -1,0 +1,79 @@
+---
+course: applied-research-methods
+section: w6-data
+order: 890
+title: Bias in ML Data
+visuals:
+  - type: svg
+    src: applied-research-methods/week6-data/20.svg
+    caption: Slide 20 of 24 — four sources of bias and three ways to reduce it.
+questions:
+  - ask: 'A hiring model is trained on ten years of past decisions about which applicants were hired. The labels are accurate records of what happened. Which source of bias is the main concern?'
+    choices:
+      - text: Historical data
+        correct: true
+        explains: >-
+          The labels faithfully record past decisions, including any unfairness in them. The
+          model learns to repeat those decisions. Accurate labels do not make it fair.
+      - text: Labelling
+        explains: >-
+          Labelling bias means the labels are applied inconsistently or wrongly. Here they are
+          correct records. The problem is what they record.
+      - text: Sampling
+        explains: >-
+          The sample may well be every applicant over ten years. The bias is in the outcomes,
+          not in who was included.
+      - text: Algorithm design
+        explains: >-
+          Any algorithm trained to reproduce these labels will reproduce the pattern. The
+          source is the data.
+---
+
+Week 4 defined **bias** as anything that **distorts the data** in one direction, unlike
+random error. A model trained on biased data learns the distortion and repeats it at scale,
+usually with an appearance of objectivity. The lecture names four places bias enters an ML
+study.
+
+## Four sources
+
+| Source | How it enters | Example |
+| --- | --- | --- |
+| **Sampling** | The training data does not represent the population the model will be used on | A face-recognition set drawn mostly from one demographic |
+| **Labelling** | The labels are inconsistent or wrong in a systematic way | Annotators label the same dialect as "toxic" more often |
+| **Historical data** | The data accurately records a past that was itself unfair | A hiring model trained on whom a company used to hire |
+| **Algorithm design** | Choices in the model or objective favour some groups | Optimising overall accuracy, which can ignore a small group entirely |
+
+**Sampling** bias is Week 4's sampling bias, unchanged. If the people or cases in the
+training set are not like the ones the model will see, its accuracy does not carry over.
+
+**Historical** bias is the hardest to notice, because nothing in the data is *wrong*. Every
+label is a true record. The model learns the pattern in those records, which is exactly what
+it was asked to do.
+
+**Algorithm design** reminds you that the method is not neutral. An objective that rewards
+overall accuracy can reach 95% by doing well on a 95% majority and badly on everyone else.
+
+## Reducing it
+
+The lecture gives three techniques:
+
+| Technique | What it does |
+| --- | --- |
+| **Data augmentation** | Build **diverse and representative** data sets, adding or generating examples for under-represented cases |
+| **Fairness-aware algorithms** | Build a fairness requirement into the training objective, not only accuracy |
+| **Regular audits and evaluations** | Check performance **for each group**, and keep checking after deployment |
+
+Audits matter because a single overall score hides group-level failure. Reporting accuracy
+for each group is the ML version of Week 4's advice to compare early and late survey
+responders: it uses data you already have to look for distortion.
+
+## For a research plan
+
+Bias belongs in the methods, not a footnote. *Planning ML Research* asks you to **examine
+bias and ethics closely**. In practice that means saying where your data came from, who
+labelled it, which groups it may under-represent, and how you will report results for each.
+FINER's *Ethical* criterion applies here too: a study whose model would disadvantage a group
+needs that addressed before it starts.
+
+> A model learns the world its data describes, including the unfair parts. Ask who is
+> missing, who labelled it, and what history it records.

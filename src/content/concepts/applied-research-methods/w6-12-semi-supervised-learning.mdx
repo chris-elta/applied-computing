@@ -1,0 +1,74 @@
+---
+course: applied-research-methods
+section: w6-ml
+order: 850
+title: Semi-Supervised Learning
+visuals:
+  - type: svg
+    src: applied-research-methods/week6-data/10.svg
+    caption: Slide 10 of 24 — definition and the medical-imaging example.
+  - type: svg
+    src: applied-research-methods/week6-data/11.svg
+    caption: Slide 11 of 24 — pros and cons.
+questions:
+  - ask: 'A team labels 500 chest X-rays from one hospital and adds 50,000 unlabelled X-rays from a second hospital with different scanners. Which con of semi-supervised learning is most at risk?'
+    choices:
+      - text: It assumes the unlabelled data follows the same distribution as the labelled data
+        correct: true
+        explains: >-
+          Different scanners produce images that look systematically different. What the model
+          infers from the unlabelled images may not match what the labels taught it.
+      - text: It is more complex than purely supervised or unsupervised methods
+        explains: >-
+          That is true of every semi-supervised project. The specific risk in this design is
+          the mismatch between the two sources.
+      - text: It always performs worse than unsupervised learning
+        explains: >-
+          The lecture says the opposite: it often does better than unsupervised learning,
+          because it has some labels.
+---
+
+Supervised learning needs a label on every training example, and labels are expensive.
+Unlabelled data is often plentiful. **Semi-supervised learning** uses a **small amount of
+labelled data** and a **large amount of unlabelled data** together.
+
+The lecture's example is **medical image classification**. A hospital has thousands of scans,
+but only a few have been labelled, because labelling needs a radiologist's time. Training on
+the few labelled scans alone would waste most of the data. Ignoring the labels entirely would
+waste the expertise that went into them.
+
+## Why unlabelled data helps
+
+Unlabelled examples carry no answers, but they show the **shape of the data**: where examples
+cluster and where the gaps between groups fall. The labelled examples say which group is
+which. Together they can place a boundary better than the labelled examples could alone.
+
+That only works if both sets come from the **same population**. That is the first con below,
+and it is easy to miss.
+
+## Pros and cons
+
+| Pros | Cons |
+| --- | --- |
+| **Reduces labelling cost** | **Assumes unlabelled data follows the same distribution as labelled data** |
+| Often achieves **better performance than unsupervised** learning | More complex than purely supervised or unsupervised methods |
+| Useful when **labelled data is scarce** | **Sensitive to incorrect labels** |
+
+## The two cons that matter for research
+
+**Same distribution.** If the labelled scans come from one hospital and the unlabelled ones
+from another, with different equipment or patients, the shape the model learns from the
+unlabelled data may not match the labels. This is Week 4's sampling concern in ML form: the
+two samples must represent the same population, or the combination misleads.
+
+**Sensitivity to incorrect labels.** With few labels, each one carries a lot of weight. A
+handful of mislabelled scans can push the model's view of the whole unlabelled set in the
+wrong direction. In a fully supervised set of 100,000 examples, a few errors are diluted.
+Here they are amplified.
+
+For a research design, both cons become checks to plan for. Say how you will confirm the two
+sets are comparable, and how the labels will be verified, for example with a second labeller
+on a sample.
+
+> Semi-supervised learning stretches a few labels across many examples. That works only if
+> the labels are right and the examples come from the same place.

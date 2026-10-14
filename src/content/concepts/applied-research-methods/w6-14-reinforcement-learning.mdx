@@ -1,0 +1,86 @@
+---
+course: applied-research-methods
+section: w6-ml
+order: 870
+title: Reinforcement Learning
+visuals:
+  - type: svg
+    src: applied-research-methods/week6-data/16.svg
+    caption: Slide 16 of 24 — the agent–environment loop.
+  - type: svg
+    src: applied-research-methods/week6-data/17.svg
+    caption: Slide 17 of 24 — definition and the autonomous-driving example.
+  - type: svg
+    src: applied-research-methods/week6-data/18.svg
+    caption: Slide 18 of 24 — pros and cons.
+questions:
+  - ask: 'An RL agent for a warehouse robot is rewarded for each package delivered per minute. It learns to drive at full speed and occasionally crash into shelves. Which con does this illustrate?'
+    choices:
+      - text: Reward design is challenging
+        correct: true
+        explains: >-
+          The agent did what it was rewarded for. Safety was never in the reward, so it was
+          traded away. The lecture's driving example rewards safety and efficiency for this
+          reason.
+      - text: It can be unstable or fail to converge
+        explains: >-
+          The agent converged, on a strategy nobody wanted. Failing to converge would mean it
+          never settled on a strategy at all.
+      - text: It requires many interactions
+        explains: >-
+          True of RL in general, but it does not explain why the learned behaviour is unsafe.
+---
+
+**Reinforcement learning (RL)** has no data set of right answers at all. An **agent** learns
+by **interacting with an environment**, receiving **rewards or penalties** for its actions.
+It is the type to use when you need a system to **make a sequence of decisions** or
+**maximise a reward** over time.
+
+## The loop
+
+The lecture draws it as a cycle:
+
+| Element | Role |
+| --- | --- |
+| **Environment** | The world the agent acts in: a road, a game, a factory floor |
+| **Observation** | What the agent can see of the environment's current state |
+| **Action** | What the agent does |
+| **Reward** | The environment's signal of how good the result was |
+| **Policy** | The agent's strategy: which action to take given an observation |
+| **ML algorithm** | Updates the policy using the rewards |
+
+The agent observes, acts, receives a reward and a new observation, and the algorithm adjusts
+the policy so that actions leading to more reward become more likely. Repeat many times.
+
+The lecture's example is **autonomous driving**: a car learns to navigate by maximising
+**safety and efficiency** rewards.
+
+## How it differs from supervised learning
+
+A supervised model is told the right answer for every example. An RL agent is only told **how
+well it did**, and often only later. A driving agent may find out that a lane change was a
+mistake several seconds afterwards. Working out which earlier action deserves the credit or
+blame is what makes RL hard, and why it needs so many trials.
+
+## Pros and cons
+
+| Pros | Cons |
+| --- | --- |
+| Handles **sequential decision-making** problems | **Requires many interactions** (computationally expensive) |
+| Learns **optimal strategies through trial and error** | Can be **unstable or fail to converge** |
+| Useful for **dynamic environments** | **Reward design is challenging** |
+
+## Reward design is the research design
+
+The agent optimises **exactly** what the reward measures, and nothing else. Reward only speed
+and it will drive dangerously. That is why the lecture's driving example names two rewards,
+not one. Choosing the reward is like choosing the outcome measure in *From Problem to
+Question to Hypothesis*: if it does not capture the goal, a perfect score means nothing.
+
+The other two cons are **feasibility** questions in FINER's sense. "Many interactions" usually
+means a simulator and a lot of compute, and possibly the environmental cost FINER's *Ethical*
+row mentions. "May fail to converge" calls for Heilmeier's early checkpoint, so you find out
+in month two rather than month six.
+
+> An RL agent gets exactly what you reward. Most of the design work is choosing a reward
+> that means what you meant.

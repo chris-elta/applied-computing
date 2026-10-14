@@ -1,0 +1,76 @@
+---
+course: applied-research-methods
+section: w6-problem
+order: 740
+title: Topic, Problem and Question
+visuals:
+  - type: svg
+    src: applied-research-methods/week6-problem/02.svg
+    caption: Slide 2 of 10 — three comments reviewers write over and over.
+  - type: svg
+    src: applied-research-methods/week6-problem/03.svg
+    caption: Slide 3 of 10 — topic, problem and question, with one example carried through.
+questions:
+  - ask: A student proposes "Energy use of large language models in data centres." Which reviewer comment is it most likely to get, and why?
+    choices:
+      - text: '"I can''t tell what is new here", because it names an area but makes no claim that could turn out false'
+        correct: true
+        explains: >-
+          It is a topic. Nothing in it can be right or wrong yet. The student needs a specific
+          failure or unknown in current practice, and then a question with a comparison and a
+          setting.
+      - text: '"This is a build plan, not a research plan", because it lists activities'
+        explains: >-
+          It lists no activities at all. That comment is for proposals that say "implement,
+          test, deploy" and stop there.
+      - text: No complaint, because energy use is an important and popular area
+        explains: >-
+          Popularity is the motivation reviewers object to in the second comment. An important
+          area is still only an area.
+      - text: No complaint, because it can be answered by measuring energy use
+        explains: >-
+          Measuring what, compared with what, in which setting? Until those are named, no
+          measurement would answer it.
+---
+
+Reviewers of student proposals keep writing the same three comments:
+
+| Comment | What the proposal actually contained |
+| --- | --- |
+| *"I can't tell what is new here."* | An area and a plan to build something, but **no claim that could turn out to be false** |
+| *"Why would anyone care about this result?"* | Motivation that the topic is **popular**, not that a decision or design would change if the answer were known |
+| *"This is a build plan, not a research plan."* | **Activities** (implement, test, deploy), but nothing that could tell success from failure |
+
+All three have the same cause. The writer stopped at a *topic* and never reached a *problem*,
+let alone a *question*.
+
+## Three levels
+
+The lecture separates them, and carries one example through all three:
+
+| Level | What it is | Example |
+| --- | --- | --- |
+| **Topic** | An area. Nothing to be right or wrong about. | Federated learning on edge devices |
+| **Problem** | A specific failure, limitation or unknown in current practice, **with a reason it exists** | Accuracy drops sharply when client data are non-IID. Existing corrections assume the server knows each client's label distribution, which it cannot observe. |
+| **Question** | Something answerable with evidence, **naming the comparison and the setting** | Can the server estimate label skew from update statistics alone, and does correcting with that estimate recover accuracy relative to FedProx at the same communication budget? |
+
+(*Non-IID* means the clients' data are not drawn from the same distribution. One phone sees
+mostly cat photos, another mostly receipts.)
+
+## What each step adds
+
+Read the example from top to bottom and notice what is gained at each step.
+
+- **Topic → problem** adds a *failure* (accuracy drops) and a *reason* (corrections need
+  information the server does not have). The reason is what makes it a problem rather than
+  a complaint. It points at where a fix might come from.
+- **Problem → question** adds a *proposed answer to test* (estimate skew from updates), a
+  *baseline* (FedProx), and a *fair condition* (same communication budget). Now a result
+  could come out either way, and you would know which way it came out.
+
+This sits directly on Week 1's idea of a research-worthy problem. Week 1 said a problem's
+answer must make a difference. This lecture adds that it must be **stated finely enough to
+be wrong**.
+
+> A topic is where you look. A problem is what is broken there and why. A question is the
+> test that could show you were wrong about the fix.

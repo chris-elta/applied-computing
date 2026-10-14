@@ -1,0 +1,87 @@
+---
+course: applied-research-methods
+section: w6-ml
+order: 820
+title: AI, Machine Learning and the ML Workflow
+visuals:
+  - type: svg
+    src: applied-research-methods/week6-data/03.svg
+    caption: Slide 3 of 24 — AI, ML, the three types of learning, and the three data sets.
+  - type: svg
+    src: applied-research-methods/week6-data/04.svg
+    caption: Slide 4 of 24 — the six steps from goal to analysis.
+  - type: svg
+    src: applied-research-methods/week6-data/06.svg
+    caption: Slide 6 of 24 — pre-processing, training and testing data, model building and evaluation.
+questions:
+  - ask: 'A student''s methods section begins: "We used a random forest." By the lecture''s workflow, what is missing before that sentence?'
+    choices:
+      - text: The goal and available data, and the problem type they lead to
+        correct: true
+        explains: >-
+          Steps 1 and 2 come before choosing an algorithm. Without them, a reader cannot tell
+          whether a random forest was a reasoned choice or a habit.
+      - text: The accuracy the random forest achieved
+        explains: >-
+          Results come at step 6. The gap is at the other end: the choice is not justified.
+      - text: Nothing — the algorithm is the first decision in an ML study
+        explains: >-
+          The algorithm is the third step. Starting from it is the ML version of starting from
+          a solution rather than a problem.
+---
+
+The terms get used loosely, so the lecture pins them down first.
+
+| Term | Meaning |
+| --- | --- |
+| **Artificial intelligence (AI)** | Simulating human intelligence in machines |
+| **Machine learning (ML)** | A **subset** of AI that **learns from data** |
+| **Algorithm** | The specific procedure that does the learning, such as a decision tree or k-means |
+
+So all ML is AI, but not all AI is ML. A hand-written rule system that plays chess is AI
+without learning anything from data. Within ML, the lecture names **three types of
+algorithm**: **supervised**, **unsupervised** and **reinforcement** learning. Each gets its
+own concept in this section. The data an ML study works with is split three ways, into
+**training**, **validation** and **testing** sets, covered in *Training, Validation and Test
+Sets*.
+
+## Six steps
+
+The lecture's workflow for an ML study:
+
+1. **Define the goal and available data.**
+2. **Choose the problem type**, which determines the algorithm type.
+3. **Select a specific algorithm**, considering:
+   - the nature of the problem (classification, regression, clustering);
+   - the data's size, quality and structure;
+   - interpretability and computational efficiency.
+4. **Prepare and split the data.**
+5. **Train, test and validate.**
+6. **Analyse the results.**
+
+The order is the point. The algorithm is chosen at **step 3**, after the goal and the problem
+type are fixed. Starting from "I want to use transformers" and looking for a problem is the
+ML version of the engineering-task trap from *Engineering Task or Research Problem?*: the
+method has been decided, so nothing about it is uncertain.
+
+## The pipeline
+
+The lecture draws steps 4 to 6 as a pipeline:
+
+| Stage | What happens |
+| --- | --- |
+| **Pre-processing** | Clean and prepare the raw data, then split it |
+| **Training data → model building** | The algorithm fits a model to the training data |
+| **Testing data → model evaluation** | The model is scored on data it has not seen |
+
+The split happens **before** model building, and the testing data flows *around* model
+building straight to evaluation. That is deliberate. A model scored on data it trained on is
+being asked questions it has already seen the answers to.
+
+Step 3's criteria matter for research in particular. An algorithm that is slightly more
+accurate but impossible to interpret may be the wrong choice if your research question is
+*why* something happens. You will have to justify the choice in your methods section, as
+*Planning ML Research* asks.
+
+> Goal, then problem type, then algorithm. Keep the data that judges the model away from the
+> data that builds it.

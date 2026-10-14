@@ -1,0 +1,68 @@
+---
+course: applied-research-methods
+section: w6-problem
+order: 780
+title: The Heilmeier Questions
+visuals:
+  - type: svg
+    src: applied-research-methods/week6-problem/07.svg
+    caption: Slide 7 of 10 — four Heilmeier questions, how proposals fail them, and the fix.
+notation:
+  - symbol: Q1, Q2, Q4, Q8
+    reads: question one, two, four, eight
+    means: >-
+      The numbers of the Heilmeier questions shown on the slide. The full list is longer; the
+      lecture picks the four that proposals most often fail.
+questions:
+  - ask: 'A proposal''s plan reads: "Months 1–5: build the system. Month 6: evaluate against the baseline." Which Heilmeier question does it fail, and what is the fix?'
+    choices:
+      - text: Q8 — add a checkpoint around month two that could already show the approach is failing
+        correct: true
+        explains: >-
+          The only check is the final result, so a dead end is discovered with no time left. An
+          early checkpoint makes failure visible while there is still time to change course.
+      - text: Q1 — rewrite the plan without jargon
+        explains: >-
+          The plan has no jargon in it. Q1 is about stating the goal so an outsider could
+          repeat it back.
+      - text: Q2 — add a section on current practice
+        explains: >-
+          Nothing here says the state of the art is missing. The flaw is in the schedule's
+          checks.
+      - text: Q4 — name who cares about the result
+        explains: >-
+          That may also be missing, but the plan shown fails on checkpoints, not motivation.
+---
+
+George Heilmeier, a former director of the US research agency DARPA, judged proposals with a
+short list of plain questions. The lecture picks four of them, each paired with **how
+proposals typically fail it** and **the fix**.
+
+| Question | How proposals fail it | Fix |
+| --- | --- | --- |
+| **Q1** What are you trying to do? No jargon. | *"We propose a contrastive self-supervised framework for cross-modal alignment."* | Rewrite so a smart friend in another department can repeat it back. |
+| **Q2** How is it done today, and what are the limits? | The proposal skips straight to the new idea. The reviewer suspects the writer does not know current practice. | Two honest paragraphs on the state of the art and **exactly where it stops working**. |
+| **Q4** Who cares? What difference will it make? | *"This is an active and important area."* | Name a **decision, a design or a belief** that changes if the answer is yes. **Name who holds it.** |
+| **Q8** What checks tell you whether it is working? | The only check is the final result. | A **checkpoint at month two** that could already tell you the approach is failing. |
+
+## What each failure looks like from the reviewer's chair
+
+- **Q1.** The jargon sentence sounds technical but says nothing a reader could check. If a
+  smart outsider cannot repeat the goal back, the reviewer suspects the writer cannot either.
+- **Q2.** Skipping current practice reads as not knowing it. The fix is precise: say where the
+  state of the art **stops working**. That stopping point is your problem. This links Q2 to
+  *Where Research Problems Come From*.
+- **Q4.** "Active and important area" is popularity again, the motivation reviewers reject.
+  The fix matches FINER's *Relevant*: a named decision and a named person.
+- **Q8.** A plan whose only test is the final result finds out it has failed at the end, with
+  no time left. A month-two checkpoint makes failure cheap and early. The stop rule in
+  *From Problem to Question to Hypothesis* is this fix written into the hypothesis.
+
+## FINER and Heilmeier together
+
+The two lists overlap but do different jobs. **FINER** is a filter for choosing *which*
+question to pursue. **Heilmeier** is a test of whether you can *explain and defend* the one
+you chose. Run FINER while choosing, and Heilmeier while drafting the proposal.
+
+> Say it plainly, know where today's methods stop, name who would act on the answer, and plan
+> a check that can fail early.

@@ -87,4 +87,18 @@ sections:
     title: Week 5 · t-tests
     summary: >-
       Testing a mean when the population's spread is unknown, and testing paired data.
+  - id: w6-problem
+    title: Week 6 · Finding a research problem
+    summary: >-
+      Telling a research problem from a topic or a build task, finding the gap, and sharpening
+      it into a question a reviewer will accept.
+  - id: w6-ml
+    title: Week 6 · Machine learning methods
+    summary: >-
+      Matching a research question to a kind of learning, and what each kind costs.
+  - id: w6-data
+    title: Week 6 · Data and results in ML
+    summary: >-
+      Splitting and auditing data, judging a model's results, and planning ML research so it
+      can be reproduced.
 ---

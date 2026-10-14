@@ -1,0 +1,89 @@
+---
+course: applied-research-methods
+section: w6-problem
+order: 770
+title: The FINER Criteria
+visuals:
+  - type: svg
+    src: applied-research-methods/week6-problem/06.svg
+    caption: Slide 6 of 10 — FINER, read for a computer-science Master's project.
+notation:
+  - symbol: FINER
+    reads: finer, as in the word
+    means: >-
+      Feasible, Interesting, Novel, Ethical, Relevant. Five checks a research question should
+      pass, taken from clinical research.
+questions:
+  - ask: 'A student plans to fine-tune a 70-billion-parameter model on hospital records they have not yet requested access to, with eight weeks left in the program. Which FINER criteria are most clearly at risk?'
+    choices:
+      - text: Feasible and Ethical
+        correct: true
+        explains: >-
+          The compute and the time are doubtful, and there is no data access yet (feasible).
+          Patient records also need consent and human-subjects approval (ethical). Both have
+          to be settled before the work, not discovered during it.
+      - text: Novel and Interesting
+        explains: >-
+          We do not know either way, and neither is the obvious problem. The plan fails on
+          practical grounds before novelty comes into it.
+      - text: Relevant only
+        explains: >-
+          Hospital applications usually have someone who would act on the answer. The risk is
+          whether the project can be done at all, and done properly.
+  - ask: Under FINER, what does "Relevant" ask you to do?
+    choices:
+      - text: Name the person or role who would change what they do based on the answer
+        correct: true
+        explains: >-
+          The lecture asks for a name, not an adjective. "Clinicians choosing a triage tool"
+          is relevant. "An important area" is not.
+      - text: Show that the topic is popular in recent conferences
+        explains: >-
+          Popularity is closer to Interesting (a venue publishes this kind of result), and on
+          its own it is the motivation reviewers reject.
+      - text: Confirm that nobody has answered it before
+        explains: That is Novel, and it is checked with a literature review.
+---
+
+FINER is a checklist for whether a research question is worth pursuing. It comes from
+clinical research (Hulley and colleagues), and the lecture reads each letter for a
+computer-science Master's project.
+
+| | Criterion | What it means for a CS Master's project |
+| --- | --- | --- |
+| **F** | **Feasible** | Data you can get, compute you have access to, skills you hold or can acquire **in weeks**, time left in the program. |
+| **I** | **Interesting** | To **you**, because you will live with it for a while; and to a **community**, because a venue publishes this kind of result. |
+| **N** | **Novel** | Not already answered. Check arXiv, DBLP, Google Scholar. Do your literature review. |
+| **E** | **Ethical** | Consent for data, dual-use potential, human-subjects approval where needed, environmental cost of compute. |
+| **R** | **Relevant** | Someone would change what they do based on the answer. **Name that person or role.** |
+
+## Reading the table closely
+
+**Feasible** is concrete on purpose. It is not "could this be done?" but "can *you* do it,
+with *this* data and compute, in the time *left*?" A skill you would need a year to learn
+fails. One you can pick up in a few weeks passes.
+
+**Interesting** has two audiences. Your own interest matters for a practical reason: a
+question you do not care about is hard to sustain through months of setbacks. The community's
+interest is checked by asking whether some venue publishes results like this.
+
+**Novel** is where the literature review from Week 2 earns its keep. You cannot claim
+something is unanswered without having looked.
+
+**Ethical** goes beyond human subjects. **Dual use** means the result could be used for
+harm as easily as for good. The **environmental cost of compute** counts too, which matters
+for anyone planning to train large models.
+
+**Relevant** carries the instruction most often skipped: name the person. This is the same
+demand Heilmeier's "Who cares?" makes in the next concept, and the answer to the reviewer's
+*"Why would anyone care about this result?"*
+
+## Using it
+
+FINER is a filter to run on candidate questions, not a template to fill in afterwards. A
+question that fails F or E should be reshaped before it is written up, not defended. Week 1's
+habit of thinking through feasibility when stating the problem is the same idea in a smaller
+form.
+
+> Feasible for you, interesting to someone, not yet answered, defensible to do, and useful to
+> a person you can name.

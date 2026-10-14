@@ -1,0 +1,75 @@
+---
+course: applied-research-methods
+section: w6-problem
+order: 800
+title: From Problem to Question to Hypothesis
+visuals:
+  - type: svg
+    src: applied-research-methods/week6-problem/09.svg
+    caption: Slide 9 of 10 — two rewrites, and a hypothesis with a stop rule.
+questions:
+  - ask: Which hypothesis has all three properties the lecture asks for?
+    choices:
+      - text: '"Prefetching cuts median page-load time by at least 15% versus no prefetching. If a two-week pilot on 20 pages shows under 3%, we switch to characterizing which pages benefit."'
+        correct: true
+        explains: >-
+          It could be shown false (falsifiable), it states which way and how far (directional),
+          and it says what happens if the early evidence is weak (stop rule).
+      - text: '"Prefetching will affect page-load time."'
+        explains: >-
+          "Affect" could mean any change in either direction, so no result counts against it.
+          It is neither directional nor really falsifiable, and has no stop rule.
+      - text: '"Prefetching cuts page-load time by at least 15% versus no prefetching."'
+        explains: >-
+          Falsifiable and directional, but with no stop rule. If it fails, the project has no
+          planned way forward.
+      - text: '"We will explore how prefetching can make pages faster."'
+        explains: That is a topic dressed as a plan. Nothing in it could turn out false.
+---
+
+The lecture shows two vague starting points rewritten into answerable questions, and then a
+hypothesis built from one of them.
+
+## Two rewrites
+
+| Before | After | What changed |
+| --- | --- | --- |
+| How can we make LLM code generation better? | Does retrieving **repository-local type signatures** reduce the **compile-error rate** of LLM-generated Rust functions, **compared with no retrieval**, **at an equal token budget**? | Names the **intervention**, the **outcome measure**, the **comparison** and the **constraint**. |
+| Study the security of IoT devices. | What fraction of the **50 best-selling consumer IoT devices** accept firmware updates without signature verification, and **does the fraction differ by price tier**? | A topic becomes a **characterization question** with a **defined sample**. |
+
+The first is a checklist you can apply to any experimental question:
+
+- **Intervention** — what you change (retrieving type signatures);
+- **Outcome measure** — what you count (compile-error rate);
+- **Comparison** — against what (no retrieval);
+- **Constraint** — what is held equal so the comparison is fair (token budget).
+
+Leave out the constraint and a reviewer will say retrieval wins only because it was given more
+tokens.
+
+The second rewrite proposes no new method. It is a measurement-gap question, the "cheap and
+citable" characterization study from *Where Research Problems Come From*. Its precision is in
+the **sample**: the 50 best-selling devices, not "IoT devices".
+
+## The hypothesis
+
+The lecture asks for a hypothesis that is **falsifiable, directional, and has a stop rule**:
+
+> "Retrieval reduces the compile-error rate by **at least 20%** relative to no retrieval. If
+> the **month-2 pilot on 100 functions** shows **less than 5%**, we switch to the fallback: a
+> characterization of which error types retrieval fixes."
+
+| Property | In the example |
+| --- | --- |
+| **Falsifiable** | A measured reduction under 20% would show it false. |
+| **Directional** | "Reduces", with a size. Not just "changes". This is the one-sided alternative from Week 5. |
+| **Stop rule** | A pilot at month two, a threshold of 5%, and a named fallback. |
+
+The stop rule is the fix for Heilmeier's Q8 (a check that can fail early), written into the
+hypothesis itself. The fallback is still a contribution, so a failed hypothesis does not mean
+a failed project. This is Week 1's point again: a hypothesis fixed in advance is what lets
+the data disagree with you.
+
+> A good question names what you change, what you measure, what you compare against and what
+> you hold equal. A good hypothesis also says when you will give up and what you will do
+> instead.

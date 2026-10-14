@@ -1,0 +1,90 @@
+---
+course: applied-research-methods
+section: w6-ml
+order: 840
+title: Supervised Learning
+visuals:
+  - type: svg
+    src: applied-research-methods/week6-data/07.svg
+    caption: Slide 7 of 24 — training on labelled feature vectors, then predicting labels.
+  - type: svg
+    src: applied-research-methods/week6-data/08.svg
+    caption: Slide 8 of 24 — definition, goal and examples.
+  - type: svg
+    src: applied-research-methods/week6-data/09.svg
+    caption: Slide 9 of 24 — pros and cons.
+  - type: svg
+    src: applied-research-methods/week6-data/12.svg
+    caption: Slide 12 of 24 — discrete labels lead to classifiers, continuous ones to regression.
+questions:
+  - ask: 'A supervised model reaches 99% accuracy on its training data and 70% on new data. Which con from the lecture does this most likely show?'
+    choices:
+      - text: It can overfit if not regularised
+        correct: true
+        explains: >-
+          The model has learned the training examples, including their noise, rather than the
+          general pattern. The gap between training and new-data performance is the signature
+          of overfitting.
+      - text: It requires large labelled data sets
+        explains: >-
+          More data might help, but the symptom here is the gap between seen and unseen data.
+          That gap is what overfitting means.
+      - text: Its algorithms are poorly understood
+        explains: >-
+          The lecture lists the opposite as a strength: supervised algorithms and metrics are
+          well understood.
+---
+
+**Supervised learning** trains a model on a **labelled** data set: input–output pairs where
+the right answer is known for every example. The goal is to **learn the mapping from inputs
+to outputs**, so the model can produce the output for inputs it has never seen.
+
+## How it runs
+
+The lecture draws two passes:
+
+| Pass | Flow |
+| --- | --- |
+| **Training** | Input data → feature extraction → **feature vectors**, plus **labels** → ML algorithm |
+| **Prediction** | New input data → feature extraction → feature vectors → **predictive model** → **predicted labels** |
+
+**Feature extraction** turns raw input into numbers the algorithm can use. An email becomes a
+**feature vector**: a list of measurements such as word counts, number of links and whether
+the sender is known. The same extraction is applied in both passes, so the model sees new
+inputs described the same way as its training data.
+
+## Two kinds of output
+
+| | Classification | Regression |
+| --- | --- | --- |
+| **Predicts** | A category or label | A continuous value |
+| **Example** | Spam or not spam | Forecast stock performance |
+
+The lecture's decision tree starts with one question, **are the labels discrete?**
+
+- **Yes → classification.** The slide shows linear classifiers, SVM (support vector machine),
+  KNN (k-nearest neighbours), decision trees, naïve Bayes and logistic regression.
+- **No → regression.** Linear and nonlinear regression.
+
+Logistic regression is a trap in the name. Despite "regression", it predicts a **category**:
+it estimates the probability that an example belongs to a class.
+
+## Pros and cons
+
+| Pros | Cons |
+| --- | --- |
+| High accuracy **when sufficient labelled data is available** | **Requires large labelled data sets**, which are expensive to create |
+| Well-understood algorithms and metrics | Can **overfit** if not regularised |
+| Works well for prediction tasks | Performance **depends heavily on data quality** |
+
+The first pro carries a condition, and the first con is the price of meeting it. Someone has
+to label every training example. For spam, users do it by clicking a button. For medical
+scans, it takes a specialist's time, which is the gap *Semi-Supervised Learning* addresses.
+
+"Depends heavily on data quality" connects to *Bias in ML Data*. A model learns whatever the
+labels say, so systematic mistakes in labelling become systematic mistakes in prediction.
+**Overfitting** — learning the training set's noise instead of its pattern — is covered in
+*Overfitting and Other Design Issues*.
+
+> Supervised learning copies the answers it is shown. It is only as good, and as fair, as the
+> labels behind it.

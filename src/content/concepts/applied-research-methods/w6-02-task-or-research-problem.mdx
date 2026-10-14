@@ -1,0 +1,80 @@
+---
+course: applied-research-methods
+section: w6-problem
+order: 750
+title: Engineering Task or Research Problem?
+visuals:
+  - type: svg
+    src: applied-research-methods/week6-problem/04.svg
+    caption: Slide 4 of 10 — the parking-app example and the four tests.
+questions:
+  - ask: '"Port our inventory service from Python to Go and deploy it on Kubernetes." Which of the four tests does it fail most clearly?'
+    choices:
+      - text: Is the outcome uncertain?
+        correct: true
+        explains: >-
+          A port like this will work, given enough effort. Nobody expects it to fail, so
+          finishing it shows effort, not new knowledge. It also fails tests 2 to 4 as a
+          consequence.
+      - text: It passes all four, because the port might introduce bugs
+        explains: >-
+          Bugs are a risk to delivery, not an open question about the world. Fixing them is
+          more effort, and test 4 asks whether success is shown by evidence rather than effort.
+      - text: Would someone outside your group want to cite it? It fails only that one.
+        explains: >-
+          It does fail that test, but as a symptom. Nobody would cite it because nothing in it
+          was uncertain to begin with.
+  - ask: The parking-app task becomes a research problem when it is rewritten. What did the rewrite add?
+    choices:
+      - text: An unknown — whether accuracy survives when reporters are not paid
+        correct: true
+        explains: >-
+          The earlier studies paid their reporters. Whether the result holds without payment is
+          open, and either answer is worth knowing.
+      - text: A larger scope, covering more campuses
+        explains: >-
+          More scope is more work, not more uncertainty. A bigger build is still a build.
+      - text: A prediction model instead of a display of reports
+        explains: >-
+          The rewrite is not about using a fancier technique. It is about a result nobody yet
+          knows.
+---
+
+A great deal of computing work is hard, skilled and worth doing, and still is not research.
+The lecture puts two versions of the same idea side by side:
+
+| Engineering task | Research problem |
+| --- | --- |
+| Build a mobile app that shows campus parking occupancy from crowd-sourced reports. | Crowd-sourced occupancy prediction is accurate in studies that **pay reporters**. Whether accuracy **survives when incentives are removed** is unknown. |
+
+The app on the left could be built, and probably should be. But when it is finished, the
+world knows nothing it did not know before. The right-hand version starts from what earlier
+studies found, points at an assumption baked into them (payment), and asks whether the result
+still holds without it.
+
+## The four tests
+
+1. **Is the outcome uncertain?** If you already know it will work, it is a task.
+2. **Would a negative result still teach the field something?** If accuracy collapses
+   without payment, that is a finding. If the app fails to ship, that is just a failure.
+3. **Would someone outside your group want to cite the answer?** Others building
+   crowd-sourced systems would cite the incentive result. Nobody cites your app.
+4. **Is success established by evidence, or just by effort and delivery?** A task is done
+   when it is delivered. A research problem is done when evidence answers it.
+
+The tests depend on one another. If the outcome is certain (test 1), there is no negative
+result to learn from (test 2), nothing worth citing (test 3), and only effort to show (test 4).
+Start with test 1.
+
+## The misconception
+
+It is tempting to think a task becomes research by getting **bigger or more technical**:
+more features, a newer framework, a machine-learning model inside. None of that adds
+uncertainty. What turns the parking app into research is a **question whose answer you do not
+know** and that someone else would want answered.
+
+The build is not wasted. The app may be the *instrument* you need to collect data for the
+incentive question. It just is not the contribution. This is the "build plan, not a research
+plan" comment from the previous concept, seen from the writer's side.
+
+> If you can be sure it will work before you start, you are describing a job, not a study.

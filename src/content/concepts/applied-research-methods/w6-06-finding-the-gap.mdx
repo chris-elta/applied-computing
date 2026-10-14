@@ -1,0 +1,94 @@
+---
+course: applied-research-methods
+section: w6-problem
+order: 790
+title: Finding the Gap with a Comparison Table
+visuals:
+  - type: svg
+    src: applied-research-methods/week6-problem/08.svg
+    caption: Slide 8 of 10 — the comparison table, the four kinds of gap, and the false gap.
+questions:
+  - ask: '"Nobody has combined graph neural networks with log-based anomaly detection." A reviewer asks why GNNs would help. The student has no answer. What does the lecture call this?'
+    choices:
+      - text: Not a gap but a search result
+        correct: true
+        explains: >-
+          An empty search shows that something has not been done, not that it should be. A gap
+          needs a reason to expect A to help B, such as an assumption it removes or a
+          limitation it addresses.
+      - text: A methodological gap
+        explains: >-
+          A methodological gap is a missing method *under a named constraint*. Here there is no
+          constraint and no reason, only an untried pairing.
+      - text: A technique-transfer problem, which is always valid
+        explains: >-
+          Transfer comes with its own question: why would it survive in the new field? Without
+          an answer it is the same false gap.
+  - ask: Your table shows that every paper on a problem was evaluated on simulated clients and none on real devices. What kind of gap is this?
+    choices:
+      - text: Contextual — the result is unknown in a different setting
+        correct: true
+        explains: >-
+          The method exists and has been measured, just never in this setting. The empty
+          column is the real-device context.
+      - text: Replication — the result was never independently confirmed
+        explains: >-
+          Replication means re-running the same study by others. Here the setting itself
+          changes.
+      - text: Empirical — it has never been measured
+        explains: >-
+          It has been measured, in simulation. What is missing is the setting.
+---
+
+The lecture's method for finding a gap is a table. You build it from the literature, and
+then you look for the empty cells.
+
+## Building the table
+
+1. Start from **two recent surveys**.
+2. **Snowball** their references: follow the citations backwards (and forwards) to find more.
+3. **Skim 15, read 5.**
+4. Write **one row per paper**, with the same columns for each.
+
+| Paper | Approach | Key assumption | Evaluation setting | Reported limitation |
+| --- | --- | --- | --- | --- |
+| Li 2024 | Server-side reweighting | Server knows client label counts | CIFAR-10, 100 clients, simulated | Fails when counts are private |
+| Okafor 2025 | Client-side regulariser | Clients have spare compute | FEMNIST, 50 clients | Not tested under stragglers |
+| **Your gap** | — | **Server sees only updates** | ? | ? |
+
+The columns do the work. **Key assumption** and **Reported limitation** are where the first
+two sources of problems (limitations sections and assumptions that break) show up, one row
+at a time. In the example, no existing approach works when the server sees only the updates.
+That is the federated-learning problem from the first concept, found by comparison rather
+than by a hunch.
+
+## A real gap is a pattern of empty cells
+
+The lecture names four kinds:
+
+| Gap | What is missing |
+| --- | --- |
+| **Empirical** | It has never been measured. |
+| **Methodological** | There is no method that works under constraint Y. |
+| **Contextual** | It is unknown in setting B. |
+| **Replication** | It has never been independently confirmed. |
+
+One empty cell can be an accident. A *pattern* — the same assumption in every row, or no row
+in your setting — is evidence that the field has not looked.
+
+## The most common false gap
+
+*"Nobody has combined A with B."* Reviewers reply: **why should A help B?** If you cannot
+say, it is **not a gap, it is a search result**. A search that returns nothing shows only that
+nobody has done it. That can be because there is no reason to. A real gap points at a
+limitation of current work that A would plausibly address.
+
+## Why a table rather than prose
+
+The table also answers the reviewer comment *"Related work is a list of papers."* Week 2 said
+a review should synthesize rather than summarize, and the table is the tool for that. Once
+the columns are filled, the related-work section can be organised **by assumption, not by
+paper**. *Be Your Own Reviewer* gives that as the fix.
+
+> A gap is a pattern of empty cells with a reason to fill them. "Nobody has tried it" is not
+> a reason.

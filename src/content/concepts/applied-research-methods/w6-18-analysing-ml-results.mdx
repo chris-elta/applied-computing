@@ -1,0 +1,116 @@
+---
+course: applied-research-methods
+section: w6-data
+order: 910
+title: Analysing ML Results
+visuals:
+  - type: svg
+    src: applied-research-methods/week6-data/22.svg
+    caption: Slide 22 of 24 — metrics, visualisations, context and expert validation.
+notation:
+  - symbol: TP, FP, FN, TN
+    reads: true positive, false positive, false negative, true negative
+    means: >-
+      The four cells of a confusion matrix. "True/false" says whether the prediction was
+      right; "positive/negative" says what was predicted. A false positive is a harmless
+      email flagged as spam.
+  - symbol: F1
+    reads: F-one
+    means: >-
+      One number that balances precision and recall. It is high only when both are high.
+  - symbol: ROC-AUC
+    reads: R-O-C A-U-C, or "area under the ROC curve"
+    means: >-
+      A score from 0 to 1 for how well a model ranks positives above negatives, across every
+      possible threshold. 0.5 is no better than chance; 1 is perfect.
+questions:
+  - ask: 'A disease affects 2% of patients. A model that predicts "healthy" for everyone has what accuracy and recall?'
+    choices:
+      - text: 98% accuracy, 0% recall
+        correct: true
+        explains: >-
+          It is right about all 98% of healthy patients, and finds none of the sick ones. High
+          accuracy on rare classes can hide a useless model, which is why recall is reported.
+      - text: 2% accuracy, 100% recall
+        explains: >-
+          That would be a model that predicts "sick" for everyone. This one never predicts
+          sick, so it finds none of them.
+      - text: 50% accuracy, 50% recall
+        explains: >-
+          Accuracy is not 50% just because there are two classes. It depends on how common
+          each class is.
+  - ask: 'A spam filter flags 50 emails; 40 are spam. There were 80 spam emails in total. What are its precision and recall?'
+    choices:
+      - text: Precision 0.80, recall 0.50
+        correct: true
+        explains: >-
+          Precision = 40/50 (of what it flagged, how much was spam). Recall = 40/80 (of all
+          the spam, how much it caught).
+      - text: Precision 0.50, recall 0.80
+        explains: >-
+          That swaps them. Precision divides by what the model flagged (50). Recall divides by
+          what was really there (80).
+      - text: Precision 0.80, recall 0.625
+        explains: >-
+          0.625 is 50/80, which counts every flagged email as caught. Recall counts only the
+          spam it actually caught (40), so it is 40/80.
+---
+
+The lecture gives four instructions for analysing results:
+
+1. **Use metrics**: accuracy, precision, recall, F1-score, ROC-AUC.
+2. **Visualise** with confusion matrices and ROC curves.
+3. **Interpret results in the context of research goals and limitations.**
+4. **Validate findings with domain experts.**
+
+## The confusion matrix
+
+For a classifier with two classes, every prediction falls into one of four cells:
+
+| | Actually spam | Actually not spam |
+| --- | --- | --- |
+| **Predicted spam** | TP (true positive) | FP (false positive) |
+| **Predicted not spam** | FN (false negative) | TN (true negative) |
+
+Every metric is a ratio of these cells.
+
+| Metric | Formula | Asks |
+| --- | --- | --- |
+| **Accuracy** | (TP + TN) / all | How often is it right? |
+| **Precision** | TP / (TP + FP) | When it says spam, how often is it spam? |
+| **Recall** | TP / (TP + FN) | Of all the spam, how much did it catch? |
+| **F1** | 2 × precision × recall / (precision + recall) | Both at once |
+
+## A worked example
+
+1,000 emails, 100 of them spam. The filter flags 90, of which 80 are spam.
+
+- TP = 80, FP = 10, FN = 100 − 80 = 20, TN = 1000 − 80 − 10 − 20 = 890
+- Accuracy = (80 + 890) / 1000 = **0.97**
+- Precision = 80 / 90 = **0.89**
+- Recall = 80 / 100 = **0.80**
+- F1 = 2 × 0.89 × 0.80 / (0.89 + 0.80) ≈ **0.84**
+
+Now a filter that marks **nothing** as spam: accuracy = 900 / 1000 = **0.90**, recall = **0**.
+Accuracy alone ranks a useless filter only seven points behind a good one. When one class is
+rare, accuracy mostly measures how common the other class is.
+
+## Choosing the metric from the goal
+
+Which metric matters depends on which mistake costs more. A spam filter that bins a job offer
+(FP) is worse than one that lets an advert through (FN), so precision matters. A cancer
+screen that misses a tumour (FN) is worse than a false alarm (FP), so recall matters. This is
+*Be Your Own Reviewer*'s "metrics derived from the goal".
+
+**ROC-AUC** sidesteps the choice of threshold. It summarises performance across every
+threshold, with 0.5 meaning chance.
+
+## Context and experts
+
+A score is not a finding. **Interpreting in context** means asking whether it answers the
+research question, and what the limitations allow you to claim. **Validating with domain
+experts** checks whether the patterns make sense, which matters most for unsupervised
+results that have no accuracy score at all.
+
+> Pick the metric from the cost of each mistake. Accuracy on a rare class tells you how rare
+> it is.

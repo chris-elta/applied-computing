@@ -1,0 +1,76 @@
+---
+course: applied-research-methods
+section: w6-data
+order: 920
+title: Planning ML Research
+visuals:
+  - type: svg
+    src: applied-research-methods/week6-data/23.svg
+    caption: Slide 23 of 24 — what a plan for ML research must cover.
+questions:
+  - ask: 'A thesis reports a new model beats the baseline by 4 points. It gives no random seeds, no description of the split, and no code. Which item in the plan has it neglected most?'
+    choices:
+      - text: Reproducibility and transparency in methods, backed by detailed documentation
+        correct: true
+        explains: >-
+          Without the split, the seeds or the code, nobody can check whether the 4 points are
+          real or an artefact of one lucky run.
+      - text: Defining clear research questions
+        explains: >-
+          The question may be clear ("does the new model beat the baseline?"). The problem is
+          that nobody can check the answer.
+      - text: Selecting the algorithm with justification
+        explains: >-
+          That may also be weak, but the missing seeds, split and code are a reproducibility
+          failure.
+---
+
+The lecture closes with what a plan for ML research has to contain:
+
+| Plan item | Where it was covered |
+| --- | --- |
+| **Define clear research questions and hypotheses** | *From Problem to Question to Hypothesis* |
+| **Select and design the ML algorithm with justification** | *Matching the Question to a Problem Type* and the workflow |
+| **Plan data collection, splitting and pre-processing** | *Training, Validation and Test Sets* |
+| **Examine bias and ethics closely** | *Bias in ML Data* |
+| **Ensure reproducibility and transparency in methods** | This concept |
+| **Detailed documentation**, to make methods and validation reproducible and transparent | This concept |
+
+Most of the list is the week in summary. Two things are worth drawing out.
+
+## The question comes first, again
+
+"Define clear research questions and hypotheses" is first for the same reason the problem
+deck exists. An ML project that starts from a model ("I'll try transformers on this data")
+has no way to fail, which makes it an engineering task. Starting from a question, with a
+falsifiable hypothesis and a stop rule, gives the ML work something to answer.
+
+"With justification" means the algorithm choice has to be argued from the question, the data
+and the constraints, as in step 3 of the workflow. "It is state of the art" is not a
+justification. It is the ML version of "this is an active and important area".
+
+## Reproducibility needs documentation
+
+ML results are unusually easy to make irreproducible. The same code can give a different
+score with a different random seed, data split or library version. A 4-point improvement can
+vanish on a second run. The lecture's last two bullets ask for **documentation detailed
+enough that someone else could repeat the work**. In practice:
+
+- the data source, version, and any filtering or cleaning;
+- exactly how the data was split, and the seed used;
+- every pre-processing step, in order;
+- hyperparameters, and how they were chosen;
+- hardware, software versions and compute used;
+- results over several runs, not one.
+
+This is Week 1's **replication** test applied to ML. A result only counts if others can
+repeat it. It also answers the reviewer comment *"The evaluation is vague"*.
+
+## A plan to check against
+
+Taken with *Be Your Own Reviewer*, this gives two checklists for an ML proposal. One asks
+whether you are answering a real question. The other asks whether anyone could check your
+answer.
+
+> Plan the question, the data and the checks before the model. Document enough that a
+> stranger could get your number again.

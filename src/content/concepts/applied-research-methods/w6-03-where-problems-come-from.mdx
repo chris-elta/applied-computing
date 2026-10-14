@@ -1,0 +1,68 @@
+---
+course: applied-research-methods
+section: w6-problem
+order: 760
+title: Where Research Problems Come From
+visuals:
+  - type: svg
+    src: applied-research-methods/week6-problem/05.svg
+    caption: Slide 5 of 10 — six places to find a problem.
+questions:
+  - ask: 'A paper shows a cache-eviction policy beats LRU, evaluated on servers with 512 GB of RAM. You wonder whether it still wins on a phone with 4 GB. Which source of problems is this?'
+    choices:
+      - text: An assumption that breaks
+        correct: true
+        explains: >-
+          The method quietly assumed ample memory. Changing the setting and asking whether the
+          result still holds is exactly this source.
+      - text: Contradictory findings
+        explains: >-
+          That needs two papers that disagree. Here there is one paper and a setting it never
+          tested.
+      - text: Technique transfer
+        explains: >-
+          Transfer brings a method from another field, such as databases or HCI, into yours.
+          This is the same method in a different setting within the same field.
+      - text: A measurement gap
+        explains: >-
+          A measurement gap is a belief everyone repeats but nobody has measured. Here the
+          claim has been measured, just not under these conditions.
+---
+
+"Find a research problem" is hard advice to act on. The lecture replaces it with six places
+to look, each of which reliably produces candidates.
+
+| Source | Where to look | The question it yields |
+| --- | --- | --- |
+| **1. Limitations sections** | Recent papers say what they could not do. **Read the last two pages first.** | Can the stated limitation be removed? |
+| **2. Assumptions that break** | A method assumes IID data, ample memory, a benign user, a fixed schema. | Change the setting: does it still hold? |
+| **3. Contradictory findings** | Two papers disagree. | Which conditions explain the difference? |
+| **4. Technique transfer** | A method from PL, databases or HCI has never been tried in your subfield. | Why not, and would it survive? |
+| **5. Measurement gaps** | A belief everyone repeats but nobody has measured. | How big is the effect, really? |
+| **6. Practitioner pain** | Something you or an internship team worked around by hand. | Why does no tool exist? |
+
+## Why these work
+
+Every source starts from something **already known** and finds its edge. That is why the
+problems they produce pass the four tests from the previous concept almost automatically.
+The outcome is uncertain because nobody has checked. A negative result still teaches
+something, since knowing that an assumption *does* hold is useful too. And the people who
+wrote the original paper have a reason to cite you.
+
+Some notes on individual sources:
+
+- **Limitations sections** are written by the people who know the work best, and they are
+  close to an explicit invitation. Reading them first is a fast way to survey a field.
+- **Assumptions that break** is the source behind the federated-learning example (the server
+  was assumed to know label counts) and the parking app (reporters were assumed to be paid).
+- **Measurement gaps** lead to *characterization studies*. These describe how things
+  actually are, without proposing a new method. The lecture calls them **cheap and
+  citable**, which makes them a good fit for a Master's timeline.
+- **Technique transfer** needs care. The question is not only "has anyone tried it?" but
+  "why would it help here?" If you cannot answer the second, you have the false gap covered
+  in *Finding the Gap with a Comparison Table*.
+- **Practitioner pain** links back to Week 1's point that problems are all around you, in
+  the work you already do.
+
+> Research problems are found at the edges of existing work: where it stops, where its
+> assumptions fail, where it disagrees with itself, or where nobody has measured it.
