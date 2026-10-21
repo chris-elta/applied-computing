@@ -82,6 +82,15 @@ questions:
       For each of the n values of k, computing A(omega^k) from the already-known
       A_even(omega^{2k}) and A_odd(omega^{2k}) takes one multiplication (by omega^k) and one
       addition. n values of k, O(1) work each: O(n) total.
+assessed:
+  - "Quiz 3 · Q3"
+prerequisites:
+  - topic: "Splitting a polynomial into even and odd parts"
+    explains: "Collect the even-power terms into `A_even` and the odd-power terms into `A_odd`, so that `A(x) = A_even(x²) + x · A_odd(x²)`. Each part has half as many coefficients. This page relies on that identity at every level."
+    see: "applied-algorithm-analysis/w4-18-splitting-by-parity"
+  - topic: "Halving until one is left"
+    explains: "A problem of size `n` can be halved evenly all the way to 1 only if `n` is a power of two: 16 → 8 → 4 → 2 → 1 works, but 12 → 6 → 3 gets stuck at an odd size. That is why the input is padded with zero coefficients to the next power of two before the FFT starts."
+    see: "applied-algorithm-analysis/w3-13-mergesort"
 ---
 
 Evaluate `A` at the `n`-th roots of unity, all `n` of them. For each `ωᵏ`:

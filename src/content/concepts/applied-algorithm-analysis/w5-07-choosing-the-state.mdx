@@ -77,6 +77,16 @@ questions:
       `dp[0] = 1` (`[1]`), `dp[1] = 2` (`[1, 2]`), `dp[2] = 3` (`[1, 2, 3]`).
       `dp[3]`: no earlier number is below 0, so `dp[3] = 1`.
       `max{1, 2, 3, 1} = 3`, found at position 2. `dp[n−1] = 1`.
+assessed:
+  - "Quiz 4 · Q2"
+  - "Quiz 4 · Q3"
+prerequisites:
+  - topic: "Subsequences and the dag of positions"
+    explains: "An increasing subsequence keeps the array's order and may skip positions. Drawing an edge from each position to every later, larger value turns these subsequences into paths, so the longest one is a longest path. The state on this page is a node of that dag."
+    see: "applied-algorithm-analysis/w5-06-subsequence-not-substring"
+  - topic: "The three-step recipe"
+    explains: "Say exactly what one cell means, say how it follows from smaller cells, then pick a filling order. The first step decides what the final answer is: if a cell answers a narrower question than the problem asks, the answer must be assembled from several cells."
+    see: "applied-algorithm-analysis/w5-01-the-three-step-recipe"
 ---
 
 Ask a room for a subproblem and most people offer "the length of the LIS among the first `i`

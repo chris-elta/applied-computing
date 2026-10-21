@@ -1,0 +1,112 @@
+---
+course: applied-algorithm-analysis
+section: w7-prim
+order: 1240
+title: The Indexed Heap
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week7.html?hash=true#/28
+    caption: Slide 29 of 57 — the heap as an array, and a position table that finds d without searching.
+notation:
+  - symbol: "position[v]"
+    reads: position of v
+    means: >-
+      The slot in the heap's array where vertex `v`'s entry currently sits. It must be kept
+      up to date whenever entries move.
+  - symbol: indexed heap
+    reads: indexed heap
+    means: A heap together with a position table, so any vertex's entry can be found directly.
+  - symbol: "O(1), O(log n)"
+    reads: big O of one, big O of log n
+    means: >-
+      Constant time, the same however large the heap is; and time proportional to the
+      heap's height.
+questions:
+  - ask: >-
+      In an indexed heap of 1,000,000 entries, Prim lowers `key[d]`. What does each part of
+      the decrease-key cost?
+    choices:
+      - text: "Finding `d`'s slot is `O(1)`, and restoring heap order is `O(log n)`, about 20 swaps at most"
+        correct: true
+        explains: >-
+          The position table turns the search into one lookup. Moving the entry up still
+          takes up to one swap per level, and a heap of a million entries has about 20 levels.
+      - text: Both parts are `O(1)` once you have the position table
+        explains: >-
+          The table only tells you *where* `d` is. A lower key may belong several levels
+          higher, and getting it there is one swap per level.
+      - text: "Finding `d` is `O(log n)` by binary search, and restoring order is `O(1)`"
+        explains: >-
+          A heap's array is not sorted, so binary search does not apply. Without the table,
+          finding `d` can mean checking every entry, `O(n)`.
+      - text: Finding `d` is `O(n)`, because heaps can only be searched from the top
+        explains: >-
+          That is the cost *without* a position table. Avoiding it is the reason the indexed
+          heap exists.
+    work: |-
+      Height of a heap with n = 10⁶ entries ≈ log₂ 10⁶ ≈ 20.
+      Locate: read position[d] → 1 step.
+      Restore: at most one swap per level → ≤ 20 swaps,
+      updating position[ ] for both entries at each swap.
+---
+
+Decrease-key has a step that is easy to miss. Before you can lower `d`'s key, you have to
+**find** `d`'s entry in the heap.
+
+## The heap is an array
+
+A heap is drawn as a tree but stored in an array, level by level. The four-town heap after
+`a` is the start:
+
+| Slot | Vertex | Key |
+| --- | --- | --- |
+| 0 | `b` | 1 |
+| 1 | `c` | 4 |
+| 2 | `d` | 3 |
+
+The array is ordered only in the heap sense: each parent is no greater than its children. It
+is not sorted, so you cannot binary-search it for `d`. Without more information, finding `d`
+can mean checking every slot, which is `O(n)`. Doing that on each of up to `m`
+decrease-keys would cost more than the heap saves.
+
+## Keep a position table
+
+Store, next to the heap, where each vertex currently sits:
+
+```
+position[b] = 0
+position[c] = 1
+position[d] = 2
+```
+
+To lower `d`'s key from 3 to 2, read `position[d]`, go straight to slot 2, and change the
+key. Then move the entry up while it is smaller than its parent.
+
+The table must stay correct. **Whenever two heap entries swap, swap their positions in the
+table too.** That costs `O(1)` extra per swap, so it does not change any bound. If the table
+falls out of date, it sends the next decrease-key to the wrong slot.
+
+A heap plus this table is an **indexed heap**.
+
+## What each part costs
+
+| Part of decrease-key | Without the table | With the table |
+| --- | --- | --- |
+| locate the entry | `O(n)`, search | `O(1)`, one lookup |
+| restore heap order | `O(log n)` | `O(log n)` |
+
+The table removes the search. It does not make decrease-key constant-time: a lowered key may
+belong near the top, and it moves there one level per swap. The heap has `O(log n)` levels, so
+that is `O(log n)`.
+
+Extract-min also costs `O(log n)`. It moves the last entry to the top and sifts it down, one
+level per swap, updating positions as it goes.
+
+## Why this matters for the total
+
+Prim performs up to `m` decrease-keys, one per edge that finds a cheaper connection. An
+`O(n)` search on each would cost `O(mn)`, no better than rescanning. With the table, each
+decrease-key is `O(log n)`, and the next concept adds the operations up.
+
+> A heap can find its minimum quickly but not an arbitrary entry. The position table finds
+> any entry in `O(1)`, and the heap's height still sets the `O(log n)` cost of moving it.

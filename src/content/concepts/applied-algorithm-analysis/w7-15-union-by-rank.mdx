@@ -1,0 +1,140 @@
+---
+course: applied-algorithm-analysis
+section: w7-kruskal
+order: 1290
+title: Union by Rank
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week7.html?hash=true#/41
+    caption: Slides 42 and 45–47 of 57 — the union-by-rank rule, then why it keeps every Find to O(log n).
+notation:
+  - symbol: "rank(r)"
+    reads: rank of r
+    means: >-
+      A number stored at each root. A single vertex starts at rank 0. It is an upper bound on
+      the height of that root's tree.
+  - symbol: height
+    reads: height
+    means: >-
+      The largest number of parent links from any vertex in the tree up to the root. It is
+      the worst case for Find.
+  - symbol: "2ʳ"
+    reads: two to the r
+    means: >-
+      2 multiplied by itself `r` times: 1, 2, 4, 8, … The fewest vertices a rank-`r` group
+      can have.
+  - symbol: "log₂ n"
+    reads: log base two of n
+    means: >-
+      How many times you can halve `n` before reaching 1. Also the largest `r` with
+      `2ʳ ≤ n`. For a million it is about 20.
+questions:
+  - ask: >-
+      Union by rank merges two roots: `r` has rank 2, and `q` has rank 2. What happens?
+    choices:
+      - text: Either root may become the parent of the other, and the new root's rank becomes 3
+        correct: true
+        explains: >-
+          With equal ranks, it does not matter which goes on top, but the merged tree may be
+          one level taller, so the rank goes up by one. This is the only way a rank ever
+          increases.
+      - text: "`r` becomes the parent of `q`, and the rank stays 2"
+        explains: >-
+          The rank stays the same when the ranks are *different*: then the shorter tree fits
+          underneath. With equal ranks, the merged tree can be one level taller, so the rank
+          rises.
+      - text: The new root's rank becomes 4, the sum of the two
+        explains: >-
+          Rank bounds height, not size. Putting one tree under another adds at most one level,
+          so the rank rises by one.
+      - text: The ranks are compared after path compression, so the new rank depends on which Finds were run
+        explains: >-
+          Path compression never changes a rank. Rank is changed only by Union, and only in
+          the equal-ranks case.
+  - ask: >-
+      A union-find structure on 1,000 vertices uses union by rank. What is the largest rank
+      any root can have?
+    choices:
+      - text: "9, because a rank-`r` group has at least `2ʳ` vertices and `2¹⁰ = 1,024 > 1,000`"
+        correct: true
+        explains: >-
+          A rank-10 root would need at least 1,024 vertices, and there are only 1,000.
+          `2⁹ = 512` fits. So no Find follows more than 9 links.
+      - text: "999, if every Union adds one vertex to a chain"
+        explains: >-
+          That is what can happen *without* union by rank. Adding a single vertex, rank 0,
+          under a larger root never raises the larger root's rank.
+      - text: "10, rounding `log₂ 1,000 ≈ 9.97` up"
+        explains: >-
+          Rank is a whole number with `2ʳ ≤ n`. `2¹⁰ = 1,024` is more than 1,000, so 10 is
+          impossible. Round down.
+      - text: "500, because each Union at most halves the number of groups"
+        explains: >-
+          Halving the number of groups describes how many merges there are, not how tall a
+          tree gets. Height is bounded by rank, and rank needs a doubling of group size.
+    work: |-
+      Rank r needs at least 2ʳ vertices.
+      2⁹ = 512 ≤ 1,000 ✓   2¹⁰ = 1,024 > 1,000 ✗
+      Largest rank: 9. Height ≤ rank ≤ 9, so Find follows ≤ 9 links.
+---
+
+`Find` costs one step per parent link, so its worst case is the **height** of the tree:
+the most links from any vertex to the root. In the chain `w ⟶ x ⟶ y ⟶ r`, starting at `w`
+costs three. A bound on height is therefore a bound on `Find`.
+
+Without a rule, `Union` can build a long chain. Keep putting the old root under a new single
+vertex, and after `n` merges you have a path of length `n − 1`, so `Find` is `O(n)`.
+
+## The rule
+
+To merge two groups, make one root point to the other. Each root stores a **rank**, which
+starts at 0 for a single vertex.
+
+| Case | Do this | New rank |
+| --- | --- | --- |
+| ranks differ, `rank(r) = 2`, `rank(q) = 1` | point the **lower**-rank root at the higher: `q ⟶ r` | unchanged: `rank(r) = 2` |
+| ranks equal, both 1 | choose either; say `q ⟶ r` | `rank(r)` rises to 2 |
+
+When the ranks differ, the shorter tree goes underneath the taller one without making it any
+taller. Only when two equal-rank trees merge can the result be one level taller, so that is
+the only case where the rank goes up.
+
+**Rank is not the same as height.** Path compression shortens paths but never lowers a rank,
+so a rank can be larger than the tree's current height. Rank is always an *upper bound* on
+height, and an upper bound is all the analysis needs.
+
+## A higher rank needs a bigger group
+
+A root's rank increases only when two roots of equal rank merge.
+
+| New root's rank | What must be merged | Fewest vertices |
+| --- | --- | --- |
+| 0 | one vertex alone | 1 |
+| 1 | two rank-0 groups | 1 + 1 = 2 |
+| 2 | two rank-1 groups | 2 + 2 = 4 |
+| 3 | two rank-2 groups | 4 + 4 = 8 |
+
+Each step up **doubles** the smallest possible group. So a root of rank `r` has at least
+`2ʳ` vertices. It can have more, because attaching lower-rank groups adds vertices without
+raising the rank.
+
+## From rank to running time
+
+There are only `n` vertices in the whole structure, so
+
+`2ʳ ≤ n` ⇒ `r ≤ log₂ n` ⇒ `height ≤ r ≤ log₂ n`.
+
+| Operation | Cost |
+| --- | --- |
+| `Find` | follow at most `log₂ n` links: `O(log n)` |
+| `Union` | two Finds, then link the roots and update a rank in `O(1)`: `O(log n)` |
+
+For a million vertices, that is at most about 20 links per Find, compared with up to a million
+for an unbalanced chain.
+
+Path compression makes later Finds faster still, but the analysis here does not rely on it.
+The `O(log n)` bound from union by rank alone is enough for Kruskal's total.
+
+> Rank only increases when two equal-rank groups merge, so rank `r` needs at least `2ʳ`
+> vertices. With `n` vertices, rank and height are at most `log₂ n`, and so is the cost of a
+> Find.

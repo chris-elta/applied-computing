@@ -1,0 +1,104 @@
+---
+course: applied-algorithm-analysis
+section: w7-prim
+order: 1250
+title: Counting Heap-Based Prim
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week7.html?hash=true#/29
+    caption: Slide 30 of 57 — each operation, how often it happens over the whole run, and the total.
+notation:
+  - symbol: "O((n + m) log n)"
+    reads: big O of n plus m, times log n
+    means: >-
+      The running time of heap-based Prim. For a connected graph `m ≥ n − 1`, so it is
+      also written `O(m log n)`.
+  - symbol: aggregate count
+    reads: aggregate count
+    means: >-
+      Counting how many times an operation happens over the *whole run*, instead of a
+      worst case per round multiplied by the number of rounds.
+questions:
+  - ask: >-
+      A student bounds heap-based Prim like this: "each round may scan up to `n − 1`
+      neighbours, each scan may decrease a key in `O(log n)`, and there are `n − 1` rounds,
+      so `O(n² log n)`." What is wrong?
+    choices:
+      - text: >-
+          Nothing is false, but it is loose. Each vertex's list is scanned only once, when it
+          is extracted, so the scans total `2m` entries and the decrease-keys total at most `m`
+        correct: true
+        explains: >-
+          The per-round worst case cannot happen in every round. Adding up over the whole run
+          gives `O(m log n)` decrease-key work, which beats `O(n² log n)` whenever the graph is
+          sparse.
+      - text: The bound is too low; heap-based Prim is really `O(mn)`
+        explains: >-
+          `O(mn)` is the basic version that rescans every edge in every round. The heap
+          version reads each list once.
+      - text: Decrease-key is `O(1)` with an indexed heap, so it should be `O(n²)`
+        explains: >-
+          The position table makes *finding* the entry `O(1)`. Moving it up the heap is still
+          `O(log n)`.
+      - text: Rounds should be counted as `m`, not `n − 1`
+        explains: >-
+          One round is one extract-min, and that adds one vertex, so there are `n − 1` of
+          them. It is the scans and decrease-keys whose total is tied to `m`.
+    work: |-
+      Extract-min: n − 1 times × O(log n) = O(n log n).
+      Neighbour checks: 2m list entries in total × O(1) = O(m).
+      Decrease-key: ≤ m times × O(log n) = O(m log n).
+      Sum: O(n + m + n log n + m log n) = O((n + m) log n).
+---
+
+Each heap operation costs `O(log n)`, because the heap has `O(log n)` levels. Extract-min
+moves an entry down, decrease-key moves one up, and each does at most one swap per level.
+What remains is to count how many times each happens.
+
+## Count over the whole run, not per round
+
+Do not ask "how much can one round cost?" and multiply by `n − 1`. Ask how many times each
+operation happens in the entire run.
+
+| Operation | How many times | Total cost |
+| --- | --- | --- |
+| extract-min | `n − 1`, once for each vertex after the start | `O(n log n)` |
+| decrease-key | at most `m`, only when a cheaper connection appears | `O(m log n)` |
+| check a neighbour | `2m`, each vertex's list is read once, when it is extracted | `O(m)` |
+| heap setup | once | `O(n)` |
+
+Locating an entry through the position table costs `O(1)` each time and is already covered by
+the decrease-key line. The first scan, of the start vertex `s`, is one of the `2m` checks.
+
+## Why "each list once"
+
+A vertex's list is scanned when the vertex is extracted, and a vertex is extracted only once.
+It never re-enters the heap. So across the whole run, Prim reads every list exactly once,
+`2m` entries in total. The basic version reread every list on every round.
+
+That is also why decrease-key happens at most `m` times. An edge `(v, w)` appears in two
+lists. Whichever endpoint is extracted first, say `v`, reads the edge while `w` is still
+outside `X`, and that read may lower `key[w]`. When `w` is extracted later, `v` is already in
+`X`, so the entry is skipped. Each edge can trigger one decrease-key at most.
+
+## Add it up
+
+`O(n + m + n log n + m log n) = O((n + m) log n)`.
+
+For `n ≥ 2`, `log n ≥ 1`, so the `log n` terms are at least as large as the linear ones, and
+the linear terms disappear into them. For a connected graph `n ≤ m + 1`, and this is often
+written `O(m log n)`.
+
+## Against the basic version
+
+| Implementation | Running time | 1,000 vertices, 100,000 edges |
+| --- | --- | --- |
+| rescan every round | `O(mn)` | about `2 × 10⁸` entry reads |
+| indexed heap | `O((n + m) log n)` | about `10⁶` steps |
+
+The factor of about 200 comes from not rereading edges that have not changed. The heap does
+not do the scans themselves any faster.
+
+> Count each operation over the whole run. Lists are scanned once each, so there are `2m`
+> checks, at most `m` decrease-keys and `n − 1` extract-mins, which gives
+> `O((n + m) log n)`.

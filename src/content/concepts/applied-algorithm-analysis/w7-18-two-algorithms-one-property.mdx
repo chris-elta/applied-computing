@@ -1,0 +1,104 @@
+---
+course: applied-algorithm-analysis
+section: w7-cut
+order: 1320
+title: Two Algorithms, One Property
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week7.html?hash=true#/51
+    caption: Slide 52 of 57 — which cut Prim uses, which cut Kruskal uses, and why each choice is the cheapest across it.
+notation:
+  - symbol: "X | V ∖ X"
+    reads: X against V minus X
+    means: >-
+      The cut with the tree's vertices on one side and every other vertex on the other.
+      This is Prim's frontier.
+  - symbol: "C(u)"
+    reads: C of u, the component of u
+    means: The vertices joined to `u` by the edges Kruskal has accepted so far.
+questions:
+  - ask: >-
+      Kruskal is about to accept `(u, v)`, the next edge in sorted order, with `u` and `v` in
+      different components. Take the cut with `u`'s component on one side and every other
+      vertex on the other. Why is `(u, v)` the cheapest edge across that cut?
+    choices:
+      - text: >-
+          Any cheaper edge leaving `u`'s component came earlier in the sorted order, and it
+          would have been accepted, so it would not cross any more
+        correct: true
+        explains: >-
+          A cheaper crossing edge would have joined two different components, and Kruskal
+          accepts every such edge. Once accepted, its far endpoint would be in `u`'s
+          component, so that edge would no longer cross.
+      - text: Because `(u, v)` is the cheapest edge in the whole graph
+        explains: >-
+          It is only the cheapest *remaining* edge. Many cheaper edges have been accepted or
+          skipped already. What matters is that none of them crosses this cut.
+      - text: Because `u`'s component contains the start vertex
+        explains: >-
+          Kruskal has no start vertex. The argument works for whichever component `u`
+          happens to be in.
+      - text: Because Kruskal checks every edge across the cut before accepting one
+        explains: >-
+          Kruskal never looks at cuts. It walks a sorted list. The cut is something you use to
+          *explain* why its choice is safe, and the sorted order is what makes the choice the
+          cheapest across it.
+---
+
+The cut property says the cheapest edge across a cut is safe, as long as the cut keeps the
+already-selected components in one piece. Neither algorithm mentions cuts. Both are still
+taking the cheapest edge across a cut at every step. They differ in which cut it is.
+
+## Prim: the frontier is the cut
+
+| | |
+| --- | --- |
+| the two sides | `X`, the vertices already in the tree, and everything outside `X` |
+| the choice | the cheapest edge leaving `X` |
+| components kept intact? | yes: every selected edge has both ends in `X` |
+
+This is the frontier from the pseudocode. Prim's rule, "the cheapest edge with one end in `X`
+and one outside", is the cut property applied to the cut `X | V ∖ X`. Each step adds one
+vertex across it, and the frontier moves outward.
+
+## Kruskal: one component against the rest
+
+| | |
+| --- | --- |
+| the two sides | the current component of one endpoint `u`, and all other vertices |
+| the choice | the next sorted edge that joins two different components |
+| components kept intact? | yes: `u`'s component is on one side, and every other component lies wholly on the other |
+
+The less obvious part is why the edge Kruskal takes is the *cheapest* across this cut.
+Suppose some edge `f` leaving `u`'s component were cheaper than `(u, v)`. Then `f` came
+earlier in the sorted list. When it was examined, its endpoints were in different components,
+because components only grow, and they are separate now. So Kruskal accepted `f`, which
+put its far endpoint in `u`'s component. Then `f` does not cross the cut, which contradicts
+the assumption. So no cheaper crossing edge exists.
+
+The sorted order is what does the work. Kruskal never compares edges across a cut. It takes
+edges cheapest first, and that order guarantees each accepted edge is the cheapest across the
+right cut.
+
+## Worked: Kruskal's third edge
+
+On the five-vertex graph, Kruskal has `(b, e)` 1 and `(a, c)` 2 when it takes `(b, c)` 3.
+Use `b`'s component `{b, e}` as one side and `{a, c, d}` as the other.
+
+| Crossing edge | Weight |
+| --- | --- |
+| `(b, c)` | 3 ← cheapest |
+| `(a, b)` | 4 |
+| `(b, d)` | 5 |
+| `(d, e)` | 7 |
+
+`(b, c)` is the cheapest across that cut, as the argument says. The only cheaper edges in
+the graph, weights 1 and 2, were accepted earlier and do not cross.
+
+## Same idea, different bookkeeping
+
+> Both algorithms connect across a boundary as cheaply as possible, without splitting a
+> component already selected. Prim keeps one boundary and moves it. Kruskal uses a new
+> boundary for each edge, around whichever component that edge leaves.
+
+Formal correctness proofs for both are in DPV, *Algorithms*, chapter 5.

@@ -1,0 +1,121 @@
+---
+course: applied-algorithm-analysis
+section: w7-kruskal
+order: 1260
+title: Kruskal's Algorithm
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week7.html?hash=true#/31
+    caption: Slides 32–37 of 57 — the rule, a five-vertex worked example, the first rejected edge, and the pseudocode.
+notation:
+  - symbol: forest
+    reads: forest
+    means: >-
+      A graph with no cycles that may be in several pieces. Each piece is a tree. Kruskal's
+      selected edges form a forest until the last one joins it into a single tree.
+  - symbol: component
+    reads: component
+    means: >-
+      One connected piece: a group of vertices that can all reach each other using the edges
+      selected so far.
+  - symbol: nondecreasing order
+    reads: non-decreasing order
+    means: >-
+      Smallest first, with equal values allowed next to each other. "Increasing" would
+      technically forbid ties.
+  - symbol: "T ∪ {e}"
+    reads: T union e
+    means: "The selected edges with `e` added."
+questions:
+  - ask: >-
+      Kruskal on the five-vertex graph has taken `(b, e)` 1, `(a, c)` 2 and `(b, c)` 3. The
+      next edge in sorted order is `(a, b)` 4. What happens, and why?
+    choices:
+      - text: "Skipped: `a` and `b` are already connected through `a – c – b`, so it would close a cycle"
+        correct: true
+        explains: >-
+          Edge `(b, c)` merged the components `{a, c}` and `{b, e}`, so `a` and `b` are in the
+          same component. A second route between them is a cycle.
+      - text: "Taken: it is the cheapest edge not yet in the tree"
+        explains: >-
+          Cheapest is not enough. Kruskal adds the next edge only if it joins two
+          *different* components.
+      - text: "Taken: neither `(a, b)` nor any edge at `d` has been chosen yet, so it connects new ground"
+        explains: >-
+          The question is not whether this edge has been used, but whether its endpoints can
+          already reach each other. `a` and `b` can.
+      - text: "Skipped: `b` already has two selected edges"
+        explains: >-
+          How many edges a vertex has is irrelevant. The next accepted edge, `(b, d)` 5, gives
+          `b` a third.
+    work: |-
+      Sorted: (b,e) 1, (a,c) 2, (b,c) 3, (a,b) 4, (b,d) 5, (c,d) 6, (d,e) 7.
+      (b,e) → {b,e}. (a,c) → {a,c}. (b,c) → {a,b,c,e}.
+      (a,b): a and b both in {a,b,c,e} → skip.
+      (b,d) → {a,b,c,d,e}. Four edges = n − 1; stop. Total 1 + 2 + 3 + 5 = 11.
+---
+
+Prim grows one tree from a start vertex. Kruskal takes a different route: **sort every edge
+by cost, then take them in order, skipping any that would close a cycle.**
+
+## The rule
+
+1. Start with all the vertices and no selected edges.
+2. Sort all edges by cost, cheapest first.
+3. Go through the sorted list. For each edge `e`,
+   - **add** `e` if it does not form a cycle with the edges already chosen;
+   - **discard** `e` if it does.
+4. Stop once every vertex is connected. The chosen edges form a minimum spanning tree.
+
+As pseudocode, with `T` the selected edges:
+
+```
+T := ∅
+sort edges of E by cost          // e.g. using MergeSort
+for each e ∈ E, in nondecreasing order of cost do
+    if T ∪ {e} is acyclic then
+        T := T ∪ {e}
+return T
+```
+
+## Worked: five vertices
+
+The edges are `(a, b)` 4, `(a, c)` 2, `(b, c)` 3, `(b, d)` 5, `(b, e)` 1, `(c, d)` 6 and
+`(d, e)` 7. Sorted:
+
+| Edge | Cost | Components before | Decision |
+| --- | --- | --- | --- |
+| `(b, e)` | 1 | five single vertices | take |
+| `(a, c)` | 2 | `{b, e}`, `{a}`, `{c}`, `{d}` | take: a **second, separate** tree |
+| `(b, c)` | 3 | `{b, e}`, `{a, c}`, `{d}` | take: **merges** the two trees |
+| `(a, b)` | 4 | `{a, b, c, e}`, `{d}` | **skip**: `a – c – b` already joins them |
+| `(b, d)` | 5 | `{a, b, c, e}`, `{d}` | take: reaches `d` |
+
+That is four edges for five vertices, so stop. `(c, d)` and `(d, e)` are never examined.
+The total weight is `1 + 2 + 3 + 5 = 11`.
+
+## What is different from Prim
+
+**Several trees at once.** After two steps, `(b, e)` and `(a, c)` share no vertex. Prim could
+never be in that state, because every Prim edge touches the one tree. Kruskal's selected
+edges form a **forest**, and each accepted edge joins two of its trees, until one tree is left.
+
+**The skip test.** Prim never has to ask about cycles, because it only takes edges that reach
+a new vertex. Kruskal looks at edges anywhere in the graph, so it has to ask, for each one:
+*are its endpoints already connected?* By Fact 3 about trees, adding `(u, v)` makes a cycle
+exactly when a path from `u` to `v` already exists.
+
+**No start vertex.** The order is decided entirely by the sorted list.
+
+Both algorithms are greedy. Kruskal's local choice is "the cheapest edge left that closes no
+cycle", and it never undoes an accepted edge.
+
+## What the skip test costs
+
+"Does `T ∪ {e}` contain a cycle?" is a short line in the pseudocode but the expensive part
+in practice. Answering it with a fresh search each time is what makes the basic version slow,
+and the next three concepts replace that search with union-find.
+
+> Kruskal sorts the edges and accepts each one that joins two different components. Its
+> partial answer is a forest, and the expensive part is checking whether two vertices are
+> already connected.

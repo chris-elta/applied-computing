@@ -1,0 +1,113 @@
+---
+course: applied-algorithm-analysis
+section: w7-mst
+order: 1160
+title: The Cheapest Network Is a Tree
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week7.html?hash=true#/7
+    caption: Slides 8–10 of 57 — the four-town puzzle, the graph vocabulary, and why a cycle can always be cut.
+notation:
+  - symbol: "G = (V, E)"
+    reads: G equals V, E
+    means: >-
+      A graph `G` made of a set of vertices `V` (the dots) and a set of edges `E` (the lines
+      joining pairs of them).
+  - symbol: "(a, b)"
+    reads: the edge a b
+    means: >-
+      The edge joining vertex `a` to vertex `b`. In an undirected graph `(a, b)` and `(b, a)`
+      are the same edge.
+  - symbol: weight
+    reads: weight
+    means: >-
+      A number written on an edge, such as the cost of laying that cable. Also called its cost.
+  - symbol: cycle
+    reads: cycle
+    means: >-
+      A closed route that returns to its start without repeating any other vertex, such as
+      `a – b – d – a`.
+questions:
+  - ask: >-
+      Every edge cost is positive. A network that connects all the vertices contains a cycle.
+      Why can it not be the cheapest connected network?
+    choices:
+      - text: >-
+          Deleting any one edge of the cycle keeps everything connected, because the rest of
+          the cycle is another route, and it lowers the total cost
+        correct: true
+        explains: >-
+          That is the whole argument. Both halves matter: the cycle supplies a replacement
+          route, so connectivity survives, and positive cost means the total strictly drops.
+      - text: A network with a cycle always has more than `n − 1` edges, and more edges cost more
+        explains: >-
+          The first half is true, but "more edges cost more" is not an argument on its own: a
+          network with more edges could still use cheaper ones. The argument has to show that
+          *this* network can be made cheaper.
+      - text: Cycles make the network disconnected
+        explains: >-
+          The opposite. A cycle gives two routes between its vertices, which is more connection
+          than you need, not less.
+      - text: Deleting the most expensive edge of the cycle might disconnect the network
+        explains: >-
+          No edge on a cycle disconnects the network when it is removed, however expensive.
+          The other way round the cycle still joins its endpoints.
+---
+
+Four towns, `a`, `b`, `c` and `d`. Five cables could be laid, each with a cost:
+
+| Cable | Cost |
+| --- | --- |
+| `(a, b)` | 1 |
+| `(b, d)` | 2 |
+| `(a, d)` | 3 |
+| `(a, c)` | 4 |
+| `(c, d)` | 5 |
+
+Every town must be able to reach every other, possibly through other towns. What is the
+cheapest set of cables that does it?
+
+The answer is `(a, b)`, `(b, d)` and `(a, c)`, which costs `1 + 2 + 4 = 7`. Before seeing how
+to find that, look at its shape: three cables for four towns, and no loops.
+
+## The vocabulary
+
+The lecture's words for the picture:
+
+| Word | Meaning |
+| --- | --- |
+| vertex, edge | a vertex is a dot; an edge joins two of them |
+| weight | a number on an edge, such as a cable's cost |
+| undirected | an edge works both ways: `(a, b)` is the same as `(b, a)` |
+| path | a route along edges from one vertex to another |
+| connected | every pair of vertices has a path between them |
+| cycle | a closed route with no repeated vertex except the start, which is also the end |
+
+The goal, in these words: choose edges so the graph is **connected**, with the smallest
+possible total **weight**.
+
+## Why the answer never has a cycle
+
+Suppose the cheapest connected network did contain a cycle, through vertices `u` and `v`
+among others.
+
+1. Remove the edge `(u, v)`. Any trip that used it can go the other way round the cycle
+   instead, so every vertex can still reach every other.
+2. The network is still connected, and it costs less, because every edge cost is positive.
+3. That contradicts the assumption that it was the cheapest.
+
+So the cheapest connected network has no cycles. A graph that is connected and has no cycles
+is called a **tree**, and the next two concepts are about trees.
+
+## The assumption that matters
+
+Step 2 needs every cost to be **positive**. If the removed edge cost 0, removing it would not
+save anything. If it cost −3, the network would get *more* expensive. With zero or negative
+costs, the cheapest connected set of edges can contain a cycle.
+
+The minimum spanning tree problem, defined two concepts on, asks for the cheapest **tree**,
+and that question still makes sense with any weights. It is the step from "cheapest network"
+to "it must be a tree" that relies on positive costs.
+
+> If an edge lies on a cycle, removing it keeps everything connected. With positive costs,
+> that makes the cheapest network a tree.

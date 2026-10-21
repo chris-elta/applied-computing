@@ -94,6 +94,14 @@ questions:
       1, i, -1, -i.
       Squaring: 1^2=1, i^2=-1, (-1)^2=1, (-i)^2=-1.
       Result: {1,-1,1,-1} -- the two square roots of unity, 1 and -1, each hit exactly twice.
+assessed:
+  - "Quiz 3 · Q1"
+prerequisites:
+  - topic: "Coefficient form and value form"
+    explains: "The same polynomial can be stored as its coefficients or as its values at chosen points. Each form makes different operations cheap, and the plan on this page is to do each step in the form where it is cheapest. Read off from the earlier table which operations cost `O(n)` in which form."
+    see: "applied-algorithm-analysis/w4-15-two-representations"
+  - topic: "Evaluating a polynomial at one point"
+    explains: "Plugging one number `x` into a polynomial with `n` coefficients takes `O(n)` multiplications and additions, for example with Horner's rule `a₀ + x(a₁ + x(a₂ + …))`. So evaluating at `n` unrelated points costs `n × O(n) = O(n²)`. That is the cost the choice of points has to beat."
 ---
 
 To convolve two length-`n` vectors, read them as polynomials and take the scenic route:

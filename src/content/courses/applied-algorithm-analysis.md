@@ -117,4 +117,33 @@ sections:
       linear time on a tree.
   - id: w6-review
     title: Week 6 · Where we landed
+  - id: w7-greedy
+    title: Week 7 · Greedy algorithms
+    summary: >-
+      Take the best thing you can see right now and never look back — and why that needs a
+      proof before you trust it.
+  - id: w7-mst
+    title: Week 7 · Minimum spanning trees
+    summary: >-
+      Connecting every vertex as cheaply as possible, and why the cheapest connected network
+      is always a tree.
+  - id: w7-prim
+    title: Week 7 · Prim's algorithm
+    summary: >-
+      One tree grown outward from a start vertex, and the indexed heap that brings it from
+      `O(mn)` down to `O((n + m) log n)`.
+  - id: w7-kruskal
+    title: Week 7 · Kruskal's algorithm and union-find
+    summary: >-
+      Every edge in sorted order, skipping any that closes a cycle — and a structure that
+      answers "already connected?" without searching.
+  - id: w7-cut
+    title: Week 7 · Why greedy wins here
+    summary: >-
+      The cut property: the cheapest edge across any division of the vertices is safe to take.
+  - id: w7-compare
+    title: Week 7 · Prim versus Kruskal
+    summary: Two greedy rules, one answer, and where they differ on the way there.
+  - id: w7-review
+    title: Week 7 · Where we landed
 ---

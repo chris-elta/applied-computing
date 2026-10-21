@@ -69,6 +69,15 @@ questions:
     work: |-
       Rows: `i = 0 … 7` → 8. Columns: `j = 0 … 9` → 10. Cells: 8 × 10 = 80.
       The answer is `E(m, n) = E(7, 9)`, the last cell filled.
+assessed:
+  - "Quiz 4 · Q4"
+prerequisites:
+  - topic: "The edit distance recurrence"
+    explains: "`E(i, j)` is the edit distance between the first `i` letters of `x` and the first `j` of `y`. It is the minimum of three candidates: above plus 1, left plus 1, and diagonal plus `diff(i, j)`, which is 0 when the two letters match. The top row and left column hold `j` and `i`, because turning a prefix into the empty string takes one deletion per letter."
+    see: "applied-algorithm-analysis/w5-15-prefixes-and-the-three-scenarios"
+  - topic: "Filling a table in dependency order"
+    explains: "A cell can be filled once every cell it reads is filled. Treat cells as nodes and reads as edges: any order that points every edge forward, here row by row, works."
+    see: "applied-algorithm-analysis/w5-05-every-dynamic-program-is-a-dag"
 ---
 
 The recurrence from the previous concept reads three neighbours: the cell above, the cell to

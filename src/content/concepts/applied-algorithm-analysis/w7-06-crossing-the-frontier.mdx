@@ -1,0 +1,117 @@
+---
+course: applied-algorithm-analysis
+section: w7-prim
+order: 1200
+title: Crossing the Frontier
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week7.html?hash=true#/21
+    caption: Slides 22–23 of 57 — Prim's pseudocode, then the frontier between X and the rest.
+notation:
+  - symbol: "T"
+    reads: capital T
+    means: The set of edges selected so far. At the end it is the spanning tree.
+  - symbol: "∅"
+    reads: the empty set
+    means: A set with nothing in it. `T := ∅` starts the tree with no edges.
+  - symbol: ":="
+    reads: is assigned, or becomes
+    means: >-
+      Assignment in pseudocode: the name on the left takes the value on the right. It is
+      not a claim that two things are equal.
+  - symbol: "V ∖ X"
+    reads: V minus X
+    means: >-
+      The vertices in `V` that are not in `X`, the part of the graph not yet reached. The
+      slides also write it `V − X`.
+  - symbol: "weight(e), cₑ"
+    reads: weight of e, c sub e
+    means: Two names for the same thing, the number on edge `e`.
+questions:
+  - ask: >-
+      Partway through Prim's algorithm, `X` holds five vertices. Which edges is the next
+      iteration allowed to choose from?
+    choices:
+      - text: Only edges with exactly one endpoint in `X`
+        correct: true
+        explains: >-
+          These are the edges that cross the frontier. One with both ends in `X` would close
+          a cycle; one with both ends outside would not touch the tree, so the tree would no
+          longer be one connected piece.
+      - text: Any edge not yet in `T`
+        explains: >-
+          That includes edges with both ends in `X`, which close a cycle, and edges with both
+          ends outside, which start a second tree. Prim allows neither.
+      - text: Only edges leaving the vertex added most recently
+        explains: >-
+          The cheapest crossing edge can leave from any vertex in `X`, including the start.
+          Looking only at the newest vertex is a different and incorrect rule.
+      - text: Edges with both endpoints outside `X`, so the tree can grow faster
+        explains: >-
+          That edge would form a separate piece, and Prim keeps a single connected tree. An
+          algorithm that keeps several pieces at once is Kruskal's.
+---
+
+Here is Prim's algorithm as pseudocode. The input is a connected, undirected, weighted graph
+`G = (V, E)`.
+
+```
+Prim
+X := {s}
+T := ∅
+
+while X ≠ V do
+    // one endpoint in X, one outside
+    choose edge e = (v, w) with
+        v ∈ X and w ∉ X
+        and minimum weight(e)
+    add w to X
+    add e to T
+
+return T
+```
+
+## Reading it line by line
+
+| Line | Meaning |
+| --- | --- |
+| `X := {s}` | the tree has reached only the start vertex `s` |
+| `T := ∅` | no edges selected yet |
+| `while X ≠ V` | keep going while some vertex is still unreached |
+| `v ∈ X and w ∉ X` | the edge must have exactly one end in the tree |
+| `minimum weight(e)` | of all such edges, take the cheapest |
+| `add w to X; add e to T` | one new vertex and one new edge per iteration |
+
+Two sets are kept, and it is worth keeping them apart. `X` holds **vertices**: the ones
+reached so far. `T` holds **edges**: the ones chosen so far. They grow together, one vertex
+and one edge per pass. `T` always has one fewer element than `X`.
+
+## The frontier
+
+Draw a closed curve around `X`. Everything inside has been processed, and `V ∖ X` lies
+outside. That curve is the **frontier**, and the edges that cross it are the candidates.
+
+| Kind of edge | Prim's view |
+| --- | --- |
+| both ends in `X` | already connected; would close a cycle; ignored |
+| one end in `X`, one in `V ∖ X` | **crosses the frontier**; a candidate |
+| both ends in `V ∖ X` | does not touch the tree yet; ignored for now |
+
+The lecture puts it in one sentence: *every iteration of Prim's algorithm chooses one new
+edge crossing from `X` to `V ∖ X`.* Each pass moves one vertex across, so the frontier moves
+outward, and some edges change category. An edge that crossed may now have both ends in `X`,
+and an edge that was outside may now cross.
+
+## Why the frontier is the important idea
+
+Two later topics rest on it.
+
+- **Running time.** Finding the cheapest crossing edge is the expensive part of each pass.
+  Rescanning every edge costs `O(m)` each time. A heap keeps the candidates ready.
+- **Correctness.** The frontier is a **cut**: a split of the vertices into two groups. The
+  cut property says the cheapest edge across any cut is safe to take, and that is exactly
+  what this line of pseudocode chooses.
+
+> Prim's loop is one question asked `n − 1` times: what is the cheapest edge across the
+> frontier? Making that question fast gives the running time, and showing the answer is safe
+> gives the proof.

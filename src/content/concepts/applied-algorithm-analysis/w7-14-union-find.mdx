@@ -1,0 +1,121 @@
+---
+course: applied-algorithm-analysis
+section: w7-kruskal
+order: 1280
+title: Union-Find
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week7.html?hash=true#/39
+    caption: Slides 40–41 and 43–44 of 57 — the two operations, Find with path compression stepped through, then Kruskal's loop using them.
+notation:
+  - symbol: "Find(v)"
+    reads: find v
+    means: >-
+      Return the representative of `v`'s group: the root reached by following parent
+      pointers from `v`.
+  - symbol: "Union(u, v)"
+    reads: union u v
+    means: Merge the group containing `u` with the group containing `v`.
+  - symbol: representative, root
+    reads: representative, root
+    means: >-
+      The one vertex that names a group. A root is a vertex whose parent pointer points to
+      itself. Which vertex it is does not matter; only whether two representatives are equal.
+  - symbol: "w ⟶ x"
+    reads: w points to x
+    means: "`x` is `w`'s parent in the union-find structure. This is not an edge of the graph."
+  - symbol: path compression
+    reads: path compression
+    means: >-
+      After a Find, point every vertex it passed through directly at the root, so later
+      Finds from those vertices take one step.
+questions:
+  - ask: >-
+      In the union-find structure, `w ⟶ x ⟶ y ⟶ r`, and `r` is a root. `Find(w)` is called
+      with path compression. Afterwards, what are the parents of `w`, `x` and `y`, and has
+      anything changed in the graph or the MST?
+    choices:
+      - text: "All three point directly to `r`; nothing changes in the graph or the MST"
+        correct: true
+        explains: >-
+          Path compression only rewires the internal parent pointers: `x` and `w` now point
+          at `r`, and `y` already did. Group membership is unchanged, and so are the graph's
+          edges and the MST.
+      - text: "All three point to `r`, and edges `(w, r)` and `(x, r)` are added to the MST"
+        explains: >-
+          Parent pointers are not graph edges, and Find never adds anything to the MST. Only
+          Kruskal's main loop does that, after comparing two Find results.
+      - text: "Unchanged; path compression only happens during Union"
+        explains: >-
+          Path compression happens during Find. On the way back from the root, it points each
+          visited vertex at that root.
+      - text: "`w` points to `r`; `x` and `y` are unchanged"
+        explains: >-
+          Every vertex on the path is pointed at the root, not only the one you started from.
+          `x` changes too. `y` already pointed to `r`.
+---
+
+Kruskal needs one question answered quickly: are `u` and `v` already in the same component?
+**Union-find** answers it by keeping track of the groups as they form.
+
+## Two operations
+
+Union-find maintains **disjoint groups**: every vertex belongs to exactly one.
+
+| Operation | What it does |
+| --- | --- |
+| `Find(v)` | returns a **representative** identifying `v`'s group |
+| `Union(u, v)` | merges the groups containing `u` and `v` |
+
+Two vertices are in the same group **exactly when their representatives are equal**. It does
+not matter which vertex is the representative, only whether two of them match. At the start,
+every vertex is in a group of its own.
+
+## Groups as parent pointers
+
+Store each group as a tree of **parent pointers**. Every vertex points to a parent, and
+following the pointers leads to a **root**, which points to itself. The root is the group's
+representative.
+
+These are **not graph edges**, and the tree they form is not the MST. It is an internal
+structure for answering "same group?" quickly. The slides repeat this several times because
+the two pictures are easy to mix up.
+
+## Find, stepped through
+
+Take the chain `w ⟶ x ⟶ y ⟶ r`, where `r` is a root.
+
+| Step | Action | Links from `w` to the root |
+| --- | --- | --- |
+| 1 | start at `w` | ? |
+| 2 | `w`'s parent is `x`: move to `x` | ? |
+| 3 | `x`'s parent is `y`: move to `y` | ? |
+| 4 | `y`'s parent is `r`, a root: `Find(w) = r` | 3 |
+| 5 | **compress:** point `x` directly at `r` | 2 |
+| 6 | **compress:** point `w` directly at `r` | 1 |
+
+Steps 5 and 6 are **path compression**. Finding the root already cost three steps. Pointing
+everything on the path at `r` costs little more, and the next `Find(w)` takes one link
+instead of three. No group membership changes, no MST edge is added, and no groups are merged.
+
+## Kruskal with union-find
+
+**Setup.** Make one group per vertex, so each vertex is its own root. Start an empty list of
+MST edges. Sort the edges by weight.
+
+**Main loop.** For each edge `(u, v)` in sorted order:
+
+- if `Find(u) ≠ Find(v)`, the endpoints are in different components, so the edge closes no
+  cycle. **Add** `(u, v)` to the MST and call `Union(u, v)`;
+- if `Find(u) = Find(v)`, they are already connected. **Skip** the edge.
+
+In the five-vertex example, when `(a, b)` comes up, `Union` has already been called for
+`(a, c)`, `(b, e)` and `(b, c)`. So `Find(a)` and `Find(b)` return the same root, and the edge
+is skipped without any search.
+
+How fast is `Find`? Its cost is the number of links it follows, which depends on how tall
+the parent trees get. That depends on how `Union` decides which root goes on top, the subject
+of the next concept.
+
+> Union-find replaces "search for a path" with "compare two roots". The parent pointers are
+> internal bookkeeping, separate from the graph and from the MST.

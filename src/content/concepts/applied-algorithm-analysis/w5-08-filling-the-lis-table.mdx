@@ -47,6 +47,12 @@ questions:
       `1`: nothing earlier is smaller → 1.
       `5`: earlier smaller `2, 3, 4, 1` (dp 1, 2, 3, 1) → 1 + 3 = 4.
       LIS = max of the row = 4, from `2, 3, 4, 5`.
+assessed:
+  - "Quiz 4 · Q2"
+prerequisites:
+  - topic: "The LIS recurrence"
+    explains: "`dp[i] = 1 + max{dp[j] : j < i, nums[j] < nums[i]}`, and `dp[i] = 1` when no earlier value is smaller. Filling a cell means scanning every earlier position, keeping only those holding a *strictly* smaller value, and adding one to the best of their cells."
+    see: "applied-algorithm-analysis/w5-07-choosing-the-state"
 ---
 
 The recipe from the previous concept, run on the lecture's input:

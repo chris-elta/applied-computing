@@ -1,0 +1,102 @@
+---
+course: applied-algorithm-analysis
+section: w7-mst
+order: 1170
+title: Three Facts About Trees
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week7.html?hash=true#/10
+    caption: Slide 11 of 57 — the definition of a tree and the three properties the algorithms rely on.
+notation:
+  - symbol: "n"
+    reads: n
+    means: >-
+      The number of vertices in the graph. Later in the week `n = ∣V∣`.
+  - symbol: "∣E∣, ∣V∣"
+    reads: the size of E, the size of V
+    means: >-
+      The bars mean "the number of things in". `∣E∣` is how many edges there are and `∣V∣`
+      is how many vertices.
+  - symbol: acyclic
+    reads: ay-SY-click
+    means: Containing no cycles.
+  - symbol: if and only if
+    reads: if and only if
+    means: >-
+      Each statement implies the other. "A is a tree if and only if B" means every tree has
+      property B, and every graph with property B is a tree.
+questions:
+  - ask: >-
+      A connected, undirected graph has 9 vertices and 8 edges. What can you conclude without
+      looking at it?
+    choices:
+      - text: It is a tree, so it has no cycles
+        correct: true
+        explains: >-
+          Fact 2: connected plus exactly `n − 1` edges forces it to be a tree. A cycle would
+          contain an edge that could be removed, leaving a connected graph on 9 vertices with
+          only 7 edges, and a connected graph on 9 vertices needs at least 8.
+      - text: It might contain a cycle, if some vertex has many edges
+        explains: >-
+          How the edges are spread out does not matter. With only `n − 1` edges, a connected
+          graph has none to spare for a cycle.
+      - text: Nothing, unless you also know it is acyclic
+        explains: >-
+          That would be the definition. Fact 2 is useful because it lets you replace the
+          acyclic check with counting edges, as long as you know the graph is connected.
+      - text: It is a tree only if it also has a unique path between every pair of vertices
+        explains: >-
+          The unique-path property is true of it, but you do not need to check it. It follows
+          from connected plus `n − 1` edges (Fact 2, then Fact 3).
+---
+
+The lecture defines a tree in one line:
+
+> A **tree** is an undirected graph that is **connected** and **acyclic**.
+
+So a tree joins every vertex to every other and has no cycles. The previous concept showed
+that, with positive costs, the cheapest connected network is a tree. These three facts are
+what the algorithms rely on.
+
+## Fact 1 · A tree on `n` vertices has `n − 1` edges
+
+Build a tree one edge at a time. Start with `n` separate vertices: `n` pieces. Each edge that
+closes no cycle joins two different pieces into one, so the count of pieces drops by exactly
+one. You reach a single connected piece after `n − 1` edges. Adding any more edge would join
+a piece to itself, which closes a cycle.
+
+This is why both of this week's algorithms **stop after `n − 1` edges**. The four-town answer
+had three edges for four towns.
+
+## Fact 2 · Connected plus `n − 1` edges means tree
+
+Any connected, undirected `G = (V, E)` with `∣E∣ = ∣V∣ − 1` is a tree.
+
+If such a graph had a cycle, you could delete one cycle edge and stay connected. That would
+leave a connected graph on `n` vertices with only `n − 2` edges. By the counting in Fact 1,
+`n − 2` edges leave at least two separate pieces, so that is impossible.
+
+So you can check "is this a tree?" by checking that it is connected and counting its edges.
+You never have to search for a cycle.
+
+## Fact 3 · Unique paths
+
+A graph is a tree **if and only if** there is exactly one path between every pair of vertices.
+
+- *Tree ⇒ unique paths.* At least one path, because it is connected. If there were two
+  different paths from `u` to `v`, then going out along one and back along the other would
+  close a cycle.
+- *Unique paths ⇒ tree.* There is a path, so it is connected. A cycle would give two routes
+  between any two of its vertices, so there is no cycle.
+
+Fact 3 matters for Kruskal's algorithm. Adding edge `(u, v)` creates a cycle exactly when `u`
+and `v` already have a path between them.
+
+| Fact | What it buys you |
+| --- | --- |
+| `n − 1` edges | a stopping rule |
+| connected + `n − 1` edges ⇒ tree | a test that does not search for cycles |
+| unique paths | "closes a cycle" means "already connected" |
+
+> A tree has exactly enough edges to connect its vertices and none to spare. Each fact above
+> says that in a different way.

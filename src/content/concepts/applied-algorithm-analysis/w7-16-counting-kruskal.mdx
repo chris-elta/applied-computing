@@ -1,0 +1,103 @@
+---
+course: applied-algorithm-analysis
+section: w7-kruskal
+order: 1300
+title: Counting Kruskal
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week7.html?hash=true#/47
+    caption: Slide 48 of 57 — setup, sorting and the check-and-merge loop, added up.
+notation:
+  - symbol: "log m = O(log n)"
+    reads: log m is big O of log n
+    means: >-
+      For a simple graph `m < n²`, so `log m < 2 log n`. The two logarithms differ by at most
+      a constant factor and can be swapped inside big O.
+  - symbol: minimum spanning forest
+    reads: minimum spanning forest
+    means: >-
+      For a disconnected graph, a minimum spanning tree of each connected piece. Together
+      they form a forest.
+questions:
+  - ask: >-
+      The edges of a graph arrive already sorted by weight. What is Kruskal's running time
+      with union-find, using union by rank?
+    choices:
+      - text: "`O(n + m log n)`: sorting is gone, but each edge still needs two Finds"
+        correct: true
+        explains: >-
+          Pre-sorting removes only the `O(m log m)` term. Each of up to `m` edges still has
+          its component check, at `O(log n)` per Find with union by rank, as the comparison
+          slide notes.
+      - text: "`O(n + m)`: with sorting gone, everything else is constant time"
+        explains: >-
+          Find is `O(log n)` under the bound used here, not `O(1)`. Path compression makes it
+          faster in practice, but the analysis in this lecture does not assume that.
+      - text: "`O(mn)`: without sorting there is no log factor, so the cycle checks dominate"
+        explains: >-
+          `O(mn)` is the version that runs a DFS for every edge. Union-find replaces those
+          searches whether or not the edges were sorted.
+      - text: "Unchanged, `O((n + m) log n)`, because Kruskal sorts them again anyway"
+        explains: >-
+          There is no need to sort a list that is already sorted. As a bound it is still
+          true, but a smaller one is available.
+    work: |-
+      Initialise: n groups → O(n).
+      Sort: skipped.
+      Loop: ≤ m edges × (2 Finds + ≤ 1 Union) × O(log n) = O(m log n).
+      Total: O(n + m log n).
+---
+
+Kruskal with union-find has three kinds of work. Count each over the whole run, for a
+connected simple graph with `n ≥ 2` vertices and `m` edges.
+
+| Work | How much | Cost |
+| --- | --- | --- |
+| initialise | one group per vertex | `O(n)` |
+| sort edges | all `m` edges by weight | `O(m log m)` |
+| check and merge | at most `m` edges, each with two Finds and at most one Union | `O(m log n)` |
+
+The `O(m log n)` line uses the bound from union by rank: every Find and every Union is
+`O(log n)`.
+
+## Turning `log m` into `log n`
+
+Sorting is priced in `log m`, everything else in `log n`. For a simple graph,
+
+`m ≤ n(n − 1)/2 < n²`, so `log m < log n² = 2 log n`.
+
+The 2 is a constant, so `log m = O(log n)`, and the sorting term is also `O(m log n)`.
+
+## The total
+
+`O(n + m log m + m log n) = O((n + m) log n)`.
+
+That is the **same bound as heap-based Prim**. The log factor comes from different places in
+the two algorithms:
+
+| | Where the `log n` comes from |
+| --- | --- |
+| Prim | heap operations: extract-min and decrease-key |
+| Kruskal | sorting, and the `O(log n)` Find/Union bound |
+
+## When to stop
+
+**Stop after `n − 1` accepted edges.** A spanning tree has exactly that many (Fact 1), so
+any edge after that would be rejected. In the five-vertex example, Kruskal stopped after
+`(b, d)` and never examined `(c, d)` or `(d, e)`. Stopping early does not change the
+worst-case bound, because the last edge needed may be the most expensive one in the graph.
+
+**On a disconnected graph, process every edge.** The count never reaches `n − 1`, because no
+edge joins the separate pieces. Kruskal still makes the correct choice inside each piece, and
+when the sorted list runs out it has a **minimum spanning forest**: one MST per connected
+piece. Kruskal never relied on the graph being connected, only the stopping rule did.
+
+## The sorting term
+
+If the edges arrive already sorted, the `O(m log m)` term disappears, but the component
+checks do not. Each edge still needs two Finds, so the total is `O(n + m log n)`. The
+comparison slide at the end of the lecture makes the same point.
+
+> Initialise, sort, then check and merge. Since `log m = O(log n)` on a simple graph, the
+> total is `O((n + m) log n)`, the same bound as Prim, with the log factor coming from sorting
+> and Find instead of a heap.

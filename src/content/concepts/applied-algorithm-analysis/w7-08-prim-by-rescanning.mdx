@@ -1,0 +1,94 @@
+---
+course: applied-algorithm-analysis
+section: w7-prim
+order: 1220
+title: Prim by Rescanning
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week7.html?hash=true#/24
+    caption: Slide 25 of 57 — the in-lecture question on the basic implementation's running time.
+notation:
+  - symbol: "O(mn)"
+    reads: big O of m times n
+    means: >-
+      Proportional to the number of edges times the number of vertices. On a dense graph,
+      where `m` is close to `n²`, that is close to `n³`.
+  - symbol: round
+    reads: round, or iteration
+    means: One pass of Prim's `while` loop, which adds one vertex and one edge.
+questions:
+  - ask: >-
+      The basic implementation of Prim runs on a graph with 1,000 vertices and 100,000 edges.
+      Roughly how many edge entries does it read in total?
+    choices:
+      - text: About 200 million — 999 rounds, each reading all 200,000 list entries
+        correct: true
+        explains: >-
+          Every round repeats the full scan, and a full scan reads `2m = 200,000` entries.
+          `999 × 200,000 ≈ 2 × 10⁸`. That is the `O(mn)` bound in actual numbers.
+      - text: About 200,000 — each entry is read once
+        explains: >-
+          That would be true if the scans were shared between rounds. The basic version
+          starts every round from scratch and reads every list again.
+      - text: About 1 million — `n²`
+        explains: >-
+          `n²` is what an array-based Prim costs, a different implementation. The basic
+          version's cost per round depends on `m`, not `n`.
+      - text: About 1.7 million — `m log n`
+        explains: >-
+          `m log n` is the heap-based version. With no heap, each round has to look at every
+          edge again.
+    work: |-
+      Rounds: n − 1 = 999.
+      Entries per full scan: 2m = 200,000.
+      Total: 999 × 200,000 ≈ 2.0 × 10⁸.
+      Heap version, for comparison: (n + m) log₂ n ≈ 101,000 × 10 ≈ 10⁶.
+---
+
+The basic implementation of Prim, from the previous concept, finds each new edge by scanning
+the whole graph. The lecture asks how long that takes in the worst case.
+
+> A basic implementation of Prim's algorithm scans all `m` edges in each iteration to find
+> the cheapest crossing edge. What is its worst-case running time on a connected graph with
+> `n` vertices?
+
+The options were `O(m + n)`, `O(m log n)`, `O(n²)` and `O(mn)`. Try it before reading on.
+
+## Count rounds, then work per round
+
+The same method as fast exponentiation in week 2: **rounds × cost per round**.
+
+| | How many | Why |
+| --- | --- | --- |
+| rounds | `n − 1` | each round adds one vertex, and `n − 1` vertices are left after the start |
+| work per round | `O(m)` | one full scan of the adjacency lists, with `O(1)` membership checks |
+| total | `(n − 1) · O(m) = O(mn)` | |
+
+The answer is **`O(mn)`**.
+
+## Why the other options are tempting
+
+- **`O(m + n)`** would be the cost if the whole graph were scanned *once*. It is scanned
+  `n − 1` times.
+- **`O(n²)`** is a real running time for Prim, but for a different implementation that keeps
+  one array of best-known costs, as the comparison table at the end of the lecture notes.
+  The version asked about rescans edges, so its cost depends on `m`.
+- **`O(m log n)`** is what the heap version achieves. Nothing in this version is a heap.
+
+## Where the waste is
+
+Most of each scan repeats work from the previous one. When one vertex `v` joins `X`, only
+the edges at `v` change status:
+
+- edges from `v` to vertices already in `X` stop being candidates;
+- edges from `v` to vertices outside `X` become candidates.
+
+Every other crossing edge is just as it was, and the rescan reads it again anyway. Over the
+whole run, only `2m` list entries ever change status, once each, when an endpoint joins.
+
+That observation leads to the faster version. Keep the candidates in a structure that
+remembers them between rounds, update it only at the vertex that just joined, and make
+"cheapest" fast to read. That structure is a min-heap.
+
+> Rounds × work per round. `n − 1` rounds of an `O(m)` scan is `O(mn)`, and most of that work
+> rereads edges that have not changed.

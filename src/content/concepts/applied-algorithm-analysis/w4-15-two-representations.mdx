@@ -78,6 +78,14 @@ questions:
       pointwise. So if A and B are BOTH evaluated at the same x_i, then A(x_i)*B(x_i) directly
       gives (AB)(x_i) -- one multiplication per shared point, m points total.
       If the two lists came from different point sets, there'd be no shared x_i to combine at.
+assessed:
+  - "Quiz 3 · Q3"
+prerequisites:
+  - topic: "Degree and number of coefficients"
+    explains: "A polynomial of degree `d` has `d + 1` coefficients, from `x⁰` up to `xᵈ`, so `3 + 2x + x²` has degree 2 and three coefficients. Multiplying two polynomials adds their degrees: degree 5 times degree 3 gives degree 8. Counting coefficients rather than the degree is where most off-by-one mistakes start."
+    see: "applied-algorithm-analysis/w4-14-convolution-is-polynomial-multiplication"
+  - topic: "Rounding up to a power of two"
+    explains: "The powers of two are 1, 2, 4, 8, 16, 32, …. To round a number `k` up to a power of two, take the first one that is at least `k`: 9 rounds up to 16, 17 to 32, and 16 stays 16. Rounding up never takes you more than twice as far as you needed, so it never changes a big-O bound."
 ---
 
 **Polynomial interpolation** finds a polynomial that passes through a given set of data

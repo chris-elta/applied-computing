@@ -1,0 +1,121 @@
+---
+course: applied-algorithm-analysis
+section: w7-prim
+order: 1230
+title: Keys and the Heap
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week7.html?hash=true#/25
+    caption: Slides 26–28 of 57 — the heap run step by step from a, one entry per candidate, then the two jobs kept apart.
+notation:
+  - symbol: "key[v]"
+    reads: key of v
+    means: >-
+      For a vertex `v` outside the tree, the cost of its cheapest known edge into `X`. It is
+      ∞ if no such edge has been seen.
+  - symbol: "∞"
+    reads: infinity
+    means: >-
+      A key that is larger than any real cost. It marks a vertex with no known connection to
+      the tree yet.
+  - symbol: min-heap
+    reads: min heap
+    means: >-
+      A tree-shaped structure in which every parent's key is no greater than its children's,
+      so the smallest key is always at the top.
+  - symbol: extract-min
+    reads: extract min
+    means: Remove the entry with the smallest key and restore the heap's order.
+  - symbol: decrease-key
+    reads: decrease key
+    means: >-
+      Lower one entry's key, for example when a cheaper connection is found, and move it up
+      until the heap's order holds again.
+questions:
+  - ask: >-
+      Heap-based Prim starts from `a` on the four-town graph. It extracts `b`, scans `b`'s
+      list, and lowers `key[d]` from 3 to 2 because `(b, d)` costs 2. At this moment, which
+      statement is true?
+    choices:
+      - text: >-
+          `d` is still outside `X`, and `(b, d)` is not in `T`; it is only recorded as `d`'s
+          best connection so far
+        correct: true
+        explains: >-
+          Decrease-key changes a candidate's cost and recorded edge. It adds nothing to the
+          tree. `d` joins, with `(b, d)`, only when it is extracted, and that happens next,
+          because 2 is now the smallest key.
+      - text: "`(b, d)` has been added to the MST, since it is now the cheapest edge to `d`"
+        explains: >-
+          This is the mistake slide 28 warns about. Only extract-min puts a vertex and its
+          edge into the tree. A cheaper connection could still be found before `d` is
+          extracted.
+      - text: "`(a, d)` has been removed from the MST and replaced by `(b, d)`"
+        explains: >-
+          `(a, d)` was never in the MST. It was only the edge behind `d`'s old key. Prim never
+          removes an edge it has chosen.
+      - text: The heap link between `b` and `d` is now an edge of the tree
+        explains: >-
+          Heap links are not graph edges. The heap's shape only keeps the smallest key easy to
+          find, and it says nothing about which edges are in the MST.
+---
+
+The previous concept found where the basic implementation wastes its time: every round
+rescans edges that have not changed. The fix is to keep, for every vertex outside the tree,
+**one number**: the cheapest way found so far to connect it.
+
+## One entry per vertex, not per edge
+
+For each vertex `v` outside `X`, let `key[v]` be the cost of the cheapest known edge from `X`
+to `v`, or ∞ if there is none. Keep all of these in a **min-heap**. The vertex with the
+smallest key is at the top, and it is the next vertex Prim should add, because its key is the
+cheapest crossing edge.
+
+Several crossing edges can reach the same `v`, and only the cheapest of them matters. So the
+heap holds one entry per **vertex**, at most `n`, rather than one per edge.
+
+## Worked: the four towns, starting from `a`
+
+The edges are `(a, b)` 1, `(b, d)` 2, `(a, d)` 3, `(a, c)` 4 and `(c, d)` 5.
+
+| Step | Action | Heap afterwards | `T` |
+| --- | --- | --- | --- |
+| 0 | `X = {a}`; keys from `a`'s list | `b:1, d:3, c:4` | — |
+| 1 | extract `b`; add `(a, b)` | `d:3, c:4` | `(a, b)` |
+| 2 | scan `b`: `(b, d)` 2 beats `key[d] = 3` → decrease-key | `d:2, c:4` | `(a, b)` |
+| 3 | extract `d`; add `(b, d)`. Scan `d`: `(c, d)` 5 is worse than `key[c] = 4`, so no change | `c:4` | `+ (b, d)` |
+| 4 | extract `c`; add `(a, c)` | empty | `+ (a, c)` |
+
+Total `1 + 2 + 4 = 7`, the same tree as before.
+
+Step 2 is the important one. `d`'s cheapest *known* connection changes from `(a, d)` to
+`(b, d)`, but `d` does not join the tree in that step. It joins in step 3, when it is
+extracted.
+
+## Two structures with different jobs
+
+| | The growing MST | The min-heap |
+| --- | --- | --- |
+| holds | `X`, vertices reached; `T`, edges chosen | vertices **outside** `X`, ordered by key |
+| changed by | extract-min only | decrease-key and extract-min |
+| its links mean | graph edges in the tree | nothing about the graph |
+
+The loop:
+
+1. **Extract-min.** Remove `v`. Add `v` to `X`, and add its recorded edge to `T`.
+2. **Scan.** Look at `v`'s edges to vertices still in the heap.
+3. **Decrease-key.** If an edge `(v, w)` is cheaper than `key[w]`, lower `key[w]` and record
+   `(v, w)` as `w`'s edge. This does *not* add anything to the tree.
+
+Stop when the heap is empty, or when its smallest key is ∞. That means the remaining vertices
+cannot be reached from the start, so the graph is disconnected.
+
+## The heap's shape
+
+Every parent's key is no greater than its children's. In the step 0 heap, `b:1` is at the
+top, and `1 < 3` and `1 < 4`. The tree fills level by level, from left to right, which keeps
+it shallow: about `log₂ n` levels. Siblings are not sorted relative to each other. Only the
+parent–child order is guaranteed.
+
+> A key is a vertex's cheapest known way into the tree. Decrease-key improves that estimate,
+> and only extract-min adds the vertex and its edge to the tree.

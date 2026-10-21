@@ -1,0 +1,112 @@
+---
+course: applied-algorithm-analysis
+section: w7-review
+order: 1340
+title: Where We Landed
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week7.html?hash=true#/55
+    caption: Slides 56–57 of 57 — four takeaways, practice, and three questions to think about first.
+notation:
+  - symbol: "n − 1"
+    reads: n minus one
+    means: The number of edges in every spanning tree on `n` vertices.
+  - symbol: order-preserving
+    reads: order preserving
+    means: >-
+      A change to the weights that keeps every comparison the same: if `x < y` before, then
+      still after. Adding a constant is one; squaring non-negative numbers is another.
+questions:
+  - ask: >-
+      Every edge weight in a graph is replaced by its square. Some of the original weights
+      are negative. Can the MST change?
+    choices:
+      - text: >-
+          Yes. Squaring can reorder negative weights: in a triangle with weights −3, −2 and 1
+          the MST uses −3 and −2, and after squaring it uses 1 and 4
+        correct: true
+        explains: >-
+          Both algorithms depend only on the order of the weights. Squaring keeps the order of
+          non-negative numbers but reverses it for negative ones, since −3 is less than −2 but 9
+          is more than 4.
+      - text: No. Squaring keeps the order of the weights, so both algorithms make the same choices
+        explains: >-
+          That is true only for non-negative weights. For negatives the order flips:
+          `−3 < −2`, but `9 > 4`.
+      - text: No. Every spanning tree's total changes by the same amount
+        explains: >-
+          That argument works for *adding* a constant, because every spanning tree has
+          `n − 1` edges and gains the same `n − 1` times the constant. Squaring changes each
+          edge by a different amount.
+      - text: The question has no answer, because MSTs require positive weights
+        explains: >-
+          MSTs allow zero and negative weights. Only the claim that the cheapest *connected
+          network* must be a tree needed positive costs.
+    work: |-
+      Triangle: weights −3, −2, 1. MST: two lightest → −3 and −2 (total −5).
+      Squared: 9, 4, 1. MST: two lightest → 1 and 4 (total 5).
+      The edge that was left out changed, so the MST changed.
+---
+
+## Four things to keep
+
+**1 · Greedy choices need a correctness argument.** With coins 1, 3 and 4, biggest-first
+loses. For MSTs it is correct, because of the cut property: connect across a boundary as
+cheaply as possible, without splitting a component already selected.
+
+**2 · A spanning tree is connected and has `n − 1` edges.** With positive costs, every
+cheapest connected network is a tree. The MST problem itself also allows zero and negative
+weights.
+
+**3 · Both algorithms run in `O((m + n) log n)`.** Indexed-heap Prim pays for heap
+operations. Kruskal pays for sorting and for union-find checks.
+
+**4 · Distinct weights guarantee a unique MST.** With tied weights the MST may or may not be
+unique. Different valid runs can return different MSTs, all with the same total weight.
+
+## The algorithms in one table
+
+| | Prim | Kruskal |
+| --- | --- | --- |
+| basic version | rescan all edges each round: `O(mn)` | DFS per cycle check: `O(mn)` |
+| fast version | indexed heap: `O((n + m) log n)` | union-find with union by rank: `O((n + m) log n)` |
+| which cut it uses | `X` against the rest | one component against the rest |
+
+## Think first
+
+Try each before reading the answer under it.
+
+**If heap-based Prim stops when its smallest key is ∞, what does it return on a
+disconnected graph?**
+An MST of the start vertex's component only. Vertices that cannot be reached keep key ∞.
+For a spanning forest, restart Prim from an unreached vertex, or use Kruskal, which produces a
+forest anyway.
+
+**Does adding 1 to every edge weight change the MST?**
+No. Every spanning tree has `n − 1` edges, so every tree's total rises by exactly `n − 1`, and
+the cheapest tree stays the cheapest. This holds even when some weights are negative.
+
+**Does squaring every weight change it?**
+With non-negative weights, no: squaring keeps their order, and both algorithms only compare
+weights. With negative weights it can. In a triangle with weights −3, −2 and 1 the MST takes
+−3 and −2. After squaring the weights are 9, 4 and 1, and the MST takes 1 and 4.
+
+The last two have the same underlying point: **an MST depends only on the order of the
+weights.** Any change that keeps the order keeps the MST.
+
+## Practice
+
+- DPV exercises 5.1, 5.2 and 5.7.
+- Implement Kruskal with union-find, and test it on a graph with tied weights. Check that
+  the total is right even when the edges chosen differ from a reference answer.
+- LeetCode 1584, *Min Cost to Connect All Points*: an MST on a complete graph, where the
+  `O(n²)` array-based Prim is the natural fit.
+
+## Reading
+
+- Dasgupta, Papadimitriou & Vazirani, *Algorithms*, chapter 5, for everything in this
+  lecture, including the formal cut-property proofs.
+- Roughgarden, *Algorithms Illuminated*, Part 3, chapter 15 for both algorithms and their
+  running times, and chapter 16 for union-find.
+
+Next week: shortest paths.

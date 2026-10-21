@@ -1,7 +1,7 @@
 ---
 course: applied-algorithm-analysis
 title: "Applied Algorithm Analysis · Final Exam"
-minutes: 120
+minutes: 140
 passMark: 60
 questions:
   - topic: "Week 1 · Big-O and growth"
@@ -1339,8 +1339,235 @@ questions:
       Step 2: `M(i, j) = min over i ≤ k < j of { M(i, k) + M(k+1, j) } + (stones in piles i … j)`; `M(i, i) = 0`.
       Step 3: both `M(i, k)` and `M(k+1, j)` are shorter stretches → fill by length.
       Same shape as chain matrix multiplication: `O(n²)` cells, `O(n)` splits each.
+  - topic: "Week 7 · Greedy algorithms and minimum spanning trees"
+    ask: "Coins come in values 1, 5 and 6, with unlimited supply of each. Make 10 using as few coins as possible. How many coins does biggest-coin-first use, and how many does the best answer use?"
+    choices:
+      - text: "Greedy uses 5; the best uses 2"
+        correct: true
+        explains: "Right. Greedy takes 6 and is left with 4, which only 1s can pay: `6 + 1 + 1 + 1 + 1`. Starting with a 5 instead gives `5 + 5`."
+      - text: "Greedy uses 2; the best uses 2"
+        explains: "Two coins needs `5 + 5`, and greedy never starts with a 5 while a 6 fits. It takes the 6 first."
+      - text: "Greedy uses 5; the best uses 5, so greedy is optimal here"
+        explains: "`5 + 5 = 10` uses two coins. Greedy's first choice, the 6, leaves a remainder of 4 that only the 1-coin can make."
+      - text: "Greedy uses 3; the best uses 2"
+        explains: "After taking 6, the remaining 4 has to be paid in 1s, which is four more coins, five in all, not three."
+    work: |-
+      Greedy: 10 → take 6, 4 left → 1, 1, 1, 1. Total 5 coins.
+      Best: 5 + 5 = 10. Total 2 coins.
+      One coin is impossible (no coin is worth 10), so 2 is optimal.
+  - topic: "Week 7 · Greedy algorithms and minimum spanning trees"
+    ask: "A connected, undirected graph has 10 vertices and 14 edges. How many edges must be removed to leave a spanning tree, and how many edges does that tree have?"
+    choices:
+      - text: "Remove 5, leaving a tree of 9 edges"
+        correct: true
+        explains: "Right. Every spanning tree on 10 vertices has `n − 1 = 9` edges, so `14 − 9 = 5` edges go, whichever spanning tree you keep."
+      - text: "Remove 4, leaving a tree of 10 edges"
+        explains: "A tree on `n` vertices has `n − 1` edges, not `n`. Ten edges on ten vertices would always contain a cycle."
+      - text: "It depends on which spanning tree you choose"
+        explains: "Which edges you remove depends on the tree, but how many does not. Every spanning tree on 10 vertices has exactly 9 edges."
+      - text: "Remove 13, leaving a single edge"
+        explains: "One edge connects only two vertices. The tree must still reach all 10."
+    work: |-
+      Spanning tree edges: n − 1 = 10 − 1 = 9.
+      Edges to remove: m − (n − 1) = 14 − 9 = 5.
+  - topic: "Week 7 · Greedy algorithms and minimum spanning trees"
+    ask: "Five sites must be linked. One of the possible cables has cost 0, because a duct already exists, and the rest have positive costs. Which statement is correct?"
+    choices:
+      - text: "A cheapest connected network may now contain a cycle, but a minimum spanning tree still exists and is still found by Prim or Kruskal"
+        correct: true
+        explains: "Right. Removing a cycle edge of cost 0 saves nothing, so the 'cheapest network is a tree' argument fails for that edge. The MST problem asks for a tree directly and allows any weights, so the algorithms are unaffected."
+      - text: "The cheapest connected network is still always a tree, because removing a cycle edge always lowers the cost"
+        explains: "Removing an edge of cost 0 leaves the cost unchanged. The argument needed every cost to be strictly positive."
+      - text: "Prim and Kruskal no longer work, because they require positive weights"
+        explains: "Neither algorithm assumes positive weights. They compare weights and nothing else, and the MST problem allows zero and negative weights."
+      - text: "The MST must contain the free cable, and the MST is otherwise undefined"
+        explains: "The MST is well defined for any weights. The free cable is the cheapest edge, so Kruskal takes it first, but the MST is defined independently of that."
+    work: |-
+      Cycle argument: delete an edge on a cycle → still connected, cost drops by its weight.
+      Weight 0 → cost drops by 0 → no contradiction → a cycle can survive in a cheapest network.
+      MST: the output is required to be a tree, so no positivity is needed.
+  - topic: "Week 7 · Greedy algorithms and minimum spanning trees"
+    ask: "A graph has edges `p–q` 3, `p–r` 1, `q–r` 4, `q–s` 2, `r–s` 5, `r–t` 6 and `s–t` 7. Run Prim from `p`. In what order are edges added, and what is the total weight?"
+    choices:
+      - text: "`p–r`, `p–q`, `q–s`, `r–t`; total 12"
+        correct: true
+        explains: "Right. At every step Prim takes the cheapest edge with exactly one end in the tree. `q–s` only becomes available once `q` has joined."
+      - text: "`p–r`, `q–s`, `p–q`, `r–t`; total 12"
+        explains: "That is Kruskal's order, cheapest edges first. Prim cannot take `q–s` second, because neither `q` nor `s` is in the tree `{p, r}` at that point."
+      - text: "`p–r`, `q–r`, `q–s`, `r–t`; total 13"
+        explains: "Once `X = {p, r}`, the crossing edges include `p–q` 3, which is cheaper than `q–r` 4. Prim compares every crossing edge, not only those at the newest vertex."
+      - text: "`p–r`, `p–q`, `q–s`, `s–t`; total 13"
+        explains: "For the last vertex `t`, the crossing edges are `r–t` 6 and `s–t` 7. 6 is cheaper."
+    work: |-
+      X = {p}: crossing p–q 3, p–r 1 → take p–r.
+      X = {p, r}: p–q 3, q–r 4, r–s 5, r–t 6 → take p–q.
+      X = {p, q, r}: q–s 2, r–s 5, r–t 6 → take q–s.
+      X = {p, q, r, s}: r–t 6, s–t 7 → take r–t.
+      Total 1 + 3 + 2 + 6 = 12.
+  - topic: "Week 7 · Greedy algorithms and minimum spanning trees"
+    ask: "Same graph: `p–q` 3, `p–r` 1, `q–r` 4, `q–s` 2, `r–s` 5, `r–t` 6, `s–t` 7. Run Kruskal. Which edges does it examine and reject?"
+    choices:
+      - text: "`q–r` and `r–s`; `s–t` is never examined"
+        correct: true
+        explains: "Right. After `p–r`, `q–s` and `p–q`, the vertices `p, q, r, s` form one component, so `q–r` and `r–s` would each close a cycle. `r–t` is the fourth accepted edge, which is `n − 1`, so Kruskal stops before `s–t`."
+      - text: "`q–r`, `r–s` and `s–t`"
+        explains: "`s–t` would be rejected if examined, but Kruskal stops once it has `n − 1 = 4` edges, and it has 4 after `r–t`."
+      - text: "Only `s–t`, the most expensive edge"
+        explains: "Kruskal does not reject an edge for being expensive. It rejects an edge whose endpoints are already connected, and `q–r` is the first such edge."
+      - text: "`q–s` and `q–r`"
+        explains: "`q–s` is examined second, when `q` and `s` are still in separate components. It is accepted: at that point the forest is `{p, r}`, `{q, s}` and `{t}`."
+    work: |-
+      Sorted: p–r 1, q–s 2, p–q 3, q–r 4, r–s 5, r–t 6, s–t 7.
+      p–r: take → {p,r}. q–s: take → {q,s}. p–q: take → {p,q,r,s}.
+      q–r: same component → reject. r–s: same component → reject.
+      r–t: take → 4 edges = n − 1 → stop. s–t never examined.
+  - topic: "Week 7 · Greedy algorithms and minimum spanning trees"
+    ask: "The basic implementation of Prim rescans every edge in every round. It is run on a complete graph, with an edge between every pair of the `n` vertices. What is its running time in terms of `n` alone?"
+    choices:
+      - text: "`O(n³)`"
+        correct: true
+        explains: "Right. A complete graph has `m = n(n − 1)/2`, which is `Θ(n²)`. `n − 1` rounds of an `O(m)` scan is `O(n · n²)`."
+      - text: "`O(n²)`"
+        explains: "That is the array-based Prim, which keeps one best cost per vertex. The version here scans all `m ≈ n²/2` edges every round."
+      - text: "`O(n² log n)`"
+        explains: "That is heap-based Prim on a dense graph, `O(m log n)` with `m ≈ n²`. The basic version has no heap."
+      - text: "`O(n log n)`"
+        explains: "Even reading the graph once takes `Θ(n²)` here, because there are about `n²/2` edges."
+    work: |-
+      m = n(n − 1)/2 = Θ(n²).
+      Rounds: n − 1. Work per round: O(m) = O(n²).
+      Total: O(n) × O(n²) = O(n³).
+  - topic: "Week 7 · Greedy algorithms and minimum spanning trees"
+    ask: "Heap-based Prim extracts `v`. Its neighbours are `w` (in the heap, `key[w] = 7`, edge `v–w` costs 5), `x` (in the heap, `key[x] = 3`, edge `v–x` costs 6) and `y` (already in `X`, edge `v–y` costs 1). What happens next?"
+    choices:
+      - text: "Decrease `key[w]` to 5 and record `v–w` as its edge; leave `x` and `y` alone"
+        correct: true
+        explains: "Right. Only `w` gets a cheaper connection. `x`'s existing 3 beats 6, and `y` is already in the tree, so its edge would close a cycle."
+      - text: "Add `v–y` to the tree, because 1 is the cheapest of the three edges"
+        explains: "`y` is already in `X`. An edge between two tree vertices closes a cycle, and Prim never considers it."
+      - text: "Decrease `key[w]` to 5 and `key[x]` to 6"
+        explains: "A key only goes down. 6 is worse than `x`'s current 3, so `x` keeps its old edge."
+      - text: "Add `v–w` to the tree immediately, since it improved `w`'s key"
+        explains: "Decrease-key only updates the candidate. `w` and `v–w` join the tree when `w` is extracted, and an even cheaper edge to `w` may appear before then."
+    work: |-
+      w: in heap, 5 < 7 → decrease-key, record v–w.
+      x: in heap, 6 ≥ 3 → no change.
+      y: in X → skip.
+      Nothing is added to T until the next extract-min.
+  - topic: "Week 7 · Greedy algorithms and minimum spanning trees"
+    ask: "Heap-based Prim runs on a connected graph with 50 vertices and 300 edges. At most how many decrease-key operations can it perform, and exactly how many extract-mins?"
+    choices:
+      - text: "At most 300 decrease-keys; 49 extract-mins"
+        correct: true
+        explains: "Right. Each edge can lower a key at most once, when its first endpoint is extracted and the other is still outside `X`. Every vertex except the start is extracted once."
+      - text: "At most 600 decrease-keys; 50 extract-mins"
+        explains: "600 is `2m`, the number of list entries checked. Only the first of an edge's two entries to be read can lower a key, because by the second, the other end is in `X`. And the start vertex is never extracted as a candidate."
+      - text: "At most 49 decrease-keys; 49 extract-mins"
+        explains: "A vertex's key can be lowered several times, once by each new neighbour that offers a cheaper connection. The bound comes from the edges, not the vertices."
+      - text: "At most 2,500 decrease-keys; 49 extract-mins"
+        explains: "2,500 is `n²`. Decrease-keys come from edges, and there are only 300 of them."
+    work: |-
+      Extract-min: n − 1 = 49 (every vertex but the start).
+      Decrease-key: ≤ one per edge = m = 300.
+      Neighbour checks: 2m = 600, but only ≤ 300 can lower a key.
+  - topic: "Week 7 · Greedy algorithms and minimum spanning trees"
+    ask: "An implementation of Prim uses an indexed heap, but its sift-up and sift-down swap heap entries without updating the position table. What goes wrong?"
+    choices:
+      - text: "A later decrease-key reads a stale position and edits the wrong slot, so keys and heap order can be corrupted"
+        correct: true
+        explains: "Right. The table is only useful while it is accurate. After an unrecorded swap, `position[d]` points at whichever vertex now occupies `d`'s old slot."
+      - text: "Nothing; the position table is only read when the heap is built"
+        explains: "It is read on every decrease-key, to find the entry without searching. That is the reason for having it."
+      - text: "Decrease-key becomes `O(n)` but still gives correct answers"
+        explains: "The code still trusts the table, so it does not fall back to a search. It goes straight to the wrong slot."
+      - text: "Extract-min returns the largest key instead of the smallest"
+        explains: "Extract-min reads slot 0, which the swaps keep correct. The damage comes from decrease-key using the out-of-date positions."
+    work: |-
+      Swap entries in slots i and j → must also swap position[ ] for those two vertices.
+      Skip that, and position[v] names v's old slot.
+      Next decrease-key(v) writes into that slot → wrong vertex changed.
+  - topic: "Week 7 · Greedy algorithms and minimum spanning trees"
+    ask: "Union-find with union by rank starts with singletons `a` to `f`. Perform `Union(a, b)`, `Union(c, d)`, `Union(a, c)`, `Union(e, f)`, `Union(e, a)`. What is the rank of the final root of the group `{a, b, c, d, e, f}`?"
+    choices:
+      - text: "2"
+        correct: true
+        explains: "Right. `{a,b}` and `{c,d}` reach rank 1, and merging them, equal ranks, gives rank 2. `{e,f}` has rank 1, so it goes under the rank-2 root without raising it."
+      - text: "3"
+        explains: "That would need the last merge to join two rank-2 groups. `{e, f}` has rank 1, and a lower-rank root goes under the higher one with no change in rank."
+      - text: "5"
+        explains: "That counts Union calls. Rank rises only when two roots of equal rank merge."
+      - text: "6"
+        explains: "That is the group's size. A rank-2 root has at least `2² = 4` vertices, and here it has 6, but rank bounds height, not size."
+    work: |-
+      Union(a,b): ranks 0,0 → rank 1.   Union(c,d): ranks 0,0 → rank 1.
+      Union(a,c): ranks 1,1 → rank 2.   Union(e,f): ranks 0,0 → rank 1.
+      Union(e,a): ranks 1 vs 2 → {e,f} goes under; rank stays 2.
+  - topic: "Week 7 · Greedy algorithms and minimum spanning trees"
+    ask: "Kruskal with union-find runs on a graph with 20 vertices that falls into 3 separate connected pieces. How many edges does it accept, and when does it stop?"
+    choices:
+      - text: "17 edges, after processing every edge in the sorted list"
+        correct: true
+        explains: "Right. A spanning forest of 3 trees on 20 vertices has `20 − 3 = 17` edges. The count never reaches `n − 1 = 19`, so the stopping rule never fires and every edge is examined."
+      - text: "19 edges, stopping as soon as it reaches `n − 1`"
+        explains: "No edge joins the separate pieces, so 19 edges cannot be accepted. Each tree in the forest has one fewer edge than vertices, so 3 trees have 3 fewer edges in total."
+      - text: "It fails, because Kruskal requires a connected graph"
+        explains: "Kruskal never relies on connectivity. It returns a minimum spanning forest, one MST for each piece."
+      - text: "20 edges, one per vertex"
+        explains: "Any 20 edges on 20 vertices contain a cycle, and Kruskal rejects every edge that closes one."
+    work: |-
+      Each piece with nᵢ vertices gets a tree of nᵢ − 1 edges.
+      Total: (n₁ − 1) + (n₂ − 1) + (n₃ − 1) = 20 − 3 = 17.
+      17 < n − 1 = 19 → the stopping rule never triggers → process all edges.
+  - topic: "Week 7 · Greedy algorithms and minimum spanning trees"
+    ask: "Graph: `p–q` 3, `p–r` 1, `q–r` 4, `q–s` 2, `r–s` 5, `r–t` 6, `s–t` 7. Take the cut `{p, r}` against `{q, s, t}`. Which edge does the cut property guarantee is in some MST?"
+    choices:
+      - text: "`p–q`, weight 3"
+        correct: true
+        explains: "Right. The crossing edges are `p–q` 3, `q–r` 4, `r–s` 5 and `r–t` 6, and `p–q` is the cheapest. It is in the MST of weight 12."
+      - text: "`p–r`, weight 1"
+        explains: "`p–r` is in the MST, but this cut does not show it, because both of its ends are on the same side. Each cut speaks only about the edges that cross it."
+      - text: "`q–s`, weight 2"
+        explains: "`q–s` is cheaper than `p–q`, but both its ends are on the `{q, s, t}` side, so it does not cross this cut."
+      - text: "`r–t`, weight 6"
+        explains: "`r–t` crosses the cut, and it is in the MST, but it is not the cheapest crossing edge, so the cut property says nothing about it."
+    work: |-
+      Sides: {p, r} | {q, s, t}.
+      Crossing: p–q 3, q–r 4, r–s 5, r–t 6.   Same side: p–r 1, q–s 2, s–t 7.
+      Cheapest crossing: p–q 3 → in some MST.
+  - topic: "Week 7 · Greedy algorithms and minimum spanning trees"
+    ask: "Every edge weight `w` in a graph is replaced. Which of these replacements can change which spanning tree is minimum?"
+    choices:
+      - text: "`w ↦ −w`"
+        correct: true
+        explains: "Right. Negating reverses every comparison, so the cheapest edges become the most expensive. In general the MST of the new weights is a maximum spanning tree of the old ones."
+      - text: "`w ↦ w − 10`, even if some weights become negative"
+        explains: "Every spanning tree has `n − 1` edges, so every total drops by exactly `10(n − 1)`. The cheapest tree stays the cheapest."
+      - text: "`w ↦ 3w`"
+        explains: "Multiplying by a positive constant keeps every comparison the same, and both algorithms depend only on how weights compare."
+      - text: "`w ↦ w + 5`"
+        explains: "Every tree gains `5(n − 1)`, the same amount, so their order is unchanged."
+    work: |-
+      MST depends only on the order of the weights.
+      w − 10, 3w, w + 5: order-preserving → same MST.
+      −w: order-reversing → x < y becomes −x > −y → MST can change.
+  - topic: "Week 7 · Greedy algorithms and minimum spanning trees"
+    ask: "Two students compute an MST of the same graph, one with Prim and one with Kruskal. Their trees differ in one edge, and both have total weight 41. What can you conclude?"
+    choices:
+      - text: "Both can be correct; the graph must have tied weights, since distinct weights would give a unique MST"
+        correct: true
+        explains: "Right. With all weights distinct the MST is unique, so two different MSTs mean some weights are tied. Equal totals are what any two MSTs must have."
+      - text: "One of them made a mistake, because a graph has only one MST"
+        explains: "A graph with tied weights can have several MSTs. Different tie-breaking leads to different trees with the same total."
+      - text: "Prim and Kruskal always return different trees"
+        explains: "On a graph with distinct weights they return the same tree, the only MST. They can differ only when ties allow more than one."
+      - text: "Kruskal's is right, because sorting breaks ties correctly"
+        explains: "No tie-break is more correct than another. Every cheapest crossing edge is safe by the cut property, so either choice leads to a valid MST."
+    work: |-
+      Distinct weights ⇒ unique MST.
+      Here: two different trees, same total 41 ⇒ not unique ⇒ some weights tied.
+      Both trees are minimum.
 ---
-80 multiple-choice questions across all six weeks. The paper is divided into sections, and nothing is revealed until you
+94 multiple-choice questions across all seven weeks. The paper is divided into sections, and nothing is revealed until you
 submit: pick an answer for each question (you can change it as often as you like), then submit a
 section to see your score for it, the correct answers, an explanation for each one you chose, and a
 worked solution. You can submit one section at a time, in any order, or the whole exam at once.

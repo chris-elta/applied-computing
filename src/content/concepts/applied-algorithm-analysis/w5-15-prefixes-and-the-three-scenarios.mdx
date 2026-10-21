@@ -81,6 +81,12 @@ questions:
     work: |-
       `m = 4`, `n = 4`. Subproblems: `(m + 1)(n + 1) = 5 × 5 = 25`.
       `E(4, 0)`: FLAW → "" by deleting F, L, A, W. Base case `E(i, 0) = i` gives 4.
+assessed:
+  - "Quiz 4 · Q5"
+prerequisites:
+  - topic: "Alignments and their columns"
+    explains: "An alignment writes two strings one above the other with gaps allowed. Each column holds a letter over a letter, a letter over a gap, or a gap over a letter, and its cost is 1 unless the two letters match. This page sorts every alignment by the shape of its last column."
+    see: "applied-algorithm-analysis/w5-14-edit-distance-and-alignments"
 ---
 
 The previous concept ended with an observation: strip the last column from an alignment and

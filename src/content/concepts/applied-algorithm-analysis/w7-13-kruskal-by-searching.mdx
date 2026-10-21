@@ -1,0 +1,102 @@
+---
+course: applied-algorithm-analysis
+section: w7-kruskal
+order: 1270
+title: Kruskal by Searching
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week7.html?hash=true#/37
+    caption: Slides 38–39 of 57 — the running time with a search per edge, then remembering connectivity instead.
+notation:
+  - symbol: DFS, BFS
+    reads: depth-first search, breadth-first search
+    means: >-
+      Two standard ways to explore a graph from a starting vertex and find everything
+      reachable from it. Either one takes time proportional to the vertices and edges it
+      explores.
+  - symbol: "O(m log m)"
+    reads: big O of m log m
+    means: The cost of sorting `m` edges with a comparison sort such as mergesort.
+  - symbol: simple graph
+    reads: simple graph
+    means: >-
+      A graph with at most one edge between any pair of vertices and no edge from a vertex to
+      itself. Then `m ≤ n(n − 1)/2`.
+questions:
+  - ask: >-
+      In the basic version of Kruskal, each cycle check is a DFS in the *selected forest*,
+      not in the whole graph. Why does one check cost `O(n)` rather than `O(n + m)`?
+    choices:
+      - text: The selected edges form a forest, which has at most `n − 1` edges
+        correct: true
+        explains: >-
+          The search only follows edges already accepted, and a forest on `n` vertices has
+          fewer than `n` of them. So one search explores `O(n)` vertices and edges, whatever
+          `m` is.
+      - text: DFS always takes `O(n)` time on any graph
+        explains: >-
+          DFS takes time proportional to the vertices and edges it explores. On the full
+          graph that is `O(n + m)`. The bound here comes from searching a forest.
+      - text: The search stops as soon as it finds `v`, and that takes at most `n` steps
+        explains: >-
+          Stopping early helps on average, but the worst case is the search that *fails*:
+          `u` and `v` are not connected, and the whole component has to be explored.
+      - text: Only `n − 1` edges are ever checked
+        explains: >-
+          `n − 1` edges are *accepted*. Kruskal may have to check all `m` before it has them,
+          and the slow part is `m` checks.
+---
+
+Each step of Kruskal asks whether the endpoints `u` and `v` of the next edge are already
+connected by the selected edges. The lecture asks what that costs if you answer it the
+straightforward way.
+
+> Consider a basic Kruskal implementation that uses DFS or BFS in the current forest for
+> every cycle check. What is the worst-case running time on a connected simple graph with
+> `n` vertices and `m` edges?
+
+The options were `O(m log n)`, `O(n²)`, `O(mn)` and `O(m²)`.
+
+## Count it
+
+| Work | How many | Each | Total |
+| --- | --- | --- | --- |
+| sort the edges | once | `O(m log m)` | `O(m log m)` |
+| cycle check | up to `m` edges | `O(n)` | `O(mn)` |
+
+**Why `O(n)` per check.** The search runs in the *selected forest*, not in the whole graph.
+A forest on `n` vertices has at most `n − 1` edges, so DFS from `u` explores `O(n)` vertices
+and edges in the worst case.
+
+**Why up to `m` checks.** Kruskal can stop after `n − 1` accepted edges, but it does not know
+in advance how many edges it will reject on the way. In the worst case it examines all `m`.
+
+Sorting is `O(m log m)`. For a simple graph `m ≤ n²`, so `log m ≤ 2 log n`, and
+`O(m log m) = O(m log n)`. That is smaller than `O(mn)`, so the checks are the larger term:
+the answer is **`O(mn)`**.
+
+`O(m²)` is what you would get by searching the *whole graph*, `O(n + m)` per check. That
+overcounts, because only selected edges can form the cycle.
+
+## The waste
+
+Every check starts a new search, and almost everything it finds was already known. When
+`(a, b)` was rejected in the worked example, the search rediscovered the path `a – c – b`,
+which was built by accepting `(a, c)` and `(b, c)`. Kruskal had all the information it needed
+when it accepted those edges. It did not keep it.
+
+## Remember the groups instead
+
+The lecture's replacement:
+
+- Keep track of **which vertices are connected**: the components of the forest so far.
+- For a candidate `(u, v)`, compare the **groups** of `u` and `v`.
+  - **Same group** → they are already connected → skip the edge.
+  - **Different groups** → accept the edge and **merge** the two groups.
+- No DFS or BFS is needed.
+
+The structure that does this is **union-find**. It needs exactly two operations: "which
+group is this vertex in?" and "merge these two groups". The next concept describes both.
+
+> The basic version searches again for every edge and gets `O(mn)`. The fix is to keep the
+> connectivity you already know, and update it whenever an edge is accepted.

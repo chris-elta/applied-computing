@@ -1,0 +1,101 @@
+---
+course: applied-algorithm-analysis
+section: w7-compare
+order: 1330
+title: Prim Versus Kruskal
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week7.html?hash=true#/53
+    caption: Slides 54–55 of 57 — both algorithms stepped through the six-vertex graph, then the side-by-side table.
+notation:
+  - symbol: dense, sparse
+    reads: dense, sparse
+    means: >-
+      Dense: close to the most edges possible, `m` near `n²/2`. Sparse: few edges, `m`
+      about the same size as `n`.
+  - symbol: "O(n²)"
+    reads: big O of n squared
+    means: >-
+      An array-based Prim, which keeps one best-cost entry per vertex and scans the array to
+      find the minimum. It is a different implementation from the heap version.
+questions:
+  - ask: >-
+      Partway through, the edges an MST algorithm has selected are `(b, e)` and `(a, c)`,
+      which share no vertex. Which algorithm could be in this state?
+    choices:
+      - text: "Kruskal only: its intermediate state is a forest, and Prim's is always one tree"
+        correct: true
+        explains: >-
+          This is the five-vertex example after two Kruskal steps. Prim's edges always touch
+          its single tree, so after two steps they share a vertex.
+      - text: Prim only, if it started from `b`
+        explains: >-
+          From `b`, Prim's first edge touches `b`, and its second must touch `X`, which then
+          contains `b` and `e`. `(a, c)` touches neither.
+      - text: Either; both algorithms build separate trees and merge them at the end
+        explains: >-
+          Only Kruskal keeps several trees. Prim's partial answer is connected at every step.
+      - text: Neither; an MST algorithm never holds edges that are not connected
+        explains: >-
+          Kruskal does, routinely. The selected edges are a forest, and each later accepted
+          edge merges two of its trees.
+---
+
+The final demo runs both algorithms on the six-vertex graph from slide 14. Its edges are
+`A–C` 1, `C–D` 2, `A–D` 3, `A–B` 4, `B–C` 4, `B–D` 4, `C–F` 4, `E–F` 5 and `D–F` 6.
+
+## Running both
+
+**Prim, from `A`.** Each step: find the edges crossing out of `X`, take the cheapest.
+
+| Step | `X` | Take |
+| --- | --- | --- |
+| 1 | `{A}` | `A–C` 1 |
+| 2 | `{A, C}` | `C–D` 2 |
+| 3 | `{A, C, D}` | four edges tie at 4: `A–B`, `B–C`, `B–D`, `C–F`. The demo takes `A–B` |
+| 4 | `{A, B, C, D}` | `C–F` 4 (beats `D–F` 6) |
+| 5 | `{A, B, C, D, F}` | `E–F` 5 |
+
+**Kruskal.** Each step: look at the next cheapest edge, then keep it or skip it.
+
+| Edge | Decision |
+| --- | --- |
+| `A–C` 1 | keep |
+| `C–D` 2 | keep |
+| `A–D` 3 | **skip**: `A – C – D` |
+| `A–B` 4 | keep |
+| `B–C` 4 | **skip**: `B – A – C` |
+| `C–F` 4 | keep |
+| `B–D` 4 | **skip** |
+| `E–F` 5 | keep: five edges, stop |
+
+Both reach total weight 16. On this graph they even pick the same five edges. Kruskal's
+forest happens to stay in one piece, because the cheapest edges are all next to each other.
+The difference shows in the **work**. Kruskal examines and rejects three edges. Prim never
+treats an edge inside `X` as a candidate, so it never needs to reject one.
+
+The tree they return uses `A–B`, but slide 14's MST used `B–D`. Both weigh 16. The tie at
+weight 4 means "the MST" here is one of several, and the one you get depends on how ties are
+broken.
+
+## Side by side
+
+| | Prim | Kruskal |
+| --- | --- | --- |
+| intermediate state | one tree, always connected | a forest of several trees |
+| decision rule | cheapest edge leaving `X` | cheapest remaining edge that closes no cycle |
+| needs a start vertex | yes | no |
+| key data structure | heap over `V − X` | sort, then union-find |
+| running time | `O((m + n) log n)` | `O((m + n) log n)` |
+| where the log factor comes from | heap updates and extractions | sorting, and the Find/Union bound |
+
+## Notes on the table
+
+- The bounds assume a **connected simple graph**.
+- **Pre-sorted edges** remove Kruskal's sorting work, but the component checks remain.
+- An **array-based Prim** runs in `O(n²)`. On a dense graph, where `m` is close to `n²`, that
+  beats `O(m log n) ≈ O(n² log n)`. It is a different implementation from the heap version
+  analysed here.
+
+> Two greedy rules, the same bound and, without ties, the same tree. Prim grows one tree from
+> a start vertex. Kruskal merges a forest in sorted order.

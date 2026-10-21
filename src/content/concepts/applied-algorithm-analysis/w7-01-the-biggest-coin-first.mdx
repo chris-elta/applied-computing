@@ -1,0 +1,104 @@
+---
+course: applied-algorithm-analysis
+section: w7-greedy
+order: 1150
+title: The Biggest Coin First
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week7.html?hash=true#/4
+    caption: Slides 5–6 of 57 — what makes an algorithm greedy, then a coin system where greedy loses.
+notation:
+  - symbol: greedy
+    reads: greedy
+    means: >-
+      An algorithm that builds its answer one choice at a time, always takes the option that
+      looks best right now, and never undoes a choice.
+  - symbol: local / global optimum
+    reads: local optimum, global optimum
+    means: >-
+      Local: the best option at this one step. Global: the best answer to the whole problem.
+      A greedy algorithm is correct exactly when the first always leads to the second.
+questions:
+  - ask: >-
+      With coins 1, 3 and 4, biggest-coin-first makes 6 as `4 + 1 + 1`, three coins, and the
+      best answer is `3 + 3`, two. Which statement about greedy algorithms does this show?
+    choices:
+      - text: >-
+          A rule that looks best at every step can still give a worse answer overall, so a
+          greedy algorithm needs a proof before you trust it
+        correct: true
+        explains: >-
+          Taking the 4 was the best single step, and it left a remainder of 2 that only 1s
+          could fill. Nothing in the rule can see that, and the rule never goes back. A proof
+          is what tells you, for a particular problem, that this cannot happen.
+      - text: Greedy algorithms never find the optimum for coin problems
+        explains: >-
+          Too strong. With coins 1, 5, 10 and 25, biggest-first is optimal for every amount.
+          Whether greedy works depends on the coin values, which is why each case needs its
+          own argument.
+      - text: Greedy would work here if it were allowed to undo its last choice
+        explains: >-
+          Then it would no longer be greedy. "No backtracking" is part of the definition. An
+          algorithm that revisits choices is a search, or a dynamic program.
+      - text: The greedy answer is wrong because 4 is not the biggest coin that fits
+        explains: >-
+          4 is the biggest coin no larger than 6, so greedy followed its own rule correctly.
+          The rule is the problem, not how it was carried out.
+    work: |-
+      Greedy: 6 → take 4, 2 left → take 1, 1 left → take 1, 0 left. Three coins.
+      Better: 3 + 3 = 6. Two coins.
+      One coin is impossible (no coin is worth 6), so two is optimal.
+---
+
+Make 6 out of coins worth 1, 3 and 4, using as few coins as possible. You can use each value
+as often as you like.
+
+The obvious method: take the biggest coin that fits, subtract it, and repeat.
+
+| Step | Amount left | Biggest coin that fits | Take |
+| --- | --- | --- | --- |
+| 1 | 6 | 4 | 4 |
+| 2 | 2 | 1 | 1 |
+| 3 | 1 | 1 | 1 |
+
+Three coins: `4 + 1 + 1`. But `3 + 3` uses two, and no single coin is worth 6, so two is the
+best possible. The method lost.
+
+## What made it lose
+
+The first step was the best-looking one: 4 gets closest to 6. What it left behind was a 2,
+and the only way to make 2 from these coins is `1 + 1`. Starting with a 3 looks worse, since
+it leaves 3 instead of 2, but that 3 can be paid with one coin.
+
+The method judges each coin by how much it takes off *now*. It never asks what the remainder
+will cost. This is the same mistake that value per pound made in the knapsack last week: a
+score for one choice on its own cannot see how well the rest of the problem works out.
+
+## Greedy algorithms
+
+Biggest-coin-first is an example of a **greedy algorithm**. The lecture defines one by four
+properties:
+
+- it builds the solution **step by step**;
+- at each step it takes the **best local option**, the one that looks best right now;
+- it **never backtracks**: once a choice is made, it is final;
+- it needs a **correctness proof** before you can say the result is globally optimal.
+
+The fourth property follows from the first three. Committing for good to whatever looks best
+right now is a gamble, and the coin example shows the gamble can lose. Greedy algorithms are
+fast and easy to write. Whether one is *correct* depends on the problem, and you only know
+that from a proof.
+
+For coins, the fix is the table from last week. Let `M(a)` be the fewest coins that make
+amount `a`, and try every coin as the last one. That compares whole answers instead of single
+steps.
+
+## This week
+
+Most of this lecture is about a problem where greedy *does* work: connecting a network as
+cheaply as possible. It has two greedy algorithms, Prim's and Kruskal's, and the cut property
+explains why both are correct.
+
+> A greedy rule is a claim: the best step now is part of a best answer overall. Sometimes the
+> claim is true and sometimes it is false, so a greedy algorithm without a proof is only a
+> guess.

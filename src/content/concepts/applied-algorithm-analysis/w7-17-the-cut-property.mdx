@@ -1,0 +1,113 @@
+---
+course: applied-algorithm-analysis
+section: w7-cut
+order: 1310
+title: The Cut Property
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week7.html?hash=true#/49
+    caption: Slides 50–51 of 57 — a cut of the four-town graph, its crossing edges, and the cheapest one.
+notation:
+  - symbol: cut
+    reads: cut
+    means: >-
+      A split of all the vertices into two groups. Nothing is deleted; every vertex simply
+      goes on one side or the other.
+  - symbol: crossing edge
+    reads: crossing edge
+    means: An edge with one endpoint in each group of the cut.
+  - symbol: safe
+    reads: safe
+    means: >-
+      An edge is safe to take if adding it still leaves some MST that contains every edge
+      chosen so far.
+questions:
+  - ask: >-
+      Cut the four-town graph into `{a, c}` and `{b, d}`. The edges are `(a, b)` 1,
+      `(b, d)` 2, `(a, d)` 3, `(a, c)` 4 and `(c, d)` 5. Which edge does the cut property say
+      belongs to some MST?
+    choices:
+      - text: "`(a, b)`, weight 1"
+        correct: true
+        explains: >-
+          The crossing edges are `(a, b)` 1, `(a, d)` 3 and `(c, d)` 5. `(a, b)` is the
+          cheapest of them, so it belongs to an MST, and it is in the MST of weight 7.
+      - text: "`(b, d)`, weight 2"
+        explains: >-
+          `(b, d)` has both ends on the same side of this cut, so it does not cross. It is the
+          cheapest crossing edge of a *different* cut, `{a, b}` against `{c, d}`.
+      - text: "`(a, c)`, weight 4"
+        explains: >-
+          `(a, c)` joins two vertices on the same side. The property only compares edges that
+          cross the cut.
+      - text: "`(c, d)`, weight 5"
+        explains: >-
+          That edge does cross, but it is the most expensive of the three crossing edges.
+          The property is about the cheapest.
+    work: |-
+      Sides: {a, c} | {b, d}.
+      Crossing: (a,b) 1, (a,d) 3, (c,d) 5.   Same-side: (a,c) 4, (b,d) 2.
+      Cheapest crossing: (a,b) 1 → in some MST.
+---
+
+Prim and Kruskal make greedy choices, and greedy choices lost with coins. The reason they
+are correct here comes down to one idea.
+
+## A cut is a division
+
+Put every vertex on one side or the other. Nothing is deleted. On the four-town graph, take
+`{a, b}` on the left and `{c, d}` on the right.
+
+| Edge | Weight | Crosses? |
+| --- | --- | --- |
+| `(a, b)` | 1 | no: both on the left |
+| `(b, d)` | 2 | **yes** |
+| `(a, d)` | 3 | **yes** |
+| `(a, c)` | 4 | **yes** |
+| `(c, d)` | 5 | no: both on the right |
+
+A **crossing edge** has one endpoint in each group.
+
+## The cheapest way across is safe
+
+**Every spanning tree must cross every cut at least once.** If none of its edges crossed,
+nothing on the left could reach anything on the right, so it would not be spanning.
+
+So the MST has to pay for at least one crossing edge. The **cut property** says the cheapest
+one is never a mistake:
+
+> **A cheapest edge crossing a cut belongs to at least one MST.**
+
+Here the cheapest crossing edge is `(b, d)` at 2, and it is indeed in the MST of weight 7.
+
+The comparison is only among **crossing edges**. `(a, b)` costs less than `(b, d)`, but it
+does not cross this cut, so it plays no part. Each cut has its own cheapest crossing edge.
+
+## The intuition behind it
+
+Suppose some MST does not use the cheapest crossing edge `e`. That tree still crosses the
+cut somewhere, so add `e` to it. Now `e` and the tree's own route between `e`'s endpoints form
+a cycle, and that cycle crosses the cut a second time, through some edge `f`. Remove `f`.
+The result is still a spanning tree, and since `e` is no more expensive than `f`, it costs no
+more. So there is an MST containing `e`. The full proof is in DPV, *Algorithms*, chapter 5.
+
+## Two conditions
+
+**Keep the selected edges together.** When the algorithm has already chosen some edges, the
+cut must keep each selected component **on one side**. If `(a, b)` has been chosen, `a` and
+`b` go on the same side. Then the cheapest edge connecting that group to the rest is safe to
+add *together with* the edges already chosen. A cut that separated `a` from `b` could pick an
+edge that, together with `(a, b)`, closes a cycle.
+
+**Ties are allowed.** If two crossing edges share the lowest weight, either can be chosen,
+and each belongs to some MST. That is why ties can lead to different MSTs with the same total.
+
+## Why this makes greedy work
+
+The coin rule failed because a good-looking step could leave a remainder that was expensive
+to finish. The cut property rules that out for MSTs: taking the cheapest edge across a cut
+never excludes an optimal answer. The next concept shows that each step of Prim and of
+Kruskal takes the cheapest edge across some cut.
+
+> Every spanning tree must cross every cut. The cheapest crossing edge is always part of some
+> MST, provided the cut keeps the components already selected in one piece.

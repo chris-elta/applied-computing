@@ -51,6 +51,12 @@ questions:
       C (4 lb): `K(7 − 4) + 16 = K(3) + 16 = 14 + 16 = 30`
       D (2 lb): `K(7 − 2) + 9 = K(5) + 9 = 23 + 9 = 32`
       `K(7) = max{30, 32, 30, 32} = 32`
+assessed:
+  - "Quiz 5 · Q3"
+prerequisites:
+  - topic: "Optimal answers built from smaller ones"
+    explains: "If the best packing of a bag of size `w` contains some item `i`, then removing one copy of it leaves a packing of size `w − wᵢ`, and that leftover must itself be the best for its size, or swapping in something better would improve the whole. That is what lets one table cell per capacity do the work."
+    see: "applied-algorithm-analysis/w5-04-shortest-paths-in-a-dag"
 ---
 
 Start with the version where every item comes in unlimited copies. Use the same four items:

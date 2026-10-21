@@ -57,6 +57,14 @@ questions:
       Then `2×4` by `4×5` → `2·4·5 = 40`. Total `240 + 40 = 280`.
       `X(YZ)`: `YZ` is `30×4` by `4×5` → `30·4·5 = 600`, result `30 × 5`.
       Then `2×30` by `30×5` → `2·30·5 = 300`. Total `600 + 300 = 900`.
+assessed:
+  - "Quiz 5 · Q2"
+prerequisites:
+  - topic: "Matrix multiplication by definition"
+    explains: "Each entry of a product is one row of the left matrix times one column of the right, multiplied term by term and added. So the cost of a whole product is the number of entries times the length of each row-column pair."
+    see: "applied-algorithm-analysis/w4-10-matrix-multiplication-by-definition"
+  - topic: "Reading matrix dimensions"
+    explains: "`p × q` means `p` rows and `q` columns, always rows first. Two matrices can be multiplied only when the left one's column count equals the right one's row count, and the product keeps the outer two numbers: a `3 × 7` times a `7 × 4` is a `3 × 4`. Write each intermediate result's shape down before pricing the next step."
 ---
 
 You have a row of matrices to multiply together: `A₁ × A₂ × ⋯ × Aₙ`. Matrix multiplication

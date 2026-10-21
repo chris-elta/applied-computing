@@ -1,0 +1,115 @@
+---
+course: applied-algorithm-analysis
+section: w7-mst
+order: 1180
+title: The Minimum Spanning Tree
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week7.html?hash=true#/11
+    caption: Slides 12–14 of 57 — six of sixteen spanning trees, the network-design motivation, then the formal problem.
+notation:
+  - symbol: spanning tree
+    reads: spanning tree
+    means: >-
+      A set of the graph's edges that connects every vertex and contains no cycle. It
+      "spans" the graph: it reaches every vertex.
+  - symbol: MST
+    reads: M S T
+    means: Minimum spanning tree, a spanning tree with the smallest possible total weight.
+  - symbol: "E′ ⊆ E"
+    reads: E prime is a subset of E
+    means: >-
+      The tree's edges `E′` are chosen from the graph's edges `E`. The prime mark only
+      makes a new name; it is not a derivative.
+  - symbol: "wₑ"
+    reads: w sub e
+    means: The weight of edge `e`. The subscript says which edge.
+  - symbol: "∑_{e ∈ E′} wₑ"
+    reads: the sum over e in E prime of w sub e
+    means: Add up the weights of every edge in the tree.
+  - symbol: "nⁿ⁻²"
+    reads: n to the n minus 2
+    means: >-
+      The number of spanning trees when every pair of the `n` vertices has an edge. For
+      `n = 4` that is `4² = 16`; for `n = 10` it is a hundred million.
+questions:
+  - ask: >-
+      On the six-vertex example, the slide's MST uses `(B, D)` with weight 4 and totals 16.
+      Swapping `(B, D)` for `(A, B)`, also weight 4, gives another MST with total 16. What does
+      that tell you?
+    choices:
+      - text: >-
+          An MST need not be unique when weights are tied, but every MST has the same total
+          weight
+        correct: true
+        explains: >-
+          The minimum total is a single number. Several different trees can reach it, and ties
+          are what make that possible. With all weights distinct, the MST is unique.
+      - text: The swap must be invalid, because a graph has only one MST
+        explains: >-
+          A graph can have several. Here `(A, B)` reconnects `B` just as `(B, D)` did, at the
+          same cost, so the new tree is spanning and just as cheap.
+      - text: One of the two trees is not really minimum; you have to break ties carefully
+        explains: >-
+          Both total 16 and nothing cheaper exists, so both are minimum. Tie-breaking decides
+          which one an algorithm returns, not whether it is correct.
+      - text: MSTs are not unique because the graph has negative weights
+        explains: >-
+          Every weight in this graph is positive. What allows two MSTs here is the tie between
+          weight-4 edges.
+---
+
+The four-town problem in general: you have locations and a list of possible links, each with
+a positive cost. The network must be **connected**, with a path between every pair of
+locations. Subject to that, build it as cheaply as possible. The previous two concepts showed
+that the answer is a tree on all the vertices.
+
+## Spanning trees
+
+A **spanning tree** of a weighted undirected graph is a set of its edges that
+
+- forms **no cycles**, and
+- **connects every pair** of vertices with a path.
+
+A graph usually has many. Four vertices with every pair joined have 16. The four-town graph
+has 8, because it is missing the edge `(b, c)`.
+
+In general, `n` vertices with every pair joined have `nⁿ⁻²` spanning trees. For 10 vertices
+that is `10⁸`, a hundred million, and for 20 it is about `2.6 × 10²³`. Listing them all and
+picking the cheapest is not an option.
+
+## The problem, formally
+
+| | |
+| --- | --- |
+| **Input** | a connected, undirected graph `G = (V, E)`; edge weights may be positive, zero or negative |
+| **Output** | a tree `T = (V, E′)`, with `E′ ⊆ E`, that minimises `weight(T) = ∑_{e ∈ E′} wₑ` |
+
+Two details:
+
+- **`T` uses all of `V`.** The tree has to reach every vertex, which is what makes it
+  spanning.
+- **Weights can be zero or negative.** The cycle-removal argument needed positive weights,
+  but here the output is required to be a tree, so cycles are ruled out by definition. The
+  algorithms in this lecture work with any weights.
+
+## There can be more than one
+
+The six-vertex example on slide 14 has edges `A–C` 1, `C–D` 2, `A–D` 3, `A–B` 4, `B–C` 4,
+`B–D` 4, `C–F` 4, `E–F` 5 and `D–F` 6. One MST is
+
+`A–C (1) + C–D (2) + B–D (4) + C–F (4) + E–F (5) = 16`.
+
+`B` hangs off the tree by `B–D`. It could hang off by `A–B` or `B–C` instead, both also
+weight 4, and the total would still be 16. So this graph has at least three MSTs.
+
+| Weights | MST |
+| --- | --- |
+| all distinct | exactly one |
+| some tied | maybe one, maybe several, all with the same total |
+
+So "the MST" is only correct wording when the MST is unique. Two correct algorithms, or two
+runs that break ties differently, can return different trees with the same weight.
+
+> Many spanning trees exist, and enumerating them is hopeless. The minimum total weight is
+> one number, but with tied weights several trees can achieve it.

@@ -1,0 +1,104 @@
+---
+course: applied-algorithm-analysis
+section: w7-prim
+order: 1210
+title: Adjacency Lists
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week7.html?hash=true#/20
+    caption: Slides 21 and 24 of 57 — the four-town graph as lists, then what storing and scanning them costs.
+notation:
+  - symbol: "n = ∣V∣, m = ∣E∣"
+    reads: n is the number of vertices, m is the number of edges
+    means: The two sizes that every running time this week is written in.
+  - symbol: "d(v)"
+    reads: d of v, the degree of v
+    means: >-
+      The number of neighbours of `v`, which is the length of `v`'s list. In the four-town
+      graph `d(a) = 3`.
+  - symbol: "(b, 1)"
+    reads: b, weight 1
+    means: >-
+      One entry in a list: a neighbour and the weight of the edge to it. In `a`'s list it
+      stands for the edge `(a, b)` of weight 1.
+  - symbol: "O(n + m)"
+    reads: big O of n plus m
+    means: >-
+      Proportional to the number of vertices plus the number of edges, which is the size of
+      the graph itself.
+questions:
+  - ask: >-
+      A connected, undirected graph has 6 vertices and 9 edges, stored as adjacency lists.
+      How many (neighbour, weight) entries are there across all the lists?
+    choices:
+      - text: "18"
+        correct: true
+        explains: >-
+          Each undirected edge is written down twice, once in each endpoint's list. `2m = 18`.
+          Adding up all the degrees always gives `2m` for the same reason.
+      - text: "9"
+        explains: >-
+          That counts each edge once. In an undirected graph, `(u, v)` appears as `v` in
+          `u`'s list *and* as `u` in `v`'s list.
+      - text: "36"
+        explains: >-
+          That is `n²`, the size of a 6 × 6 adjacency matrix. Lists store only the edges that
+          exist.
+      - text: "15"
+        explains: >-
+          `n + m` counts the lists plus the edges. The storage is `O(n + m)`, but the number of
+          entries is `2m`.
+    work: |-
+      Each edge `(u, v)` appears in `u`'s list and in `v`'s list.
+      Entries = 2 × m = 2 × 9 = 18.
+      Storage: 6 lists + 18 entries → `O(n + m)`.
+---
+
+Prim keeps asking "what are this vertex's neighbours, and what do the edges to them cost?"
+The graph needs to be stored so that question is cheap to answer.
+
+## The four towns as lists
+
+For each vertex, keep a list of `(neighbour, weight)` pairs:
+
+```
+a: [(b, 1), (c, 4), (d, 3)]
+b: [(a, 1), (d, 2)]
+c: [(a, 4), (d, 5)]
+d: [(a, 3), (b, 2), (c, 5)]
+```
+
+In `a`'s list, `(b, 1)` means the edge `(a, b)` with weight 1. Because the graph is
+undirected, the same edge also appears as `(a, 1)` in `b`'s list.
+
+**Five edges give ten entries.** Every edge is stored once at each of its endpoints. That is
+easy to forget when counting work, and the counts below depend on it.
+
+## What it costs
+
+With `n` vertices, `m` edges, and `d(v)` the number of neighbours of `v`:
+
+| Operation | Cost | Why |
+| --- | --- | --- |
+| store the graph | `O(n + m)` | `n` lists holding `2m` entries in total |
+| scan `v`'s neighbours | `O(d(v))` | read each entry in `v`'s list once |
+| scan the whole graph | `O(n + m)` | visit `n` lists and read `2m` entries |
+
+For a connected graph with `n ≥ 2` vertices, `m ≥ n − 1`, since a spanning tree alone needs
+that many edges. So `n` is at most `m + 1`, and a full scan is `O(m)`.
+
+## Why scan cost matters
+
+The simplest implementation of Prim finds the cheapest crossing edge by scanning **every**
+list each time. For each entry `(w, weight)` in the list of a vertex `v ∈ X`, it checks
+whether `w ∉ X` and keeps the smallest weight seen.
+
+The membership check `w ∉ X` has to be cheap, or it would cost more than the scan itself.
+Keep a Boolean array `inX[ ]` indexed by vertex: `inX[w]` is true when `w` has joined the
+tree. Checking it is `O(1)`.
+
+So one full search for the cheapest crossing edge costs `O(m)`. The next concept counts what
+happens when you repeat that search on every pass.
+
+> An undirected edge is stored twice, so the lists hold `2m` entries and a full scan costs
+> `O(n + m)`. The running times this week are counted in these scans.

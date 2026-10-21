@@ -1,0 +1,112 @@
+---
+course: applied-algorithm-analysis
+section: w7-prim
+order: 1190
+title: Prim's Algorithm
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week7.html?hash=true#/15
+    caption: Slides 16–20 of 57 — the rule, then three steps on the four-town graph starting from b.
+notation:
+  - symbol: "X"
+    reads: capital X
+    means: >-
+      The set of vertices the tree has reached so far. It starts as the single start vertex
+      and grows by one vertex per step.
+  - symbol: "s"
+    reads: s
+    means: The start vertex. Any vertex will do.
+  - symbol: "u ∈ X, v ∉ X"
+    reads: u is in X, v is not in X
+    means: >-
+      `∈` means "is a member of"; the slash in `∉` means "is not". Together they describe an
+      edge with one end inside the tree and one end outside it.
+  - symbol: "X ∪ {v}"
+    reads: X union v
+    means: "`X` with `v` added to it."
+  - symbol: "X = V"
+    reads: X equals V
+    means: Every vertex has been reached, so the algorithm stops.
+questions:
+  - ask: >-
+      Run Prim's algorithm on the four-town graph — `(a, b)` 1, `(b, d)` 2, `(a, d)` 3,
+      `(a, c)` 4, `(c, d)` 5 — but start from `c` instead of `b`. In what order are the edges
+      added?
+    choices:
+      - text: "`(a, c)`, then `(a, b)`, then `(b, d)`"
+        correct: true
+        explains: >-
+          From `X = {c}`, the crossing edges are `(a, c)` 4 and `(c, d)` 5, so take
+          `(a, c)`. With `X = {a, c}`, the cheapest crossing edge is `(a, b)` 1, and then
+          `(b, d)` 2. The total is 7 again: same tree, different order.
+      - text: "`(a, b)`, then `(b, d)`, then `(a, c)`"
+        explains: >-
+          That is the order in which the edges are cheapest overall, which is how Kruskal's
+          algorithm works. Prim can only take an edge that touches the tree it has, and from
+          `c` the edge `(a, b)` is not available at the first step.
+      - text: "`(a, c)`, then `(c, d)`, then `(a, b)`"
+        explains: >-
+          After `(a, c)`, the edge `(c, d)` 5 does cross out of `X`, but so do `(a, b)` 1
+          and `(a, d)` 3. Prim compares every crossing edge, not only those at the vertex it
+          just added.
+      - text: "`(c, d)`, then `(b, d)`, then `(a, b)`"
+        explains: >-
+          From `c`, the crossing edges are `(a, c)` 4 and `(c, d)` 5. 4 is cheaper.
+    work: |-
+      `X = {c}`: crossing (a,c) 4, (c,d) 5 → take (a,c).
+      `X = {a, c}`: crossing (a,b) 1, (a,d) 3, (c,d) 5 → take (a,b).
+      `X = {a, b, c}`: crossing (b,d) 2, (a,d) 3, (c,d) 5 → take (b,d).
+      Total 4 + 1 + 2 = 7.
+---
+
+Prim's algorithm grows **one tree** outward from a starting vertex. At every step it takes
+the cheapest edge that reaches a vertex the tree does not have yet.
+
+## The rule
+
+**Initialise.** Choose any start vertex `s`. The set of reached vertices is `X = {s}`, and
+the tree has no edges.
+
+**Repeat until `X = V`.**
+
+1. Look at every edge `(u, v)` with `u ∈ X` and `v ∉ X`, that is, one end in the tree and
+   one end outside it.
+2. Take the one of smallest weight.
+3. Add `v` to `X` and add `(u, v)` to the tree.
+
+**Result.** The chosen edges form a minimum spanning tree.
+
+Each step adds one vertex and one edge, so after `n − 1` steps every vertex is in and there
+are `n − 1` edges. That is the count Fact 1 said a spanning tree has.
+
+## Worked: the four towns, starting from `b`
+
+The edges are `(a, b)` 1, `(b, d)` 2, `(a, d)` 3, `(a, c)` 4 and `(c, d)` 5.
+
+| Step | `X` before | Edges with one end in `X` | Take |
+| --- | --- | --- | --- |
+| 1 | `{b}` | `(a, b)` 1, `(b, d)` 2 | `(a, b)` 1 |
+| 2 | `{a, b}` | `(a, c)` 4, `(a, d)` 3, `(b, d)` 2 | `(b, d)` 2 |
+| 3 | `{a, b, d}` | `(a, c)` 4, `(c, d)` 5 | `(a, c)` 4 |
+
+Three edges for four vertices, total `1 + 2 + 4 = 7`. This matches the answer to the opening
+puzzle.
+
+Look at step 2. `(b, d)` was available in step 1 too, and lost to `(a, b)`. It is chosen in
+step 2 because it is still the cheapest edge leaving the tree. The list of candidates
+**changes** as `X` grows: new edges appear when a vertex joins, and edges with both ends in
+`X` drop out.
+
+## What "greedy" means here
+
+Each step makes the locally best choice, the cheapest way to reach one more vertex, and never
+reconsiders it. That is the pattern that lost with coins. Here it is correct, and the cut
+property later in the week explains why. For now, notice what Prim *never* considers: an edge
+between two vertices already in `X`. Such an edge would close a cycle, and because Prim only
+takes edges that reach a new vertex, it cannot make that mistake.
+
+A different start vertex can change the order in which edges are added. If several MSTs
+exist, it can also change which tree is returned. The total weight is always the same.
+
+> Prim keeps one connected tree and repeatedly takes the cheapest edge out of it. Every edge
+> it takes reaches a new vertex, so it never closes a cycle.

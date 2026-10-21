@@ -83,6 +83,15 @@ questions:
       Versus O(n^2) for the direct convolution sum: n log n < n^2 for all n > 1, and the gap
       widens as n grows -- the entire payoff of reading the vectors as polynomials and taking
       the scenic route through the roots of unity.
+assessed:
+  - "Quiz 3 · Q1"
+prerequisites:
+  - topic: "The master theorem's balanced case"
+    explains: "For `T(n) = a T(n/b) + O(nᵈ)`, when `log_b a = d` every level of the recursion tree costs the same, and there are `log n` levels, so `T(n) = O(nᵈ log n)`. With `a = b = 2` and `d = 1`, that is `O(n log n)`."
+    see: "applied-algorithm-analysis/w3-08-master-theorem"
+  - topic: "Interpolation undoes evaluation"
+    explains: "Evaluation goes from coefficients to values; interpolation goes from values back to coefficients. They are the two conversions between the forms, and a fast method for multiplying polynomials has to make both of them fast, not only one."
+    see: "applied-algorithm-analysis/w4-15-two-representations"
 ---
 
 ```
