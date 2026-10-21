@@ -1,0 +1,92 @@
+---
+course: applied-research-methods
+section: w7-collecting
+order: 1040
+title: Credibility and Trustworthiness
+visuals:
+  - type: svg
+    src: applied-research-methods/week7/25.svg
+    caption: Slide 25 of 34 — six strategies for trustworthy qualitative data.
+notation:
+  - symbol: credibility
+    reads: kred-ih-BIL-ih-tee
+    means: Whether the findings are believable as an account of what really happened. It plays roughly the part that validity plays in quantitative work.
+  - symbol: transferability
+    reads: trans-fer-uh-BIL-ih-tee
+    means: Whether the findings could apply in other settings. Readers can only judge this if the setting is described in enough detail.
+  - symbol: triangulation
+    reads: try-ang-gyoo-LAY-shun
+    means: Collecting several forms of data on the same thing, so a finding does not rest on one source.
+  - symbol: audit trail
+    reads: AW-dit trail
+    means: A record of the data, decisions and reasoning, complete enough that someone else could follow how you reached each conclusion.
+questions:
+  - ask: A researcher concludes that a team distrusts its deployment pipeline, based only on interviews. Each engineer said so in an interview. Which strategy would most directly strengthen the finding?
+    choices:
+      - text: Triangulation, such as checking deployment logs and chat for manual overrides and rollbacks
+        correct: true
+        explains: >-
+          Interviews record what people say. If logs and chat show the same distrust, the
+          finding no longer rests on one form of data.
+      - text: Interviewing the same engineers again
+        explains: >-
+          A second round of the same form of data from the same people adds detail, not
+          independent support.
+      - text: Removing the interviews that mention the pipeline positively
+        explains: >-
+          That is the opposite of seeking contradictory evidence, and it would make the finding
+          less credible.
+      - text: Keeping the analysis private until it is complete
+        explains: >-
+          The lecture recommends seeking other people's feedback on the data and analyses,
+          not avoiding it.
+---
+
+If the researcher is the instrument, a reader has an obvious worry: how do I know this is
+not just your opinion? Quantitative work answers with validity and reliability (Week 3).
+Qualitative work aims for **credibility** and **transferability**, and the lecture gives six
+strategies for earning them.
+
+## The double-edged instrument
+
+The lecture calls the researcher-as-instrument the **strength** of qualitative research:
+
+| | |
+| --- | --- |
+| **Pro** | You can **discern underlying patterns** that no fixed instrument was built to catch |
+| **Con** | You bring **biases** that no fixed instrument has |
+
+The strategies below keep the first and limit the second.
+
+## Six strategies
+
+| Strategy | What you do | Guards against |
+| --- | --- | --- |
+| **Reflexivity** | Regularly **look inward** to identify your own biases | Mistaking your expectations for findings |
+| **Triangulation** | Collect **multiple forms of data** | A finding that rests on one source |
+| **Considerable time on site** | **Immerse** yourself in the field | A first impression standing in for the real pattern |
+| **Seeking exceptions** | **Intentionally** look for contradictory evidence | Seeing only what fits |
+| **Others' feedback** | Ask other people about your data and analyses | Readings only you would make |
+| **Audit trail** | Keep a record of data and decisions | Conclusions nobody can check |
+
+## Two that are easy to skip
+
+**Seeking exceptions** means more than accepting contradictory evidence if it turns up. It
+means **intentionally** looking for it. If your theme is "engineers distrust the pipeline",
+go looking for the engineer who trusts it, and find out why. Either the theme survives, or
+you learn its limits. Both make the finding stronger.
+
+**The audit trail** is what lets someone else check your work. It pulls together the memos
+from *Emergent Design and Its Data*, the transcripts and the coding decisions. It is the
+qualitative counterpart of Week 6's reproducibility: another researcher may not reach your
+conclusion, but they can see how you reached it.
+
+## Transferability
+
+A qualitative study does not claim that its findings hold everywhere. It describes its
+setting richly enough for a **reader** to judge whether the findings would carry over to
+theirs. A study of a ten-person start-up can be useful to a large bank, but only if it says
+clearly that it studied a ten-person start-up.
+
+> A qualitative finding is trusted when it rests on several kinds of evidence, has survived
+> a deliberate search for counter-examples, and has a trail someone else could follow.

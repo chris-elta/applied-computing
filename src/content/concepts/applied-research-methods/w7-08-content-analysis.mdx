@@ -1,0 +1,92 @@
+---
+course: applied-research-methods
+section: w7-designs
+order: 1000
+title: Content Analysis
+visuals:
+  - type: svg
+    src: applied-research-methods/week7/19.svg
+    caption: Slide 19 of 34 — a systematic examination of a body of material.
+  - type: svg
+    src: applied-research-methods/week7/20.svg
+    caption: Slide 20 of 34 — the four steps of the method.
+  - type: svg
+    src: applied-research-methods/week7/21.svg
+    caption: Slide 21 of 34 — tabulating frequencies, and the report.
+notation:
+  - symbol: category label
+    reads: KAT-uh-gor-ee LAY-bul
+    means: A defined code applied to a segment of material, such as "blames the user". It must be precise enough that two coders would apply it to the same segments.
+  - symbol: frequency
+    reads: FREE-kwen-see
+    means: How many times a category occurs in the material. Counting frequencies is what makes content analysis partly quantitative.
+questions:
+  - ask: A researcher studies 400 bug-tracker discussions to see whether maintainers respond differently to first-time contributors. Which step makes this content analysis rather than another qualitative design?
+    choices:
+      - text: Defining categories in advance, labelling each segment, and tabulating how often each category occurs
+        correct: true
+        explains: >-
+          Content analysis is systematic. It defines characteristics, breaks the material into
+          segments, codes each one and counts the codes, which is its quantitative element.
+      - text: Reading the threads closely to interpret tone, dialect and the social context of each exchange
+        explains: >-
+          That is discourse analysis: meanings in context. Content analysis counts defined
+          categories.
+      - text: Starting with no categories and letting a theory emerge from the threads
+        explains: >-
+          That describes grounded theory. Content analysis begins with a research question
+          and defined characteristics.
+      - text: Interviewing a few maintainers about what it is like to review a newcomer's patch
+        explains: >-
+          That is a phenomenological study. Content analysis studies a body of material, not
+          people's accounts of an experience.
+---
+
+Suppose you want to know whether error messages in popular command-line tools blame the user.
+You could collect 500 messages, decide what counts as "blaming", label each message and count
+the results. That is **content analysis**, the most systematic design in the lecture and the
+one closest to quantitative work.
+
+## What it is
+
+A **detailed, systematic examination** of the contents of a **body of material**. The
+material is typically some form of **verbal or nonverbal communication**: documents,
+commit messages, forum threads, app-store reviews, images, video. The **purpose** is to
+identify general **patterns, themes or biases**.
+
+It begins with a **main research question**. The researcher then:
+
+1. identifies the **sample materials**;
+2. **defines the specific characteristics** or qualities to examine;
+3. **scrutinises each piece** and **imposes category labels**;
+4. **tabulates the frequencies** of each category. This is the **quantitative element**.
+
+## The method, step by step
+
+| Step | In the error-message study |
+| --- | --- |
+| **Identify** the material to be studied | Every error string in the 20 most-installed CLI tools |
+| **Define** the characteristics to be studied | "Blames user" means the message names the user's action as the fault ("you entered an invalid…"); "neutral" states the condition |
+| **Break down** complex items into smaller segments | Split multi-sentence messages so each sentence is coded separately |
+| **Scrutinise** the material for those characteristics | Code every segment, with two coders working independently |
+
+Precise definitions are what make the counts mean anything. If "blames user" is left vague,
+two coders will apply it differently, and the frequencies measure the coders rather than the
+messages. This is Week 3's **reliability** problem.
+
+## Analysis and report
+
+Analysis is a **tabulation of the frequency** of each characteristic, with **tabulations and
+statistical analyses** used to interpret them. You could, for example, compare the share of
+blaming messages in older and newer tools.
+
+The report gives a description of the **material studied**, **precise definitions** of the
+characteristics, the **coding or rating procedures**, and the **tabulations** for each
+characteristic. Another researcher should be able to apply your codes to the same material and
+reach the same counts.
+
+*Discourse Analysis*, next, studies the same kind of material for something different: what
+the language means in its context, rather than how often a category appears.
+
+> Content analysis turns a body of communication into counts: define the categories
+> precisely, code every segment, then tabulate.

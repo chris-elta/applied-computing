@@ -1,7 +1,7 @@
 ---
 course: applied-research-methods
 title: "Applied Research Methods · Final Exam"
-minutes: 80
+minutes: 90
 passMark: 60
 questions:
   - topic: "Week 1 · Defining research and the problem"
@@ -1088,9 +1088,196 @@ questions:
     work: |-
       The plan: clear questions and hypotheses; a justified algorithm; planned data collection, splitting and preprocessing; bias and ethics; reproducibility and transparency; detailed documentation.
       ML results vary with seed, split and versions, so report them, and report several runs.
+  - topic: "Week 7 · Qualitative methods"
+    ask: "Which of these research questions is best suited to a qualitative study?"
+    choices:
+      - text: "Does moving to a four-day week increase the number of tickets a team closes?"
+        explains: "That is a cause-and-effect question with a measurable outcome. It needs a quantitative design, ideally an experiment."
+      - text: "How do support engineers decide which customer escalations to take seriously?"
+        correct: true
+        explains: "Right. It asks how a complex phenomenon works in practice, from the participants' point of view, with no hypothesis to test yet."
+      - text: "What proportion of developers use a password manager?"
+        explains: "That estimates a population proportion. A random-sample survey answers it far better."
+      - text: "Is mean build time lower with the new cache than with the old one?"
+        explains: "A comparison of means is a significance test, from Week 5."
+    work: |-
+      Qualitative studies focus on phenomena as they happen, capture their complexity, and start from general questions.
+      They cannot identify cause and effect, and do not estimate populations.
+      Three options ask about a cause, a proportion or a mean. Only the escalation question asks how people make sense of something.
+  - topic: "Week 7 · Qualitative methods"
+    ask: "Almost nothing has been published on how blind developers navigate large codebases. A researcher wants initial insights before designing any measurement. Which purpose of qualitative research is this?"
+    choices:
+      - text: "Evaluation"
+        explains: "Evaluation judges a particular policy, practice or innovation. There is nothing being evaluated yet."
+      - text: "Verification"
+        explains: "Verification tests an existing claim or theory. Here there is none to test."
+      - text: "Exploration"
+        correct: true
+        explains: "Right. Initial insights into a little-studied phenomenon is the lecture's definition of exploration."
+      - text: "Theory development"
+        explains: "A theory may come later. The stated aim is initial insight before any measurement is designed."
+    work: |-
+      The six purposes: exploration, multifaceted description, verification, theory development, problem identification, evaluation.
+      The key words are "almost nothing published" and "initial insights", which describe exploration.
+  - topic: "Week 7 · Qualitative methods"
+    ask: "A researcher studies one company's major 2024 outage. They use the post-mortem, chat logs from the night, interviews with responders, and the firm's recent cost-cutting and staff turnover. Which design is this?"
+    choices:
+      - text: "Ethnography"
+        explains: "Ethnography studies a group's shared culture through long fieldwork. This study centres on one event."
+      - text: "Case study"
+        correct: true
+        explains: "Right. One event, studied in depth with several kinds of data, including the economic and social context around it."
+      - text: "Content analysis"
+        explains: "The chat logs could be content-analysed, but the study combines many kinds of data about one event."
+      - text: "Grounded theory"
+        explains: "Nothing suggests building a theory from scratch. The aim is to understand this one outage in its context."
+    work: |-
+      Case study: one or a few individuals, programs or events; in depth; several kinds of data; context portrayed.
+      An outage is an event, and the cost-cutting and turnover are its context.
+  - topic: "Week 7 · Qualitative methods"
+    ask: "A researcher collects one founder's account of how their start-up failed. They trace who the founder dealt with, how earlier decisions led to later ones, and the market conditions at the time. Which design is this?"
+    choices:
+      - text: "Phenomenological study"
+        explains: "Phenomenology looks for what an experience is like across several people who share it. This is one person's story."
+      - text: "Case study"
+        explains: "A case study of the start-up would draw on many kinds of data. This study relies on the founder's own story."
+      - text: "Narrative inquiry"
+        correct: true
+        explains: "Right. A personal story, read for interaction, continuity and situation: the three-dimensional narrative space."
+      - text: "Discourse analysis"
+        explains: "Discourse analysis interprets how language works in context. This study is about the experience the story describes."
+    work: |-
+      Narrative inquiry relies on recollections and stories of personal experience.
+      Who the founder dealt with is interaction. Earlier decisions leading to later ones is continuity. Market conditions are situation.
+  - topic: "Week 7 · Qualitative methods"
+    ask: "In a grounded-theory study, a researcher has labelled 600 interview fragments with short codes. They now start working out how the categories relate: which conditions lead to which actions, with which consequences. Which stage have they reached?"
+    choices:
+      - text: "Open coding"
+        explains: "Open coding was the labelling of the 600 fragments. That stage is finished."
+      - text: "Axial coding"
+        correct: true
+        explains: "Right. Relating categories to each other through conditions, actions and consequences is axial coding."
+      - text: "Selective coding"
+        explains: "Selective coding chooses a core category and organises the rest around it. That comes after the relationships have been worked out."
+      - text: "Tabulating frequencies"
+        explains: "That is content analysis. Grounded theory builds a model rather than counting categories."
+    work: |-
+      Grounded theory analysis: open coding, then axial coding, then selective coding, then a theory.
+      Open: break the data up and label it. Axial: relate the categories. Selective: choose the core category.
+      Relating conditions, actions and consequences is the axial stage.
+  - topic: "Week 7 · Qualitative methods"
+    ask: "A study asks how often job adverts for junior developer roles demand three or more years' experience. The researcher defines the criteria, codes 1,200 adverts and reports the percentages. Which design is this?"
+    choices:
+      - text: "Discourse analysis"
+        explains: "Discourse analysis interprets meaning in context. This study defines a category and counts it."
+      - text: "Content analysis"
+        correct: true
+        explains: "Right. A body of material, characteristics defined in advance, each item coded, and frequencies tabulated."
+      - text: "Ethnography"
+        explains: "No group is being studied in its setting. The data are documents."
+      - text: "Phenomenological study"
+        explains: "No one's experience is being explored. The study is about the adverts."
+    work: |-
+      Content analysis: identify the material, define the characteristics, break items into segments, scrutinise them, then tabulate frequencies.
+      The tabulation is the quantitative element.
+  - topic: "Week 7 · Qualitative methods"
+    ask: "A developer keeps a systematic journal of their own beliefs, experiences and practices while returning to work in a tech firm after parental leave, and analyses it as research. Which form of study does the lecture name for this?"
+    choices:
+      - text: "Autoethnography"
+        correct: true
+        explains: "Right. The lecture defines autoethnography as research on one's own perspectives, beliefs, experiences and practices."
+      - text: "Narrative inquiry"
+        explains: "Narrative inquiry gathers and studies other people's stories. Here the researcher is also the subject."
+      - text: "Phenomenological study"
+        explains: "Phenomenology interviews a small sample of others about an experience they share."
+      - text: "Case study"
+        explains: "A case study examines individuals, programs or events from outside, with several kinds of data. The defining feature here is studying yourself."
+    work: |-
+      Autoethnography is listed under ethnography: the researcher studies their own perspectives, beliefs, experiences and practices.
+      The journal is the field note, written about oneself.
+  - topic: "Week 7 · Qualitative methods"
+    ask: "After four interviews, a researcher adds observation of the team's daily stand-ups, because every interviewee mentioned them. What is this, and what should the researcher do about it?"
+    choices:
+      - text: "Emergent design; write a methodological memo recording the change and why it was made"
+        correct: true
+        explains: "Right. Early data shaped the later method. A methodological memo keeps the decision traceable, as part of the audit trail."
+      - text: "Researcher bias; drop the stand-up observations"
+        explains: "Following up on what participants raise is the point of emergent design. The risk is managed by recording the decision, not by refusing to follow."
+      - text: "A protocol violation; restart the study with the new method from the beginning"
+        explains: "Qualitative methods may evolve over the course of a study. Changing them is not a violation, provided it stays within ethical approval."
+      - text: "Triangulation; no record is needed"
+        explains: "Adding observation does triangulate the interviews, but the change in method still needs recording."
+    work: |-
+      Emergent design: data collected early influence the methods used and the data collected later.
+      The lecture names three kinds of memo: reflective, methodological, analytical.
+      A change of method belongs in a methodological memo.
+      Any new method must still fall within what the ethics board approved.
+  - topic: "Week 7 · Qualitative methods"
+    ask: "Every interview so far suggests developers dislike a new code-review tool. The researcher then deliberately recruits two teams known to use it heavily. Which trustworthiness strategy is this?"
+    choices:
+      - text: "Reflexivity"
+        explains: "Reflexivity is looking inward at your own biases. This strategy looks outward, at the data."
+      - text: "Spending considerable time on site"
+        explains: "The researcher is choosing new participants, not deepening immersion in one setting."
+      - text: "Intentionally seeking exceptions and contradictory evidence"
+        correct: true
+        explains: "Right. Teams that use the tool heavily are the likeliest exceptions. The finding either survives them or they show where it stops applying."
+      - text: "Maintaining an audit trail"
+        explains: "An audit trail records decisions. It does not choose who to recruit."
+    work: |-
+      The six strategies: reflexivity, triangulation, time on site, seeking exceptions, others' feedback, an audit trail.
+      Recruiting the cases most likely to contradict the emerging theme is seeking exceptions on purpose.
+  - topic: "Week 7 · Qualitative methods"
+    ask: "A researcher wants to interview people who have privately reported security flaws to vendors. Such people are hard to find, so the researcher asks each participant to put them in touch with others. Which sampling is this?"
+    choices:
+      - text: "Random sampling"
+        explains: "There is no list of such people to draw from at random. That is why the researcher works through participants' contacts."
+      - text: "Extreme case sampling"
+        explains: "Extreme case sampling picks an unusual case on purpose, typically for a case study. Here each participant leads to the next."
+      - text: "Snowball sampling"
+        correct: true
+        explains: "Right. The sample grows through the participants' own networks, which suits hard-to-reach groups. The risk is staying inside one network."
+      - text: "Primary informants"
+        explains: "Primary informants explain a group to an ethnographer. Here the participants are recruiting others to interview."
+    work: |-
+      The lecture lists purposive, theoretical and discriminant, primary informants, extreme case, convenience and snowball sampling.
+      Snowball sampling asks each participant to suggest others.
+      The sample is large enough when it captures the variability in the phenomenon, so watch whether it stays inside one circle.
+  - topic: "Week 7 · Qualitative methods"
+    ask: "In a focus group that mixes junior engineers with their managers, the juniors say almost nothing and agree with whatever the managers say. Which interview guideline does this most concern?"
+    choices:
+      - text: "Record responses verbatim"
+        explains: "You can record every word and still have a distorted account, because the juniors are not saying what they think."
+      - text: "When conducting a focus group, take group dynamics into account"
+        correct: true
+        explains: "Right. A heterogeneous group can silence the less powerful. Separate, homogeneous groups of juniors would likely speak more freely."
+      - text: "Get written permission"
+        explains: "Permission is about consent, not about who speaks in the room."
+      - text: "Focus on the concrete rather than the abstract"
+        explains: "Concrete questions help, but they do not change who feels safe answering."
+    work: |-
+      Focus groups may be homogeneous or heterogeneous.
+      The lecture says to take group dynamics into account in a focus group.
+      Juniors deferring to managers is a group-dynamics effect. Re-running with homogeneous groups is one remedy.
+  - topic: "Week 7 · Qualitative methods"
+    ask: "In interviews, every developer says they “always write tests”. The repository shows that about 10% of commits touch any test file. Which bias does this reveal, and which strategy revealed it?"
+    choices:
+      - text: "Researcher bias, revealed by reflexivity"
+        explains: "Nothing suggests the researcher imposed a meaning. The participants' descriptions disagree with the record."
+      - text: "Sampling bias, revealed by purposive sampling"
+        explains: "The sample was not the problem; the descriptions were. And purposive sampling is a way to choose a sample, not a check."
+      - text: "Response bias, revealed by triangulation"
+        correct: true
+        explains: "Right. Participants gave inaccurate descriptions, and a second form of data, the commit history, exposed the gap."
+      - text: "No bias, because interviews are the primary data and override the repository"
+        explains: "You are not necessarily getting the facts in an interview. Disagreement between sources is exactly what triangulation is for."
+    work: |-
+      Response bias: participants may give inaccurate descriptions.
+      Triangulation: collect multiple forms of data.
+      What people say (interviews) and what the record shows (commits) disagree, which signals response bias.
 ---
 
-67 multiple-choice questions across all six weeks. The paper is divided into sections, and nothing is revealed until you
+79 multiple-choice questions across all seven weeks. The paper is divided into sections, and nothing is revealed until you
 submit: pick an answer for each question (you can change it as often as you like), then submit a
 section to see your score for it, the correct answers, an explanation for each one you chose, and a
 worked solution. You can submit one section at a time, in any order, or the whole exam at once.

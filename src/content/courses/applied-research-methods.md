@@ -101,4 +101,18 @@ sections:
     summary: >-
       Splitting and auditing data, judging a model's results, and planning ML research so it
       can be reproduced.
+  - id: w7-nature
+    title: Week 7 · What qualitative research is
+    summary: >-
+      Studying phenomena in their complexity, with the researcher as the instrument, and
+      what such a study is for.
+  - id: w7-designs
+    title: Week 7 · Kinds of qualitative study
+    summary: >-
+      Seven designs, from case study to discourse analysis, and how to choose among them.
+  - id: w7-collecting
+    title: Week 7 · Collecting and analysing qualitative data
+    summary: >-
+      Emergent design, trustworthiness, purposive sampling, interviews, the analysis spiral
+      and three sources of bias.
 ---
