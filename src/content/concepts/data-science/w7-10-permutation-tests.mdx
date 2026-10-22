@@ -1,0 +1,94 @@
+---
+course: data-science
+section: w7-permutation
+order: 1040
+title: Permutation Tests
+visuals:
+  - type: svg
+    src: data-science/w7-significance/22.svg
+    caption: Slide 22 of 33 — a computational route to significance with few assumptions.
+  - type: svg
+    src: data-science/w7-significance/23.svg
+    caption: Slide 23 of 33 — if the hypothesis is true, shuffled data should not look like the real data.
+  - type: svg
+    src: data-science/w7-significance/24.svg
+    caption: Slide 24 of 33 — heights grouped by gender (left) against two shuffles of the labels.
+questions:
+  - ask: "In a permutation test comparing two groups' means, what exactly is shuffled?"
+    choices:
+      - text: "The group labels, keeping every measured value in the data set"
+        correct: true
+        explains: >-
+          Shuffling which value belongs to which group simulates the null hypothesis that the
+          label makes no difference. The values themselves are all kept.
+      - text: "The values within each group, keeping the groups apart"
+        explains: >-
+          Reordering values inside a group changes nothing about its mean. The test needs to mix
+          values across the groups.
+      - text: "Nothing; new values are drawn from a normal distribution"
+        explains: >-
+          That would bring back the distributional assumption that permutation tests avoid. The
+          test only reuses the real data.
+      - text: "The order of the groups, so A becomes B and B becomes A"
+        explains: >-
+          Swapping the names of two whole groups only flips the sign of the difference. It does
+          not show what chance could produce.
+---
+
+The t-test and the KS test come from formulas, with assumptions attached. The t-test leans on
+normality. Both need the right table, the right number of tails and the right degrees of
+freedom. The slides call these *subtleties*. **Permutation tests** skip the formulas and let the
+computer simulate what randomness looks like. Slide 22 calls this a *more computationally
+idiot-proof* way to establish significance.
+
+## The idea
+
+From slide 23: **if your hypothesis is true, then randomly shuffled data sets should not look
+like real data.**
+
+Take two groups with mean scores 75 and 80, as in the notes. The null hypothesis says the group
+makes no difference. If that is true, the labels "A" and "B" are arbitrary. You could shuffle
+them, reassigning each score to a group at random, and the data would look much the same.
+
+So do exactly that:
+
+1. Compute the statistic on the real data. Here, the difference in means is 5.
+2. Pool all the values. Shuffle the group labels randomly, keeping the group sizes.
+3. Compute the same statistic on the shuffled data.
+4. Repeat steps 2 and 3 many times, at least 1,000.
+5. See where the real statistic falls among the shuffled ones.
+
+If shuffled data often produces a gap of 5 or more, the real gap is unremarkable. If it almost
+never does, the labels matter.
+
+## The heights picture
+
+Slide 24 shows heights as bars, coloured and sorted by length, with men and women in two blocks.
+In the real data (left) each block is a smooth staircase, and the two blocks differ clearly in
+their lengths. In the two shuffled versions (centre and right), each block gets a random mix of
+heights. The blocks now look alike, and the difference between them shrinks.
+
+The real data looks nothing like its shuffles, and that is the evidence that gender is
+related to height.
+
+## Why use it
+
+Slide 22 lists the advantages:
+
+| advantage | because |
+| --- | --- |
+| no assumption of normality or equal variance | the null distribution is built from your own data |
+| works for almost any statistic | mean, median, correlation, accuracy: compute it on shuffled data the same way |
+| easy to implement | a loop, a shuffle and a count |
+| intuitive | you can see how rare the real result is |
+
+The slide's title says *bootstrapping*, and the notes separate the two related ideas.
+Bootstrapping resamples *with replacement* from your sample, to see how much a statistic
+varies. A permutation test *shuffles labels*, to test the null hypothesis directly. Both use the
+computer in place of a formula.
+
+You choose the statistic. Slide 23 says you need a statistic you believe is interesting, such
+as a correlation, an error or a size. The test then says how unusual its real value is.
+
+> Shuffling the labels creates worlds where the null hypothesis is true. If the real data stands
+> out from those worlds, the labels carry information.

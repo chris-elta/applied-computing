@@ -1,0 +1,103 @@
+---
+course: data-science
+section: w7-testing
+order: 970
+title: Null and Alternative Hypotheses
+visuals:
+  - type: svg
+    src: data-science/w7-significance/07.svg
+    caption: Slide 7 of 33 — is a rise from 75 to 80 real, or a lucky sample?
+  - type: svg
+    src: data-science/w7-significance/08.svg
+    caption: Slide 8 of 33 — the null says no effect; the alternative says there is one.
+notation:
+  - symbol: "H₀"
+    reads: H nought, or H zero
+    means: >-
+      The null hypothesis: nothing is going on, and any difference is chance. The small 0
+      labels it and does not multiply anything.
+  - symbol: "H₁"
+    reads: H one (also written Hₐ, H A)
+    means: >-
+      The alternative hypothesis: there is a real effect or difference.
+  - symbol: "μ₁, μ₂"
+    reads: mew one, mew two
+    means: >-
+      The true population means of the two groups. These are what the hypotheses are about,
+      not the sample averages you actually measured.
+  - symbol: "≠"
+    reads: is not equal to
+    means: >-
+      The alternative `μ₁ ≠ μ₂` allows a difference in either direction.
+questions:
+  - ask: "A test on a new teaching method gives a large p-value, so you fail to reject H₀. What can you conclude?"
+    choices:
+      - text: "The data do not give strong enough evidence of a difference"
+        correct: true
+        explains: >-
+          The test only ever weighs evidence against `H₀`. Not finding enough of it is not the
+          same as showing there is no effect. The sample may have been too small to see it.
+      - text: "The new method has been shown to make no difference"
+        explains: >-
+          Failing to reject `H₀` does not prove it. Absence of evidence is not evidence of
+          absence, especially with small samples.
+      - text: "H₁ has been proved false"
+        explains: >-
+          Hypothesis tests do not prove either hypothesis. They measure how surprising the data
+          would be if `H₀` were true.
+      - text: "The scores were measured incorrectly"
+        explains: >-
+          A large p-value is an ordinary outcome when there is no effect, or when an effect is
+          too small for the sample to detect. It says nothing about measurement error.
+---
+
+A new teaching method is tried on a class, and the average score rises from 75 to 80. The
+slide asks: **is it really better, or did we just get lucky with this sample?**
+
+Real data always contains random variation. Teach the *same* way to two different classes
+and their averages will still differ. So a difference alone proves nothing. We need a
+structured way to decide whether a difference is bigger than chance would usually produce.
+That structure is **hypothesis testing**.
+
+## Two hypotheses
+
+Every test starts by writing down two competing claims about the populations, not about the
+samples.
+
+| | name | claim | example |
+| --- | --- | --- | --- |
+| `H₀` | null hypothesis | there is **no** real effect; any difference is chance | `μ₁ = μ₂` |
+| `H₁` | alternative hypothesis | there **is** a real effect or difference | `μ₁ ≠ μ₂` |
+
+Here `μ₁` and `μ₂` are the true average scores under each teaching method: what you would
+get if you could teach every possible student both ways. You never see them. You see two
+sample averages, 75 and 80, which wobble around the true values.
+
+## Why the null comes first
+
+The null is the hypothesis you can calculate with. If nothing is going on, you know what the
+world should look like: the two samples come from the same population, and you can work out
+how often samples that size differ by 5 points just by chance. The alternative, "there is
+some difference", does not say how large, so it gives you nothing to calculate.
+
+So the logic runs backwards from what you might expect:
+
+1. **Assume `H₀`.** Suppose the method makes no difference.
+2. **Ask how surprising the data would be** under that assumption.
+3. **If very surprising, reject `H₀`** in favour of `H₁`.
+4. **Otherwise, fail to reject `H₀`.**
+
+## What you can and cannot conclude
+
+The slide is careful here: **we never prove `H₁`. We find evidence strong enough that `H₀` is
+unlikely.** The key idea from slide 7 is the same: we can never be 100% certain, but we can
+measure how unlikely such a result would be if nothing had changed.
+
+The same caution applies in the other direction. Failing to reject `H₀` does not prove there
+is no effect. It means this data was not enough to show one. A real but small improvement,
+tested on ten students, will often fail to reach significance.
+
+The number that measures "how surprising" is the p-value, in the next concept.
+
+> State the null: nothing is going on. Then ask how unlikely your data would be if that were
+> true. You can reject the null, but you never prove either hypothesis.

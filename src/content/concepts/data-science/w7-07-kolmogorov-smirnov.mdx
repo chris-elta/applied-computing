@@ -1,0 +1,120 @@
+---
+course: data-science
+section: w7-ks
+order: 1010
+title: The Kolmogorov-Smirnov Test
+visuals:
+  - type: svg
+    src: data-science/w7-significance/16.svg
+    caption: Slide 16 of 33 — the KS statistic is the biggest vertical gap between two CDFs.
+  - type: svg
+    src: data-science/w7-significance/17.svg
+    caption: Slide 17 of 33 — testing normality by comparing data with a sample from the normal distribution.
+notation:
+  - symbol: "F₁,ₙ(x)"
+    reads: F one n of x
+    means: >-
+      The empirical CDF of the first sample, of size `n`: the fraction of its values that are
+      at most `x`. It climbs in steps from 0 to 1.
+  - symbol: "D"
+    reads: D, the KS statistic
+    means: >-
+      The largest vertical distance between the two empirical CDFs, anywhere along the x-axis.
+  - symbol: "sup"
+    reads: soup, short for supremum
+    means: >-
+      The largest value over all `x`. For these step functions you can read it as "max".
+  - symbol: "c(α)"
+    reads: c of alpha
+    means: >-
+      A constant from a table that depends on the significance level. About 1.36 for
+      `α = 0.05`.
+  - symbol: "n, n′"
+    reads: n and n prime
+    means: >-
+      The sizes of the two samples. The prime just distinguishes the second from the first.
+questions:
+  - ask: "Two groups of students have almost the same mean score, but one group's scores are spread far more widely. Which test is suited to detecting that difference?"
+    choices:
+      - text: "The Kolmogorov-Smirnov test, because it compares the whole distributions"
+        correct: true
+        explains: >-
+          The KS test looks at the entire CDF. Different spreads make the CDFs cross at an
+          angle, opening a large vertical gap even when the centres agree.
+      - text: "The t-test, because it accounts for standard deviation"
+        explains: >-
+          The t-test uses the standard deviations as noise, but its signal is only the
+          difference in means. With equal means it finds nothing.
+      - text: "Neither, because the means are the same and so the groups are the same"
+        explains: >-
+          Equal means do not make equal distributions. One group could be consistent while the
+          other has many very high and very low scores.
+---
+
+The t-test asks one narrow question: do two groups have different *means*? Sometimes you want
+to know something broader. The speaker notes give an example: compare this year's test scores
+with last year's. Did performance change overall, not only on average but in the **whole
+distribution**?
+
+## Comparing CDFs
+
+The **Kolmogorov-Smirnov (KS) test** measures whether two samples are drawn from the same
+distribution, using the CDFs from week 2.
+
+For each sample, build its **empirical CDF**: for any value `x`, the fraction of the sample
+at or below `x`. It is a staircase climbing from 0 to 1. On slide 16, red is one sample's
+staircase and blue is the other's.
+
+If both samples came from the same distribution, the staircases should run close together.
+So the test slides along every possible `x` and finds **the largest vertical gap between
+them**. That gap, the black arrow on the slide, is the KS statistic:
+
+```
+D = sup |F₁,ₙ(x) − F₂,ₙ′(x)|
+     x
+```
+
+Read `sup` as "the largest over all `x`".
+
+## When the gap is big enough
+
+The distributions differ, at significance level `α`, if
+
+```
+D > c(α) · √( (n + n′) / (n · n′) )
+```
+
+The square root shrinks as the samples grow, so bigger samples need a smaller gap to be
+convincing. `c(α)` is looked up in a table; for `α = 0.05` it is about 1.36.
+
+For example, with two samples of 50:
+
+```
+√( (50 + 50) / (50 × 50) ) = √(100 / 2500) = √0.04 = 0.2
+threshold = 1.36 × 0.2 ≈ 0.27
+```
+
+The CDFs must differ by more than 0.27 somewhere, roughly a quarter of the data, before you
+reject `H₀`.
+
+## Why it is useful
+
+- **It makes no assumption about shape.** The t-test leans on normality; the KS test works for
+  any distribution. The notes call it *non-parametric*.
+- **It sees any kind of difference.** A shift in centre, a change in spread or a change in
+  shape all open a gap between the CDFs.
+
+## Testing for normality
+
+Slide 17 uses the KS test to ask whether data *is* normal. Compare the data with a sample
+drawn from the theoretical distribution:
+
+- **normal vs uniform** (left): the curves pull apart, with a large gap. Not the same.
+- **normal vs normal** (right): the curves track each other closely. Consistent with the
+  same distribution.
+
+This matters because the t-test and the 68–95–99.7 rule from last week both assume normality.
+The KS test is one way to check that assumption instead of trusting it.
+
+> The KS test compares two whole distributions by the biggest gap between their CDFs. It
+> assumes no particular shape, so it is also a way to check whether data is normal.

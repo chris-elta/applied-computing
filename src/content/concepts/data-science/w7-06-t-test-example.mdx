@@ -1,0 +1,119 @@
+---
+course: data-science
+section: w7-ttest
+order: 1000
+title: A t-Test by Hand
+visuals:
+  - type: svg
+    src: data-science/w7-significance/13.svg
+    caption: Slide 13 of 33 — two groups of ten, with means 75 and 80.
+  - type: svg
+    src: data-science/w7-significance/14.svg
+    caption: Slide 14 of 33 — computing Welch's t and the degrees of freedom.
+  - type: svg
+    src: data-science/w7-significance/15.svg
+    caption: Slide 15 of 33 — comparing t with the critical value for df = 18.
+notation:
+  - symbol: "t₀.₀₅(18)"
+    reads: t at point oh five with eighteen degrees of freedom
+    means: >-
+      The critical value from the t-table for `α = 0.05`, two-tailed, with `df = 18`. About
+      2.10.
+  - symbol: "|t|"
+    reads: the absolute value of t
+    means: >-
+      `t` with its sign dropped. −2.47 and 2.47 both have `|t| = 2.47`.
+questions:
+  - ask: "In the studying example, `t ≈ 2.47` with `df = 18`. The two-tailed critical value at `α = 0.01` is about 2.88. What do you conclude at the 0.01 level?"
+    choices:
+      - text: "Not significant at 0.01, though it is significant at 0.05"
+        correct: true
+        explains: >-
+          `2.47 < 2.88`, so the result does not clear the stricter bar. It still clears 2.10.
+          So the p-value lies between 0.01 and 0.05.
+      - text: "Significant at 0.01, because it was significant at 0.05"
+        explains: >-
+          A stricter level needs a larger `t`. Passing at 0.05 does not mean passing at 0.01.
+      - text: "Significant at 0.01, because −2.47 is smaller than 2.88 and that is the wrong direction to compare"
+        explains: >-
+          Compare `|t|`, the size without the sign. 2.47 falls short of 2.88.
+      - text: "The new technique has been shown to make no difference"
+        explains: >-
+          Failing to reject at one level never proves `H₀`. And here the result is
+          significant at 0.05.
+---
+
+This is the t-test from the previous concept, worked through with the slides' numbers.
+
+## The scenario
+
+You want to know whether a new studying technique improves exam performance, and test it on
+two small groups:
+
+| group | `n` | mean `x̄` | standard deviation `s` |
+| --- | --- | --- | --- |
+| traditional | 10 | 75 | 5 |
+| new technique | 10 | 80 | 4 |
+
+## Step 1 · State the hypotheses
+
+- `H₀`: no difference in mean scores, `μ₁ = μ₂`.
+- `H₁`: there is a difference, `μ₁ ≠ μ₂`.
+
+The alternative allows either direction, so this is a **two-tailed** test.
+
+## Step 2 · Compute Welch's t
+
+Each group contributes `s²/n` to the noise:
+
+| | `s²` | `s²/n` |
+| --- | --- | --- |
+| traditional | `5² = 25` | `25/10 = 2.5` |
+| new technique | `4² = 16` | `16/10 = 1.6` |
+| sum | | `4.1` |
+
+```
+t = (75 − 80) / √4.1 = −5 / 2.025 ≈ −2.47
+```
+
+The slide rounds `√4.1` to 2.05 and gets −2.44. The exact value is about −2.47, and the
+conclusion is the same either way.
+
+The sign only says that the traditional group scored lower. For a two-tailed test, compare
+`|t| ≈ 2.47`.
+
+## Step 3 · Degrees of freedom
+
+Using the slides' approximation:
+
+```
+df ≈ n₁ + n₂ − 2 = 10 + 10 − 2 = 18
+```
+
+## Step 4 · Look up the critical value
+
+In a t-table, find the row `df = 18` and the column for `α = 0.05`, two-tailed. The value is
+`t₀.₀₅(18) ≈ 2.10`.
+
+## Step 5 · Decide
+
+`2.47 > 2.10`, so **the difference is significant at the 0.05 level**. Reject `H₀`. In the
+slide's words, the new technique improved scores enough that the difference is *unlikely due to
+random variation*.
+
+## What this does and does not say
+
+- It says a 5-point gap between groups of ten is bigger than chance usually produces, given
+  this much spread.
+- It does not say how much better the technique is in general. The true improvement could be
+  smaller or larger than 5. That is an effect-size question.
+- It does not survive a stricter standard. At `α = 0.01`, the critical value for 18 degrees of
+  freedom is about 2.88, and 2.47 falls short. Where you set `α` matters, and it must be set
+  before you look.
+
+Notice how close this was. With the same means and spreads but only five students per group,
+`s²/n` doubles, `t` drops to about 1.75, and `df` falls to 8 with a critical value near 2.31.
+The same 5-point gap would not be significant.
+
+> Hypotheses, t, degrees of freedom, critical value, decision. The same five steps decide every
+> t-test, and the result depends as much on sample size and spread as on the gap itself.

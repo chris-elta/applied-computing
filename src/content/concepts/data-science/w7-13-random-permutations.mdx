@@ -1,0 +1,104 @@
+---
+course: data-science
+section: w7-sampling
+order: 1070
+title: Generating Random Permutations
+visuals:
+  - type: svg
+    src: data-science/w7-significance/28.svg
+    caption: Slide 28 of 33 — two shuffling algorithms that differ in one index.
+  - type: svg
+    src: data-science/w7-significance/29.svg
+    caption: Slide 29 of 33 — a million shuffles of four items; only algorithm 1 is uniform.
+notation:
+  - symbol: "Random[i, n]"
+    reads: random from i to n
+    means: >-
+      A random whole number between `i` and `n` inclusive, each equally likely.
+  - symbol: "swap[a[i], a[j]]"
+    reads: swap a i and a j
+    means: >-
+      Exchange the items in positions `i` and `j` of the array `a`.
+  - symbol: "n!"
+    reads: n factorial
+    means: >-
+      `n × (n−1) × … × 1`, the number of different orderings of `n` items. `4! = 24`.
+questions:
+  - ask: "Algorithm 2 swaps each position with Random[1, n]. For n = 3, why can it not produce all orderings equally often?"
+    choices:
+      - text: "It has 3 × 3 = 9 equally likely runs, which cannot divide evenly among 3! = 6 orderings"
+        correct: true
+        explains: >-
+          The loop runs twice with 3 choices each time, giving 9 runs. If every ordering came up
+          equally often, 9 would have to be a multiple of 6. It is not.
+      - text: "It sometimes swaps an item with itself, which wastes a step"
+        explains: >-
+          Algorithm 1 also allows `Random[i, n]` to return `i`, a self-swap, and it is uniform.
+          Self-swaps are needed so that an item can stay where it is.
+      - text: "It does not loop enough times to reach every ordering"
+        explains: >-
+          It reaches every ordering. The problem is that it reaches some of them more often than
+          others.
+      - text: "Random[1, n] is a less random function than Random[i, n]"
+        explains: >-
+          Both draw uniformly from their range. The bias comes from how the choices combine, not
+          from either single draw.
+---
+
+A permutation test relies on shuffling. If some orderings come up more often than others, the
+shuffled data is not a fair picture of "no effect", and the p-value is wrong. Slide 28 shows
+that writing a fair shuffle is *surprisingly subtle*.
+
+## Two candidates
+
+Both start with `a[i] = i` and then walk along the array swapping:
+
+| | step `i` swaps `a[i]` with |
+| --- | --- |
+| algorithm 1 | `a[Random[i, n]]`: a position from `i` to the end |
+| algorithm 2 | `a[Random[1, n]]`: any position at all |
+
+They differ in one index and look equally random. They are not.
+
+## The experiment
+
+Slide 29 shuffles four items a million times with each algorithm and counts how often each of
+the `4! = 24` orderings appears. A fair shuffle should give each one about
+`1,000,000 / 24 ≈ 41,667`.
+
+| | how the 24 counts look | standard deviation of counts |
+| --- | --- | --- |
+| algorithm 1 | all near 41,600, a flat line | 166.1 |
+| algorithm 2 | from about 78,000 down to about 16,000 | 20,932.9 |
+
+Algorithm 1 is **uniform**. Its small variation is ordinary randomness. Algorithm 2 favours
+some orderings nearly five times as much as others.
+
+## Why, by counting
+
+Count the equally likely ways each algorithm can run.
+
+**Algorithm 1** has `n` choices at step 1, then `n − 1`, then `n − 2`, down to 2. That is
+`n × (n−1) × … × 2 = n!` runs. There are `n!` orderings, and each run gives a different one,
+so every ordering appears exactly once. It is uniform.
+
+This makes sense position by position. Step 1 picks the item for position 1 from all `n`. Step
+2 picks position 2 from the `n − 1` remaining, and so on. That is how you would deal cards by
+hand.
+
+**Algorithm 2** has `n` choices at each of its `n − 1` steps, so `nⁿ⁻¹` runs. For `n = 3`, that
+is `3² = 9` runs spread over `3! = 6` orderings. Nine cannot be split evenly six ways, so some
+orderings must come up more often. For `n = 4`, the 64 runs cannot be split evenly 24 ways
+either.
+
+Algorithm 1 is known as the **Fisher-Yates shuffle**, and it is what library shuffle functions
+use.
+
+## The lesson
+
+Code that looks random is not necessarily uniform. A shuffle can produce every ordering and
+still be biased. The slides' test is the one to reuse: generate many samples, count, and
+compare the counts with what uniform would give.
+
+> Algorithm 1, swapping each position with a random one from the rest, gives every ordering
+> exactly one path. Use a library shuffle, and when in doubt, count the outcomes.

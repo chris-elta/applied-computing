@@ -1,0 +1,83 @@
+---
+course: data-science
+section: w7-meaning
+order: 960
+title: Significant or Interesting?
+visuals:
+  - type: svg
+    src: data-science/w7-significance/05.svg
+    caption: Slide 5 of 33 — finding patterns is easy; knowing which ones are real is not.
+  - type: svg
+    src: data-science/w7-significance/06.svg
+    caption: Slide 6 of 33 — drug A cured 19 of 34 patients, drug B 14 of 21.
+questions:
+  - ask: "A data miner reports that customers who buy on Tuesdays spend 4% more. A statistician is unimpressed. What is the statistician most likely asking?"
+    choices:
+      - text: "Whether a 4% gap could easily have arisen by chance in a sample this size"
+        correct: true
+        explains: >-
+          That is the statistician's question: is the observation significant? A pattern can be
+          interesting to a business and still be indistinguishable from noise.
+      - text: "Whether 4% is large enough to be worth acting on"
+        explains: >-
+          That is a fair question, and it comes back later in the week as effect size. But it is
+          the interesting question, not the significance question the slide attributes to
+          statisticians.
+      - text: "Whether Tuesday shoppers are a different kind of customer"
+        explains: >-
+          That asks why the pattern exists. It only becomes worth asking once you know the
+          pattern is real.
+---
+
+Computers find patterns in data quickly. Run enough comparisons over a large table and
+something will always stand out. The slides put the hard question plainly: **when is a pattern
+significant?**
+
+## Two questions about every pattern
+
+The slides contrast two professions:
+
+| who | asks | the worry |
+| --- | --- | --- |
+| statisticians | is this observation **significant**? | it might be chance |
+| data miners | is this observation **interesting**? | it might not matter |
+
+Both questions matter, and they are different. A pattern can be interesting and not
+significant: a striking trend in a sample too small to rule out luck. A pattern can be
+significant and not interesting: a real difference too tiny to act on. This week covers both,
+starting with significance and returning to *how big* in the effect-size concept.
+
+Strong correlations in big data sets can look *obviously* significant. The slides warn that
+the effects are often more subtle than that. Simpson's paradox, in the previous concept, is one
+way an obvious-looking pattern turns out to be something else.
+
+## A classic hard case
+
+Drug trials are where this question carries the most weight. From the slide:
+
+| | cured | patients | cure rate |
+| --- | --- | --- | --- |
+| drug A | 19 | 34 | 56% |
+| drug B | 14 | 21 | 67% |
+
+**Is B better than A?** B's rate is eleven points higher. But these are small groups. If both
+drugs worked equally well, how often would two groups this size differ by eleven points
+anyway? With a few dozen patients each, quite often. One or two patients either way changes
+the rates noticeably.
+
+The slide notes that approval of a new drug rests on this kind of analysis and can add or
+subtract billions from a drug company's value. The answer has to come from a method, not from
+whether the number looks big.
+
+## What the rest of the week supplies
+
+That method is **hypothesis testing**: assume nothing is going on, then ask how surprising the
+data would be. The following concepts build it up:
+
+1. state a *null hypothesis* that the difference is chance;
+2. compute a *p-value*: how unlikely a result this extreme is under that hypothesis;
+3. choose a test that fits the data, such as a t-test, a KS test or a permutation test;
+4. separately, measure how *large* the effect is.
+
+> Finding a pattern is the easy part. Before acting on it, ask two things: could chance alone
+> produce it, and is it big enough to matter?

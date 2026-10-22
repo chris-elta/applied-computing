@@ -131,4 +131,32 @@ sections:
     title: Week 6 · Power laws
     summary: >-
       Distributions with no typical value, the 80-20 rule, and the straight line on a log-log plot.
+  - id: w7-meaning
+    title: Week 7 · When a pattern means something
+    summary: >-
+      How a trend can reverse inside its subgroups, and the gap between interesting and significant.
+  - id: w7-testing
+    title: Week 7 · Hypothesis testing
+    summary: >-
+      The null hypothesis, the alternative, and the p-value that weighs evidence against chance.
+  - id: w7-ttest
+    title: Week 7 · The t-test
+    summary: >-
+      Comparing two means as signal over noise, and running the test by hand.
+  - id: w7-ks
+    title: Week 7 · Comparing whole distributions
+    summary: >-
+      The Kolmogorov-Smirnov test, and using it to check whether data looks normal.
+  - id: w7-effect
+    title: Week 7 · Many tests, and effect size
+    summary: >-
+      Raising the bar when you test many hypotheses, and why significant does not mean large.
+  - id: w7-permutation
+    title: Week 7 · Permutation tests
+    summary: >-
+      Building the null hypothesis by shuffling, reading a p-value off the ranks, and what it does not tell you.
+  - id: w7-sampling
+    title: Week 7 · Randomness done right
+    summary: >-
+      Shuffling fairly, and drawing random samples from a circle or any distribution.
 ---

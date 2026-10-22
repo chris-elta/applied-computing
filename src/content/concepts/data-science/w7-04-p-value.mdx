@@ -1,0 +1,105 @@
+---
+course: data-science
+section: w7-testing
+order: 980
+title: The p-Value
+visuals:
+  - type: svg
+    src: data-science/w7-significance/09.svg
+    caption: Slide 9 of 33 — the probability of a result at least this extreme if H₀ were true.
+notation:
+  - symbol: "p"
+    reads: p
+    means: >-
+      The p-value: a probability between 0 and 1. Small means the data would be surprising
+      if nothing were going on.
+  - symbol: "α"
+    reads: alpha
+    means: >-
+      The significance level: the cut-off you set in advance, usually 0.05. If `p < α`, you
+      call the result significant.
+  - symbol: "Pr(A | B)"
+    reads: probability of A given B
+    means: >-
+      The probability of A in a world where B is true, from week 2. The p-value is a
+      probability of data given `H₀`.
+questions:
+  - ask: "A test comparing two checkout designs gives p = 0.03. Which statement is correct?"
+    choices:
+      - text: "If the designs performed the same, a difference at least this large would turn up about 3% of the time"
+        correct: true
+        explains: >-
+          That is the definition: the probability of a result as extreme or more extreme,
+          calculated assuming `H₀` is true. Below 0.05, so it is conventionally significant.
+      - text: "There is a 3% chance that the designs perform the same"
+        explains: >-
+          This flips the conditional. The p-value is `Pr(data this extreme | H₀)`, not
+          `Pr(H₀ | data)`. Getting from one to the other needs Bayes' theorem and a prior.
+      - text: "There is a 97% chance the new design is better"
+        explains: >-
+          Same reversal, stated from the other side. The p-value does not give the probability
+          that any hypothesis is true.
+      - text: "The new design is 3% better"
+        explains: >-
+          The p-value measures surprise, not size. A tiny improvement can have a small p-value
+          if the sample is large enough.
+---
+
+The null hypothesis says nothing is going on. The **p-value** measures how badly the data
+fits that claim.
+
+## The definition
+
+From the slide:
+
+> The p-value is the probability of getting a result as extreme as, or more extreme than, the
+> one observed, **if the null hypothesis were true.**
+
+Read it in three parts:
+
+| part | meaning |
+| --- | --- |
+| *if `H₀` were true* | imagine a world where there is no effect |
+| *as extreme or more* | count every result at least as far from "no difference" as yours |
+| *probability* | how often that world produces such results |
+
+In symbols, `p = Pr(result at least this extreme | H₀)`.
+
+## A worked feel for it
+
+Suppose a coin is fair; that is `H₀`. You flip it 10 times and get 9 heads. Results at least
+this extreme, in either direction, are 9 or 10 heads, or 9 or 10 tails. Each of the `2¹⁰ = 1024`
+sequences of flips is equally likely, and 22 of them give such a result (1 + 10 for heads, the
+same for tails). So `p = 22/1024 ≈ 0.021`. A fair coin does this about 2% of the time.
+
+That is surprising, but not impossible. The p-value does not say the coin is biased. It says
+how unusual this result would be if it were not.
+
+## Reading it
+
+The slides give the conventions:
+
+| p-value | conventional reading |
+| --- | --- |
+| `p < 0.05` | statistically significant |
+| `p < 0.01` | highly significant |
+
+**Smaller p-values are stronger evidence against `H₀`.** The cut-off, written `α` (alpha), is
+chosen before you look at the data. 0.05 means accepting that one time in twenty, a world with
+no effect will still produce a "significant" result. That fact drives the Bonferroni correction
+later in the week.
+
+## The two classic misreadings
+
+**It is not the probability that `H₀` is true.** `p = 0.03` does not mean a 3% chance of no
+effect. The p-value is a probability of *data* given a hypothesis. The probability of a
+hypothesis given data is a different quantity, and slide 21 points to Bayes' theorem as the way
+to convert one into the other. The permutation-test caveat at the end of this week returns to
+this distinction, because it is the most common mistake in reading significance.
+
+**It is not the size of the effect.** A p-value says how *surprising* a difference is, not how
+*large*. With enough data, a trivial difference gives a tiny p-value. The effect-size concept
+takes this up.
+
+> A p-value is how often a world with no effect would produce data at least this extreme. Small
+> means surprising. It is not the chance the null is true, and not the size of the effect.

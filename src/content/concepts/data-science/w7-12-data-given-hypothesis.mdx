@@ -1,0 +1,109 @@
+---
+course: data-science
+section: w7-permutation
+order: 1060
+title: Data Given Hypothesis, Not Hypothesis Given Data
+visuals:
+  - type: svg
+    src: data-science/w7-significance/27.svg
+    caption: Slide 27 of 33 — a permutation test gives the probability of the data given the hypothesis.
+  - type: svg
+    src: data-science/w7-significance/21.svg
+    caption: Slide 21 of 33 — Bayes' theorem converts one conditional into the other.
+notation:
+  - symbol: "Pr(D | H)"
+    reads: probability of D given H
+    means: >-
+      How likely the data `D` is in a world where hypothesis `H` holds. This is what
+      significance tests compute.
+  - symbol: "Pr(H | D)"
+    reads: probability of H given D
+    means: >-
+      How likely the hypothesis is, now that you have seen the data. This is usually what you
+      want to know.
+  - symbol: "Pr(H)"
+    reads: probability of H
+    means: >-
+      The prior: how plausible the hypothesis was before the data arrived.
+questions:
+  - ask: "A lab screens 1,000 compounds, of which perhaps 10 truly work. Each test has α = 0.05, and a working compound tests significant 80% of the time. About what fraction of the significant results are real?"
+    choices:
+      - text: "About 14%"
+        correct: true
+        explains: >-
+          Working compounds give about `10 × 0.8 = 8` hits. The 990 that do nothing give about
+          `990 × 0.05 ≈ 50` false hits. So `8 / 58 ≈ 14%` of significant results are real. A low
+          prior makes most hits false.
+      - text: "About 95%, since α = 0.05"
+        explains: >-
+          That reads `α` as `Pr(H₀ | significant)`. It is `Pr(significant | H₀)`, a different
+          conditional. The answer depends on how many compounds were real to begin with.
+      - text: "About 80%, since a real compound tests significant 80% of the time"
+        explains: >-
+          80% is `Pr(significant | works)`. The question asks the reverse, `Pr(works |
+          significant)`, which also depends on how rare working compounds are.
+      - text: "It cannot be estimated without the raw data"
+        explains: >-
+          The prior (about 10 in 1,000), `α` and the 80% detection rate are enough. That is
+          exactly the calculation Bayes' theorem does.
+---
+
+The p-value concept warned that a p-value is not the probability that the null hypothesis is
+true. Slide 27 puts the same warning on permutation tests, labelled *caveat!*
+
+## Two conditionals
+
+From the slide: **permutation tests give you the probability of your data given your
+hypothesis. This is not the same as the probability of your hypothesis given your data, which is
+the traditional goal of significance testing.**
+
+| | what it says | who computes it |
+| --- | --- | --- |
+| data given hypothesis | if this hypothesis held, how likely is data like this? | permutation tests, t-tests, p-values |
+| hypothesis given data | given this data, how likely is the hypothesis? | what you actually want to know |
+
+The two can be wildly different. The chance that a person is a professional basketball player
+given that they are over two metres tall is low. The chance that they are over two metres tall
+given that they are a professional basketball player is high. Swapping the conditional is an
+easy mistake to make, and it is the most common error in reading significance.
+
+## Connecting them
+
+Slide 21 explains why significance tests can work at all. They come from two ideas:
+
+- **probabilities of samples drawn from distributions** with a given mean and standard
+  deviation. That is `Pr(data | distribution)`, what the tests compute;
+- **Bayes' theorem**, from week 2, which converts `Pr(data | distribution)` into
+  `Pr(distribution | data)`.
+
+The conversion needs one more ingredient: the **prior**, `Pr(H)`, how plausible the hypothesis
+was before you looked.
+
+```
+Pr(H | D) = Pr(D | H) · Pr(H) / Pr(D)
+```
+
+## A worked example
+
+A lab screens 1,000 compounds for an effect. Suppose 10 truly work. Each test uses `α = 0.05`
+and detects a working compound 80% of the time.
+
+| | count | test significant |
+| --- | --- | --- |
+| working compounds | 10 | `10 × 0.80 = 8` |
+| compounds with no effect | 990 | `990 × 0.05 ≈ 50` |
+| **total significant** | | **≈ 58** |
+
+Every test passed `p < 0.05`. Yet only `8 / 58 ≈ 14%` of the significant compounds actually
+work. The rest are the false positives the Bonferroni concept warned about. When real effects
+are rare, most significant results can be false, even with every test done correctly.
+
+## What to take from it
+
+A small p-value says the data would be surprising if nothing were going on. How much that
+should change your belief depends on how plausible the effect was to begin with. A surprising
+result for a long-shot idea deserves more doubt than the same p-value for a well-motivated one.
+
+> Significance tests compute the probability of the data given the hypothesis. Getting to the
+> probability of the hypothesis needs Bayes' theorem and a prior, and when real effects are rare,
+> most significant results are false.

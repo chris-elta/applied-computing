@@ -1,0 +1,86 @@
+---
+course: data-science
+section: w7-meaning
+order: 950
+title: Simpson's Paradox
+visuals:
+  - type: svg
+    src: data-science/w7-significance/02.svg
+    caption: Slide 2 of 33 — across all students, more study goes with lower grades.
+  - type: svg
+    src: data-science/w7-significance/03.svg
+    caption: Slide 3 of 33 — the same points coloured by course, where the trend runs the other way.
+notation:
+  - symbol: "r"
+    reads: r
+    means: >-
+      The Pearson correlation coefficient from week 3, between −1 and 1. A negative `r`
+      means one variable tends to fall as the other rises.
+questions:
+  - ask: "A site redesign raises conversion on mobile and raises it on desktop, yet total conversion falls. What is the most likely explanation?"
+    choices:
+      - text: "The redesign shifted traffic towards mobile, which converts less on both designs"
+        correct: true
+        explains: >-
+          This is Simpson's paradox. Each group improved, but the mix of groups changed. More
+          visits now come from the group with the lower rate, and that drags the total down.
+      - text: "The data must contain an error, since a total cannot fall when every part rises"
+        explains: >-
+          It can, when the parts change size. A total rate is a weighted average of the group
+          rates, and changing the weights can move it the other way.
+      - text: "The redesign made things worse, and the per-device numbers are misleading"
+        explains: >-
+          The per-device comparison is the fairer one here, because it compares like with like.
+          The total mixes the redesign's effect with a change in who is visiting.
+      - text: "The correlation is too weak to interpret"
+        explains: >-
+          Simpson's paradox is not about weak effects. The reversal can happen however strong
+          the effects in each group are.
+---
+
+A survey of high-school students plots hours spent studying for an exam against the final
+grade. The cloud of points slopes clearly downwards, with `r = −0.798`. The slide asks
+*what's going on here?* Does studying make you do worse?
+
+## The hidden variable
+
+Colour the same points by **course** and the picture changes. Each course forms its own
+small cloud, and **inside every course the trend runs upwards**: more study, higher grade.
+
+The downward slope comes from how the courses sit relative to each other:
+
+| course (from the plot) | typical hours | typical grade |
+| --- | --- | --- |
+| Physical Education | few | high |
+| Art, Social Studies | middle | middle |
+| English, Algebra | many | lower |
+
+Hard courses demand more study *and* produce lower grades. Pool them with easy courses and
+the course difference swamps the study effect inside each one. The overall correlation is
+real arithmetic, but it answers a question nobody asked.
+
+## The definition
+
+From the slide: **Simpson's paradox** is when *an association between two variables in a
+population emerges, disappears or reverses when the population is divided into subgroups*.
+
+It is named after Edward Simpson, who described it in 1951. It is called a paradox because
+it seems impossible that every part points one way and the whole points the other. It is not
+a contradiction, though. The overall figure is an average of the groups, weighted by how
+many points each group has, and changing the weights can move an average anywhere.
+
+## What it means for analysis
+
+- **A pooled correlation can mislead.** Before you trust a trend, ask whether a third
+  variable splits the data into groups that differ on both axes.
+- **The split is not always the right answer either.** Which view is correct depends on the
+  question. To ask whether *studying helps a given student in a given course*, compare within
+  courses. To describe the school as a whole, the pooled figure is a fair summary.
+- **This is a confounder at work,** the same idea as week 3's warning that correlation is not
+  causation. Course difficulty drives both study time and grade.
+
+This is why the week opens here. Before asking whether a pattern is *significant*, you have to
+ask whether it is the pattern you think it is.
+
+> An association in the whole can vanish or reverse in every part. Look for the variable that
+> splits the data before you interpret a trend.

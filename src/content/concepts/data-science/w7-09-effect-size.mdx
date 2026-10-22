@@ -1,0 +1,106 @@
+---
+course: data-science
+section: w7-effect
+order: 1030
+title: Significance Is Not Effect Size
+visuals:
+  - type: svg
+    src: data-science/w7-significance/19.svg
+    caption: Slide 19 of 33 — with enough data, tiny differences become highly significant.
+  - type: svg
+    src: data-science/w7-significance/20.svg
+    caption: Slide 20 of 33 — three ways to measure how large an effect is.
+notation:
+  - symbol: "d"
+    reads: d, or Cohen's d
+    means: >-
+      The difference between two means measured in standard deviations. `d = 0.5` means the
+      means are half a standard deviation apart.
+  - symbol: "μ, μ′"
+    reads: mew and mew prime
+    means: >-
+      The means of the two groups. The prime just marks the second one.
+  - symbol: "σ"
+    reads: sigma
+    means: >-
+      The standard deviation, the yardstick that turns a raw difference into a size that
+      can be compared across studies.
+questions:
+  - ask: "A study of 200,000 users finds that a new layout raises average session length from 300 to 303 seconds, with a standard deviation of 60 seconds and p < 0.0001. How should you describe the result?"
+    choices:
+      - text: "Highly significant but tiny: Cohen's d is 0.05"
+        correct: true
+        explains: >-
+          `d = (303 − 300) / 60 = 0.05`, far below even the 0.2 threshold for a small effect. The
+          huge sample makes the difference certain without making it large.
+      - text: "A large effect, because the p-value is so small"
+        explains: >-
+          The p-value says how confident you can be that a difference exists, not how big it is.
+          With 200,000 users, even a 3-second change is detected.
+      - text: "A medium effect, because 3 seconds is 1% of 300"
+        explains: >-
+          Effect size is measured against the spread, not the mean. 3 seconds is one twentieth
+          of a standard deviation.
+      - text: "Not a real effect, because 3 seconds is too small to matter"
+        explains: >-
+          The p-value says the difference is very probably real. Whether 3 seconds matters is a
+          separate, business question. Effect size helps answer it, but the effect does exist.
+---
+
+The speaker notes ask a question meant to sound silly: **who has more fingers, men or women?**
+Almost everyone has ten, but not quite everyone, so the two groups' averages will differ by a
+sliver. With millions of records, even that sliver could come out highly significant. But the notes add the
+question that matters: *is the difference large enough that I should care about it?*
+
+## Two different questions
+
+The slide states it directly: **for large enough sample sizes, extremely small differences can
+register as highly significant.** Significance measures *confidence that there is a
+difference*, not the **effect size**, the importance or magnitude of that difference.
+
+You saw why in the t-test. Its denominator shrinks as the samples grow. Hold the gap between
+two means fixed, collect more data, and `t` keeps rising until any gap, however small, clears
+the bar.
+
+| question | answered by |
+| --- | --- |
+| Is there a difference at all? | significance (p-value) |
+| How big is the difference? | effect size |
+
+## Measuring effect size
+
+Slide 20 gives three measures:
+
+| measure | small | medium | large |
+| --- | --- | --- | --- |
+| Cohen's `d` | > 0.2 | > 0.5 | > 0.8 |
+| overlap between the two distributions | ≈ 85% | ≈ 67% | ≈ 53% |
+| Pearson correlation coefficient | 0.2 | 0.5 | 0.8 |
+
+**Cohen's d** is the easiest to read. From the slide, `d = |μ − μ′| / σ`: it measures the gap between means in units of standard
+deviation, so it does not depend on the sample size or the units. From the notes, `d = 0.8`
+means the means differ by almost a full standard deviation, a large effect that you can see by
+eye in the data, as with men's and women's heights.
+
+The **overlap** row says the same thing as a picture. At a small effect the two bells mostly
+sit on top of each other. At a large effect they are visibly separate, but still about half
+overlapping.
+
+The correlation row uses the lecturer's thresholds. Other sources often use lower cut-offs for
+correlations specifically, around 0.1, 0.3 and 0.5. Either way, the scale runs from small to
+large and is judged on its own, not by the p-value.
+
+## A worked contrast
+
+Two teaching methods average 82 and 80, with standard deviation 10.
+
+- `d = (82 − 80) / 10 = 0.2`, a small effect.
+- With 10,000 students per group, Welch's t is `2 / √(100/10000 + 100/10000) = 2 / 0.141 ≈ 14`.
+  That is enormously significant.
+
+Both statements are true together. The difference is certainly real, and it is small. Whether
+it is worth retraining every teacher is a judgement about cost, and effect size is the input to
+that judgement that a p-value cannot give.
+
+> Significance tells you a difference exists; effect size tells you how big it is. Large samples
+> make everything significant, so report both.

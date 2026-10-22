@@ -1,7 +1,7 @@
 ---
 course: data-science
 title: "Data Science · Final Exam"
-minutes: 100
+minutes: 110
 passMark: 60
 questions:
   - topic: "Week 1 · Thinking about data"
@@ -1323,8 +1323,179 @@ questions:
       Web traffic (like inlinks) is a textbook power-law quantity: no typical size, a heavy tail.
       Under a power law, many values far beyond 3σ are expected, not errors.
       Test the shape: on log-log axes a power law appears as a straight line with slope `−a`.
+  - topic: "Week 7 · Statistical significance"
+    ask: "Hospital A has a higher overall survival rate than hospital B. Yet for mild cases and for severe cases separately, B's survival rate is higher. What best explains this?"
+    choices:
+      - text: "One of the hospitals must have reported its figures wrongly"
+        explains: "The figures can all be right. An overall rate is a weighted average of the group rates, and different weights can reverse the comparison."
+      - text: "Hospital B treats a much larger share of severe cases, which have lower survival everywhere"
+        correct: true
+        explains: "Right. This is Simpson's paradox. Case severity drives both which hospital a patient goes to and how likely they are to survive, so the pooled rates mix hospital quality with case mix."
+      - text: "The difference is too small to be statistically significant"
+        explains: "The reversal has nothing to do with significance. It comes from how the patients are split between groups, and would remain with any amount of data."
+      - text: "Hospital A is better, because the overall rate includes more patients"
+        explains: "The overall rate is dominated by case mix. Within each severity group, which compares like with like, B does better."
+    work: |-
+      Overall rate = (share of mild × mild rate) + (share of severe × severe rate).
+      If B takes most of the severe cases, its overall rate is pulled towards the low severe-case survival rate.
+      So B can win within every group and still lose overall: Simpson's paradox, with severity as the confounder.
+  - topic: "Week 7 · Statistical significance"
+    ask: "An A/B test of a new signup page reports p = 0.04 for the difference in signup rates. Which interpretation is correct?"
+    choices:
+      - text: "There is a 4% chance the new page is no better than the old one"
+        explains: "That reads the p-value as `Pr(H₀ | data)`. It is `Pr(data at least this extreme | H₀)`, which is a different quantity."
+      - text: "The new page raises signups by 4%"
+        explains: "A p-value measures how surprising a result is, not how large the effect is."
+      - text: "If the two pages performed identically, a difference at least this large would occur about 4% of the time"
+        correct: true
+        explains: "Right. That is the definition. Since 0.04 < 0.05, the result is conventionally significant."
+      - text: "The new page has been proved better"
+        explains: "Hypothesis tests never prove `H₁`. They show that the data would be unlikely under `H₀`."
+    work: |-
+      p-value = Pr(result as extreme or more extreme | H₀ true).
+      H₀ here: the two pages have the same signup rate.
+      p = 0.04 < α = 0.05, so reject H₀ at the 0.05 level. This says nothing about the size of the gain or the probability that H₀ is true.
+  - topic: "Week 7 · Statistical significance"
+    ask: "Two groups of 25 students score means of 68 and 72, with standard deviations 10 and 5. Using Welch's t with `df ≈ n₁ + n₂ − 2` and a two-tailed critical value of about 2.01 at α = 0.05, what do you conclude?"
+    choices:
+      - text: "t ≈ 1.79, so the difference is not significant at 0.05"
+        correct: true
+        explains: "Right. The noise term is `√(100/25 + 25/25) = √5 ≈ 2.24`, and `4 / 2.24 ≈ 1.79`, which falls short of 2.01."
+      - text: "t ≈ 5.16, so the difference is highly significant"
+        explains: "That uses the standard deviations where the variances belong: `√(10/25 + 5/25) = √0.6 ≈ 0.77`. Square each `s` before dividing by `n`."
+      - text: "t ≈ 0.8, so the difference is not significant"
+        explains: "That divides by `4 + 1 = 5` and forgets the square root. The denominator is `√(s₁²/n₁ + s₂²/n₂) = √5`."
+      - text: "t = 4, so the difference is highly significant"
+        explains: "4 is the raw gap between the means. The t-statistic divides it by its uncertainty."
+    work: |-
+      `s₁²/n₁ = 10² / 25 = 100 / 25 = 4`.
+      `s₂²/n₂ = 5² / 25 = 25 / 25 = 1`.
+      Denominator: `√(4 + 1) = √5 ≈ 2.236`.
+      `t = (72 − 68) / 2.236 ≈ 1.79`, with `df ≈ 25 + 25 − 2 = 48`.
+      `1.79 < 2.01`, so fail to reject H₀ at α = 0.05.
+  - topic: "Week 7 · Statistical significance"
+    ask: "A t-test comparing two groups gives t = 1.5, not significant. You repeat the study with the same means and standard deviations but nine times as many people per group. What t should you expect?"
+    choices:
+      - text: "1.5, because the means and spreads are unchanged"
+        explains: "The spreads describe single values, but `t` divides by the uncertainty of the means, and that shrinks with more data."
+      - text: "4.5"
+        correct: true
+        explains: "Right. Each `s²/n` term is divided by 9, so the square root in the denominator is divided by 3. `1.5 × 3 = 4.5`, comfortably significant."
+      - text: "13.5"
+        explains: "That multiplies by 9. The sample sizes are inside a square root, so nine times the data gives three times the t."
+      - text: "0.5"
+        explains: "More data makes the means more precise, which shrinks the denominator and increases t."
+    work: |-
+      `t = (x̄₁ − x̄₂) / √(s₁²/n₁ + s₂²/n₂)`.
+      Multiplying both n by 9 divides the expression under the root by 9.
+      `√(1/9) = 1/3`, so the denominator is a third as large and t is three times as large: `1.5 × 3 = 4.5`.
+  - topic: "Week 7 · Statistical significance"
+    ask: "Two machines fill bottles with the same average volume, but one is far more erratic. You have 60 readings from each. Which test can detect the difference, and why?"
+    choices:
+      - text: "A t-test, because it uses the standard deviations"
+        explains: "The t-test uses the spreads only as noise. Its signal is the gap between the means, which here is about zero."
+      - text: "A Kolmogorov-Smirnov test, because the CDFs of the two samples will cross at a steep angle and open a large gap"
+        correct: true
+        explains: "Right. The KS statistic is the largest vertical gap between the empirical CDFs. A wider spread makes one CDF rise more slowly, which shows up even with equal centres."
+      - text: "No test can, because equal means imply equal distributions"
+        explains: "Equal means say nothing about spread or shape. Two distributions can share a mean and differ greatly."
+      - text: "A Bonferroni correction, because there are two machines"
+        explains: "Bonferroni adjusts the threshold when many hypotheses are tested. It is not a test of whether two samples differ."
+    work: |-
+      KS: `D = max over x of |F₁(x) − F₂(x)|`.
+      Narrow distribution: its CDF climbs steeply near the mean. Wide distribution: its CDF climbs gradually.
+      Below the mean the wide CDF is higher; above it, lower. The gap can be large on both sides.
+      With n = n′ = 60 and α = 0.05: threshold `1.36 × √(120/3600) = 1.36 × 0.183 ≈ 0.25`.
+  - topic: "Week 7 · Statistical significance"
+    ask: "A genetics team tests 500 genes for a link with a disease, wanting an overall significance level of 0.05. Gene X has p = 0.00004 and gene Y has p = 0.002. Under the Bonferroni correction, which are significant?"
+    choices:
+      - text: "Both, since both are below 0.05"
+        explains: "0.05 is the threshold for a single test. Testing 500 genes gives chance 500 opportunities, so each one must clear a stricter bar."
+      - text: "Gene X only"
+        correct: true
+        explains: "Right. The per-test threshold is `0.05 / 500 = 0.0001`. Gene X's 0.00004 clears it; gene Y's 0.002 is twenty times too large."
+      - text: "Neither, since the threshold becomes 0.05 × 500 = 25 and the test breaks down"
+        explains: "The correction divides `α` by the number of tests. Multiplying would make the bar easier, and a probability threshold above 1 is meaningless."
+      - text: "Gene Y only, since a smaller p-value with so many tests is suspicious"
+        explains: "A smaller p-value is stronger evidence, not weaker. The correction raises the bar for every test equally."
+    work: |-
+      Bonferroni: each of `n` tests must reach `α / n`.
+      `0.05 / 500 = 0.0001`.
+      Gene X: `0.00004 < 0.0001`, significant.
+      Gene Y: `0.002 > 0.0001`, not significant after correction.
+      Without correction, about `500 × 0.05 = 25` genes would pass by chance alone.
+  - topic: "Week 7 · Statistical significance"
+    ask: "Across 2 million rides, a ride-share app finds that drivers with a new navigation feature complete trips in 24.6 minutes on average against 24.9 without, with a standard deviation of 6 minutes and p < 0.0001. How large is the effect?"
+    choices:
+      - text: "Large, because the p-value is extremely small"
+        explains: "The p-value reflects confidence that a difference exists. With 2 million rides, almost any difference is detected."
+      - text: "Very small: Cohen's d is 0.05"
+        correct: true
+        explains: "Right. `d = 0.3 / 6 = 0.05`, a quarter of the 0.2 threshold for a small effect. The difference is certainly real and tiny."
+      - text: "Medium: Cohen's d is 0.5"
+        explains: "That divides the 0.3-minute gap by 0.6 rather than by the standard deviation of 6. Effect size is measured in standard deviations."
+      - text: "It cannot be judged without knowing the sample size"
+        explains: "Cohen's d deliberately leaves sample size out. It needs only the gap between means and the standard deviation."
+    work: |-
+      Cohen's `d = |μ − μ′| / σ`.
+      `|24.6 − 24.9| = 0.3` minutes.
+      `d = 0.3 / 6 = 0.05`.
+      Thresholds: small > 0.2, medium > 0.5, large > 0.8. 0.05 is below small.
+      Significance and effect size answer different questions; the huge sample explains the tiny p-value.
+  - topic: "Week 7 · Statistical significance"
+    ask: "To test whether a fitness tracker's step counts differ between weekdays and weekends, you shuffle the weekday/weekend labels 5,000 times. 40 shuffles give a difference at least as large as the real one. What is the approximate p-value, and is the result significant at 0.01?"
+    choices:
+      - text: "p ≈ 0.008; significant at 0.01"
+        correct: true
+        explains: "Right. `40 / 5,000 = 0.008`, which is below 0.01."
+      - text: "p ≈ 0.04; not significant at 0.01"
+        explains: "That divides 40 by 1,000. The count is out of all 5,000 shuffles."
+      - text: "p ≈ 0.992; not significant"
+        explains: "That is the fraction of shuffles that fall short of the real difference. The p-value counts those at least as extreme."
+      - text: "No p-value can be computed without assuming the step counts are normal"
+        explains: "Avoiding that assumption is the point of a permutation test. The null distribution is built from the shuffled data itself."
+    work: |-
+      Permutation p-value ≈ (shuffles at least as extreme) / (total shuffles).
+      `40 / 5,000 = 0.008`.
+      `0.008 < 0.01`, so significant at the 0.01 level.
+      With 5,000 shuffles, the smallest p-value you could report is about `1 / 5,000 = 0.0002`.
+  - topic: "Week 7 · Statistical significance"
+    ask: "A fraud filter flags transactions that are significant at α = 0.01 under a 'normal customer' null. About 1 transaction in 10,000 is actually fraud, and the filter flags 90% of fraud. Roughly what fraction of flagged transactions are fraud?"
+    choices:
+      - text: "About 99%, since α = 0.01"
+        explains: "That reads `α` as `Pr(normal | flagged)`. It is `Pr(flagged | normal)`. Converting needs the prior: how rare fraud is."
+      - text: "About 90%, since the filter catches 90% of fraud"
+        explains: "That is `Pr(flagged | fraud)`. The question is the reverse, `Pr(fraud | flagged)`."
+      - text: "Under 1%"
+        correct: true
+        explains: "Right. Per million transactions: `100 × 0.9 = 90` fraud flags and `999,900 × 0.01 ≈ 9,999` false flags. `90 / 10,089 ≈ 0.9%`. With a tiny prior, nearly every flag is a false alarm."
+      - text: "About 50%, since a flag is either fraud or not"
+        explains: "Two possible outcomes need not be equally likely. The answer depends on the base rate and the two error rates."
+    work: |-
+      Take 1,000,000 transactions: 100 fraud, 999,900 normal.
+      Fraud flagged: `100 × 0.90 = 90`.
+      Normal flagged: `999,900 × 0.01 = 9,999`.
+      `Pr(fraud | flagged) = 90 / (90 + 9,999) ≈ 0.009`, under 1%.
+      A significance test gives `Pr(data | H)`; Bayes' theorem and the prior are needed for `Pr(H | data)`.
+  - topic: "Week 7 · Statistical significance"
+    ask: "A simulation needs random values from a distribution with outcomes 1, 2, 3 and 4 having probabilities 0.1, 0.2, 0.3 and 0.4. Using the CDF method, a uniform draw of p = 0.35 returns which outcome?"
+    choices:
+      - text: "1"
+        explains: "Outcome 1 covers only `p` from 0 to 0.1."
+      - text: "2"
+        explains: "Outcome 2 covers `p` from 0.1 to 0.3. 0.35 is past it."
+      - text: "3"
+        correct: true
+        explains: "Right. The CDF is 0.1, 0.3, 0.6, 1.0. The value 0.35 falls between 0.3 and 0.6, which is outcome 3's band, 0.3 wide as its probability requires."
+      - text: "4"
+        explains: "Outcome 4 is the most likely, but its band runs from 0.6 to 1.0. 0.35 has not reached it."
+    work: |-
+      CDF: F(1) = 0.1, F(2) = 0.3, F(3) = 0.6, F(4) = 1.0.
+      Return the first outcome whose CDF reaches p.
+      0.35 > 0.3 = F(2) and 0.35 ≤ 0.6 = F(3), so return 3.
+      Each outcome's band has width equal to its probability, so a uniform p picks it at the right rate.
 ---
-78 multiple-choice questions across all six weeks. The paper is divided into sections, and nothing is revealed until you
+88 multiple-choice questions across all seven weeks. The paper is divided into sections, and nothing is revealed until you
 submit: pick an answer for each question (you can change it as often as you like), then submit a
 section to see your score for it, the correct answers, an explanation for each one you chose, and a
 worked solution. You can submit one section at a time, in any order, or the whole exam at once.

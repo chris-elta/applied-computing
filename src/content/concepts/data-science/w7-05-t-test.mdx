@@ -1,0 +1,125 @@
+---
+course: data-science
+section: w7-ttest
+order: 990
+title: The t-Test
+visuals:
+  - type: svg
+    src: data-science/w7-significance/11.svg
+    caption: Slide 11 of 33 — two distributions are easier to tell apart as the means separate or the spread shrinks.
+  - type: svg
+    src: data-science/w7-significance/12.svg
+    caption: Slide 12 of 33 — Welch's t-statistic and its degrees of freedom.
+notation:
+  - symbol: "x̄₁, x̄₂"
+    reads: x bar one, x bar two
+    means: >-
+      The sample means: the averages you actually measured in each group. The bar means
+      "average of".
+  - symbol: "s₁², s₂²"
+    reads: s one squared, s two squared
+    means: >-
+      The sample variances of each group: the square of each group's standard deviation.
+  - symbol: "n₁, n₂"
+    reads: n one, n two
+    means: >-
+      How many values are in each sample.
+  - symbol: "t"
+    reads: t
+    means: >-
+      The t-statistic: the gap between the means divided by its uncertainty. Bigger in size
+      means stronger evidence of a real difference.
+  - symbol: "df"
+    reads: d f, or degrees of freedom
+    means: >-
+      How much information the samples give about variability. It picks which t-distribution
+      to compare `t` against.
+questions:
+  - ask: "Two groups have the same means and standard deviations as before, but you collect four times as many people in each. What happens to Welch's t?"
+    choices:
+      - text: "It doubles"
+        correct: true
+        explains: >-
+          Each `s²/n` term shrinks by 4, so the square root in the denominator shrinks by 2.
+          The numerator is unchanged, so `t` doubles.
+      - text: "It quadruples"
+        explains: >-
+          The sample sizes sit inside a square root, so four times the data only halves the
+          uncertainty. That is the same `√n` from the central limit theorem.
+      - text: "It stays the same, because the means and spreads have not changed"
+        explains: >-
+          The means and spreads describe the data, but `t` also depends on how sure you are
+          about the means, and that improves with more data.
+      - text: "It halves"
+        explains: >-
+          More data makes the means more certain, which shrinks the denominator and makes `t`
+          larger, not smaller.
+---
+
+A sample of 20 men and 20 women take an IQ test. The two sample means will certainly differ;
+two samples almost never match exactly. The slide's question is whether **the difference is
+significant**. The **t-test** answers it: it evaluates whether the *population* means of two
+samples are different.
+
+## What makes two means look different
+
+The six plots on slide 11 show the idea before any formula. Two bell curves are easier to
+tell apart when:
+
+- the **means move apart**, or
+- the **spread decreases**, so each curve is narrower and they overlap less.
+
+Slide 12 adds a third factor. Two means differ significantly if:
+
+| condition | why it helps |
+| --- | --- |
+| the mean difference is relatively large | more signal |
+| the standard deviations are small enough | less noise |
+| the samples are large enough | the means themselves are pinned down more precisely |
+
+## Welch's t-statistic
+
+These three ideas combine into one number:
+
+```
+         x̄₁ − x̄₂
+t = ─────────────────
+     √( s₁²/n₁ + s₂²/n₂ )
+```
+
+It is a **signal-to-noise ratio**.
+
+- The **numerator** is the signal: the difference between the two sample means.
+- The **denominator** is the noise: how much a difference in means would wobble from sample
+  to sample. Each group contributes its variance `s²` divided by its size `n`. Bigger
+  samples shrink this term, just as the central limit theorem shrank the spread of a mean to
+  `σ/√n` last week.
+
+So `t` measures how many "units of noise" apart the two means are. A `t` of 0.5 is well within
+the wobble. A `t` of 4 is far outside it. The sign only says which group is larger. For a
+two-sided test you compare its size, ignoring the sign.
+
+This version is **Welch's** t-test, which lets the two groups have different variances. It
+does not assume the spreads are equal.
+
+## Degrees of freedom and the table
+
+To turn `t` into a decision you compare it with a **critical value** from a t-distribution
+table. Which row of the table depends on the **degrees of freedom**, `df`, which the slide
+describes as *the amount of information we have to estimate variability*. For two independent
+samples the slides use
+
+```
+df ≈ n₁ + n₂ − 2
+```
+
+With few degrees of freedom the t-distribution has wider tails, because a variance estimated
+from a handful of points is itself uncertain. So small samples need a bigger `t` to count as
+significant. As `df` grows, the critical value for `α = 0.05` (two-tailed) falls towards
+about 1.96, the normal distribution's value.
+
+The rule is: if `|t|` is larger than the critical value, reject `H₀`. The next concept works
+through one in full.
+
+> The t-statistic is the gap between two means divided by its uncertainty. Bigger gaps, smaller
+> spreads and larger samples all push it up, and the table says how big is big enough.

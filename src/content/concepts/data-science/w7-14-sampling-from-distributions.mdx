@@ -1,0 +1,104 @@
+---
+course: data-science
+section: w7-sampling
+order: 1080
+title: Sampling from Distributions
+visuals:
+  - type: svg
+    src: data-science/w7-significance/31.svg
+    caption: Slide 31 of 33 — uniform radius and angle crowd points at the centre; rejection sampling does not.
+  - type: svg
+    src: data-science/w7-significance/32.svg
+    caption: Slide 32 of 33 — a uniform probability mapped through the CDF gives a sample from the distribution.
+notation:
+  - symbol: "r, a"
+    reads: r and a
+    means: >-
+      Radius and angle: a point's distance from the centre and its direction.
+  - symbol: "p ∈ [0, 1]"
+    reads: p in the interval zero to one
+    means: >-
+      A probability chosen uniformly at random between 0 and 1. The square brackets include
+      both ends.
+  - symbol: "F(x)"
+    reads: F of x
+    means: >-
+      The CDF: the probability of a value at most `x`. It rises from 0 to 1.
+questions:
+  - ask: "A distribution has outcomes A, B and C with probabilities 0.5, 0.3 and 0.2. You draw p = 0.62 uniformly from [0, 1]. Using the CDF method, which outcome do you return?"
+    choices:
+      - text: "B"
+        correct: true
+        explains: >-
+          The CDF is 0.5 after A and 0.8 after B. 0.62 falls between them, in B's band. B's band
+          is 0.3 wide, so B is picked 30% of the time, as it should be.
+      - text: "A"
+        explains: >-
+          A covers only `p` up to 0.5. 0.62 is past it.
+      - text: "C"
+        explains: >-
+          C's band starts at 0.8, where the CDF has passed A and B. 0.62 has not reached it.
+      - text: "Any of them, since p is random"
+        explains: >-
+          The randomness is all in drawing `p`. Once `p` is fixed, the CDF maps it to exactly
+          one outcome.
+---
+
+Permutation tests need random shuffles. Simulations need random samples from a given
+distribution. Slide 30 asks for an algorithm to draw **uniformly random points from a circle**,
+and warns that the problem is *more subtle than it looks*.
+
+## The tempting answer
+
+Every point in a circle has a radius `r` and an angle `a`. So pick `r` uniformly between 0 and
+the radius, pick `a` uniformly around the circle, and plot the point.
+
+The slide's picture shows the result: **too many points near the centre.**
+
+The reason is in red on the slide: **the inner half circle is smaller than the outer half!**
+Take a circle of radius 1. Half the draws have `r < 0.5`, so half the points land in the inner
+disc of radius 0.5. But that disc's area is `π × 0.5² = π/4`, a quarter of the whole circle's
+`π`. Half the points crowd into a quarter of the area, so the centre is twice as dense as it
+should be, and the edge too sparse.
+
+Uniform in `r` is not uniform in area. There is more room far from the centre.
+
+## The fix: rejection sampling
+
+From the slide: **independently sampling `x` and `y` gives points uniform in the box, so
+discarding those outside the circle leaves a uniform distribution.**
+
+1. Draw `x` and `y` uniformly between −1 and 1. The point is uniform in the square.
+2. If `x² + y² > 1`, throw it away and try again.
+3. Otherwise, keep it.
+
+Every patch of the square is equally likely, so every patch of the circle inside it is too. The
+cost is the discards. The circle takes `π/4 ≈ 79%` of the square, so about one draw in five is
+wasted.
+
+## Any distribution in one dimension
+
+For a single variable there is a general method. From slide 32: **convert the distribution to
+its cumulative distribution (CDF). Selecting a probability `p` in `[0, 1]` then maps to a value
+in the CDF.**
+
+1. Draw `p` uniformly between 0 and 1.
+2. Find the value `x` where the CDF reaches `p`: `F(x) = p`.
+3. Return `x`.
+
+For a discrete example, take outcomes A, B and C with probabilities 0.5, 0.3 and 0.2. The CDF
+rises in steps:
+
+| outcome | probability | CDF after it | `p` that lands here |
+| --- | --- | --- | --- |
+| A | 0.5 | 0.5 | 0 to 0.5 |
+| B | 0.3 | 0.8 | 0.5 to 0.8 |
+| C | 0.2 | 1.0 | 0.8 to 1 |
+
+Each outcome gets a band of `p` exactly as wide as its probability, so a uniform `p` picks it
+with exactly that probability. For the normal curve on the slide, `p = 0.5` maps to the mean,
+and `p` near 0 or 1 maps far out into the tails. The steep middle of the CDF takes up a wide
+range of `p`, which is why values near the mean come up most often.
+
+> Choose randomness in a space where uniform really means uniform: the square, not the radius;
+> the CDF's probability, not the variable itself.

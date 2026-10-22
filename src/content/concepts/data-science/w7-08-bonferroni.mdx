@@ -1,0 +1,102 @@
+---
+course: data-science
+section: w7-effect
+order: 1020
+title: The Bonferroni Correction
+visuals:
+  - type: svg
+    src: data-science/w7-significance/18.svg
+    caption: Slide 18 of 33 — testing many hypotheses demands a stricter threshold.
+notation:
+  - symbol: "α"
+    reads: alpha
+    means: >-
+      The significance level you want for the whole set of tests, usually 0.05.
+  - symbol: "n"
+    reads: n
+    means: >-
+      The number of hypotheses tested. Here it counts tests, not data points.
+  - symbol: "α/n"
+    reads: alpha over n
+    means: >-
+      The stricter threshold each single test must beat. With 20 tests at 0.05, each needs
+      `p < 0.0025`.
+questions:
+  - ask: "An analyst tests 40 product features for an effect on churn at α = 0.05 and finds 2 with p < 0.05. What does the Bonferroni correction suggest?"
+    choices:
+      - text: "Each feature needs p < 0.00125 to count, so the 2 findings may well be chance"
+        correct: true
+        explains: >-
+          `0.05/40 = 0.00125`. With 40 tests and no real effects, about `40 × 0.05 = 2` would
+          pass the uncorrected bar anyway. Two hits is what chance predicts.
+      - text: "The 2 findings are confirmed, because each passed p < 0.05"
+        explains: >-
+          Each passed the threshold for a single test. Testing 40 features gives chance 40
+          opportunities to produce a low p-value.
+      - text: "Each feature needs p < 0.05 × 40 = 2 to count"
+        explains: >-
+          The correction divides `α` by the number of tests, making the bar stricter. A
+          threshold of 2 would make every result significant.
+      - text: "The correction only applies when testing millions of hypotheses"
+        explains: >-
+          The slide's example is millions, but the problem starts as soon as there is more than
+          one test. At 40 tests the expected number of false positives is already 2.
+---
+
+A significance level of 0.05 means that, if nothing is going on, a test will still come out
+significant one time in twenty. For one carefully chosen hypothesis, that is an acceptable
+risk. Now run a thousand tests.
+
+## Fishing expeditions
+
+Suppose you test 1,000 possible links (between features and outcomes, say) and none of them
+is real. At `α = 0.05`, you should expect about
+
+```
+1,000 × 0.05 = 50
+```
+
+of them to come out "significant". Every one is a false positive, and nothing in the individual
+results tells you which.
+
+The slide calls this a **fishing expedition**: test enough hypotheses and something will bite.
+The small chart in the corner of the slide shows the result. Arcade revenue and computer
+science doctorates track each other closely over the years. Search enough pairs of time series
+and you will find one like that.
+
+The risk grows quickly even for modest numbers. With 20 independent tests and no real effects,
+the chance that at least one comes out significant is
+
+```
+1 − 0.95²⁰ ≈ 1 − 0.36 = 0.64
+```
+
+So it is more likely than not.
+
+## The correction
+
+The slide's rule: **in testing `n` hypotheses, a result must reach `α/n` to be considered
+significant at level `α`.**
+
+| tests `n` | per-test threshold for overall `α = 0.05` |
+| --- | --- |
+| 1 | 0.05 |
+| 20 | 0.0025 |
+| 1,000 | 0.00005 |
+| 1,000,000 | 0.00000005 |
+
+Dividing by `n` keeps the chance of *any* false positive across the whole set at or below
+`α`. That is why the slide says fishing expeditions *must be held to higher standards*.
+
+## The cost, and the habit
+
+The correction is deliberately cautious. With a very strict threshold, real but modest effects
+can be missed. That is a price you pay for searching widely instead of testing one idea you had
+in advance.
+
+The practical habit is to **count your tests honestly**. That includes the ones you tried and
+did not report: every feature you checked, every subgroup you sliced, every time window you
+tried. A p-value of 0.03 means something very different after one test than after fifty.
+
+> Every test is another chance for luck to look like a finding. When you test `n` hypotheses,
+> require `p < α/n`, and count every test you ran.

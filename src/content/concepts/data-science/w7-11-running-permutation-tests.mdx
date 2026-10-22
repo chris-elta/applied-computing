@@ -1,0 +1,117 @@
+---
+course: data-science
+section: w7-permutation
+order: 1050
+title: Reading a Permutation Test
+visuals:
+  - type: svg
+    src: data-science/w7-significance/25.svg
+    caption: Slide 25 of 33 — the real statistic (purple line) inside and outside the shuffled distribution.
+  - type: svg
+    src: data-science/w7-significance/26.svg
+    caption: Slide 26 of 33 — how many shuffles, what to shuffle, and a warning sign.
+notation:
+  - symbol: "N"
+    reads: N
+    means: >-
+      The number of random permutations you generate.
+  - symbol: "k"
+    reads: k
+    means: >-
+      How many of the shuffled statistics are at least as extreme as the real one.
+questions:
+  - ask: "You run 2,000 permutations. 30 of the shuffled statistics are at least as extreme as the real one. What is the p-value, approximately?"
+    choices:
+      - text: "0.015"
+        correct: true
+        explains: >-
+          `30 / 2,000 = 0.015`. Shuffled data matches or beats the real result 1.5% of the
+          time, which is significant at 0.05 but not at 0.01.
+      - text: "0.985"
+        explains: >-
+          That is the fraction of shuffles that fall *short* of the real result. The p-value
+          counts the ones at least as extreme.
+      - text: "0.03"
+        explains: >-
+          That divides 30 by 1,000. The count is out of all 2,000 permutations.
+      - text: "30"
+        explains: >-
+          30 is the count. A p-value is a probability, so divide by the number of shuffles.
+  - ask: "A model trained on data with its labels randomly shuffled still reaches 85% accuracy on a test set. What does that suggest?"
+    choices:
+      - text: "Something other than the real signal is driving the score, such as leakage or an unbalanced test set"
+        correct: true
+        explains: >-
+          With shuffled labels there is nothing real to learn. A high score means the evaluation
+          can be met without the signal. One common cause is that 85% of the test set is a
+          single class.
+      - text: "The model is robust, since it does well even on noisy data"
+        explains: >-
+          Shuffled labels are not noisy data; they contain no signal at all. Doing well on them
+          is a warning, not a strength.
+      - text: "The shuffling was not random enough"
+        explains: >-
+          Possible but unlikely. Check first whether the score can be reached without learning
+          anything, for example by always guessing the commonest class.
+---
+
+The previous concept built a distribution of shuffled statistics. This one reads a p-value off
+it, and covers how to run the test well.
+
+## The rank is the p-value
+
+From slide 25: **the rank of the real data among the random permutations determines
+significance.**
+
+Each histogram on the slide shows the statistic from about a thousand shuffles. The purple line
+marks the real value.
+
+- **Left:** the real value sits among the shuffles, near the middle. Plenty of shuffled data
+  sets do as well. Not significant.
+- **Right:** the real value is far to the right of every shuffle. Random relabelling never got
+  close. Highly significant.
+
+To turn this into a number, count the shuffles at least as extreme as the real one:
+
+```
+p ≈ k / N
+```
+
+For example, with `N = 1,000` shuffles and `k = 12` that match or beat the real statistic,
+`p ≈ 12/1000 = 0.012`. This is the same definition as before: how often a world where `H₀`
+holds produces something at least this extreme. The only difference is that you simulated that
+world rather than looking it up.
+
+## How many permutations
+
+Slide 26: **the more permutations you try (at least 1,000), the more impressive your
+significance can be.**
+
+The reason is resolution. If the real value beats all `N` shuffles, the best you can claim is
+`p < 1/N`. With 100 shuffles you cannot show anything stronger than `p < 0.01`, however
+extreme your data. With 10,000 you can show `p < 0.0001`. Shuffling is cheap, so run plenty.
+This matters especially after a Bonferroni correction, when the threshold might be 0.0001.
+
+## What to shuffle
+
+The slide says to keep comparisons **apples-to-apples**. Typically you permute:
+
+- **the values of a field across records**, such as which person has which label; or
+- **time-points within a record**, such as the order of one person's measurements.
+
+Shuffle only the thing your hypothesis says does not matter, and keep everything else fixed. For
+the heights example, shuffle the gender labels and keep each person's height. Shuffling heights
+across unrelated data sets would break comparisons the hypothesis never questioned.
+
+## A sanity check for models
+
+The slide ends with a warning: **if your model shows decent performance trained on random data,
+you have a problem.**
+
+This turns the permutation test into a check on a whole pipeline. Shuffle the labels, retrain,
+and evaluate. There is now nothing real to learn, so the score should fall to chance. If it
+stays high, the evaluation is rewarding something other than the signal. Common culprits are a
+test set dominated by one class, or information leaking from the labels into the features.
+
+> Shuffle many times, count how often chance matches the real result, and that fraction is your
+> p-value. A model that succeeds on shuffled labels is measuring something else.
