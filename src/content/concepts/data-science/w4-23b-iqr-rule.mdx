@@ -1,0 +1,131 @@
+---
+course: data-science
+section: w4-outliers
+order: 625
+title: The 1.5 × IQR Rule
+notation:
+  - symbol: "Q1, Q3"
+    reads: Q one, Q three; the first and third quartiles
+    means: >-
+      The values a quarter and three quarters of the way up the sorted data. A quarter of the
+      data lies below `Q1` and a quarter above `Q3`.
+  - symbol: "IQR"
+    reads: I-Q-R, or interquartile range
+    means: >-
+      `Q3 − Q1`, the width of the middle half of the data. For example, quartiles of 15 and 20
+      give `IQR = 5`.
+  - symbol: "fence"
+    reads: fence
+    means: >-
+      A cut-off for flagging outliers. The lower fence is `Q1 − 1.5 × IQR`, the upper fence
+      `Q3 + 1.5 × IQR`.
+  - symbol: "five-number summary"
+    reads: five-number summary
+    means: >-
+      Minimum, `Q1`, median, `Q3` and maximum. A box plot draws these five numbers.
+  - symbol: "robust"
+    reads: robust
+    means: >-
+      Barely affected by a few extreme values. The median is robust; the mean is not.
+questions:
+  - ask: "A dataset has `Q1 = 40` and `Q3 = 52`. Its smallest value is 21 and its largest is 69. Which values does the 1.5 × IQR rule flag?"
+    choices:
+      - text: "21 only"
+        correct: true
+        explains: >-
+          `IQR = 12`, so `1.5 × IQR = 18`. The fences are `40 − 18 = 22` and `52 + 18 = 70`.
+          21 is below 22; 69 is inside 70. Check each end against its own fence.
+      - text: "69 only"
+        explains: >-
+          69 looks far from the middle, but the upper fence is `52 + 18 = 70`, and 69 is
+          inside it. The low end is the one that crosses its fence.
+      - text: "Both 21 and 69"
+        explains: >-
+          Both lie 17 to 19 beyond their quartile, so they look alike. With fences one IQR
+          wide (28 and 64) both would be flagged, but the rule uses 1.5: the fences are 22
+          and 70, and only 21 lies outside.
+      - text: "Neither"
+        explains: >-
+          That would follow from the wider `3 × IQR` fences sometimes used for "far out"
+          values, 4 and 88. The standard rule uses 1.5, which puts the lower fence at 22.
+  - ask: "In the delivery-times example, a |z| above 3 rule misses the 48-minute delivery, but the IQR rule flags it. Why?"
+    choices:
+      - text: "The 48 inflates the mean and standard deviation that z is computed from, but cannot move the quartiles"
+        correct: true
+        explains: >-
+          The extreme value pulls the mean towards itself and widens `σ`, so it looks less
+          extreme in z-score terms. The quartiles depend only on the order of the middle
+          values, so the fences stay put however large the outlier is.
+      - text: "The IQR rule is always stricter than a z-score rule"
+        explains: >-
+          For normal data the 1.5 × IQR fences sit about 2.7 standard deviations from the mean,
+          so in that case the rule is slightly stricter than |z| above 3. The difference here
+          comes from robustness, not strictness.
+      - text: "z-scores only work for normally distributed data"
+        explains: >-
+          z-scores can be computed for any data. The problem is that the outlier itself
+          distorts the mean and `σ` used to compute them.
+      - text: "The IQR rule uses the median, which is larger than the mean here"
+        explains: >-
+          The median is 17 and the mean is 20, so the median is smaller. In any case the fences
+          are built from the quartiles, not the median.
+assessed:
+  - "Practice Exam · Q8"
+prerequisites:
+  - topic: "z-scores"
+    explains: "`z = (x − X̄) / σ` counts how many standard deviations a value sits from the mean. The concept compares the IQR rule with flagging `|z|` above 3, so recall that both `X̄` and `σ` are computed from the data, including any outlier in it."
+    see: "data-science/w4-16-normalization-and-z-scores"
+---
+
+Nine deliveries took these times, in minutes, already sorted:
+
+| 12 | 14 | 15 | 15 | 17 | 18 | 20 | 21 | 48 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+
+Is the 48 an outlier? The previous concept suggested a z-score test: flag anything more than
+`k` standard deviations from the mean. Try it with `k = 3`. The mean is `180 / 9 = 20` and the
+standard deviation is about 10.3, so the 48 has `z = (48 − 20) / 10.3 ≈ 2.7`. Not flagged.
+
+The trouble is that the 48 helped set the yardstick it is measured with. Remove it, and the
+other eight have mean 16.5 and standard deviation about 2.9. One extreme value dragged the mean
+up and nearly quadrupled `σ`, so it hid itself. This is called **masking**.
+
+## Measure spread with the middle of the data
+
+The **1.5 × IQR rule** avoids this by building its yardstick from values the outlier cannot
+reach.
+
+1. **Find the quartiles.** `Q1` is the value a quarter of the way up the sorted data, `Q3`
+   three quarters. With nine values, using the convention NumPy and pandas use by default,
+   `Q1` is the 3rd value and `Q3` the 7th: `Q1 = 15`, `Q3 = 20`. Software offers several
+   conventions, and they can disagree slightly on small datasets; say which you used.
+2. **Take the interquartile range.** `IQR = Q3 − Q1 = 20 − 15 = 5`, the width of the middle
+   half.
+3. **Set the fences** one and a half IQRs beyond each quartile:
+
+```
+lower fence = Q1 − 1.5 × IQR = 15 − 7.5 = 7.5
+upper fence = Q3 + 1.5 × IQR = 20 + 7.5 = 27.5
+```
+
+4. **Flag anything outside a fence.** 48 is above 27.5, so it is flagged. Nothing falls below
+   7.5.
+
+Change the 48 to 480 and the fences do not move. The quartiles depend on the order of the
+values, not on how far out the extreme one sits. That is what **robust** means.
+
+## Reading the result
+
+- **Check each end separately.** The fences are not symmetric about the median when the data
+  is skewed, so one tail can have outliers and the other none.
+- **The rule draws the box plot.** The box runs from `Q1` to `Q3`, the whiskers stop at the
+  furthest values inside the fences, and flagged points are drawn as dots beyond them.
+- **1.5 is a convention, not a law.** For normal data the fences sit about 2.7 standard
+  deviations from the mean and flag about 0.7% of points. A wider `3 × IQR` fence is
+  sometimes used for "far out" values.
+- **A flag is a question, not a verdict.** As in the previous concept, find out *why* a point is
+  outside the fence before deciding whether to fix it, keep it or delete it. In a skewed
+  variable such as income, many real values will be flagged.
+
+> Judge a point against a yardstick it cannot bend. The quartiles ignore how extreme the
+> extremes are, which is why fences built from them catch outliers that z-scores miss.

@@ -1,0 +1,142 @@
+---
+course: data-science
+section: w4-missing
+order: 615
+title: Filling Gaps in a Time Series
+notation:
+  - symbol: "time series"
+    reads: time series
+    means: >-
+      Measurements of one thing taken in order over time, such as an hourly temperature
+      reading. The order carries information; shuffling the rows destroys it.
+  - symbol: "x̂(t)"
+    reads: x hat of t
+    means: >-
+      An estimate of the value at time `t`. The hat marks a filled-in guess, as opposed to a
+      measured value `x(t)`.
+  - symbol: "linear interpolation"
+    reads: linear in-ter-po-LAY-shun
+    means: >-
+      Estimating a missing value by drawing a straight line between the known values on
+      either side of the gap and reading off the point you need.
+  - symbol: "forward fill"
+    reads: forward fill
+    means: >-
+      Repeating the last known value until a new one arrives. Also called *last observation
+      carried forward*.
+  - symbol: "seasonal profile"
+    reads: seasonal profile
+    means: >-
+      The typical value for a given point in the cycle, such as the average temperature on
+      14 July at 3 pm across previous years.
+questions:
+  - ask: "A weather station was offline for three weeks in July. You fill the gap by linear interpolation between the readings on either side. What is the main problem with the result?"
+    choices:
+      - text: "A straight line removes the day-night cycle and any heatwave or cold spell inside the gap"
+        correct: true
+        explains: >-
+          Interpolation assumes the series moves steadily from one edge of the gap to the
+          other. Over hours that is close enough. Over three weeks it replaces about 21
+          daily swings with one smooth ramp.
+      - text: "Interpolation changes the readings either side of the gap"
+        explains: >-
+          It only writes values inside the gap. The measured readings are untouched.
+      - text: "Interpolation fills the gap with the annual mean"
+        explains: >-
+          That is mean imputation, a different and worse choice here. Interpolation uses the
+          two neighbouring readings, not the whole series.
+      - text: "Nothing, because temperature changes smoothly"
+        explains: >-
+          It changes smoothly from hour to hour, which is why interpolation suits short gaps.
+          Over weeks it rises and falls every day, and a straight line cannot.
+  - ask: "A warehouse records stock of one item every hour. The count changes only when a delivery arrives or an order ships. Six hourly readings are missing. Which fill matches how this series behaves?"
+    choices:
+      - text: "Forward fill, because the count stays the same until an event changes it"
+        correct: true
+        explains: >-
+          Between events the true value is the last value. Forward fill reproduces that.
+          Check the next real reading; if it differs, an event happened somewhere in the gap,
+          and you cannot tell when.
+      - text: "Linear interpolation, because it is the most accurate method"
+        explains: >-
+          No method is accurate in general. Interpolation would invent fractional stock levels
+          drifting between two counts, which never happens in a series that moves in steps.
+      - text: "The mean stock level over the whole year"
+        explains: >-
+          That ignores the neighbouring readings, which are the best evidence you have about
+          those six hours.
+      - text: "Leave the gap, because stock data can never be imputed"
+        explains: >-
+          Leaving a gap is sometimes right, but here the series' behaviour tells you a lot
+          about the missing values.
+assessed:
+  - "Practice Exam · Q13"
+prerequisites:
+  - topic: "Autocorrelation"
+    explains: "A time series is correlated with shifted copies of itself: today's value predicts tomorrow's (lag 1), and for a series with a yearly cycle, this date predicts the same date next year. Those two lags are the two sources of evidence this concept fills gaps from."
+    see: "data-science/w3-07-autocorrelation"
+---
+
+A weather station logs the temperature every hour. Two things go wrong in one year:
+
+- at **2 pm and 3 pm on 3 March** the logger skips two readings;
+- from **1 to 21 July** the station is offline for repairs.
+
+Both are missing data, and the previous concept's methods look as if they apply. They do not
+apply well here. Mean imputation fills every July hour with the *annual* average, about 11°,
+in the middle of summer. And methods that treat rows as independent records miss what a
+time series has that a table of people does not: **neighbouring values are related.** The
+autocorrelation concept in week 3 measured that: today's temperature predicts tomorrow's, and
+14 July predicts next year's 14 July. Use those two relationships, and match the method to the
+size of the gap.
+
+## Short gaps: interpolate from neighbours
+
+When a few points are missing, the readings either side pin them down closely. Draw a straight
+line between them. If the known values are `x(a)` at time `a` and `x(b)` at time `b`, then for
+any `t` between them:
+
+```
+x̂(t) = x(a) + (t − a) / (b − a) · (x(b) − x(a))
+```
+
+With 10° at 1 pm and 16° at 4 pm, the line rises 2° an hour, so `x̂(2 pm) = 12°` and
+`x̂(3 pm) = 14°`. Over two hours the error is small, because temperature does not jump.
+
+Interpolation assumes the series **moves smoothly**. Some series move in **steps**: a price
+that changes when someone edits it, a stock count that changes at a delivery. For those,
+**forward fill** is the honest choice: the value stays as it was until something changes it.
+
+In pandas, `s.interpolate(method="time")` interpolates using the timestamps, and `s.ffill()`
+forward-fills. The default `s.interpolate()` assumes the rows are evenly spaced, which is wrong
+if the timestamps are not.
+
+## Long gaps: borrow from the cycle
+
+Across three weeks, a straight line from the 30 June reading to the 22 July reading is a smooth
+ramp. It erases 21 day-night swings, and any heatwave in between. The neighbours are too far
+away to say anything about the middle.
+
+The series still has information about July, in earlier years. Build a **seasonal profile**:
+for each missing hour, take the average for the same date and hour across previous years. That
+keeps the shape of a typical July, including the daily cycle. Two refinements help:
+
+- **Adjust the level.** If this June ran 1.5° warmer than past Junes, add 1.5° to the profile,
+  so the fill joins the real readings at both edges.
+- **Use a neighbouring series** if one exists. A station 10 km away usually tracks this one
+  closely. Its July, shifted by the usual difference between the two, carries this year's
+  actual weather.
+
+| gap | method | keeps | loses |
+| --- | --- | --- | --- |
+| a few points | linear interpolation | the local trend | nothing much |
+| a few points, step-like series | forward fill | the current level | the moment of any change |
+| days or weeks | seasonal profile, level-adjusted | the cycle | what was unusual about this year |
+| days or weeks, neighbour available | neighbouring series, shifted | this year's weather | local differences |
+
+A seasonal fill gives *typical* weather. It cannot recover a heatwave that only the missing
+weeks saw. So **record which values were imputed**, in a separate column, and leave them out of
+any analysis that is about the extremes.
+
+> In a time series the gap's neighbours are evidence. Use the nearby points when the gap is
+> short, the cycle when it is long, and always keep track of which values you made up.

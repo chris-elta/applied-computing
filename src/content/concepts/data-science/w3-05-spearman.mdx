@@ -54,6 +54,15 @@ questions:
       Each difference `dᵢ = 0`, so Spearman = `1 − 6Σdᵢ² / (n(n² − 1)) = 1 − 0 = 1`.
       Pearson measures fit to a straight line, and `x³` curves. Calculating it gives `r ≈ 0.93`, below 1.
       So Spearman is exactly 1 and Pearson is a little below 1.
+assessed:
+  - "Practice Exam · Q7"
+  - "Practice Exam · Q9"
+prerequisites:
+  - topic: "Pearson correlation"
+    explains: "Pearson's `r` measures how closely points lie along a straight line, from −1 to 1. Spearman is Pearson computed on ranks, so the difference between the two is what replacing values with ranks throws away: the distances between values, keeping only their order."
+    see: "data-science/w3-02-pearson"
+  - topic: "Ranking a variable, with ties"
+    explains: "Ranking replaces each value with its position in sorted order, 1 for the smallest. Tied values share the average of the positions they occupy: two values tied for 2nd and 3rd both get `2.5`. Forgetting this is the usual slip when computing Spearman by hand."
 ---
 
 Pearson correlation asks how well the points fit a line. That is the wrong question when the

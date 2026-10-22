@@ -54,6 +54,16 @@ questions:
         explains: >-
           More data makes the means more certain, which shrinks the denominator and makes `t`
           larger, not smaller.
+assessed:
+  - "Practice Exam · Q2"
+  - "Practice Exam · Q12"
+prerequisites:
+  - topic: "Variance and standard deviation"
+    explains: "`s²` in the denominator is each group's sample variance, the average squared distance from its mean, and `s` is its square root. More variance means the values scatter more, so the noise term grows. Read the formula as a fraction: work out whether each change makes the top or the bottom bigger before deciding what happens to `t`."
+    see: "data-science/w2-09-standard-deviation"
+  - topic: "The spread of a sample mean"
+    explains: "A sample mean varies less than single values: its standard deviation is `σ/√n`. That is where `s²/n` comes from. Quadrupling a group's size halves its contribution to the noise, since `√4 = 2`."
+    see: "data-science/w6-06-central-limit-theorem"
 ---
 
 A sample of 20 men and 20 women take an IQ test. The two sample means will certainly differ;

@@ -64,6 +64,12 @@ questions:
         explains: >-
           That is roughly the chance of failing *by* day 3, not *on* day 3, and it slightly
           overcounts even that.
+assessed:
+  - "Practice Exam · Q11"
+prerequisites:
+  - topic: "Independent events"
+    explains: "The lifespan formula multiplies one probability per day. That is valid only if the days are independent: surviving today does not change tomorrow's chance. For independent events `Pr(A and B) = Pr(A) · Pr(B)`, so surviving three days at 0.99 each is `0.99³ ≈ 0.970`."
+    see: "data-science/w2-02-independence"
 ---
 
 Each LED bulb from a factory has a 1% chance of burning out on any given day. How long will

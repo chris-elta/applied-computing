@@ -925,6 +925,42 @@ questions:
       Search for an existing scraper.
       Read the terms of service.
       Only then use BeautifulSoup or Selenium, within what is permitted.
+  - topic: "Week 4 · Assembling data sets"
+    ask: "Monthly rents in a small survey, in hundreds of dollars, have `Q1 = 12` and `Q3 = 18`. The smallest rent is 2 and the largest is 26. Which values does the 1.5 × IQR rule flag?"
+    choices:
+      - text: "26 only, because it is furthest from the median"
+        explains: "26 looks extreme, but the upper fence is `18 + 9 = 27`, and 26 is inside it."
+      - text: "2 only"
+        correct: true
+        explains: "Right. `IQR = 6` and `1.5 × IQR = 9`, so the fences are 3 and 27. Only 2 is outside."
+      - text: "Both 2 and 26"
+        explains: "That would follow from fences one IQR wide, 6 and 24. The rule uses 1.5, giving 3 and 27."
+      - text: "Neither, because the outlier test needs the mean and standard deviation"
+        explains: "That is the z-score approach. The IQR rule uses only the quartiles, which is why an extreme value cannot hide itself by inflating the yardstick."
+    work: |-
+      IQR = Q3 − Q1 = 18 − 12 = 6.
+      1.5 × IQR = 9.
+      Lower fence = 12 − 9 = 3; upper fence = 18 + 9 = 27.
+      2 < 3, so 2 is flagged. 26 ≤ 27, so 26 is not.
+      Check each end against its own fence.
+  - topic: "Week 4 · Assembling data sets"
+    ask: "A building's electricity meter logs demand every 15 minutes. One reading is missing on 3 May, and ten days are missing in December. Which plan suits the two gaps?"
+    choices:
+      - text: "Interpolate both gaps linearly from the readings either side"
+        explains: "Fine for the single reading. Across ten days a straight line erases every daily cycle of high daytime and low overnight demand."
+      - text: "Fill both gaps with the mean demand for the whole year"
+        explains: "The year's mean ignores the time of day and the season. December demand and 3 a.m. demand both differ from it."
+      - text: "Interpolate the single reading; fill the ten days from the same December days in earlier years, adjusted to this year's level; record which values were imputed"
+        correct: true
+        explains: "Right. Neighbours pin down a short gap. A long gap needs the cycle, taken from earlier years and shifted so it joins this year's readings. Flagging the imputed values stops them being mistaken for measurements."
+      - text: "Delete the rows with missing readings and analyse what is left"
+        explains: "The series would then jump straight from one date to another, which breaks anything that depends on time order, such as daily averages or autocorrelation."
+    work: |-
+      Short gap: the readings 15 minutes either side constrain it closely, so linear interpolation is accurate.
+      Long gap: the neighbours are ten days apart and say nothing about the middle.
+      Use the seasonal profile: the same dates and times in earlier years, which keeps the daily cycle.
+      Shift it by how much this year's demand differs from earlier years near the gap.
+      Mark the filled values in a separate column so analyses of extremes can exclude them.
   - topic: "Week 5 · Scores and rankings"
     ask: "A volleyball player has mass 90 kg and height 2.00 m. What is her BMI, and which band does it fall in?"
     choices:
@@ -1513,7 +1549,7 @@ questions:
       0.35 > 0.3 = F(2) and 0.35 ≤ 0.6 = F(3), so return 3.
       Each outcome's band has width equal to its probability, so a uniform p picks it at the right rate.
 ---
-89 multiple-choice questions across all seven weeks. The paper is divided into sections, and nothing is revealed until you
+91 multiple-choice questions across all seven weeks. The paper is divided into sections, and nothing is revealed until you
 submit: pick an answer for each question (you can change it as often as you like), then submit a
 section to see your score for it, the correct answers, an explanation for each one you chose, and a
 worked solution. You can submit one section at a time, in any order, or the whole exam at once.
