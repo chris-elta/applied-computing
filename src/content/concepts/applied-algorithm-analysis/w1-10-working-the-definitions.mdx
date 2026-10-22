@@ -94,6 +94,17 @@ questions:
       Let `m = max(f, g)`. Then `m ≤ f + g ≤ 2m`.
       So `f + g` is within a constant factor of `m`: `Θ(f + g) = Θ(max(f, g))`.
       So the slower phase dominates. Multiplying is for nested loops, and the total can't be less than the larger phase.
+assessed:
+  - "Assignment 1 · Ex 0.1"
+  - "Assignment 1 · Ex 1.4"
+prerequisites:
+  - topic: "Logarithm rules"
+    explains: "Two rules do almost all the work: `log(ab) = log a + log b` and `log(aᵏ) = k·log a`. So `log(8n) = log 8 + log n`, a constant plus `log n`, and `log(n³) = 3·log n`. Taking a log turns a product into a sum and a power into a multiplier, which is usually what makes a bound easy to compare with `n log n` or `log n`."
+  - topic: "Bounds survive taking logs"
+    explains: "For positive numbers, `a ≤ b` implies `log a ≤ log b`, because the logarithm only ever increases. So if you can trap a quantity between two simpler expressions, you can take logs of all three and the trap still holds. This is how a bound on a product becomes a bound on a sum of logs."
+  - topic: "The Big-O definition: c and n₀"
+    explains: "Every proof on this page supplies a constant `c` and a starting point `n₀`. If the meaning of either is unclear, the recipe here will read as symbol-pushing."
+    see: "applied-algorithm-analysis/w1-06-big-o-formally"
 ---
 
 The definitions are behind you. This page is drill: the same three steps, applied seven

@@ -81,6 +81,15 @@ questions:
       Number of levels: `log_b n + 1`.
       Total: `(log_b n + 1) · O(nᵈ) = O(nᵈ log n)`.
       In the other two cases the series is geometric, so one end dominates and the sum is a constant times that end. No `log n` appears.
+assessed:
+  - "Assignment 1 · Ex 0.2"
+prerequisites:
+  - topic: "Which end of a geometric series dominates"
+    explains: "With ratio above 1 a geometric series is a constant times its **last** term; below 1, a constant times its **first**; at exactly 1 every term is equal, so the sum is the term times the count. The master theorem's three cases are these three behaviours, applied to the level costs of a recursion tree."
+    see: "applied-algorithm-analysis/w3-06-the-last-level-is-the-whole-cost"
+  - topic: "The three knobs a, b and d"
+    explains: "`a` is how many subproblems, `b` how much smaller each one is, and `d` the exponent on the work one call does on its own. Getting `d` wrong, by counting the children's work in it, is the usual way a master-theorem answer goes wrong."
+    see: "applied-algorithm-analysis/w3-07-the-generic-pattern"
 ---
 
 > **Master theorem.** If `T(n) = aT(⌈n/b⌉) + O(nᵈ)` for constants `a > 0`, `b > 1`, `d ≥ 0`,

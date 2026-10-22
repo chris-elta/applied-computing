@@ -1,0 +1,169 @@
+---
+course: applied-algorithm-analysis
+section: w1-bigo
+order: 120
+title: The Harmonic Sum Grows Like log n
+notation:
+  - symbol: "Hₙ"
+    reads: H n, or the n-th harmonic number
+    means: >-
+      The sum `1 + 1/2 + 1/3 + … + 1/n`. The subscript says how many terms, it does not
+      multiply: `H₄ = 1 + 1/2 + 1/3 + 1/4 ≈ 2.08`.
+  - symbol: "Σ (i = 1 to n) 1/i"
+    reads: the sum, for i from 1 to n, of one over i
+    means: >-
+      The same thing as `Hₙ`, written with a summation sign. `Σ` is capital sigma, Greek
+      for S, for "sum".
+  - symbol: "2ᵏ"
+    reads: two to the k
+    means: >-
+      The powers of two, 1, 2, 4, 8, 16, …. Here they mark where each block of terms
+      starts or ends.
+  - symbol: "m = ⌊log₂ n⌋"
+    reads: m equals the floor of log base two of n
+    means: >-
+      The largest `m` with `2ᵐ ≤ n`: how many times you can double 1 and stay at or below
+      `n`. For `n = 8`, `m = 3`; for `n = 1000`, `m = 9`.
+  - symbol: "ln n"
+    reads: L N of n, or natural log of n
+    means: >-
+      The logarithm in base `e ≈ 2.718`. It differs from `log₂ n` only by a constant
+      factor, so `Θ(ln n)` and `Θ(log n)` say the same thing.
+questions:
+  - ask: >-
+      In the upper bound, the terms from `1/4` to `1/7` form one block. Why can that block
+      add up to no more than 1?
+    choices:
+      - text: "It has 4 terms, and each is at most `1/4`"
+        correct: true
+        explains: >-
+          Rounding each denominator down to 4 makes every term bigger, so
+          `1/4 + 1/5 + 1/6 + 1/7 ≤ 4 · 1/4 = 1`. The same count-times-size argument works
+          for every block: `2ᵏ` terms, each at most `1/2ᵏ`.
+      - text: "The terms keep shrinking, so each block is smaller than the one before"
+        explains: >-
+          The terms shrink, but the blocks get longer at the same rate. The point of the
+          grouping is that the two effects cancel, so every block is worth about the same.
+      - text: "It has 4 terms, and each is at least `1/8`"
+        explains: >-
+          That is true, and it is the **lower**-bound argument: it shows the block is at
+          least `4 · 1/8 = 1/2`. An upper bound needs each term made bigger, not smaller.
+      - text: "`1/4 + 1/5 + 1/6 + 1/7` is exactly 1"
+        explains: >-
+          It is about 0.76. The bound is not an equality. It only needs each block to stay
+          under 1.
+    work: |-
+      Upper bound: round each denominator down to the power of two at the start of its block.
+      Block `1/4 … 1/7`: 4 terms, each ≤ `1/4`, so the block is ≤ `4 · 1/4 = 1`.
+      Actual value: `0.25 + 0.2 + 0.167 + 0.143 ≈ 0.76`.
+      "Shrinking terms" ignores that the blocks double in length; the `1/8` version is the lower bound.
+  - ask: >-
+      `1 + 1/2 + 1/4 + 1/8 + …` never passes 2, yet `1 + 1/2 + 1/3 + 1/4 + …` grows without
+      limit. What is the difference that matters?
+    choices:
+      - text: "In the harmonic sum, each power-of-two block is worth at least `1/2`, and there is no end to the blocks"
+        correct: true
+        explains: >-
+          The geometric series halves **every term**, so its total is dominated by the
+          first one. The harmonic series halves its terms only once per block, while each
+          block doubles in length. A fixed amount per block, with unboundedly many blocks,
+          adds up to infinity.
+      - text: "The harmonic terms never get close to 0"
+        explains: >-
+          They do: `1/1000` is small and `1/n` goes to 0. Terms going to 0 is not enough to
+          keep a sum finite. That is what makes the harmonic sum surprising.
+      - text: "The harmonic sum has more terms"
+        explains: >-
+          Both run on forever. The difference is how fast the terms shrink, not how many
+          there are.
+      - text: "Every harmonic term is bigger by a constant factor"
+        explains: >-
+          A constant factor times a series that stays below 2 would still stay below a
+          constant. And the terms are not a constant factor apart: `1/8` against
+          `1/2⁷ = 1/128` is already a factor of 16, and the gap keeps widening.
+    work: |-
+      Geometric: each term is half the last, so the sum is a constant times its first term, and stays below 2.
+      Harmonic, in blocks: `1/2`; `1/3 + 1/4 ≥ 1/2`; `1/5 + … + 1/8 ≥ 1/2`; and so on.
+      There are about `log₂ n` blocks below `n`, each worth at least `1/2`.
+      So the sum grows like `log n`. It never stops growing, but it grows slowly.
+assessed:
+  - "Assignment 1 · Ex 1.5"
+prerequisites:
+  - topic: "Trapping between two bounds"
+    explains: "The method on this page is the one used for `log(n!)`: make the quantity bigger in a way you can compute, make it smaller in a way you can compute, and check that both grow at the same rate. Only the object changes, from a product to a sum."
+    see: "applied-algorithm-analysis/w1-11-trapping-log-factorial"
+  - topic: "Logarithms as counting doublings"
+    explains: "`log₂ n` is how many times you can double 1 before passing `n`. Since `2¹⁰ = 1024`, `log₂ 1000` is just under 10. So counting how many power-of-two blocks fit below `n` is the same as computing `log₂ n`, rounded down."
+---
+
+Add up `1 + 1/2 + 1/3 + 1/4 + …`. The terms keep shrinking, so you might expect the total
+to level off, the way `1 + 1/2 + 1/4 + 1/8 + …` never passes 2. It does not level off. It
+grows forever, very slowly:
+
+| `n` | 1 | 2 | 4 | 8 | 100 | 1,000,000 |
+| --- | --- | --- | --- | --- | --- | --- |
+| `Hₙ` | 1 | 1.5 | 2.08 | 2.72 | 5.19 | 14.39 |
+
+That sum is the **harmonic sum**, written `Hₙ`. It is close to `ln n + 0.577`, but that
+formula is harder to prove than what an algorithm analysis needs, which is `Hₙ = Θ(log n)`.
+As with `log(n!)`, you get there without a formula: you **trap** it.
+
+## Group the terms in blocks of doubling length
+
+Cut the terms at the powers of two. Each block has twice as many terms as the one before,
+and each term in it is about half the size. Those two effects cancel, so **every block is
+worth about the same.** Rounding the denominators makes that exact, once in each direction.
+
+## Above: round the denominators down
+
+Start each block at a power of two, and round every denominator in it **down** to that
+power. A smaller denominator makes a bigger fraction, so the sum can only grow:
+
+```
+1/2 + 1/3                 ≤ 2 · 1/2 = 1
+1/4 + 1/5 + 1/6 + 1/7     ≤ 4 · 1/4 = 1
+1/8 + … + 1/15            ≤ 8 · 1/8 = 1
+```
+
+The block starting at `1/2ᵏ` has `2ᵏ` terms, each at most `1/2ᵏ`, so it is at most 1. With
+`m = ⌊log₂ n⌋`, the blocks start at `1, 2, 4, …, 2ᵐ`. That is `m + 1` blocks, the last one
+possibly cut short at `n`:
+
+```
+Hₙ ≤ m + 1 ≤ log₂ n + 1
+```
+
+## Below: round the denominators up
+
+Now end each block at a power of two, and round every denominator **up** to it. A bigger
+denominator makes a smaller fraction, so the sum can only shrink:
+
+```
+1/2                       = 1/2
+1/3 + 1/4                 ≥ 2 · 1/4 = 1/2
+1/5 + 1/6 + 1/7 + 1/8     ≥ 4 · 1/8 = 1/2
+```
+
+Every complete block is at least `1/2`. Since `2ᵐ ≤ n`, the blocks ending at
+`2, 4, …, 2ᵐ` are all complete, and the leading 1 comes on top:
+
+```
+Hₙ ≥ 1 + m/2
+```
+
+Rounding `log₂ n` down to `m` loses less than 1, so this is at least `½ log₂ n + ½`.
+
+## The trap, closed
+
+| `n` | lower, `1 + m/2` | actual `Hₙ` | upper, `m + 1` |
+| --- | --- | --- | --- |
+| 8 | 2.5 | 2.72 | 4 |
+| 1,000 | 5.5 | 7.49 | 10 |
+
+Both walls are constant multiples of `log n`, so `Hₙ = Θ(log n)`. The sum never stops
+growing, and it never grows fast: it gains about the same fixed amount each time `n`
+doubles, and counting doublings is what a logarithm does.
+
+> **Group the terms so each group is easy to bound.** Rounding every term up makes the
+> groups simple, and so does rounding every term down. If both simple sums grow at the same
+> rate, the real one does too.

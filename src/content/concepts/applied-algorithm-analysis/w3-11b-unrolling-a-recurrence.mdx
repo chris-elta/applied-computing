@@ -1,0 +1,158 @@
+---
+course: applied-algorithm-analysis
+section: w3-recurrences
+order: 505
+title: Unrolling a Recurrence
+notation:
+  - symbol: "T(n) ≤ T(n/2) + c"
+    reads: T of n is at most T of n over two, plus c
+    means: >-
+      A recurrence with its `O(1)` written as a concrete constant `c`. Swapping `O(…)` for
+      `≤ c·(…)` is what lets you do algebra with it: an `O` cannot be added up, a number
+      can.
+  - symbol: "k"
+    reads: k
+    means: >-
+      How many times you have unrolled. Not a size and not a cost: a counter that you
+      choose a value for at the end.
+  - symbol: "T(1) = O(1)"
+    reads: T of one is big-oh of one
+    means: >-
+      The base case. A problem of size 1 costs a constant, and it is the only value of `T`
+      you know without recursing.
+  - symbol: "1 + 2 + ⋯ + n = n(n+1)/2"
+    reads: one plus two up to n equals n times n plus one, over two
+    means: >-
+      The arithmetic series. Pair the first term with the last, the second with the
+      second-last: every pair is `n + 1`, and there are `n/2` pairs. It is `Θ(n²)`.
+questions:
+  - ask: >-
+      Unrolling `T(n) ≤ T(n/2) + c` gives the general term `T(n) ≤ T(n/2ᵏ) + kc`. Which
+      value of `k` finishes the job?
+    choices:
+      - text: "`k = log₂ n`, so that `n/2ᵏ = 1` and the base case takes over"
+        correct: true
+        explains: >-
+          The point of choosing `k` is to land on the one value of `T` you know. With
+          `2ᵏ = n` the leftover term is `T(1) = O(1)`, and the total is `c·log₂ n + O(1)`,
+          which is `O(log n)`.
+      - text: "`k = n`, so that every level has been counted"
+        explains: >-
+          There are not `n` levels. After `log₂ n` halvings the argument is already 1, and
+          `n/2ⁿ` is a fraction far below the base case.
+      - text: "`k = 1`, because one step of the rule already gives the pattern"
+        explains: >-
+          One step only rewrites `T(n)` in terms of `T(n/2)`, which is still unknown. You
+          stop unrolling only when the remaining `T` is the base case.
+      - text: "Any `k`; the answer does not depend on it"
+        explains: >-
+          The inequality is true for every `k`, but only one choice removes the unknown
+          `T(…)` from the right-hand side. Before that, the bound still contains the thing
+          you are trying to find.
+    work: |-
+      General term: `T(n) ≤ T(n/2ᵏ) + kc`.
+      Choose `k` so the argument is the base case: `n/2ᵏ = 1`, so `k = log₂ n`.
+      `T(n) ≤ T(1) + c·log₂ n = O(1) + O(log n) = O(log n)`.
+      Cross-check: master theorem with `a = 1, b = 2, d = 0` gives `O(log n)` too.
+  - ask: >-
+      `T(n) ≤ T(n−1) + cn` unrolls all the way down to `T(1) + c(2 + 3 + ⋯ + n)`. What does
+      that come to?
+    choices:
+      - text: "`O(n²)`, because `2 + 3 + ⋯ + n` is about `n²/2`"
+        correct: true
+        explains: >-
+          An arithmetic series is `Θ(n²)`. The subtraction is what makes it long: shrinking
+          by 1 takes about `n` steps to reach the base case, not `log n`.
+      - text: "`O(n log n)`, because there are `log n` levels each costing `O(n)`"
+        explains: >-
+          That count of levels belongs to a recurrence that **halves**. Subtracting 1 at a
+          time needs about `n` levels to reach the base case.
+      - text: "`O(n)`, because each level costs at most `cn`"
+        explains: >-
+          Each level is at most `cn`, but there are about `n` levels. A level count times a
+          level cost is `n · n`, not `n`.
+      - text: "It cannot be solved, because the master theorem does not apply"
+        explains: >-
+          The master theorem does not apply, which is exactly why unrolling exists. It works
+          on any recurrence you can expand far enough to see the pattern.
+    work: |-
+      `T(n) ≤ T(n−1) + cn ≤ T(n−2) + c(n−1) + cn ≤ …`
+      General term: `T(n) ≤ T(n−k) + c(n + (n−1) + ⋯ + (n−k+1))`.
+      Take `k = n − 1`: `T(n) ≤ T(1) + c(2 + 3 + ⋯ + n)`.
+      `2 + ⋯ + n = n(n+1)/2 − 1`, which is `Θ(n²)`. So `T(n) = O(n²)`.
+assessed:
+  - "Assignment 2 · Ex 2.3"
+  - "Assignment 2 · Ex 2.4"
+prerequisites:
+  - topic: "Summing an arithmetic series"
+    explains: "`1 + 2 + ⋯ + n = n(n+1)/2`: pair the first and last terms, the second and second-last, and every pair sums to `n + 1`. So a sum of `n` terms that grow steadily up to `n` is `Θ(n²)`. Check: `1 + 2 + 3 + 4 = 10 = 4 · 5/2`."
+  - topic: "Summing a geometric series"
+    explains: "When each unrolling multiplies by a fixed ratio, the terms form a geometric series, and it is dominated by its largest end: the last term if the ratio is above 1, the first if below, and the term count if exactly 1."
+    see: "applied-algorithm-analysis/w3-06-the-last-level-is-the-whole-cost"
+---
+
+The master theorem only reads recurrences of one shape. When a recurrence does not fit it,
+there is a method that needs no theorem at all: **expand it a few times by hand until a
+pattern appears.** It is the recursion tree written as a single line of algebra.
+
+## The method in four steps
+
+1. **Replace the `O` with a constant.** `T(n) = T(n/2) + O(1)` becomes
+   `T(n) ≤ T(n/2) + c`. You can add up numbers, but not `O`s.
+2. **Substitute the rule into itself**, three or four times.
+3. **Write the general term**, the bound after `k` substitutions.
+4. **Choose `k`** so the remaining `T(…)` is the base case, `T(1)`, and simplify.
+
+## A halving recurrence
+
+Binary search costs `T(n) ≤ T(n/2) + c`. Apply the rule to `T(n/2)`, then to `T(n/4)`:
+
+```
+T(n) ≤ T(n/2) + c
+     ≤ [T(n/4) + c] + c   = T(n/4) + 2c
+     ≤ [T(n/8) + c] + 2c  = T(n/8) + 3c
+     ...
+     ≤ T(n/2ᵏ) + kc
+```
+
+The argument reaches 1 when `2ᵏ = n`, so take `k = log₂ n`:
+
+```
+T(n) ≤ T(1) + c·log₂ n = O(log n)
+```
+
+That matches the master theorem's balanced case for binary search, which is a useful check.
+Whenever both methods apply, they agree.
+
+## A subtracting recurrence
+
+`T(n) ≤ T(n−1) + cn` is one of the shapes the master theorem cannot read: the problem shrinks
+by **subtraction**, so there is no `b`. Unrolling does not care:
+
+```
+T(n) ≤ T(n−1) + cn
+     ≤ T(n−2) + c(n−1) + cn
+     ≤ T(n−3) + c(n−2) + c(n−1) + cn
+     ...
+     ≤ T(n−k) + c(n + (n−1) + ⋯ + (n−k+1))
+```
+
+Now the base case is `k = n − 1` steps away, not `log n`. Plugging that in leaves
+`T(1) + c(2 + 3 + ⋯ + n)`, an arithmetic series of about `n²/2`. So `T(n) = O(n²)`. That is
+the cost of selection sort, which removes one item per pass and scans the rest.
+
+## What to watch
+
+| feature of the recurrence | effect on the unrolled sum |
+| --- | --- |
+| argument **divides** by `b` | `k = log_b n` steps to the base case |
+| argument **subtracts** 1 | `k ≈ n` steps to the base case |
+| `a` copies of `T` on the right | a factor `aᵏ` builds up in front of `T(…)` |
+
+The last row is the one that is easy to lose. With `a = 1`, as in both examples here, nothing
+builds up. With `a > 1`, every substitution multiplies the leftover term by `a`, and you have
+to carry `aᵏ` all the way to the choice of `k`. The `fib1` call count from week 1 is the warning
+case: a recurrence that subtracts **and** branches.
+
+> **Unrolling is the recursion tree, kept on one line.** Use it when the recurrence will not
+> fit the master theorem, and use it to check the theorem when it does.

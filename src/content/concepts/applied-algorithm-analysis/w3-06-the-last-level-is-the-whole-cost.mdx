@@ -55,6 +55,14 @@ questions:
       Sum: `L · (1 + 1/r + 1/r² + …) < L · 1/(1 − 1/r) = L · r/(r − 1)`.
       With `r = 3/2`: `(3/2) / (1/2) = 3`. So the total is less than `3L`.
       A factor of 3 disappears inside the `O`. The earlier levels do real work but form a geometric series, so the sum is not `levels × largest`.
+assessed:
+  - "Assignment 1 · Ex 0.2"
+prerequisites:
+  - topic: "Summing a geometric series"
+    explains: "`1 + r + r² + … + rᵏ = (rᵏ⁺¹ − 1)/(r − 1)` for `r ≠ 1`. Comparing that closed form with the series' first and last terms is how you see which end dominates; when `r = 1` the formula does not apply, and every term is the same size."
+  - topic: "Work per level of a recursion tree"
+    explains: "This page sums the level costs worked out on the previous one: `3ᵏ` nodes at depth `k`, each doing `O(n/2ᵏ)` work, so `(3/2)ᵏ·O(n)` per level."
+    see: "applied-algorithm-analysis/w3-05-reading-the-recursion-tree"
 ---
 
 Work at depth `k` is `(3/2)ᵏ × O(n)`. Look at the two ends of the tree:

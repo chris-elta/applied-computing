@@ -78,10 +78,11 @@ const toText = (file) => {
   return undefined;
 };
 
-/** "quiz2.pdf" → "Quiz 2", "labs/lab1/README.md" → "Lab 1", "Practice Exam-solution.docx" → "Practice Exam". */
+/** "quiz2.pdf" → "Quiz 2", "labs/lab1/README.md" → "Lab 1", "assignments/a1/x.pdf" → "Assignment 1",
+ *  "Practice Exam-solution.docx" → "Practice Exam". */
 const labelFor = (file) => {
   const rel = relative(dir, file);
-  const m = /(quiz|lab|assignment|exam|midterm|test)[\s_-]*(\d+)/i.exec(rel);
+  const m = /(quiz|lab|assignment|exam|midterm|test)(?:s?\/[a-z]?)?[\s_-]*(\d+)/i.exec(rel);
   if (m) return `${m[1][0].toUpperCase()}${m[1].slice(1).toLowerCase()} ${m[2]}`;
   return /practice[\s_-]*exam/i.test(basename(file)) ? 'Practice Exam' : undefined;
 };

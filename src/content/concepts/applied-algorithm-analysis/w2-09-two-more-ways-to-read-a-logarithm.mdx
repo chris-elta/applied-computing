@@ -43,6 +43,15 @@ questions:
       Fast exponentiation halves `y` each round. Euclid's larger value halves every two rounds.
       Both shrink their quantity by a constant factor per round, so the number of rounds is how many times you can halve before reaching 1: about `log₂` of the size.
       The digits reading gives input size, which is the per-round cost. The tree-height reading is for divide and conquer, and neither algorithm branches.
+assessed:
+  - "Assignment 1 · Ex 1.2"
+  - "Assignment 1 · Ex 1.3"
+prerequisites:
+  - topic: "What a logarithm is"
+    explains: "`log_b N` is the power you raise `b` to in order to reach `N`, and in a different base it changes only by a fixed factor: `log_b N = log₂ N / log₂ b`. The digit reading of a log is set out on the input-size page."
+    see: "applied-algorithm-analysis/w2-01-input-size-is-bits"
+  - topic: "Rooted trees: children, depth and levels"
+    explains: "A rooted tree has one top node, the **root**; every other node hangs below exactly one parent. A node's **depth** is how many steps it sits below the root, and the nodes at one depth form a **level**. If no node has more than `d` children, each level can hold at most `d` times as many nodes as the one above it."
 ---
 
 A logarithm answers one question — *how many times must I multiply `b` by itself to reach

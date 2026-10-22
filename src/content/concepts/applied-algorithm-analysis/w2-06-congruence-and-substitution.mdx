@@ -77,6 +77,15 @@ questions:
       `13 ≡ 3 (mod 5)` is a statement: it is true, because `13 − 3 = 10` is a multiple of 5.
       You can put `a mod N` on the right of an equals sign because it is a value. A congruence can be true or false, so it can't.
       In the statement, `(mod 5)` only names the modulus.
+assessed:
+  - "Assignment 1 · Ex 1.9"
+  - "Assignment 1 · Ex 1.10"
+prerequisites:
+  - topic: "Remainders and the modulus"
+    explains: "`x mod N` is the remainder `r` in `x = qN + r` with `0 ≤ r < N`. Congruence builds on that picture: numbers in the same remainder pile are the ones `≡` treats as interchangeable."
+    see: "applied-algorithm-analysis/w2-05-modular-arithmetic"
+  - topic: "Divisibility as an equation"
+    explains: "\"`N` divides `x`\" means `x = kN` for some whole number `k`, possibly negative or zero. Rewriting it as an equation is what lets you do algebra with it: if 6 divides `x`, then `x = 6k`, so `3x = 18k` and 9 divides `3x`. Proofs about congruence usually start by translating every `≡` into one of these equations, then show the target difference is a whole number times the modulus."
 ---
 
 Two numbers are **congruent** mod `N` when the modulus cannot tell them apart:

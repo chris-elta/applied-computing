@@ -57,6 +57,14 @@ questions:
       Take `c = 1`: is `3n ≤ 1·n` for large `n`? No, since `3n > n` for every `n > 0`.
       One failing `c` is enough, so `3n ≠ o(n)`.
       For Big-O only some `c` is needed, and `c = 3` works. That is the difference.
+assessed:
+  - "Assignment 1 · Ex 0.1"
+prerequisites:
+  - topic: "The Big-O definition: c and n₀"
+    explains: "`T(n) = O(f(n))` means some constant `c` and starting point `n₀` exist with `T(n) ≤ c·f(n)` for every `n ≥ n₀`. `Ω` and `Θ` reuse the same two ingredients with the inequality flipped or doubled, so the fence picture carries straight over."
+    see: "applied-algorithm-analysis/w1-06-big-o-formally"
+  - topic: "Comparing growth by the ratio f/g"
+    explains: "A quick test: divide one function by the other and watch the ratio as `n` grows. If `f/g` heads to 0, `f` grows strictly slower; to infinity, strictly faster; to a positive constant, they grow at the same rate. For example `(3n² + n)/n²` settles at 3. The test is *sufficient*, not a definition: when the ratio wobbles without settling, as `n(2 + sin n)/n` does, it says nothing, yet the two can still be `Θ` of each other."
 ---
 
 Big-O says "no bigger than". That is one of four things you might want to say. The fastest

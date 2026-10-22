@@ -51,6 +51,15 @@ questions:
       One new product: `P3 = (xL + xR)(yL + yR) = xL·yL + xL·yR + xR·yL + xR·yR`.
       Subtract the known ones: `P3 − P1 − P2 = xL·yR + xR·yL`, the middle term.
       Subtraction is `O(n)`, so this needs three multiplications in total, not four.
+assessed:
+  - "Assignment 2 · Ex 2.1"
+prerequisites:
+  - topic: "Gauss's trick"
+    explains: "The identity `bc + ad = (a + b)(c + d) − ac − bd` trades one multiplication for a few additions. Karatsuba applies it with the halves of two integers in place of `a, b, c, d`."
+    see: "applied-algorithm-analysis/w3-01-paradigm-and-gauss"
+  - topic: "Splitting a number into halves"
+    explains: "`x = 2^(n/2)·xL + xR`: the left half of the bits, shifted back into place, plus the right half. When `n` is odd, the algorithm takes `⌈n/2⌉` bits on the left. Note that `xL + xR` can be one bit longer than either half."
+    see: "applied-algorithm-analysis/w3-02-splitting-in-half"
 ---
 
 The previous page set the target: lose one of the four subproblems. Gauss's identity is

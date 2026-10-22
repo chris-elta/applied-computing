@@ -49,6 +49,16 @@ questions:
       At 64 bits: schoolbook about `64² ≈ 4,100` operations against Karatsuba's about `8,700`, so schoolbook wins.
       The curves cross at roughly 512 bits. Below that, the larger constant outweighs the better exponent.
       The master theorem applies fine (`a = 3, b = 2, d = 1`), so that is not the reason.
+assessed:
+  - "Assignment 2 · Ex 2.3"
+  - "Assignment 2 · Ex 2.4"
+prerequisites:
+  - topic: "The master theorem's form"
+    explains: "The theorem reads only `T(n) = aT(⌈n/b⌉) + O(nᵈ)`: equal-size subproblems, each a fixed fraction `1/b` of the original. Anything else needs another method."
+    see: "applied-algorithm-analysis/w3-08-master-theorem"
+  - topic: "Recursion trees"
+    explains: "One node per call, children below their parent, and the cost of each level added up. It works on any recurrence, which is what makes it the fallback when the formula does not apply."
+    see: "applied-algorithm-analysis/w3-05-reading-the-recursion-tree"
 ---
 
 Three limits, and each one bites somewhere different.

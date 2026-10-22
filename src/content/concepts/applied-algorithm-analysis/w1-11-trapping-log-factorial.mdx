@@ -1,0 +1,171 @@
+---
+course: applied-algorithm-analysis
+section: w1-bigo
+order: 110
+title: "Trapping log(n!)"
+notation:
+  - symbol: "n!"
+    reads: n factorial
+    means: >-
+      Every whole number from 1 to `n` multiplied together: `5! = 1 · 2 · 3 · 4 · 5 = 120`.
+      The `!` is not emphasis. It counts the orderings of `n` items.
+  - symbol: "log(n!)"
+    reads: log of n factorial
+    means: >-
+      The logarithm of that product. Taking the log turns the product into a sum,
+      `log 1 + log 2 + … + log n`, which is far easier to bound.
+  - symbol: "nⁿ"
+    reads: n to the n
+    means: >-
+      `n` multiplied by itself `n` times. It has as many factors as `n!`, but every one of
+      them is the largest, `n`.
+  - symbol: "(n/2)^(n/2)"
+    reads: n over two, to the power n over two
+    means: >-
+      Half as many factors as `n!`, each equal to `n/2`. Small enough to sit under `n!`,
+      big enough to still be `n log n`-sized after a log.
+  - symbol: "⌊n/2⌋"
+    reads: the floor of n over two
+    means: >-
+      `n/2` rounded down, so that it is a whole number of factors: `⌊7/2⌋ = 3`.
+questions:
+  - ask: >-
+      The lower bound starts by throwing away the smaller half of the factors of `n!`. Why
+      is that step allowed?
+    choices:
+      - text: "Every factor is at least 1, so removing factors can only make the product smaller"
+        correct: true
+        explains: >-
+          A lower bound only needs something that is never bigger than `n!`. Dropping
+          factors that are all `≥ 1` gives exactly that, and the direction of the
+          inequality is the whole justification.
+      - text: "The small factors are negligible, so `n!` hardly changes without them"
+        explains: >-
+          They are not negligible: for `n = 8`, dropping `1 · 2 · 3` divides `8!` by 6. The
+          step is allowed because of which **direction** it moves the product, not how far.
+      - text: "`Θ` ignores constant factors, and the small half is only a constant factor"
+        explains: >-
+          The small half of the factors is `(n/2)!`, roughly, which grows without limit. It
+          is not a constant. The argument never needs it to be.
+      - text: "Half of the factors of `n!` are exactly `n/2`"
+        explains: >-
+          Only one factor is `n/2`. The kept factors are each **at least** `n/2`, which is
+          the next step: replace them all by `n/2` and the product gets smaller again.
+    work: |-
+      Goal for a lower bound: find something that is always ≤ `n!`.
+      Each factor is ≥ 1, so dropping factors cannot increase the product.
+      Each kept factor is ≥ `n/2`, so replacing it with `n/2` cannot increase the product either.
+      Both moves push the same direction, down, so `(n/2)^(n/2) ≤ n!` holds.
+  - ask: >-
+      Using the throw-away-half argument with logs base 2, what lower bound does it give for
+      `log₂(16!)`?
+    choices:
+      - text: "24"
+        correct: true
+        explains: >-
+          Keep the 8 largest factors, `9` to `16`, each at least 8. So `16! ≥ 8⁸`, and
+          `log₂(8⁸) = 8 · 3 = 24`. The true value is about 44.3.
+      - text: "32"
+        explains: >-
+          That is `8 · log₂ 16`: the right number of factors, but each priced at `n`
+          rather than `n/2`. The kept factors are only guaranteed to be at least `n/2 = 8`.
+      - text: "64"
+        explains: >-
+          That is `16 · log₂ 16`, the **upper** bound from `16! ≤ 16¹⁶`.
+      - text: "3"
+        explains: >-
+          That is `log₂ 8`, the log of one kept factor. There are 8 of them, and the
+          exponent comes out front as a multiplier: `log₂(8⁸) = 8 · log₂ 8`.
+    work: |-
+      `n = 16`, so keep the largest `n/2 = 8` factors: 9, 10, …, 16. Each is ≥ 8.
+      `16! ≥ 8⁸`.
+      `log₂(8⁸) = 8 · log₂ 8 = 8 · 3 = 24`.
+      Check: upper bound `16 · 4 = 64`; actual `log₂(16!) ≈ 44.3`; and `24 ≤ 44.3 ≤ 64`.
+assessed:
+  - "Assignment 1 · Ex 1.4"
+prerequisites:
+  - topic: "Logarithm rules"
+    explains: "Two rules carry this page: `log(ab) = log a + log b` and `log(aᵏ) = k·log a`. The first turns `log(n!)` into a sum, the second brings an exponent down so `log(nⁿ) = n log n`. Also, for positive numbers `a ≤ b` gives `log a ≤ log b`, which is why a bound on `n!` survives taking logs."
+  - topic: "Proving Θ with two separate bounds"
+    explains: "A `Θ` claim needs a floor and a ceiling, usually from opposite moves: inflate terms for the ceiling, discard or shrink them for the floor. Here the same two moves act on the factors of a product."
+    see: "applied-algorithm-analysis/w1-10-working-the-definitions"
+---
+
+`n!` is every whole number from 1 to `n` multiplied together. It gets huge fast:
+`10! = 3,628,800`. There is no tidy formula for it, so how fast does its logarithm grow?
+
+```
+log(n!) = log 1 + log 2 + log 3 + … + log n
+```
+
+The log turns the product into a sum, which is why the question is asked about `log(n!)`
+rather than `n!` itself. The answer is `Θ(n log n)`, and the proof needs no formula. You
+**trap** `n!` between two simple powers, one above and one below.
+
+## Above: make every factor the biggest
+
+`n!` has `n` factors and none is bigger than `n`. Replace every one with `n` and the product
+can only grow:
+
+```
+n! = 1 · 2 · 3 · … · n  ≤  n · n · n · … · n  =  nⁿ
+```
+
+Bigger numbers have bigger logs, so take logs of both sides and bring the exponent down:
+
+```
+log(n!) ≤ log(nⁿ) = n log n
+```
+
+That is `O(n log n)`.
+
+## Below: drop the small half, shrink the rest
+
+A lower bound needs something that is **never bigger** than `n!`. Two moves, both pushing
+the product down:
+
+1. **Throw away the smaller half of the factors.** Each is at least 1, so removing it can
+   only shrink the product.
+2. **Replace each factor you kept with `n/2`.** Every kept factor is at least `n/2`, so this
+   shrinks it again.
+
+With `n = 8`:
+
+```
+8! = 1 · 2 · 3 · 4 · 5 · 6 · 7 · 8  ≥  5 · 6 · 7 · 8  ≥  4 · 4 · 4 · 4  =  4⁴
+```
+
+In general `n! ≥ (n/2)^(n/2)`. When `n` is odd, round the number of kept factors down to
+`⌊n/2⌋`. Taking logs:
+
+```
+log(n!) ≥ (n/2) · log(n/2) = (n/2)(log n − log 2)
+```
+
+The `− log 2` looks like it could spoil things, but it is a constant, while `log n` keeps
+growing. In base 2, once `n ≥ 4` you have `log₂ n − 1 ≥ ½ log₂ n` and `⌊n/2⌋ ≥ n/4`, so
+the bound is at least `⅛ n log₂ n`. A fixed fraction of `n log n` is exactly what
+`Ω(n log n)` asks for.
+
+## The trap, closed
+
+| `n = 8`, base 2 | value |
+| --- | --- |
+| lower, `(n/2) log₂(n/2)` | `4 · 2 = 8` |
+| actual, `log₂ 40,320` | `≈ 15.3` |
+| upper, `n log₂ n` | `8 · 3 = 24` |
+
+Both walls are constant multiples of `n log n`, so `log(n!) = Θ(n log n)`. This is the
+`Θ` recipe from the worked examples, with one change: the thing being trapped is a product,
+and a log turns each wall into something you can compare.
+
+## Why it matters
+
+`n` items can be arranged in `n!` orders. A sort that only compares items must be able to
+tell all of those orders apart, and each comparison is a yes/no answer. So its decisions form
+a binary tree with at least `n!` leaves, and that tree is at least `log₂(n!)` deep. By this
+page, that is `Θ(n log n)` comparisons. Mergesort, in week 3, runs in exactly that time.
+
+> **You do not need a formula for something to bound it.** Make it bigger in a way you can
+> compute, make it smaller in a way you can compute, and check that the two walls grow at the
+> same rate.

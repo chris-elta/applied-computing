@@ -54,16 +54,17 @@ questions:
       Changed: take `j` → `K(w − wⱼ, j) + vⱼ`. Row `j` may contain item `j`. Two or more copies.
       Example, D alone (2 lb, $9), `w = 4`:
       correct `K(2, 0) + 9 = 9`; changed `K(2, 1) + 9 = 18`, which is D twice.
-assessed:
-  - "Quiz 5 · Q1"
-  - "Quiz 5 · Q3"
-  - "Quiz 5 · Q5"
 prerequisites:
   - topic: "The unlimited knapsack recurrence"
     explains: "With unlimited copies, `K(w) = max over items with wᵢ ≤ w of K(w − wᵢ) + vᵢ`. After taking an item, the smaller bag is still allowed to use that same item again. Compare that with the version here, where something in the subproblem must record which items are still available."
     see: "applied-algorithm-analysis/w6-02-knapsack-with-repetition"
   - topic: "Reading a two-index table"
     explains: "`K(w, j)` has two indices: the capacity `w`, and `j`, meaning only the first `j` items may be used. Changing either index changes the problem. Before reading a recurrence, say in words what each cell it refers to is allowed to contain: which capacity, and which items."
+assessed:
+  - "Quiz 5 · Q1"
+  - "Quiz 5 · Q3"
+  - "Quiz 5 · Q5"
+  - "Assignment 2 · Ex 6.18"
 ---
 
 Now give the burglar one of each item. The table from the unlimited version breaks at

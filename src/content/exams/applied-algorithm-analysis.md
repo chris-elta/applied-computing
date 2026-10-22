@@ -1566,8 +1566,75 @@ questions:
       Distinct weights ⇒ unique MST.
       Here: two different trees, same total 41 ⇒ not unique ⇒ some weights tied.
       Both trees are minimum.
+  - topic: "Week 1 · Big-O and growth"
+    ask: "A colleague shows `n! ≤ nⁿ`, takes logs to get `log(n!) ≤ n log n`, and concludes `log(n!) = Θ(n log n)`. What is missing?"
+    choices:
+      - text: "A matching lower bound, such as `n! ≥ (n/2)^(n/2)`, which gives `log(n!) ≥ (n/2) log(n/2)`"
+        correct: true
+        explains: "Right. `n! ≤ nⁿ` only gives `O(n log n)`, a ceiling. `Θ` also needs a floor that grows at the same rate, and dropping the small half of the factors provides one."
+      - text: "Nothing; for factorials `O` and `Θ` coincide"
+        explains: "`O` is a ceiling for every function, factorials included. Without a floor, `log(n!)` could in principle grow like `n`, and the argument would not rule it out."
+      - text: "An exact formula for `n!`, since bounds cannot establish `Θ`"
+        explains: "Bounds are exactly how `Θ` is established: one above, one below, both constant multiples of the same function. No exact formula is needed."
+      - text: "A numerical check, such as `n = 10`, confirming the two sides are close"
+        explains: "A single value of `n` proves nothing about every `n` past some point. One example can only ever disprove a bound."
+    work: |-
+      `n! ≤ nⁿ` ⇒ `log(n!) ≤ n log n`: this is `O(n log n)` only.
+      For `Ω`: drop the smaller half of the factors (each ≥ 1), and shrink each kept factor to `n/2`.
+      `n! ≥ (n/2)^(n/2)` ⇒ `log(n!) ≥ (n/2)(log n − log 2)`, a constant fraction of `n log n` for large `n`.
+      Ceiling and floor together give `Θ(n log n)`.
+  - topic: "Week 1 · Big-O and growth"
+    ask: "`Hₙ = 1 + 1/2 + … + 1/n`. Roughly how much larger is `H` at `n = 1,000,000` than at `n = 1,000`?"
+    choices:
+      - text: "About 7 larger"
+        correct: true
+        explains: "Right. Going from `10³` to `10⁶` is about 10 doublings, and each doubling adds between `1/2` and 1, so the increase is between 5 and 10. The actual values are about 7.49 and 14.39."
+      - text: "Barely larger, because every new term is below `1/1000`"
+        explains: "Each new term is tiny, but there are 999,000 of them. They form about 10 power-of-two blocks, each worth at least `1/2`."
+      - text: "About 999 larger, since there are 999,000 new terms of about `1/1000` each"
+        explains: "Most of the new terms are far smaller than `1/1000`, down to `1/1,000,000`. Pricing them all at the largest one overestimates by a factor of over a hundred."
+      - text: "About 1,000 times larger, since `n` grew a thousandfold"
+        explains: "That would be linear growth. `Hₙ` grows like `log n`, so a thousandfold increase in `n` adds a fixed amount, not a multiple."
+    work: |-
+      Block argument: each doubling of `n` adds one block, worth between `1/2` and 1.
+      `1,000 → 1,000,000` is a factor of 1000 ≈ `2¹⁰`, so about 10 doublings.
+      Increase between `10 · 1/2 = 5` and `10 · 1 = 10`.
+      Actual: `H₁₀₀₀ ≈ 7.49`, `H₁₀₀₀₀₀₀ ≈ 14.39`, a difference of about 6.9.
+  - topic: "Week 3 · Divide and conquer"
+    ask: "Unroll `T(n) ≤ T(n/3) + cn`. Which bound does it give?"
+    choices:
+      - text: "`O(n)`, because the level costs `cn, cn/3, cn/9, …` form a decreasing geometric series"
+        correct: true
+        explains: "Right. After `k` steps the bound is `T(n/3ᵏ) + cn(1 + 1/3 + ⋯ + 1/3ᵏ⁻¹)`, and that series never exceeds `3/2`. So the total is at most `(3/2)cn` plus the base case."
+      - text: "`O(n log n)`, because there are `log₃ n` levels each costing `cn`"
+        explains: "Only the first level costs `cn`. Each later one is a third of the one before, because the single subproblem shrinks and nothing multiplies it."
+      - text: "`O(log n)`, because the argument reaches 1 after `log₃ n` steps"
+        explains: "That counts the levels but ignores what each one costs. The first level alone is already `cn`."
+      - text: "It cannot be unrolled, because the problem shrinks by division rather than subtraction"
+        explains: "Unrolling works for both. Division means about `log₃ n` steps to the base case; subtraction would mean about `n`."
+    work: |-
+      `T(n) ≤ T(n/3) + cn ≤ T(n/9) + cn/3 + cn ≤ T(n/27) + cn/9 + cn/3 + cn`.
+      General term: `T(n/3ᵏ) + cn(1 + 1/3 + ⋯ + 1/3ᵏ⁻¹)`.
+      Ratio `1/3 < 1`, so the series is below `1/(1 − 1/3) = 3/2`.
+      `k = log₃ n`: `T(n) ≤ T(1) + (3/2)cn = O(n)`. Master theorem check: `a = 1 < 3¹ = bᵈ`, so `O(n)`.
+  - topic: "Week 4 · Selection, matrices and the FFT"
+    ask: "An FFT at `n = 4` evaluates `A(x) = 2 − x + 3x²` at `1, i, −1, −i`. Using `A(x) = E(x²) + x·O(x²)`, what is the value at `ω² = −1`?"
+    choices:
+      - text: "6"
+        correct: true
+        explains: "Right. `E(y) = 2 + 3y` and `O(y) = −1`. At `x = −1`, `x² = 1`, so `A(−1) = E(1) − O(1) = 5 − (−1) = 6`."
+      - text: "4"
+        explains: "That is `E(1) + O(1)`, the value at `x = 1`. At `−1` the odd part is multiplied by `x = −1`, so it is subtracted."
+      - text: "`−1 − i`"
+        explains: "That is the value at `ω¹ = i`. `ω²` is a half turn, which is `−1`."
+      - text: "5"
+        explains: "That is `E(1)` alone. The odd part still counts: `x · O(x²)` at `x = −1` contributes `−1 · (−1) = +1`."
+    work: |-
+      Even coefficients `a₀ = 2, a₂ = 3`: `E(y) = 2 + 3y`. Odd coefficient `a₁ = −1`: `O(y) = −1`.
+      At `x = −1`, `x² = 1`: `A(−1) = E(1) + (−1)·O(1) = 5 + 1 = 6`.
+      Direct check: `2 − (−1) + 3(−1)² = 2 + 1 + 3 = 6`.
 ---
-94 multiple-choice questions across all seven weeks. The paper is divided into sections, and nothing is revealed until you
+98 multiple-choice questions across all seven weeks. The paper is divided into sections, and nothing is revealed until you
 submit: pick an answer for each question (you can change it as often as you like), then submit a
 section to see your score for it, the correct answers, an explanation for each one you chose, and a
 worked solution. You can submit one section at a time, in any order, or the whole exam at once.

@@ -1,0 +1,171 @@
+---
+course: applied-algorithm-analysis
+section: w4-algorithm
+order: 745
+title: "The FFT by Hand, at n = 4"
+notation:
+  - symbol: "n = 4"
+    reads: n equals four
+    means: >-
+      The number of points, and the length every coefficient list is padded to. It must be a
+      power of two **at least as large as the number of coefficients in the product**, not
+      in either input.
+  - symbol: "ω = i"
+    reads: omega equals i
+    means: >-
+      For `n = 4` the first root of unity is a quarter turn, which is `i`. Its powers are
+      `ω⁰, ω¹, ω², ω³ = 1, i, −1, −i`, always in that order.
+  - symbol: "ω⁻¹ = −i"
+    reads: omega inverse equals minus i
+    means: >-
+      A quarter turn the other way. The inverse FFT uses its powers, `1, −i, −1, i`.
+  - symbol: "E(y), O(y)"
+    reads: E of y, O of y
+    means: >-
+      The even- and odd-indexed coefficients, each read as a polynomial of their own. For
+      `a₀ + a₁x + a₂x² + a₃x³`: `E(y) = a₀ + a₂y` and `O(y) = a₁ + a₃y`.
+  - symbol: "(a + bi)(c + di)"
+    reads: a plus b i, times c plus d i
+    means: >-
+      Multiply out as usual, then replace `i²` with `−1`: the result is
+      `(ac − bd) + (ad + bc)i`.
+questions:
+  - ask: >-
+      You want to multiply a polynomial of degree 3 by one of degree 2 with the FFT. What is
+      the smallest `n` that works?
+    choices:
+      - text: "8"
+        correct: true
+        explains: >-
+          The product has degree `3 + 2 = 5`, so it has 6 coefficients, and 6 values are
+          needed to pin it down. The next power of two at or above 6 is 8.
+      - text: "4"
+        explains: >-
+          4 is enough for each input, which has at most 4 coefficients. But the points have
+          to recover the **product**, which has 6. With 4 points its high coefficients wrap
+          around onto the low ones.
+      - text: "6"
+        explains: >-
+          6 points are enough to determine the product, but the FFT halves its point set at
+          every level, so `n` must be a power of two. Pad up to 8.
+      - text: "5"
+        explains: >-
+          5 is the product's degree. A degree-5 polynomial has 6 coefficients, `x⁰` through
+          `x⁵`, so it needs 6 points, and the FFT needs a power of two.
+    work: |-
+      Degrees add: `3 + 2 = 5`.
+      Degree 5 means 6 coefficients, so at least 6 points.
+      The FFT needs a power of two: 6 rounds up to 8.
+      Pad both coefficient lists with zeros to length 8.
+  - ask: >-
+      After the inverse step on this page, someone reports the product's coefficients as
+      `12, 28, 8, 0`. What did they leave out?
+    choices:
+      - text: "Dividing every result by `n = 4`"
+        correct: true
+        explains: >-
+          Evaluating at the powers of `ω⁻¹` gives `n` times each coefficient. Dividing by 4
+          gives `3, 7, 2, 0`, which is `3 + 7x + 2x²`.
+      - text: "Using `ω⁻¹` instead of `ω` for the inverse"
+        explains: >-
+          Using `ω` instead would scramble the order, not scale the values: the coefficients
+          would come back as `12, 0, 8, 28`. Every value here is exactly 4 times the right
+          one, which points to the missing division.
+      - text: "Padding the inputs with zeros"
+        explains: >-
+          Padding happens before the forward FFT, and it was done: both inputs were
+          extended to 4 coefficients. A padding error would not multiply every answer by
+          the same 4.
+      - text: "Nothing; the FFT returns the product's values, not its coefficients"
+        explains: >-
+          The forward FFT returns values. The inverse step's job is to turn them back into
+          coefficients, and `12, 28, 8, 0` is not `3 + 7x + 2x²`.
+    work: |-
+      The inverse step evaluates the value list at `1, −i, −1, i`, then divides by `n`.
+      Undivided: `12, 28, 8, 0`.
+      Divide by `n = 4`: `3, 7, 2, 0`.
+      Product: `3 + 7x + 2x²`. Check: `(1 + 2x)(3 + x) = 3 + x + 6x + 2x² = 3 + 7x + 2x²`.
+assessed:
+  - "Assignment 2 · Ex 2.9"
+prerequisites:
+  - topic: "Multiplying complex numbers"
+    explains: "Multiply out the brackets as usual, then replace `i²` with `−1`. So `(2 + i)(1 + 3i) = 2 + 6i + i + 3i² = −1 + 7i`. In general `(a + bi)(c + di) = (ac − bd) + (ad + bc)i`."
+  - topic: "Roots of unity"
+    explains: "The `n`-th roots of unity are `n` equally spaced points on the unit circle, starting at 1. For `n = 4` they are quarter turns, `1, i, −1, −i`, and they are listed in that order as `ω⁰` to `ω³`."
+    see: "applied-algorithm-analysis/w4-16-the-plan-and-roots-of-unity"
+  - topic: "The even/odd split"
+    explains: "`A(x) = E(x²) + x·O(x²)`, where `E` holds the even-indexed coefficients and `O` the odd. Since `x` and `−x` have the same square, one evaluation of `E` and `O` serves both."
+    see: "applied-algorithm-analysis/w4-18-splitting-by-parity"
+---
+
+The FFT pages so far argue *why* it is fast. This one runs it, start to finish, on a case
+small enough to do on paper:
+
+```
+A(x) = 1 + 2x        B(x) = 3 + x
+```
+
+You can multiply these in your head: `3 + 7x + 2x²`. That is the point. You know the answer,
+so you can check each step against it.
+
+## 1 · Choose n
+
+The product has degree `1 + 1 = 2`, so it has **3** coefficients and needs at least 3 points.
+Round up to a power of two: `n = 4`. Pad both inputs with zeros to 4 coefficients:
+
+```
+A:  1, 2, 0, 0        B:  3, 1, 0, 0
+```
+
+The points are the 4th roots of unity, in order: `1, i, −1, −i`.
+
+## 2 · Evaluate, using the even/odd split
+
+For any 4 coefficients, `E(y) = a₀ + a₂y` and `O(y) = a₁ + a₃y`. The points pair up as
+`±1`, whose squares are `1`, and `±i`, whose squares are `−1`. So only `E` and `O` at `1` and
+`−1` are needed:
+
+```
+A(1)  = E(1)  + O(1)          A(−1) = E(1)  − O(1)
+A(i)  = E(−1) + i·O(−1)       A(−i) = E(−1) − i·O(−1)
+```
+
+For `A`, `E(y) = 1` and `O(y) = 2`. For `B`, `E(y) = 3` and `O(y) = 1`:
+
+| point | `A` | `B` | `A · B` |
+| --- | --- | --- | --- |
+| `1` | `3` | `4` | `12` |
+| `i` | `1 + 2i` | `3 + i` | `1 + 7i` |
+| `−1` | `−1` | `2` | `−2` |
+| `−i` | `1 − 2i` | `3 − i` | `1 − 7i` |
+
+The middle products need the complex rule: `(1 + 2i)(3 + i) = 3 + i + 6i + 2i² = 1 + 7i`.
+
+## 3 · Multiply pointwise
+
+That is the last column. Four multiplications, and the product's values are done.
+
+## 4 · Interpolate: run it backwards
+
+Read the value list `12, 1+7i, −2, 1−7i` as coefficients and evaluate at the powers of
+**`ω⁻¹ = −i`**, which are `1, −i, −1, i`. Then **divide by `n`**:
+
+| point | raw value | `÷ 4` |
+| --- | --- | --- |
+| `1` | `12` | `3` |
+| `−i` | `28` | `7` |
+| `−1` | `8` | `2` |
+| `i` | `0` | `0` |
+
+The coefficients are `3, 7, 2, 0`: the product is `3 + 7x + 2x²`, as expected. The zero at the
+end is the padding coming back out.
+
+## Three slips worth checking for
+
+- **`n` from the inputs, not the product.** Size it from the product's coefficient count.
+- **Points out of order.** `1, i, −1, −i` is `ω⁰` to `ω³`. Values in a different order give
+  coefficients in a different order.
+- **No division at the end.** Every coefficient comes out exactly `n` times too large.
+
+> **The inverse FFT is the forward FFT with `ω⁻¹` and a division by `n`.** At `n = 4`
+> that is a page of arithmetic; at a million points it is the same few lines of code.

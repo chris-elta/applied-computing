@@ -56,6 +56,20 @@ questions:
       Left piece `A₂A₃`: `mᵢ₋₁ × mₖ = m₁ × m₃ = 20 × 10`.
       Right piece `A₄`: `mₖ × mⱼ = m₃ × m₄ = 10 × 100`.
       Last multiplication: `m₁ · m₃ · m₄ = 20 · 10 · 100 = 20,000`.
+assessed:
+  - "Assignment 2 · Ex 6.6"
+  - "Assignment 2 · Ex 6.7"
+  - "Assignment 2 · Ex 6.9"
+  - "Assignment 2 · Ex 6.12"
+  - "Assignment 2 · Ex 6.13"
+  - "Assignment 2 · Ex 6.20"
+prerequisites:
+  - topic: "Asking for the last decision"
+    explains: "Every recurrence in this part of the course comes from one question: what was the final choice in an optimal solution? Here the final choice is where the last multiplication splits the chain, and each answer leaves two smaller instances of the same problem."
+    see: "applied-algorithm-analysis/w5-01-the-three-step-recipe"
+  - topic: "The cost of one matrix product"
+    explains: "Multiplying a `p × q` matrix by a `q × r` matrix takes `pqr` scalar multiplications, and the result is `p × r`. The `mᵢ₋₁ · mₖ · mⱼ` term is this rule applied to the two halves."
+    see: "applied-algorithm-analysis/w6-08-same-product-different-cost"
 ---
 
 The tree picture says what the subproblems should be. Every subtree multiplies a block of

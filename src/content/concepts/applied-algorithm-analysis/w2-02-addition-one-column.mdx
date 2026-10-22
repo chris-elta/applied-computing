@@ -55,6 +55,12 @@ questions:
       `Ω(n)` is a statement about every algorithm. Any correct sum depends on all `n` bits of the input, so an algorithm that doesn't read them can't be right.
       So no algorithm can beat `n`, however cleverly it is written.
       Together the two bounds give `Θ(n)`.
+assessed:
+  - "Assignment 1 · Ex 1.1"
+prerequisites:
+  - topic: "Positional notation in base b"
+    explains: "A digit in base `b` runs from 0 to `b − 1`, and two digits reach up to `b² − 1`: 99 in decimal, `11₂ = 3` in binary. Claims about \"how many digits a sum needs\" become plain inequalities once you write them this way."
+    see: "applied-algorithm-analysis/w2-01-input-size-is-bits"
 ---
 
 Now that `n` means digits, addition can be priced honestly.

@@ -53,6 +53,15 @@ questions:
       `4T(n/2)` is the cost of the four half-size recursive calls. That covers everything the children do.
       What is left is the work this call does itself: shifting and adding to recombine, which is `O(n)`.
       So `O(n)` is only this call's own work, not the total and not the children.
+assessed:
+  - "Assignment 2 · Ex 2.1"
+prerequisites:
+  - topic: "Shifting is multiplying by a power of two"
+    explains: "In binary, multiplying by `2ᵏ` appends `k` zeros: `1011 · 2² = 101100`, which is `11 · 4 = 44`. That is why the powers of two in the split cost nothing but a shift."
+    see: "applied-algorithm-analysis/w2-03-schoolbook-multiplication"
+  - topic: "Binary addition with carries"
+    explains: "Recombining the half-products is a few additions of binary numbers, done column by column from the right with a carry of at most 1. Each one is linear in the number of bits."
+    see: "applied-algorithm-analysis/w2-02-addition-one-column"
 ---
 
 Week 2 left multiplication at `O(n²)` — schoolbook, Al-Khwarizmi and the recursion all cost

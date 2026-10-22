@@ -67,6 +67,14 @@ questions:
       Quadratic: `10¹²` ns is `1000` s, about 17 minutes.
       Exponential: `2¹⁰⁰⁰ ≈ 10³⁰¹` operations, about `10²⁸⁴` years however fast the machine.
       Polynomials scale, so a smaller input or faster machine brings them back within reach. Exponentials do not. That is the practical line.
+assessed:
+  - "Assignment 1 · Ex 0.1"
+prerequisites:
+  - topic: "Exponent rules"
+    explains: "`aᵐ · aᵏ = aᵐ⁺ᵏ` and `(aᵐ)ᵏ = aᵐᵏ`. The first means an added constant in an exponent is only a constant **factor**; the second means a multiplied constant changes the **base**, which is a different growth rate. Logs and powers also trade places: `4^(log₂ n) = (2^(log₂ n))² = n²`. Inside an exponent the log's base matters, so always state it."
+  - topic: "Comparing growth by the ratio f/g"
+    explains: "To place two functions on the ladder relative to each other, divide one by the other and see where the ratio goes as `n` grows: to 0, to a positive constant, or to infinity. When it settles, that decides it; when it does not settle, go back to the definitions."
+    see: "applied-algorithm-analysis/w1-07-omega-theta-little-o"
 ---
 
 Almost every algorithm lands on one of a handful of growth rates. Learning them as a ladder

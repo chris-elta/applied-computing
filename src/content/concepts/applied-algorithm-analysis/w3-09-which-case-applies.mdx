@@ -44,6 +44,14 @@ questions:
       Binary search compares with the middle and throws away one half. It recurses into only one half.
       One call gives `a = 1`. The half size is `b = 2`, and one comparison is `d = 0`.
       So `T(n) = T(n/2) + O(1)`.
+assessed:
+  - "Assignment 2 · Ex 2.4"
+prerequisites:
+  - topic: "The three knobs a, b and d"
+    explains: "`a` counts the subproblems actually solved, `b` how much smaller each is, and `d` the exponent of the work one call does on its own. Read them off the algorithm's description before comparing anything."
+    see: "applied-algorithm-analysis/w3-07-the-generic-pattern"
+  - topic: "Logarithms in another base"
+    explains: "The cases compare `d` with `log_b a`, the power you raise `b` to in order to reach `a`. It is often not a whole number: `log₂ 8 = 3` but `log₂ 3 ≈ 1.58`. Equivalently, compare `a` with `bᵈ`, which avoids logs entirely."
 ---
 
 The theorem is three lines of algebra, but the thing worth building is an intuition for

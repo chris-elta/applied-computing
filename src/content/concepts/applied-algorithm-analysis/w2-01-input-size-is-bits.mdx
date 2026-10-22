@@ -55,11 +55,14 @@ questions:
       Changing base only changes `n` by a constant factor, so it doesn't help.
 assessed:
   - "Quiz 1 · Q3"
+  - "Assignment 1 · Ex 1.2"
 prerequisites:
   - topic: "Binary place values"
     explains: "In binary each place is worth twice the one to its right: 1, 2, 4, 8, 16, 32, 64. With `n` bits you can write every whole number from 0 up to `2ⁿ − 1`. So 100 is `1100100`, which takes 7 bits because 64 ≤ 100 < 128."
   - topic: "Logarithms as counting"
     explains: "`log₂ N` answers the question \"how many times must I double 1 to reach `N`?\", or equivalently \"how many times can I halve `N` before reaching 1?\". Since each bit is one doubling, the number of bits of `N` is about `log₂ N`, rounded up. Growing `N` a thousandfold adds only about 10 bits."
+  - topic: "Logarithms in other bases"
+    explains: "The same idea works in any base: `log_b N` is the power you raise `b` to in order to reach `N`, so `log₁₀ 1000 = 3`. It need not be a whole number: `log₂ 10 ≈ 3.32`. To switch base, divide: `log_b N = log₂ N / log₂ b`. In any base `b`, `k` digits reach up to `bᵏ − 1`, the decimal version of the binary rule above."
 ---
 
 Every cost so far has assumed that basic arithmetic takes one step. Adding two numbers: one

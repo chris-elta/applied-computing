@@ -58,6 +58,14 @@ questions:
       Each node does linear work, so a node costs `O(n/2ᵏ)`.
       Level cost: `3ᵏ · n/2ᵏ = n · 3ᵏ/2ᵏ = n · (3/2)ᵏ`.
       No single node does `3/2` work. The ratio comes from combining the node count with the node size.
+assessed:
+  - "Assignment 1 · Ex 1.3"
+prerequisites:
+  - topic: "Summing a geometric series"
+    explains: "A geometric series multiplies by the same ratio `r` each term: `1 + r + r² + … + rᵏ`. For `r ≠ 1` it equals `(rᵏ⁺¹ − 1)/(r − 1)`, which you get by writing out `rS − S` and watching everything but two terms cancel. Check: `1 + 2 + 4 + 8 = 15 = 2⁴ − 1`. Adding up level sizes in a tree is exactly this kind of sum."
+  - topic: "Logarithms as counting halvings"
+    explains: "`log₂ n` is how many times you can halve `n` before reaching 1, and how deep a halving recursion goes. The tree's height on this page comes from that reading."
+    see: "applied-algorithm-analysis/w2-09-two-more-ways-to-read-a-logarithm"
 ---
 
 Karatsuba's cost is `T(n) = 3T(n/2) + O(n)`. To turn that into an actual bound, draw what the
