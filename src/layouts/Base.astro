@@ -2,6 +2,7 @@
 import { ClientRouter } from 'astro:transitions';
 import '../styles/global.css';
 import { withBase } from '../lib/course';
+import Search from '../components/Search.astro';
 
 interface Props {
   title: string;
@@ -35,9 +36,12 @@ const site = 'Applied Computing';
     <header class="masthead">
       <div class="shell masthead__inner">
         <a class="masthead__brand" href={withBase('/')}>{site}</a>
-        <button class="masthead__theme" type="button" data-theme-toggle aria-label="Switch colour theme">
-          <span aria-hidden="true">◐</span>
-        </button>
+        <div class="masthead__tools">
+          <Search />
+          <button class="masthead__theme" type="button" data-theme-toggle aria-label="Switch colour theme">
+            <span aria-hidden="true">◐</span>
+          </button>
+        </div>
       </div>
     </header>
 
@@ -94,6 +98,7 @@ const site = 'Applied Computing';
         color: var(--ink);
         text-decoration: none;
       }
+      .masthead__tools { display: flex; align-items: center; gap: 0.5rem; }
       .masthead__theme {
         border: 1px solid var(--line);
         background: var(--bg-raised);
