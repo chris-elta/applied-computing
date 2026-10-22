@@ -10,6 +10,9 @@ visuals:
   - type: svg
     src: data-science/w7-significance/29.svg
     caption: Slide 29 of 33 — a million shuffles of four items; only algorithm 1 is uniform.
+  - type: svg
+    src: data-science/w7-significance/hidden-33.svg
+    caption: Hidden slide, 33 of 37 in the full deck — why algorithm 1 is uniform and algorithm 2 is not.
 notation:
   - symbol: "Random[i, n]"
     reads: random from i to n
@@ -91,12 +94,36 @@ is `3² = 9` runs spread over `3! = 6` orderings. Nine cannot be split evenly si
 orderings must come up more often. For `n = 4`, the 64 runs cannot be split evenly 24 ways
 either.
 
+## Why, in words
+
+The slides give the argument without the counting. **Algorithm 1 picks a random item for the
+first position, then leaves it alone and recurs** on the rest. Each position is settled once,
+fairly, and never touched again. So the result is a random permutation by construction.
+
+**Algorithm 2 never leaves a position alone.** A later step can reach back and swap a new item
+into a position already settled. The slide describes this as giving *subsequent elements a better
+chance to end up first*. Counting all 64 runs for `n = 4` shows the bias is lopsided rather than
+simply favouring later items:
+
+| item | runs that end with it first | fair share |
+| --- | --- | --- |
+| 1 | 16 | 16 |
+| 2 | 21 | 16 |
+| 3 | 18 | 16 |
+| 4 | 9 | 16 |
+
+Item 2 lands first a third more often than it should, and item 4 only a little over half as
+often. Across whole orderings, the rarest comes from 1 of the 64 runs and the commonest from 5.
+Over a million shuffles that is about 15,600 against 78,100, which matches the two ends of the
+red line on slide 29.
+
 Algorithm 1 is known as the **Fisher-Yates shuffle**, and it is what library shuffle functions
 use.
 
 ## The lesson
 
-Code that looks random is not necessarily uniform. A shuffle can produce every ordering and
+The slide's moral: random generation can be very subtle. Code that looks random is not
+necessarily uniform. A shuffle can produce every ordering and
 still be biased. The slides' test is the one to reuse: generate many samples, count, and
 compare the counts with what uniform would give.
 

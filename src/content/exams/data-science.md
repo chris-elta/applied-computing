@@ -1407,6 +1407,24 @@ questions:
       Below the mean the wide CDF is higher; above it, lower. The gap can be large on both sides.
       With n = n′ = 60 and α = 0.05: threshold `1.36 × √(120/3600) = 1.36 × 0.183 ≈ 0.25`.
   - topic: "Week 7 · Statistical significance"
+    ask: "Of 100 shoppers, 50 saw a new banner and 50 did not. 30 of those who saw it bought something, against 20 of those who did not. Using a chi-square test with a critical value of 3.84 (df = 1, α = 0.05), what do you conclude?"
+    choices:
+      - text: "χ² = 4, so the banner and buying are related at the 0.05 level"
+        correct: true
+        explains: "Right. With 50 buyers overall, every expected count is 25. Each cell is 5 off, giving `25/25 = 1` per cell and `χ² = 4 > 3.84`."
+      - text: "χ² = 1, so there is no evidence of a relationship"
+        explains: "1 is the contribution of a single cell. The statistic sums all four cells of the table."
+      - text: "χ² = 20, so the relationship is overwhelming"
+        explains: "That forgets to divide by the expected count. Each squared gap of 25 is divided by `E = 25` before summing."
+      - text: "A chi-square test cannot be used, since buying is yes-or-no"
+        explains: "Yes-or-no outcomes are categories, which is exactly what chi-square is for."
+    work: |-
+      Table: saw banner 30 bought / 20 not; no banner 20 bought / 30 not.
+      Row totals 50 and 50; column totals 50 bought, 50 not; N = 100.
+      Every `E = 50 × 50 / 100 = 25`.
+      Each cell: `(O − E)² / E = 5² / 25 = 1`. Four cells: `χ² = 4`.
+      df = (2 − 1)(2 − 1) = 1; `4 > 3.84`, so reject independence at α = 0.05.
+  - topic: "Week 7 · Statistical significance"
     ask: "A genetics team tests 500 genes for a link with a disease, wanting an overall significance level of 0.05. Gene X has p = 0.00004 and gene Y has p = 0.002. Under the Bonferroni correction, which are significant?"
     choices:
       - text: "Both, since both are below 0.05"
@@ -1495,7 +1513,7 @@ questions:
       0.35 > 0.3 = F(2) and 0.35 ≤ 0.6 = F(3), so return 3.
       Each outcome's band has width equal to its probability, so a uniform p picks it at the right rate.
 ---
-88 multiple-choice questions across all seven weeks. The paper is divided into sections, and nothing is revealed until you
+89 multiple-choice questions across all seven weeks. The paper is divided into sections, and nothing is revealed until you
 submit: pick an answer for each question (you can change it as often as you like), then submit a
 section to see your score for it, the correct answers, an explanation for each one you chose, and a
 worked solution. You can submit one section at a time, in any order, or the whole exam at once.

@@ -76,6 +76,11 @@ Every patch of the square is equally likely, so every patch of the circle inside
 cost is the discards. The circle takes `π/4 ≈ 79%` of the square, so about one draw in five is
 wasted.
 
+This is a **Monte Carlo** method: repeated random sampling used to get at something that is
+awkward to compute directly. It works well for a simple shape like a circle. For a complex or
+sparse region, one that fills only a sliver of its bounding box, nearly every draw is thrown
+away, and the method becomes slow.
+
 ## Any distribution in one dimension
 
 For a single variable there is a general method. From slide 32: **convert the distribution to

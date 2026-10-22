@@ -1,0 +1,145 @@
+---
+course: data-science
+section: w7-ks
+order: 1015
+title: The Chi-Square Test
+visuals:
+  - type: svg
+    src: data-science/w7-significance/hidden-22.svg
+    caption: Hidden slide, 22 of 37 in the full deck — do category labels change the distribution?
+  - type: svg
+    src: data-science/w7-significance/hidden-23.svg
+    caption: Hidden slide, 23 of 37 in the full deck — contingency table, test statistic, distribution.
+  - type: svg
+    src: data-science/w7-significance/hidden-24.svg
+    caption: Hidden slide, 24 of 37 in the full deck — four ways the test goes wrong.
+notation:
+  - symbol: "χ²"
+    reads: kai squared (chi, rhymes with "sky")
+    means: >-
+      The chi-square statistic: a total of how far the observed counts are from the counts
+      you would expect if the categories were unrelated. 0 means a perfect match.
+  - symbol: "Σ"
+    reads: sigma, or "sum of"
+    means: >-
+      Add the term up over every cell of the table. The capital sigma is a sum, not the
+      standard deviation `σ`.
+  - symbol: "O, E"
+    reads: O and E
+    means: >-
+      Observed and expected count for one cell. `E = row total × column total / grand total`.
+  - symbol: "df"
+    reads: d f, or degrees of freedom
+    means: >-
+      For a table with `r` rows and `c` columns, `(r − 1)(c − 1)`. A 2 × 2 table has 1.
+questions:
+  - ask: "In a 2 × 2 table of 200 people, 120 are in the first row and 90 are in the first column. Under the chi-square test, what is the expected count for the cell in the first row and first column?"
+    choices:
+      - text: "54"
+        correct: true
+        explains: >-
+          `120 × 90 / 200 = 54`. If row and column were unrelated, the first-column share,
+          `90/200 = 45%`, would hold within the first row too: 45% of 120 is 54.
+      - text: "50"
+        explains: >-
+          That splits the 200 evenly over four cells. Expected counts keep the real row and
+          column totals and only assume the two variables are unrelated.
+      - text: "60"
+        explains: >-
+          That splits the first row evenly between the columns. But the columns are not equal:
+          only 45% of people are in the first one.
+      - text: "105"
+        explains: >-
+          That adds the totals and halves them. Expected counts multiply the row and column
+          shares: `120 × 90 / 200`.
+  - ask: "A survey of 12 people finds every one of the 3 left-handers prefers tea. Why is a chi-square test on this table unreliable?"
+    choices:
+      - text: "The counts are far too small; the slides ask for more than 10 per cell"
+        correct: true
+        explains: >-
+          "100% of left-handers" is easy to get from 3 people. Small counts make percentages
+          look dramatic and break the approximation the chi-square table relies on.
+      - text: "Chi-square only works on numerical data"
+        explains: >-
+          Chi-square is the test *for* categorical data, such as handedness and drink
+          preference. The t-test and KS test are the ones that need numbers.
+      - text: "A 100% result is always significant, so no test is needed"
+        explains: >-
+          A 100% share among 3 people happens by chance fairly often. That is exactly the trap
+          the slides warn about.
+---
+
+Simpson's paradox opened this week with students who study gym very differently from algebra.
+That raises a question the slide puts as **do categories really matter?** Does knowing which
+course a student is in, or which group a person belongs to, change the distribution of what
+you are measuring?
+
+The t-test and the KS test compare numbers. When both variables are **categories** (sex and
+party, course and pass/fail, device and whether someone bought), the tool is the
+**chi-square test**. From the slide, it establishes whether *different population labels exhibit
+the same distribution*.
+
+## Step 1 · Build a contingency table
+
+A **contingency table** counts how many observations fall in each combination of categories. The
+slide's example asks whether party preference differs by sex:
+
+| | Democrats | Republicans | total |
+| --- | --- | --- | --- |
+| male | 23 | 31 | 54 |
+| female | 28 | 22 | 50 |
+| total | 51 | 53 | 104 |
+
+Men lean Republican and women lean Democrat. Is that more than chance?
+
+## Step 2 · Compute the test statistic
+
+The null hypothesis is that sex and party are unrelated. If so, each row should split the same
+way as the whole table: 51 of 104 people, about 49%, are Democrats, so about 49% of the men should
+be too. That gives each cell an **expected count**:
+
+```
+E = row total × column total / grand total
+```
+
+Then compare observed with expected, cell by cell:
+
+```
+χ² = Σ (Observed − Expected)² / Expected
+```
+
+| cell | `O` | `E` | `(O − E)² / E` |
+| --- | --- | --- | --- |
+| male, Democrat | 23 | `54 × 51 / 104 ≈ 26.48` | 0.458 |
+| male, Republican | 31 | `54 × 53 / 104 ≈ 27.52` | 0.440 |
+| female, Democrat | 28 | `50 × 51 / 104 ≈ 24.52` | 0.494 |
+| female, Republican | 22 | `50 × 53 / 104 ≈ 25.48` | 0.475 |
+| **sum** | | | **`χ² ≈ 1.87`** |
+
+Squaring stops positive and negative gaps from cancelling. Dividing by `E` judges each gap
+relative to the size of the cell, so being 3 off matters more in a cell of 10 than in a cell of
+1,000.
+
+## Step 3 · Evaluate against the distribution
+
+Under the null hypothesis, `χ²` follows a **chi-square distribution**. That is the skewed curve on
+the slides, which starts at 0 and has a long right tail. Its shape depends on the degrees of
+freedom, `(rows − 1) × (columns − 1)`, which is 1 here.
+
+The critical value for `df = 1` at `α = 0.05` is 3.84. `1.87 < 3.84`, so **the difference is not
+significant**. A sample of 104 people splitting this way is quite consistent with sex and party
+being unrelated.
+
+## Where it goes wrong
+
+The third slide lists four issues:
+
+| issue | what to watch |
+| --- | --- |
+| **degrees of freedom** | More categories means more cells, and a larger `χ²` by chance alone. Use the table row for your `df`. |
+| **counts, not fractions** | "100%" is easy to get from one person. Run the test on raw counts, and the slides ask for more than 10 in each cell. |
+| **significance level** | Is 0.05 the right threshold? With many tables, Bonferroni applies. |
+| **sampling** | The test assumes random, independent observations. One person surveyed twice, or a whole household counted separately, breaks it. |
+
+> The chi-square test asks whether category labels change a distribution. Build the counts,
+> compare each with what independence predicts, and sum the squared surprises.

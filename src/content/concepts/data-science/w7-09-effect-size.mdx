@@ -25,6 +25,15 @@ notation:
     means: >-
       The standard deviation, the yardstick that turns a raw difference into a size that
       can be compared across studies.
+  - symbol: "x̄₁, x̄₂"
+    reads: x bar one, x bar two
+    means: >-
+      The sample means, your estimates of `μ` and `μ′`.
+  - symbol: "s"
+    reads: s
+    means: >-
+      The pooled standard deviation: an estimate of `σ` that combines the spread of both
+      samples.
 questions:
   - ask: "A study of 200,000 users finds that a new layout raises average session length from 300 to 303 seconds, with a standard deviation of 60 seconds and p < 0.0001. How should you describe the result?"
     choices:
@@ -81,6 +90,10 @@ Slide 20 gives three measures:
 deviation, so it does not depend on the sample size or the units. From the notes, `d = 0.8`
 means the means differ by almost a full standard deviation, a large effect that you can see by
 eye in the data, as with men's and women's heights.
+
+In practice you do not know the population's `μ` or `σ`, so you estimate them from the
+samples: `d = (x̄₁ − x̄₂) / s`, where `s` is the **pooled standard deviation**, the two groups'
+spreads combined into one. The thresholds are the same.
 
 The **overlap** row says the same thing as a picture. At a small effect the two bells mostly
 sit on top of each other. At a large effect they are visibly separate, but still about half

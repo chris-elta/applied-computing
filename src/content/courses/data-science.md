@@ -146,7 +146,7 @@ sections:
   - id: w7-ks
     title: Week 7 · Comparing whole distributions
     summary: >-
-      The Kolmogorov-Smirnov test, and using it to check whether data looks normal.
+      The Kolmogorov-Smirnov test for numbers, the chi-square test for categories, and checking whether data looks normal.
   - id: w7-effect
     title: Week 7 · Many tests, and effect size
     summary: >-
