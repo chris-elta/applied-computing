@@ -64,14 +64,72 @@ export function buildExport(input: {
   };
 }
 
-export function downloadExport(data: ReturnType<typeof buildExport>) {
+function saveJson(data: unknown, filename: string) {
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `${data.course.id}-exam-results-${data.takenAt.slice(0, 10)}.json`;
+  a.download = filename;
   document.body.appendChild(a);
   a.click();
   a.remove();
   URL.revokeObjectURL(url);
+}
+
+export function downloadExport(data: ReturnType<typeof buildExport>) {
+  saveJson(data, `${data.course.id}-exam-results-${data.takenAt.slice(0, 10)}.json`);
+}
+
+type WrittenQuestion = { ask: string; answer: string; rubric: string[]; topic?: string };
+
+/** Bump when the shape changes; the review-exam-results skill reads this. */
+export const WRITTEN_EXPORT_VERSION = 1;
+
+/**
+ * The short-answer part of a sitting. Marks are the learner's own: each rubric
+ * point they ticked after comparing their answer with the model. Only questions
+ * they checked are exported.
+ */
+export function buildWrittenExport(input: {
+  courseId: string;
+  courseTitle: string;
+  title: string;
+  questions: WrittenQuestion[];
+  drafts: Record<number, string>;
+  /** Rubric points ticked, by question; present only for checked questions. */
+  ticks: Record<number, number[]>;
+}) {
+  const { questions, drafts, ticks } = input;
+  const results = Object.keys(ticks)
+    .map(Number)
+    .sort((a, b) => a - b)
+    .map((i) => {
+      const q = questions[i];
+      const met = ticks[i];
+      return {
+        number: i + 1,
+        topic: q.topic ?? null,
+        question: q.ask,
+        yourAnswer: drafts[i] ?? '',
+        modelAnswer: q.answer.split('\n').filter((l) => l.trim()),
+        rubric: q.rubric.map((point, pi) => ({ point, met: met.includes(pi) })),
+        marks: { earned: met.length, total: q.rubric.length },
+      };
+    });
+  const earned = results.reduce((n, r) => n + r.marks.earned, 0);
+  const total = results.reduce((n, r) => n + r.marks.total, 0);
+  return {
+    format: 'applied-computing-written-results',
+    version: WRITTEN_EXPORT_VERSION,
+    course: { id: input.courseId, title: input.courseTitle },
+    exam: { title: input.title, complete: results.length === questions.length },
+    takenAt: new Date().toISOString(),
+    // Self-marked against the rubric, so treat it as the learner's own estimate.
+    score: { earned, total, percent: total ? Math.round((earned / total) * 100) : 0 },
+    results,
+  };
+}
+
+export function downloadWrittenExport(data: ReturnType<typeof buildWrittenExport>) {
+  saveJson(data, `${data.course.id}-written-results-${data.takenAt.slice(0, 10)}.json`);
 }

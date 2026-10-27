@@ -1633,6 +1633,299 @@ questions:
       Even coefficients `a₀ = 2, a₂ = 3`: `E(y) = 2 + 3y`. Odd coefficient `a₁ = −1`: `O(y) = −1`.
       At `x = −1`, `x² = 1`: `A(−1) = E(1) + (−1)·O(1) = 5 + 1 = 6`.
       Direct check: `2 − (−1) + 3(−1)² = 2 + 1 + 3 = 6`.
+written:
+  - topic: "Week 1 · Big-O and growth"
+    ask: |-
+      For each pair, say whether `f = O(g)`, `f = Ω(g)`, or both (`f = Θ(g)`), and give a one-line reason.
+      (a) `f(n) = log(n²)`, `g(n) = log n + 7`
+      (b) `f(n) = 2ⁿ`, `g(n) = 3ⁿ`
+      (c) `f(n) = n / log n`, `g(n) = (log n)³`
+    answer: |-
+      (a) `log(n²) = 2 log n`, and `log n + 7 ≤ 2 log n` once `n ≥ 2⁷`. Each is within a constant factor of the other, so `f = Θ(g)`.
+      (b) `f/g = (2/3)ⁿ → 0`. So `f = O(g)` but not `Ω(g)`: different bases of an exponential are different growth rates.
+      (c) Any positive power of `n` beats any power of `log n`. Here `n / log n ≥ n^0.5` eventually, and `n^0.5` beats `(log n)³`, so `f = Ω(g)` but not `O(g)`.
+      The limit test decides each case here because each limit exists. It is a sufficient condition, not the definition.
+    rubric:
+      - "(a) Θ, using `log(n²) = 2 log n`"
+      - "(b) O only, because the ratio `(2/3)ⁿ` goes to 0"
+      - "(c) Ω only, because a polynomial beats a polylog"
+  - topic: "Week 1 · Big-O and growth"
+    ask: |-
+      Show that `f(n) = n²/2 − 3n` is `Ω(n²)`. Give an explicit constant `c` and threshold `n₀`.
+    answer: |-
+      We want `n²/2 − 3n ≥ c·n²` for all `n ≥ n₀`.
+      Try `c = 1/4`: `n²/2 − 3n ≥ n²/4` ⇔ `n²/4 ≥ 3n` ⇔ `n ≥ 12`.
+      So `c = 1/4` and `n₀ = 12` work: for every `n ≥ 12`, `f(n) ≥ n²/4`.
+      Hence `f = Ω(n²)`. Together with `f ≤ n²/2` for all `n ≥ 0`, which gives `O(n²)`, this makes `f = Θ(n²)`.
+    rubric:
+      - "States the inequality to prove, `f(n) ≥ c·n²` for `n ≥ n₀`"
+      - "Picks a specific `c` with `0 < c < 1/2`"
+      - "Derives a correct threshold for that `c` (`n₀ = 12` for `c = 1/4`)"
+  - topic: "Week 1 · Big-O and growth"
+    ask: |-
+      Show that `g(n) = 1 + 3 + 3² + ⋯ + 3ⁿ` is `Θ(3ⁿ)`.
+    answer: |-
+      Lower bound: every term is positive, so `g(n) ≥ 3ⁿ`, the last term.
+      Upper bound: the geometric sum is `g(n) = (3ⁿ⁺¹ − 1)/2 < (3/2)·3ⁿ`.
+      So `3ⁿ ≤ g(n) ≤ 1.5·3ⁿ` for all `n ≥ 0`, which is `Θ(3ⁿ)` with constants 1 and 1.5.
+      This is the rule from Assignment 1 (0.2): an increasing geometric series is Θ of its last term.
+    rubric:
+      - "Lower bound from the last term, `g(n) ≥ 3ⁿ`"
+      - "Closed form `(3ⁿ⁺¹ − 1)/2` or an equivalent upper bound"
+      - "Upper constant (for example 3/2) and the conclusion Θ(3ⁿ)"
+  - topic: "Week 2 · Arithmetic on bits"
+    ask: |-
+      Compute `3¹³ mod 7` by repeated squaring, showing each step.
+      Then give the running time of modular exponentiation `xʸ mod N` when `x`, `y` and `N` are `n`-bit numbers, and explain where it comes from.
+    answer: |-
+      `13 = 1101₂ = 8 + 4 + 1`.
+      Square and reduce: `3¹ ≡ 3`, `3² = 9 ≡ 2`, `3⁴ ≡ 2² = 4`, `3⁸ ≡ 4² = 16 ≡ 2` (mod 7).
+      Multiply the powers for the 1-bits: `3¹³ = 3⁸ · 3⁴ · 3¹ ≡ 2 · 4 · 3 = 24 ≡ 3` (mod 7).
+      Check: `3⁶ ≡ 1` (mod 7), so `3¹³ = (3⁶)² · 3 ≡ 3`.
+      Time: `y` has `n` bits, so there are `O(n)` squarings and multiplications. Each multiplies two numbers below `N` and reduces mod `N`, which costs `O(n²)`.
+      Total `O(n) · O(n²) = O(n³)`. Reducing after every step keeps every number below `N²`, so they never grow past `2n` bits.
+    rubric:
+      - "Writes 13 in binary, or uses the halving recursion correctly"
+      - "Correct powers mod 7: 3, 2, 4, 2"
+      - "Final answer 3"
+      - "`O(n)` multiplications, each `O(n²)`, giving `O(n³)`"
+  - topic: "Week 2 · Arithmetic on bits"
+    ask: |-
+      Use Euclid's algorithm to find `gcd(252, 105)`, showing each step.
+      Then explain why Euclid's algorithm needs only `O(n)` steps on `n`-bit inputs.
+    answer: |-
+      `gcd(252, 105)`: `252 mod 105 = 42` → `gcd(105, 42)`.
+      `105 mod 42 = 21` → `gcd(42, 21)`.
+      `42 mod 21 = 0` → `gcd(21, 0) = 21`.
+      Key lemma: if `a ≥ b`, then `a mod b < a/2`. (If `b ≤ a/2` the remainder is below `b`; if `b > a/2` the remainder is `a − b < a/2`.)
+      So after any two consecutive steps both numbers have at least halved, which removes at least one bit from each.
+      With `n` bits to remove, there are at most `2n = O(n)` steps. Each step is a division costing `O(n²)`, so the total is `O(n³)`.
+    rubric:
+      - "Correct remainders 42, 21, 0"
+      - "gcd = 21"
+      - "States the lemma `a mod b < a/2`, or that values halve every two steps"
+      - "Concludes `O(n)` steps, so `O(n³)` total"
+  - topic: "Week 2 · Arithmetic on bits"
+    ask: |-
+      To test whether `N` is prime, trial division tries every divisor `d = 2, 3, …, ⌊√N⌋`. Is this a polynomial-time algorithm? Answer in terms of the input size.
+    answer: |-
+      The input size is the number of bits, `n ≈ log₂ N`, not the value `N`.
+      Trial division can make up to `√N = 2^(n/2)` divisions.
+      That is exponential in `n`, so trial division is not polynomial time, even though `√N` looks small next to `N`.
+      For example, a 1024-bit `N` would need about `2⁵¹²` divisions.
+    rubric:
+      - "Input size `n = log₂ N` bits"
+      - "Number of trials `√N = 2^(n/2)`"
+      - "Concludes exponential in `n`, so not polynomial"
+  - topic: "Week 3 · Divide and conquer"
+    ask: |-
+      Use the divide-and-conquer integer multiplication algorithm (with Gauss's trick) to multiply the 4-bit binary integers `x = 1101` and `y = 1011`. Show the split, the three products and how they combine. Then state the algorithm's running time.
+    answer: |-
+      Split into halves of `n/2 = 2` bits: `x_L = 11₂ = 3`, `x_R = 01₂ = 1`, `y_L = 10₂ = 2`, `y_R = 11₂ = 3`.
+      `P₁ = x_L·y_L = 3·2 = 6`.
+      `P₂ = x_R·y_R = 1·3 = 3`.
+      `P₃ = (x_L + x_R)(y_L + y_R) = 4·5 = 20`.
+      Middle term `x_L·y_R + x_R·y_L = P₃ − P₁ − P₂ = 20 − 6 − 3 = 11`.
+      `xy = P₁·2ⁿ + 11·2^(n/2) + P₂ = 6·16 + 11·4 + 3 = 96 + 44 + 3 = 143 = 10001111₂`.
+      Check: `13 × 11 = 143`.
+      Three half-size products plus `O(n)` additions and shifts give `T(n) = 3T(n/2) + O(n) = O(n^(log₂ 3)) ≈ O(n^1.59)`.
+    rubric:
+      - "Correct split into high and low halves"
+      - "Three products 6, 3, 20"
+      - "Middle term `P₃ − P₁ − P₂ = 11`"
+      - "Combines with shifts of `2ⁿ` and `2^(n/2)` to get 143 = `10001111₂`"
+      - "`T(n) = 3T(n/2) + O(n) = O(n^1.59)`"
+  - topic: "Week 3 · Divide and conquer"
+    ask: |-
+      Solve `T(n) = 4T(n/2) + O(n)` by unrolling the recurrence, as in Assignment 2 (2.3).
+      Give the general `k`-th term, the value of `k` to plug in, and the final bound. Check your answer with the master theorem.
+    answer: |-
+      Write `O(n)` as `≤ cn`: `T(n) ≤ 4T(n/2) + cn`.
+      `≤ 4[4T(n/4) + cn/2] + cn = 16T(n/4) + 3cn`.
+      `≤ 16[4T(n/8) + cn/4] + 3cn = 64T(n/8) + 7cn`.
+      General term: `T(n) ≤ 4ᵏ T(n/2ᵏ) + cn(1 + 2 + ⋯ + 2ᵏ⁻¹) = 4ᵏ T(n/2ᵏ) + cn(2ᵏ − 1)`.
+      Plug in `k = log₂ n`: `4ᵏ = n²` and `2ᵏ = n`, so `T(n) ≤ n²·T(1) + cn(n − 1) = O(n²)`.
+      Master theorem: `a = 4`, `b = 2`, `d = 1`, and `log₂ 4 = 2 > d`, so `T(n) = O(n^(log_b a)) = O(n²)`. They agree.
+    rubric:
+      - "At least two correct expansion steps"
+      - "General term `4ᵏ T(n/2ᵏ) + cn(2ᵏ − 1)`"
+      - "Chooses `k = log₂ n` and simplifies `4ᵏ = n²`"
+      - "Final `O(n²)`"
+      - "Master theorem check with `log₂ 4 = 2 > 1`"
+  - topic: "Week 3 · Divide and conquer"
+    ask: |-
+      Give the running time of each algorithm in big-O notation, and say which you would choose.
+      Algorithm A splits a problem into seven subproblems of half the size and combines them in `O(n²)` time.
+      Algorithm B splits a problem into four subproblems of half the size and combines them in `O(n²)` time.
+      Algorithm C solves three subproblems of size `n − 1` and combines them in `O(1)` time.
+    answer: |-
+      A: `T(n) = 7T(n/2) + O(n²)`. `log₂ 7 ≈ 2.81 > 2`, so the leaves dominate: `O(n^(log₂ 7)) ≈ O(n^2.81)`.
+      B: `T(n) = 4T(n/2) + O(n²)`. `log₂ 4 = 2 = d`, so every level costs the same: `O(n² log n)`.
+      C: `T(n) = 3T(n − 1) + O(1)`. The master theorem does not apply. Unrolling gives `3ᵏ` calls at depth `k`, so `T(n) = O(3ⁿ)`.
+      Choose B: `n² log n` grows more slowly than `n^2.81`, and C is exponential.
+    rubric:
+      - "A is `O(n^(log₂ 7)) ≈ O(n^2.81)`"
+      - "B is `O(n² log n)`, the balanced case"
+      - "C is `O(3ⁿ)`, worked out without the master theorem"
+      - "Chooses B with a reason"
+  - topic: "Week 4 · Selection, matrices and the FFT"
+    ask: |-
+      Run the randomised selection algorithm to find the 4th smallest element of `S = [7, 2, 9, 4, 1, 8, 5]`, supposing the pivot chosen is `v = 4`. Show `S_L`, `S_v`, `S_R` and the recursive call.
+      Then explain why the expected running time is `O(n)`.
+    answer: |-
+      Split around `v = 4`: `S_L = [2, 1]`, `S_v = [4]`, `S_R = [7, 9, 8, 5]`.
+      `k = 4 > |S_L| + |S_v| = 3`, so the answer is in `S_R`: recurse on `selection(S_R, 4 − 3) = selection(S_R, 1)`.
+      The smallest element of `S_R` is `5`. Check: sorted `S` is `1, 2, 4, 5, 7, 8, 9`, and its 4th element is 5.
+      A pivot is good if it lies between the 25th and 75th percentiles, which happens with probability 1/2. A good pivot leaves at most `3n/4` elements.
+      By the coin-flip lemma it takes 2 splits on average to get a good pivot, and each split costs `O(n)`.
+      So `T(n) ≤ T(3n/4) + O(n)`, a decreasing geometric series, which gives `O(n)`.
+    rubric:
+      - "Correct `S_L`, `S_v`, `S_R`"
+      - "Recurses on `S_R` with `k − |S_L| − |S_v| = 1`"
+      - "Answer 5"
+      - "Good pivot with probability 1/2, so 2 splits expected"
+      - "`T(n) ≤ T(3n/4) + O(n) = O(n)`"
+  - topic: "Week 4 · Selection, matrices and the FFT"
+    ask: |-
+      Multiply `A(x) = 1 + 2x` and `B(x) = 3 + x` using the FFT.
+      Choose an appropriate power of two, evaluate both polynomials at the roots of unity, multiply pointwise, and use the inverse FFT to recover the coefficients.
+    answer: |-
+      The product has degree 2, so it needs 3 coefficients. The smallest power of two that is at least 3 is `n = 4`. Use `ω = i`, so the points are `1, i, −1, −i`.
+      `A = (1, 2, 0, 0)`: `A(1) = 3`, `A(i) = 1 + 2i`, `A(−1) = −1`, `A(−i) = 1 − 2i`.
+      `B = (3, 1, 0, 0)`: `B(1) = 4`, `B(i) = 3 + i`, `B(−1) = 2`, `B(−i) = 3 − i`.
+      Pointwise: `C(1) = 12`, `C(i) = (1 + 2i)(3 + i) = 1 + 7i`, `C(−1) = −2`, `C(−i) = 1 − 7i`.
+      Inverse FFT: `c_k = (1/4) Σⱼ C(ω^j)·ω^(−jk)`, which is the FFT with `ω⁻¹ = −i`, divided by 4.
+      `c₀ = (12 + 1 + 7i − 2 + 1 − 7i)/4 = 3`. `c₁ = (12 + (7 − i) + 2 + (7 + i))/4 = 7`.
+      `c₂ = (12 − (1 + 7i) − 2 − (1 − 7i))/4 = 2`. `c₃ = (12 + (i − 7) + 2 + (−7 − i))/4 = 0`.
+      `C(x) = 3 + 7x + 2x²`. Check: `(1 + 2x)(3 + x) = 3 + x + 6x + 2x²`.
+    rubric:
+      - "`n = 4`, justified by the product having degree 2"
+      - "Correct values of A and B at `1, i, −1, −i`"
+      - "Correct pointwise products"
+      - "Inverse uses `ω⁻¹` (or the conjugate) and divides by `n`"
+      - "Final `3 + 7x + 2x²`"
+  - topic: "Week 5 · Dynamic programming, part I"
+    ask: |-
+      Find a longest increasing subsequence of `[5, 2, 8, 6, 3, 6, 9, 7]` by dynamic programming.
+      Define the subproblem, give the recurrence, fill the table, and recover one optimal subsequence.
+    answer: |-
+      Subproblem: `L(j)` is the length of the longest increasing subsequence that **ends at** position `j`.
+      Recurrence: `L(j) = 1 + max{ L(i) : i < j and a_i < a_j }`, or `L(j) = 1` if there is no such `i`.
+      Table, for positions 0 to 7: `L = [1, 1, 2, 2, 2, 3, 4, 4]`.
+      For example, `L(5) = 3` for the second 6, via 2 then 3. `L(6) = 4` for the 9, via that 6.
+      The answer is `max L(j) = 4`, not `L(n−1)`, because the best subsequence need not end at the last element. (Here it happens to tie.)
+      Follow `prev` back from the 9: `9 ← 6 ← 3 ← 2`, giving `2, 3, 6, 9`. (`2, 3, 6, 7` is also optimal.)
+      Time `O(n²)`: `n` entries, each looking back over at most `n` earlier ones.
+    rubric:
+      - "Subproblem defined as ending at `j`"
+      - "Correct recurrence"
+      - "Correct table `[1, 1, 2, 2, 2, 3, 4, 4]`"
+      - "Answer is the maximum over all `L(j)`, length 4"
+      - "Recovers a valid subsequence, such as `2, 3, 6, 9`"
+  - topic: "Week 5 · Dynamic programming, part I"
+    ask: |-
+      Compute the edit distance between `LOVE` and `MOVIE`.
+      Give the recurrence and base cases, fill the table, and show an optimal alignment.
+    answer: |-
+      `E(i, j)` is the edit distance between the first `i` letters of `x = LOVE` and the first `j` letters of `y = MOVIE`.
+      `E(i, j) = min{ E(i−1, j) + 1, E(i, j−1) + 1, E(i−1, j−1) + diff(i, j) }`, where `diff` is 0 if `x_i = y_j` and 1 otherwise.
+      Base cases: `E(i, 0) = i` and `E(0, j) = j`.
+      Rows `i = 0` to `4`, columns `j = 0` to `5`:
+      `0 1 2 3 4 5` / `1 1 2 3 4 5` / `2 2 1 2 3 4` / `3 3 2 1 2 3` / `4 4 3 2 2 2`.
+      `E(4, 5) = 2`.
+      Alignment `L O V − E` over `M O V I E`: one substitution (L→M) and one insertion (I), which costs 2.
+      Time `O(mn)` for the `(m+1) × (n+1)` table.
+    rubric:
+      - "Defines `E(i, j)` on prefixes"
+      - "Correct three-way recurrence with `diff`"
+      - "Correct base cases"
+      - "Final answer 2"
+      - "A valid alignment of cost 2"
+  - topic: "Week 6 · Dynamic programming, part II"
+    ask: |-
+      A knapsack has capacity `W = 6`. Item A has weight 2 and value 3, item B has weight 3 and value 5, and item C has weight 4 and value 6.
+      (a) Find the best value **with repetition**. Give the recurrence and the values `K(0)` to `K(6)`.
+      (b) Find the best value **without repetition**. Give the recurrence and the final table row.
+      (c) Explain why the answers differ, and why `O(nW)` is not polynomial time.
+    answer: |-
+      (a) `K(w) = max{ K(w − wᵢ) + vᵢ : wᵢ ≤ w }`, with `K(0) = 0`.
+      `K(0..6) = 0, 0, 3, 5, 6, 8, 10`. For example, `K(6) = max(K(4) + 3, K(3) + 5, K(2) + 6) = max(9, 10, 9) = 10`, which is B twice.
+      (b) `K(w, j) = max{ K(w, j−1), K(w − w_j, j−1) + v_j }`. Use `j − 1` in the second term so that item `j` cannot be taken twice.
+      Rows after A: `0 0 3 3 3 3 3`. After B: `0 0 3 5 5 8 8`. After C: `0 0 3 5 6 8 9`.
+      Best value 9, from A + C, which weighs 6.
+      (c) With repetition, B can be packed twice (weight 6, value 10). Without repetition that is not allowed, and the best single-use packing is A + C.
+      `O(nW)` is pseudo-polynomial: `W` takes only `log W` bits to write, so the running time is exponential in the input size.
+    rubric:
+      - "Recurrence with repetition"
+      - "`K(6) = 10` (B + B), with correct intermediate values"
+      - "0/1 recurrence using `j − 1`"
+      - "0/1 answer 9 (A + C)"
+      - "Explains the difference, and why `O(nW)` is pseudo-polynomial"
+  - topic: "Week 6 · Dynamic programming, part II"
+    ask: |-
+      Matrices `A` (10 × 20), `B` (20 × 5) and `C` (5 × 30) are to be multiplied.
+      (a) Compute the number of scalar multiplications for `(AB)C` and for `A(BC)`. Which is cheaper?
+      (b) Give the chain-multiplication recurrence `C(i, j)` for `n` matrices and its running time.
+    answer: |-
+      Multiplying a `p × q` matrix by a `q × r` matrix costs `pqr` scalar multiplications.
+      (a) `(AB)C`: `AB` costs `10·20·5 = 1000` and gives a 10 × 5 matrix. Multiplying by `C` costs `10·5·30 = 1500`. Total **2500**.
+      `A(BC)`: `BC` costs `20·5·30 = 3000` and gives a 20 × 30 matrix. Multiplying by `A` costs `10·20·30 = 6000`. Total **9000**.
+      `(AB)C` is cheaper, by a factor of 3.6.
+      (b) With `Aᵢ` of size `m_(i−1) × mᵢ`: `C(i, i) = 0`, and `C(i, j) = min over i ≤ k < j of { C(i, k) + C(k+1, j) + m_(i−1)·m_k·m_j }`.
+      Fill the table in order of increasing `j − i`. There are `O(n²)` subproblems, each trying `O(n)` split points, so the time is `O(n³)`.
+    rubric:
+      - "`(AB)C` = 1000 + 1500 = 2500"
+      - "`A(BC)` = 3000 + 6000 = 9000"
+      - "Recurrence over the split point `k` with cost `m_(i−1)·m_k·m_j`"
+      - "`O(n³)`, filling by increasing length"
+  - topic: "Week 6 · Dynamic programming, part II"
+    ask: |-
+      A tree has root `r` with children `a` and `b`. Node `a` has children `c` and `d`, and node `b` has child `e`.
+      Use dynamic programming to find the size of the largest independent set. Give the recurrence and the value at each node.
+    answer: |-
+      `I(u) = max{ 1 + Σ I(grandchildren of u), Σ I(children of u) }`: either take `u` and skip its children, or leave `u` out.
+      Leaves: `I(c) = I(d) = I(e) = 1`.
+      `I(a) = max(1 + 0, I(c) + I(d)) = max(1, 2) = 2`.
+      `I(b) = max(1 + 0, I(e)) = 1`.
+      `I(r) = max(1 + I(c) + I(d) + I(e), I(a) + I(b)) = max(4, 3) = 4`.
+      The set is `{r, c, d, e}`. Process the nodes from the leaves up. Each node is touched a constant number of times, so the time is `O(|V| + |E|)`.
+    rubric:
+      - "Take-it-or-leave-it recurrence (grandchildren against children)"
+      - "Correct values bottom-up: leaves 1, `I(a) = 2`, `I(b) = 1`"
+      - "`I(r) = 4`, with set `{r, c, d, e}`"
+  - topic: "Week 7 · Greedy algorithms and minimum spanning trees"
+    ask: |-
+      An undirected graph has edges `A–B 1`, `C–D 2`, `A–C 3`, `B–C 4`, `B–D 5`, `C–E 6` and `D–E 7`.
+      (a) Run Kruskal's algorithm. For each edge, say whether it is added and why.
+      (b) Run Prim's algorithm from `A`, listing the edges in the order they are added.
+      (c) Give the total weight, and the running time of Kruskal with union–find.
+    answer: |-
+      (a) Sorted: `AB 1`, `CD 2`, `AC 3`, `BC 4`, `BD 5`, `CE 6`, `DE 7`.
+      `AB`: A and B are in different components, so add it. `CD`: add it. `AC`: this joins `{A, B}` and `{C, D}`, so add it.
+      `BC`: `find(B) = find(C)`, so it would make a cycle; skip. `BD`: skip, for the same reason.
+      `CE`: E is still alone, so add it. Now there are 4 edges for 5 vertices, so stop. (`DE` would close a cycle.)
+      (b) Prim from A: `AB 1`, then `AC 3`, then `CD 2`, then `CE 6`. Each step takes the lightest edge leaving the tree so far.
+      (c) Total weight `1 + 2 + 3 + 6 = 12`. Both algorithms find the same tree.
+      Kruskal: sorting costs `O(m log n)`, and the finds and unions cost `O(m log n)` with union by rank, so `O(m log n)` overall.
+    rubric:
+      - "Kruskal processes edges in sorted order"
+      - "Adds AB, CD, AC, CE and rejects BC, BD as cycles"
+      - "Prim order `AB, AC, CD, CE`"
+      - "Total weight 12"
+      - "Kruskal `O(m log n)` with union–find"
+  - topic: "Week 7 · Greedy algorithms and minimum spanning trees"
+    ask: |-
+      (a) State the cut property, and use it to explain why Prim's algorithm is correct.
+      (b) With coins of value 1, 3 and 4, show that the greedy rule "take the biggest coin that fits" does not always use the fewest coins.
+    answer: |-
+      (a) Cut property: suppose the edges `X` are part of some MST, and the cut `(S, V − S)` has no edge of `X` crossing it. Then the lightest edge `e` crossing the cut can be added: `X ∪ {e}` is also part of some MST.
+      Prim: let `S` be the tree built so far. No tree edge crosses `(S, V − S)`, and Prim adds the lightest edge that does. So by the cut property every step keeps the edges inside some MST, and the final tree is an MST.
+      (b) To make 6: greedy takes 4, then 1, then 1, which is 3 coins. The optimum is 3 + 3, which is 2 coins.
+      Greedy is right only when the problem has a property like the cut property that makes the locally best choice safe. Coin systems like `{1, 3, 4}` don't, which is why change-making in general needs dynamic programming.
+    rubric:
+      - "Correct statement of the cut property, including that `X` doesn't cross the cut"
+      - "Applies it to Prim, with `S` being the current tree"
+      - "Counterexample: 6 = 4 + 1 + 1 (3 coins) against 3 + 3 (2 coins)"
 ---
 98 multiple-choice questions across all seven weeks. The paper is divided into sections, and nothing is revealed until you
 submit: pick an answer for each question (you can change it as often as you like), then submit a
@@ -1640,3 +1933,7 @@ section to see your score for it, the correct answers, an explanation for each o
 worked solution. You can submit one section at a time, in any order, or the whole exam at once.
 
 There is no penalty for a wrong answer. Questions you leave blank in a section you submit count as wrong.
+
+Part 2, below the multiple-choice paper, has 18 short-answer questions in the style of the
+assignments: write out the working, then check it against a model answer and mark yourself with the
+rubric. On the real midterm you may bring one handwritten, double-sided reference sheet for this part.

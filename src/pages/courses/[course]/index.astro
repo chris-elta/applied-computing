@@ -1,7 +1,7 @@
 ---
 import Base from '../../../layouts/Base.astro';
 import CourseProgress from '../../../components/CourseProgress';
-import { getCourses, getSteps, getExam, groupIntoSections, conceptPath, examPath, withBase, type Step, type Course } from '../../../lib/course';
+import { getCourses, getSteps, getExams, examSlug, groupIntoSections, conceptPath, examPath, withBase, type Step, type Course } from '../../../lib/course';
 import { splitInline } from '../../../lib/inline-code';
 
 export async function getStaticPaths() {
@@ -18,7 +18,7 @@ interface Props { course: Course; steps: Step[] }
 
 const { course, steps } = Astro.props;
 const sections = groupIntoSections(course, steps);
-const exam = await getExam(course);
+const exams = await getExams(course);
 const withQuestions = steps.filter((s) => s.concept.data.questions.length > 0).length;
 const highlighted = steps.filter((s) => s.concept.data.highlight).length;
 const assessed = steps.filter((s) => s.concept.data.assessed.length > 0).length;
@@ -53,7 +53,11 @@ const assessed = steps.filter((s) => s.concept.data.assessed.length > 0).length;
     {steps.length > 0 && (
       <a class="btn btn--primary" href={conceptPath(course.id, 1)}>Start the course →</a>
     )}
-    {exam && <a class="btn" href={examPath(course.id)}>Take the exam ({exam.data.questions.length} questions)</a>}
+    {exams.map((exam) => (
+      <a class="btn" href={examPath(course.id, examSlug(course, exam))}>
+        {exams.length === 1 ? 'Take the exam' : `Take the ${exam.data.title.split(' · ').pop()}`} ({exam.data.questions.length} questions)
+      </a>
+    ))}
   </div>
 
   <div class="contents shell">

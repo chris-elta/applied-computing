@@ -105,10 +105,23 @@ export const conceptPath = (courseId: string, number: number) => withBase(`/cour
 
 export type Exam = CollectionEntry<'exams'>;
 
-/** The course's exam, if it has one. Exam files are named after the course id. */
-export async function getExam(course: Course): Promise<Exam | undefined> {
+/**
+ * Every exam for a course, main paper first. The main paper is the file named after the
+ * course id; further papers live in a folder of that name (`exams/<course-id>/<slug>.md`).
+ */
+export async function getExams(course: Course): Promise<Exam[]> {
   const exams = await getCollection('exams', ({ data }) => data.course.id === course.id);
-  return exams[0];
+  return exams.sort((a, b) => Number(b.id === course.id) - Number(a.id === course.id) || a.id.localeCompare(b.id));
 }
 
-export const examPath = (courseId: string) => withBase(`/courses/${courseId}/exam`);
+/** The course's main exam, if it has one. */
+export async function getExam(course: Course): Promise<Exam | undefined> {
+  return (await getExams(course))[0];
+}
+
+/** URL segment after `/exam`: none for the main paper, the file's name for the rest. */
+export const examSlug = (course: Course, exam: Exam) =>
+  exam.id === course.id ? undefined : exam.id.replace(`${course.id}/`, '');
+
+export const examPath = (courseId: string, slug?: string) =>
+  withBase(`/courses/${courseId}/exam${slug ? `/${slug}` : ''}`);

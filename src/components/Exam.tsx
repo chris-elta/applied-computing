@@ -21,6 +21,8 @@ type Question = { ask: string; choices: Choice[]; work?: string; topic?: string 
 
 type Props = {
   courseId: string;
+  /** Keys saved progress, so two papers in one course don't share it. Defaults to the course id. */
+  examId?: string;
   courseTitle: string;
   title: string;
   skillHref: string;
@@ -36,13 +38,13 @@ type Props = {
  * on its own: that section is marked and opened up for review while the rest
  * stay live. The paper's score counts once every section is in.
  */
-export default function Exam({ courseId, courseTitle, title, skillHref, minutes, passMark, questions }: Props) {
+export default function Exam({ courseId, examId = courseId, courseTitle, title, skillHref, minutes, passMark, questions }: Props) {
   const [picked, setPicked] = useState<Record<number, number>>({});
   /** Indices of the sections submitted so far. */
   const [done, setDone] = useState<number[]>([]);
   const [best, setBest] = useState<number | null>(null);
 
-  useEffect(() => setBest(getExamBest(courseId)), [courseId]);
+  useEffect(() => setBest(getExamBest(examId)), [examId]);
 
   const sections = groupByTopic(questions);
   const sectioned = sections.length > 1;
@@ -64,7 +66,7 @@ export default function Exam({ courseId, courseTitle, title, skillHref, minutes,
     setDone(next);
     if (next.length === sections.length) {
       const right = countRight(questions.map((_, i) => i));
-      setBest(saveExamScore(courseId, Math.round((right / questions.length) * 100)));
+      setBest(saveExamScore(examId, Math.round((right / questions.length) * 100)));
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (which.length === 1) {
       document.getElementById(`s${which[0] + 1}`)?.scrollIntoView({ behavior: 'smooth' });

@@ -1,0 +1,64 @@
+---
+import { render } from 'astro:content';
+import Base from '../../../../layouts/Base.astro';
+import Exam from '../../../../components/Exam';
+import Written from '../../../../components/Written';
+import { groupByTopic } from '../../../../lib/exam-sections';
+import { shuffleChoices } from '../../../../lib/shuffle-choices';
+import { getCourses, getExams, examSlug, coursePath, withBase, type Course, type Exam as ExamEntry } from '../../../../lib/course';
+
+export async function getStaticPaths() {
+  const courses = await getCourses();
+  const paths = [];
+  for (const course of courses) {
+    for (const exam of await getExams(course)) {
+      paths.push({ params: { course: course.id, slug: examSlug(course, exam) }, props: { course, exam } });
+    }
+  }
+  return paths;
+}
+
+interface Props { course: Course; exam: ExamEntry }
+
+const { course, exam } = Astro.props;
+const { Content } = await render(exam);
+const { title, minutes, passMark, questions, written } = exam.data;
+const sections = groupByTopic(questions).length;
+---
+
+<Base title={`${title} · ${course.data.title}`} description={`Exam for ${course.data.title}`}>
+  <article class="examhead shell">
+    <p class="eyebrow"><a href={coursePath(course.id)}>{course.data.title}</a></p>
+    <h1>{title}</h1>
+    <p class="examhead__facts">
+      {questions.length}{written.length > 0 ? ' multiple-choice' : ''} questions{written.length > 0 && ` · ${written.length} short-answer`}{sections > 1 && ` · ${sections} sections`} · {passMark}% to pass{minutes && ` · about ${minutes} minutes`}
+    </p>
+    <div class="prose"><Content /></div>
+    <Exam client:load courseId={course.id} examId={exam.id} courseTitle={course.data.title} title={title}
+      skillHref={withBase('/skills/review-exam-results/SKILL.md')} minutes={minutes} passMark={passMark} questions={shuffleChoices(questions)} />
+    {written.length > 0 && (
+      <section class="examhead__part" id="part-2">
+        <p class="eyebrow">Part 2</p>
+        <h2>Short answer</h2>
+        <p>
+          Write each answer as you would on paper, then check it: the model answer appears, and you tick the
+          marking points your answer made. These marks are your own estimate and don't count towards the score above.
+        </p>
+        <Written client:load courseId={course.id} examId={exam.id} courseTitle={course.data.title} title={title}
+          skillHref={withBase('/skills/review-exam-results/SKILL.md')} questions={written} />
+      </section>
+    )}
+  </article>
+</Base>
+
+<style>
+  .examhead { padding: 3rem 1.25rem 4rem; max-width: 46rem; margin-inline: auto; }
+  .examhead .eyebrow a { color: inherit; text-decoration: none; }
+  .examhead .eyebrow a:hover { color: var(--accent); }
+  .examhead h1 { margin: 0.4rem 0 0.5rem; }
+  .examhead__facts { margin: 0 0 1.25rem; font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink-faint); }
+  .examhead .prose { margin-bottom: 1.75rem; }
+  .examhead__part { margin-top: 4rem; padding-top: 2rem; border-top: 2px solid var(--line-strong); }
+  .examhead__part h2 { margin: 0.4rem 0 0.5rem; }
+  .examhead__part > p:not(.eyebrow) { color: var(--ink-soft); margin: 0 0 1.5rem; }
+</style>

@@ -68,3 +68,34 @@
 
 .exam__actions { display: flex; justify-content: center; gap: 0.75rem; flex-wrap: wrap; }
 .exam__tutor { margin: 1rem 0 0; font-size: 0.85rem; color: var(--ink-soft); }
+
+/* Short-answer part */
+.written__status { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem 1rem; margin-bottom: 1rem; }
+.written__status .exam__status { margin: 0; }
+.written__tutor { margin: 0 0 1.5rem; }
+.written .exam__sectionhead h3 { margin: 0; }
+.written .quiz__ask + .quiz__ask { margin-top: -0.35rem; font-weight: 400; }
+.written__answer {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  resize: vertical;
+}
+.written__answer:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.written__answer[readonly] { background: var(--bg-sunken); }
+.written__actions { margin-top: 0.75rem; }
+.written__label { margin: 0 0 0.4rem; font-size: 0.72rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-faint); }
+.written__model { margin-top: 1rem; padding-left: 0.75rem; border-left: 2px solid var(--accent); font-size: 0.88rem; color: var(--ink-soft); }
+.written__model ol { margin: 0; padding-left: 1.3rem; display: flex; flex-direction: column; gap: 0.35rem; }
+.written__rubric { margin: 1rem 0 0; padding: 0.75rem 0.9rem; border: 1px solid var(--line); border-radius: var(--radius); }
+.written__rubric legend { padding: 0 0.3rem; }
+.written__rubric label { display: flex; align-items: flex-start; gap: 0.6rem; padding: 0.25rem 0; font-size: 0.9rem; cursor: pointer; }
+.written__rubric input { margin-top: 0.25rem; accent-color: var(--accent); }

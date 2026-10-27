@@ -175,7 +175,9 @@ const concepts = defineCollection({
 });
 
 /**
- * A course's exam: one file per course, the filename matching the course id.
+ * A course's exams. The main paper is named after the course id; further papers sit
+ * in a folder of that name (`exams/<course-id>/<slug>.md`) and are served at
+ * `/courses/<course-id>/exam/<slug>`.
  * Unlike a concept's knowledge check, nothing is revealed until the learner
  * submits, and the whole paper is scored. The body is the instructions.
  */
@@ -197,6 +199,23 @@ const exams = defineCollection({
         topic: z.string().optional(),
       }),
     ).min(1),
+    /**
+     * Short-answer questions, shown as Part 2 below the multiple-choice paper.
+     * Nothing can mark free text, so the learner writes an answer, reveals the
+     * model answer, and ticks off the rubric points they made.
+     */
+    written: z.array(
+      z.object({
+        /** Groups questions into sections, as for `questions`. */
+        topic: z.string().optional(),
+        /** The prompt. Each line is its own paragraph, so parts (a), (b) can sit on separate lines. */
+        ask: z.string(),
+        /** The model answer, one step per line (use a `|-` block). Same inline markup as `work`. */
+        answer: z.string(),
+        /** What a full-marks answer must contain, one mark per point. */
+        rubric: z.array(z.string()).min(1),
+      }),
+    ).default([]),
   }),
 });
 
