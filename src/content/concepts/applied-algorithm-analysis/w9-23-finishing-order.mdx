@@ -1,0 +1,135 @@
+---
+course: applied-algorithm-analysis
+section: w9-topo
+order: 1720
+title: Topological Sort by Finishing Order
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week9.html?hash=true#/60
+    caption: Slides 61–63 of 66 — the finishing-order idea, TopoSort with DFS-Topo, and a run with outer loop v, t, s, w (press Play on slide 63).
+notation:
+  - symbol: curLabel
+    reads: cur label, the current label
+    means: >-
+      The next position to hand out. It starts at `|V|` and counts down, so positions are
+      filled from right to left.
+  - symbol: "|V|"
+    reads: the size of V
+    means: The number of vertices, `n`.
+  - symbol: "f(x) := curLabel"
+    reads: f of x becomes cur label
+    means: Give `x` the current position — done when `x`'s call finishes.
+  - symbol: finishing order
+    reads: finishing order
+    means: The order in which DFS calls return. The first to finish takes the last position.
+questions:
+  - ask: >-
+      A student numbers the vertices of a DAG `1, 2, 3, …` in the order DFS **marks** them.
+      Why is that not a topological ordering in general?
+    choices:
+      - text: A vertex can be marked before a vertex that must come before it
+        correct: true
+        explains: >-
+          In the slide's run, `v` is marked first — before `s`, which has an edge `s → v`.
+          Marking order depends on where the outer loop happens to start. Finishing order does
+          not have this problem.
+      - text: It is a topological ordering, just numbered left to right instead of right to left
+        explains: >-
+          The direction is not the issue. In the example the marking order is `v, t, s, w`,
+          and the edge `s → v` points backward in it, whichever way you number.
+      - text: DFS marks vertices at random, so the order is not reproducible
+        explains: >-
+          DFS is deterministic given the adjacency lists and outer-loop order. The problem is
+          that marking order does not respect the edges.
+  - ask: >-
+      In DFS-Topo, why do lines 10–11 (assign `f(x)`, then decrement `curLabel`) come
+      **after** the loop over `x`'s outgoing edges?
+    choices:
+      - text: >-
+          So that `x` is numbered only after everything it points to has finished and taken
+          a later position
+        correct: true
+        explains: >-
+          Every recursive call made from `x` returns before line 10 runs, so every vertex `x`
+          can reach already holds a larger number. `x` then takes the largest position still
+          free, which is before all of them.
+      - text: Because the label must be assigned before `curLabel` changes
+        explains: >-
+          That explains why line 10 comes before line 11, not why both come after the loop.
+          The point is *when* `x` is numbered relative to its descendants.
+      - text: It makes no difference; they could go before the loop
+        explains: >-
+          Before the loop, `x` would be numbered before the vertices it points to, taking a
+          larger position than them — so every edge out of `x` would point backward.
+---
+
+The sink argument builds an ordering from right to left: find a vertex with nothing left
+after it, put it last, repeat. DFS finds such vertices without searching for them.
+
+## The idea
+
+A DFS call **finishes** when it returns — after every call it made has returned. In a DAG,
+a vertex's call can finish only after every vertex it can reach has finished. So the
+*first* vertex to finish has nothing left after it: it can take the **last** position. The
+next to finish takes the position before that, and so on.
+
+> **Common mistake:** numbering vertices in the order DFS *marks* them. A vertex can be
+> marked before the vertices that point to it.
+
+## The algorithm
+
+```
+TopoSort(G)
+1   mark all vertices as unexplored
+2   curLabel := |V|                  // keeps track of ordering
+3   for every u ∈ V do
+4       if u is unexplored then
+5           DFS-Topo(G, u)
+
+DFS-Topo(G, x)
+6   mark x as explored
+7   for each edge (x, y) in x's outgoing list do
+8       if y is unexplored then
+9           DFS-Topo(G, y)
+10  f(x) := curLabel                 // position of x
+11  curLabel := curLabel − 1         // right to left
+```
+
+Lines 1–5 are the same outer loop as UCC: start a search at every vertex no earlier search
+reached. DFS-Topo is recursive DFS plus lines 10–11, which run as the call finishes. The
+marks and `curLabel` are shared by every call.
+
+## A run
+
+The graph `s → v`, `s → w`, `v → t`, `w → t`, with the outer loop visiting `v, t, s, w`:
+
+| event | `curLabel` after | positions so far |
+| --- | --- | --- |
+| outer loop: `v` unexplored → call `v`; `v → t`, call `t` | 4 | — |
+| `t` has no outgoing edges → finishes: `f(t) = 4` | 3 | `_ _ _ t` |
+| back in `v`, nothing left → finishes: `f(v) = 3` | 2 | `_ _ v t` |
+| outer loop: `t` explored, skip; `s` unexplored → call `s` | 2 | |
+| `s → v`: explored, skip. `s → w`: call `w`; `w → t` explored | 2 | |
+| `w` finishes: `f(w) = 2` | 1 | `_ w v t` |
+| `s` finishes: `f(s) = 1` | 0 | `s w v t` |
+| outer loop: `w` explored, skip | | |
+
+Result: **`s, w, v, t`**. Check every edge: `s → v` is 1 < 3, `s → w` is 1 < 2, `v → t` is
+3 < 4, `w → t` is 2 < 4. All forward.
+
+The marking order was `v, t, s, w`. Numbered that way, `s → v` would point backward — the
+common mistake, made concrete. The outer loop did not have to start at a source; even
+starting at `v`, finishing order came out right.
+
+## Cost
+
+One call per vertex, one scan per outgoing edge, constant extra work per call:
+**`O(m + n)`**. This is recursive DFS. The simple vertex-stack DFS from earlier has no
+"call returns" moment, so it cannot supply finishing order without storing explicit call
+frames.
+
+On a graph with a cycle, the code still hands out numbers, but they are not a topological
+ordering. Detecting an edge to a call that is still active is one way to reject the input.
+
+> Run DFS from every unexplored vertex and number each vertex as its call finishes, counting
+> down from `n`. Finishing order, not marking order, is the topological order.

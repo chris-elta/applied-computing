@@ -1,7 +1,7 @@
 ---
 course: applied-algorithm-analysis
 title: "Applied Algorithm Analysis · Final Exam"
-minutes: 140
+minutes: 160
 passMark: 60
 questions:
   - topic: "Week 1 · Big-O and growth"
@@ -1633,6 +1633,230 @@ questions:
       Even coefficients `a₀ = 2, a₂ = 3`: `E(y) = 2 + 3y`. Odd coefficient `a₁ = −1`: `O(y) = −1`.
       At `x = −1`, `x² = 1`: `A(−1) = E(1) + (−1)·O(1) = 5 + 1 = 6`.
       Direct check: `2 − (−1) + 3(−1)² = 2 + 1 + 3 = 6`.
+  - topic: "Week 9 · Graph search and topological order"
+    ask: "An undirected graph has 10 000 vertices and 20 000 edges. Roughly how much storage does each representation use?"
+    choices:
+      - text: "Adjacency lists: about 50 000 slots (10 000 heads + 40 000 entries). Matrix: 100 000 000 cells"
+        correct: true
+        explains: "Lists cost `n + 2m` for an undirected graph, since each edge appears in both endpoints' lists. The matrix costs `n²` whatever `m` is."
+      - text: "Adjacency lists: about 20 000 entries. Matrix: about 20 000 nonzero cells, so roughly the same"
+        explains: "The matrix stores every cell, zero or not, so its size is `n²`. And the lists hold each undirected edge twice, plus a head for every vertex."
+      - text: "Adjacency lists: about 30 000 slots. Matrix: about 40 000 cells"
+        explains: "`n + m` undercounts the list entries (each undirected edge appears twice), and the matrix is `n × n`, not `2m`."
+      - text: "Both about 100 000 000, since both must be able to hold any possible edge"
+        explains: "Lists store only the edges that exist. That is the point of them: `Θ(n + m)` against `Θ(n²)`."
+    work: |-
+      Lists: `n` heads + `2m` entries = 10 000 + 40 000 = 50 000.
+      Matrix: `n² = 10 000² = 100 000 000` cells, almost all of them 0.
+  - topic: "Week 9 · Graph search and topological order"
+    ask: "A simple undirected graph has five vertices with degrees 3, 3, 2, 2 and 2. How many edges does it have?"
+    choices:
+      - text: "6"
+        correct: true
+        explains: "The degrees add to `2m`, because every edge has two ends and is counted once at each. `12 / 2 = 6`."
+      - text: "12"
+        explains: "That is the sum of the degrees, which counts each edge twice — once from each endpoint."
+      - text: "4"
+        explains: "That is `n − 1`, the fewest edges a connected graph on 5 vertices can have. The degrees fix `m` exactly, and here it is more."
+      - text: "It cannot be determined from the degrees alone"
+        explains: "The degrees determine `m` exactly through `Σ deg(v) = 2m`. They do not determine which edges, but the count is fixed."
+    work: |-
+      `Σ deg(v) = 3 + 3 + 2 + 2 + 2 = 12 = 2m`, so `m = 6`.
+      One such graph: A–B, A–C, A–D, B–C, B–E, D–E.
+  - topic: "Week 9 · Graph search and topological order"
+    ask: "A graph with a million vertices is stored as unsorted adjacency lists. Vertex `u` has degree 50. In the worst case, what does it cost to check whether `{u, v}` is an edge?"
+    choices:
+      - text: "Scanning `Adj[u]`: up to 50 entries, `O(1 + deg(u))`"
+        correct: true
+        explains: "With unsorted lists, the only way to find `v` is to walk `u`'s list. The cost depends on `u`'s degree, not on the size of the graph."
+      - text: "`O(1)`, one lookup"
+        explains: "That is the adjacency matrix's edge check. A plain list has no way to jump to `v`; a hash set of neighbors would give expected `O(1)`."
+      - text: "Up to a million steps, `O(n)`"
+        explains: "The scan covers `Adj[u]` only, which holds `deg(u)` entries. `n` is the cost of reading a *matrix row* to list neighbors."
+      - text: "About 6 steps, by binary search"
+        explains: "Binary search needs a sorted array. These lists are unsorted."
+    work: |-
+      The check walks `Adj[u]` looking for `v`: at most `deg(u) = 50` entries, plus constant setup.
+      Matrix: read cell `A_uv`, `O(1)`.
+  - topic: "Week 9 · Graph search and topological order"
+    ask: "A directed graph has edges `s → a`, `a → b`, `c → a`, `b → c` and `d → s`. Which vertices does a search from `s` mark as explored?"
+    choices:
+      - text: "`s`, `a`, `b` and `c`"
+        correct: true
+        explains: "`s → a → b → c` follows every arrow forwards. `d` cannot be reached: its only edge leaves `d`."
+      - text: "All five vertices"
+        explains: "That would be true if the edges were undirected. `d → s` can only be followed from `d`, and the search never stands at `d`."
+      - text: "`s`, `a` and `b` only"
+        explains: "`c → a` points the wrong way for reaching `c` from `a`, but `b → c` does not. Once `b` is explored, `b → c` is a crossing edge."
+      - text: "`s` and `a` only"
+        explains: "The loop continues while any edge crosses from explored to unexplored. After `a` is marked, `a → b` crosses."
+    work: |-
+      Explored `{s}` → edge `s → a` crosses → `{s, a}` → `a → b` → `{s, a, b}` → `b → c` → `{s, a, b, c}`.
+      Remaining edges: `c → a` (both explored), `d → s` (tail unexplored). No edge crosses, so the search stops.
+  - topic: "Week 9 · Graph search and topological order"
+    ask: "An undirected graph has edges `s–a`, `s–b`, `a–c`, `b–c`, `b–e`, `c–d` and `d–e`. After BFS from `s`, what is `l(d)`?"
+    choices:
+      - text: "3"
+        correct: true
+        explains: "Layer 1 is `a, b`; layer 2 is `c` and `e`; `d` is next to both of those and nothing earlier, so it is in layer 3."
+      - text: "4"
+        explains: "That counts the vertices on the path `s, a, c, d`. The label counts edges, and that path has three."
+      - text: "2"
+        explains: "`d` is not adjacent to `a` or `b`, so it cannot be in layer 2. Its neighbors `c` and `e` are in layer 2, which puts `d` one further out."
+      - text: "5"
+        explains: "That is the long path `s–a–c–b–e–d`, which a depth-first search might follow. BFS records the fewest edges."
+    work: |-
+      Layer 0: `s`. Layer 1: `a`, `b`. Layer 2: `c` (from `a`), `e` (from `b`).
+      Layer 3: `d` (neighbors `c`, `e`). So `l(d) = dist(s, d) = 3`, e.g. `s → a → c → d`.
+  - topic: "Week 9 · Graph search and topological order"
+    ask: "BFS runs on a **directed** graph with 20 vertices and 50 edges, stored as adjacency lists, and every vertex is reachable from `s`. How many times does the neighbor scan (line 5) run?"
+    choices:
+      - text: "50"
+        correct: true
+        explains: "Each vertex is removed once, so each outgoing list is walked once. A directed edge sits in one list — its tail's — so there is one scan per edge."
+      - text: "100"
+        explains: "`2m` is the count for an undirected graph, where each edge is stored in both endpoints' lists."
+      - text: "400"
+        explains: "`n²` is what a matrix would cost: a full row of 20 cells for each of 20 vertices. With lists, only the stored edges are read."
+      - text: "1000"
+        explains: "That is `n · m`, as if every vertex scanned every edge. Each vertex scans only its own list."
+    work: |-
+      Removals: `nₛ = 20`. Scans: one per outgoing-list entry, `mₛ = 50`.
+      Total `O(n + m)`; with a matrix it would be `20 × 20 = 400` cell reads.
+  - topic: "Week 9 · Graph search and topological order"
+    ask: "After BFS from `s`, the parents are `p: s`, `q: s`, `r: p`, `t: r`, `u: q`, and `parent[s] = NIL`. What shortest path does the walk-back procedure return for `t`?"
+    choices:
+      - text: "`s → p → r → t`"
+        correct: true
+        explains: "Walk back `t, r, p, s` until NIL, then reverse. Three edges, so `l(t) = 3`."
+      - text: "`t → r → p → s`"
+        explains: "That is the list before the final step. Parent pointers point toward `s`, so the list comes out backwards and must be reversed."
+      - text: "`s → q → u → t`"
+        explains: "The procedure follows `parent[t]`, which is `r`, not `u`. Nothing says `u` is even adjacent to `t`."
+      - text: "It cannot be recovered without the distance labels"
+        explains: "The parents alone suffice. Each pointer is one edge back toward `s`; the labels only tell you how long the result will be."
+    work: |-
+      `x = t` → list `[t]`, `x = r` → `[t, r]`, `x = p` → `[t, r, p]`, `x = s` → `[t, r, p, s]`, `x = NIL` → stop.
+      Reverse: `s → p → r → t`.
+  - topic: "Week 9 · Graph search and topological order"
+    ask: "An undirected graph has 12 vertices, 9 edges and **no cycles**. How many connected components does it have?"
+    choices:
+      - text: "3"
+        correct: true
+        explains: "Start from 12 isolated vertices. With no cycles, every edge joins two *different* pieces (an edge inside one piece would close a cycle), so each of the 9 edges removes exactly one piece."
+      - text: "1"
+        explains: "A connected graph on 12 vertices needs at least 11 edges. With 9, it cannot be in one piece."
+      - text: "9"
+        explains: "That is the edge count. In a graph with no cycles, the number of components is `n − m`."
+      - text: "It cannot be determined without the edges"
+        explains: "Without cycles it can. The no-cycle condition is what makes every edge merge two pieces."
+    work: |-
+      Each edge in a graph with no cycles merges two components.
+      `12` pieces − `9` merges = `3` components.
+  - topic: "Week 9 · Graph search and topological order"
+    ask: "UCC runs on the path `1–2–3`, but someone has deleted the test `if i is unexplored` on line 4, keeping everything else (marks are still global). What does it report?"
+    choices:
+      - text: "`numCC = 3`, with `cc(1) = 1`, `cc(2) = 2`, `cc(3) = 3` — three components for a connected graph"
+        correct: true
+        explains: "The first search labels all three vertices 1. Then `i = 2` starts a new 'component' anyway, removes 2 and overwrites `cc(2) = 2`, and `i = 3` does the same. Its neighbors are already marked, so nothing else changes."
+      - text: "`numCC = 1`, all labels 1 — the marks prevent any damage"
+        explains: "The marks stop vertices being re-queued by neighbors, but without line 4 each `i` is placed in the queue directly by the outer loop, and its label is overwritten."
+      - text: "It loops forever"
+        explains: "The outer loop has `n` iterations and each inner search ends when its queue empties. It terminates — with the wrong answer."
+      - text: "`numCC = 3`, but every label is still 1"
+        explains: "Line 10 writes `cc(v) := numCC` for each vertex removed from the queue, and each restart removes its own `i`. So the labels change too."
+    work: |-
+      `i = 1`: `numCC = 1`; BFS removes 1, 2, 3 → all `cc = 1`.
+      `i = 2`: `numCC = 2`; Q = [2]; remove 2 → `cc(2) = 2`; neighbors 1, 3 marked.
+      `i = 3`: `numCC = 3`; Q = [3]; remove 3 → `cc(3) = 3`.
+  - topic: "Week 9 · Graph search and topological order"
+    ask: "Recursive DFS starts at `s` on an undirected graph with `Adj[s] = a, b`, `Adj[a] = s, c`, `Adj[b] = s, c`, `Adj[c] = a, b, d`, `Adj[d] = c`. In what order are the vertices marked?"
+    choices:
+      - text: "`s, a, c, b, d`"
+        correct: true
+        explains: "From `s` dive into `a`, from `a` into `c`, from `c` into `b` (its first unexplored neighbor). `b` is a dead end, so return to `c`, which then reaches `d`."
+      - text: "`s, a, b, c, d`"
+        explains: "That is the BFS order: both neighbors of `s` first. DFS goes deep from `a` before it ever comes back to `b`."
+      - text: "`s, a, c, d, b`"
+        explains: "`c` scans its list in order `a, b, d`, so it calls `b` before `d`."
+      - text: "`s, b, c, a, d`"
+        explains: "That would follow the lists in reverse. `Adj[s]` lists `a` first, so the first call goes to `a`."
+    work: |-
+      DFS(s) → DFS(a) [s explored] → DFS(c) [a explored] → DFS(b) [s, c explored; return]
+      back in c → DFS(d) [c explored; return]. Marking order `s, a, c, b, d`.
+  - topic: "Week 9 · Graph search and topological order"
+    ask: "Iterative DFS (mark on pop) runs on a connected **undirected** graph with 7 vertices and 10 edges. What is the most pushes it can make?"
+    choices:
+      - text: "21"
+        correct: true
+        explains: "One push for `s`, then each vertex pushes its whole list on its first pop. The lists hold `2m = 20` entries, so `2m + 1 = 21`."
+      - text: "11"
+        explains: "`m + 1` is the bound for a directed graph. An undirected edge appears in two lists, so it can be pushed twice."
+      - text: "7"
+        explains: "That would be true if each vertex were pushed once, which is the mark-on-push rule. Iterative DFS pushes every neighbor, explored or not."
+      - text: "49"
+        explains: "Pushes come from list entries, not from pairs of vertices. `n²` would be the cost of reading a matrix."
+    work: |-
+      Pushes = 1 (for `s`) + Σ deg(v) = 1 + 2m = 1 + 20 = 21.
+  - topic: "Week 9 · Graph search and topological order"
+    ask: "A DAG has edges `a → b`, `a → c`, `a → d`, `b → e`, `c → e` and `d → e`. How many topological orderings does it have?"
+    choices:
+      - text: "6"
+        correct: true
+        explains: "`a` must be first and `e` last. No edges join `b`, `c` and `d`, so they fill the middle three positions in any of `3! = 6` orders."
+      - text: "1"
+        explains: "An algorithm returns one ordering, but the definition accepts every order that keeps all edges forward. Here the middle three are unconstrained."
+      - text: "3"
+        explains: "That counts which vertex goes second, but the other two can also be swapped: `3 × 2 × 1 = 6`."
+      - text: "24"
+        explains: "That is `4!`, which would let `e` move too. `e` has edges from `b`, `c` and `d`, so it must come after all of them."
+    work: |-
+      Positions: `a` = 1, `e` = 5. Middle: any permutation of `b, c, d` → `3! = 6`.
+  - topic: "Week 9 · Graph search and topological order"
+    ask: "TopoSort runs on the DAG `a → b`, `a → c`, `b → c`, `d → c`, with the outer loop and every outgoing list in alphabetical order. Reading by increasing `f`, what ordering does it return?"
+    choices:
+      - text: "`d, a, b, c`"
+        correct: true
+        explains: "`c` finishes first and takes position 4, then `b` (3), then `a` (2). The outer loop then reaches `d`, whose only edge goes to an explored vertex, so it finishes last and takes position 1."
+      - text: "`a, b, c, d`"
+        explains: "That is the marking order. The edge `d → c` points backward in it — the common mistake of numbering by marking instead of finishing."
+      - text: "`c, b, a, d`"
+        explains: "That is the order the calls finish. Positions are handed out counting down, so the first to finish goes *last*."
+      - text: "`a, b, d, c`"
+        explains: "This is a valid topological ordering, but not the one TopoSort produces here: `d` is called last, so it finishes last and gets position 1."
+    work: |-
+      curLabel = 4. DFS(a) → DFS(b) → DFS(c): c has no out-edges, `f(c) = 4`.
+      b finishes: `f(b) = 3`. Back in a, `c` explored: `f(a) = 2`.
+      Outer loop: b, c explored; DFS(d): `d → c` explored, `f(d) = 1`.
+      Order: d (1), a (2), b (3), c (4). Every edge points forward.
+  - topic: "Week 9 · Graph search and topological order"
+    ask: "A directed graph has edges `p → q`, `q → r`, `r → p` and `r → s`. How many topological orderings does it have?"
+    choices:
+      - text: "0"
+        correct: true
+        explains: "`p → q → r → p` is a directed cycle. Whichever of the three is placed last has an outgoing cycle edge pointing backward."
+      - text: "1, with `s` last"
+        explains: "`s` can go last, but the cycle among `p`, `q`, `r` still forces one backward edge, whatever their order."
+      - text: "1 — TopoSort always returns an ordering"
+        explains: "TopoSort always hands out numbers, but on a graph with a cycle they are not a topological ordering. The proof's Case 2 is what fails."
+      - text: "6, one for each order of `p`, `q`, `r`"
+        explains: "Try any of the six: the cycle edge leaving the last of the three always points back."
+    work: |-
+      Cycle `p → q → r → p`. In any order, the cycle vertex with the largest position has its cycle edge pointing to a smaller position.
+      A topological ordering exists iff the graph is a DAG, so there are none.
+  - topic: "Week 9 · Graph search and topological order"
+    ask: "A subway map is modelled as an undirected graph: stations are vertices, and adjacent stops on a line are joined by an edge. You want a route between two stations that passes through the fewest stops. What should you run?"
+    choices:
+      - text: "BFS from the start station, then follow parent pointers back from the destination"
+        correct: true
+        explains: "Every hop counts the same, so fewest stops is fewest edges — exactly what BFS layers measure. Parent pointers give the route itself."
+      - text: "DFS from the start, stopping the first time it reaches the destination"
+        explains: "DFS finds *a* route, but it may go deep through a long detour first. Its paths need not be shortest."
+      - text: "A topological sort of the stations"
+        explains: "Topological order needs a directed acyclic graph. A two-way subway network has no direction and plenty of cycles, and the order would not give a route anyway."
+    work: |-
+      Unweighted graph, cost = number of edges → BFS distances.
+      `l(destination)` is the number of hops; walking `parent` from the destination and reversing gives the route.
 written:
   - topic: "Week 1 · Big-O and growth"
     ask: |-
@@ -1926,14 +2150,57 @@ written:
       - "Correct statement of the cut property, including that `X` doesn't cross the cut"
       - "Applies it to Prim, with `S` being the current tree"
       - "Counterexample: 6 = 4 + 1 + 1 (3 coins) against 3 + 3 (2 coins)"
+  - topic: "Week 9 · Graph search and topological order"
+    ask: |-
+      An undirected graph has edges `s–a`, `s–b`, `a–c`, `b–c`, `b–d`, `c–e` and `d–e`. Adjacency lists are in alphabetical order.
+      (a) Run BFS from `s`. Give the order in which vertices leave the queue, and `l(v)` and `parent[v]` for every vertex.
+      (b) Recover a shortest path from `s` to `e`.
+      (c) State the running time with adjacency lists and with an adjacency matrix, and say why they differ.
+    answer: |-
+      (a) Remove `s`: discover `a`, `b` (`l = 1`, parent `s`). Queue `a, b`.
+      Remove `a`: discover `c` (`l = 2`, parent `a`); `s` is explored. Queue `b, c`.
+      Remove `b`: `c` explored; discover `d` (`l = 2`, parent `b`); `s` explored. Queue `c, d`.
+      Remove `c`: `a`, `b` explored; discover `e` (`l = 3`, parent `c`). Queue `d, e`.
+      Remove `d`, then `e`: nothing new.
+      Queue order `s, a, b, c, d, e`. Labels: `s 0, a 1, b 1, c 2, d 2, e 3`. Parents: `s NIL, a s, b s, c a, d b, e c`.
+      (b) Walk back: `e → c → a → s`, then reverse: `s → a → c → e`, three edges, matching `l(e) = 3`.
+      (c) Lists: `O(n + m)`. Each vertex is marked when it joins the queue, so it joins once, and each list is walked once: 6 removals and `2m = 14` scans.
+      Matrix: `Θ(n²)`. Finding a vertex's neighbors means reading its whole row of `n` cells: 6 rows × 6 cells = 36 reads.
+    rubric:
+      - "Correct queue order `s, a, b, c, d, e`"
+      - "Correct labels, including `l(e) = 3`, and parents including `parent[e] = c`"
+      - "Path `s → a → c → e`, obtained by walking back and reversing"
+      - "`O(n + m)` with lists, explained by one enqueue per vertex and one walk per list"
+      - "`Θ(n²)` with a matrix, because each vertex reads a full row"
+  - topic: "Week 9 · Graph search and topological order"
+    ask: |-
+      A DAG has edges `a → c`, `b → c`, `b → d`, `c → e` and `d → e`. TopoSort's outer loop visits `a, b, c, d, e`, and every outgoing list is alphabetical.
+      (a) Run TopoSort with DFS-Topo. Give the order in which calls finish, each vertex's `f` value, and the resulting ordering.
+      (b) Give the order in which the vertices are marked, and show that it is not a topological ordering.
+      (c) For an edge `(v, w)`, explain why `w` always finishes before `v`, and say where the proof needs the graph to be acyclic.
+    answer: |-
+      (a) `curLabel = 5`. DFS(a) → DFS(c) → DFS(e). `e` has no out-edges: `f(e) = 5`. `c` finishes: `f(c) = 4`. `a` finishes: `f(a) = 3`.
+      Outer loop: `b` unexplored → DFS(b). `b → c` explored; `b → d` → DFS(d). `d → e` explored: `f(d) = 2`. `b` finishes: `f(b) = 1`.
+      Finishing order `e, c, a, d, b`. Ordering by `f`: `b, d, a, c, e`. Check: `a → c` 3 < 4, `b → c` 1 < 4, `b → d` 1 < 2, `c → e` 4 < 5, `d → e` 2 < 5.
+      (b) Marking order `a, c, e, b, d`. The edge `b → c` has `b` in position 4 and `c` in position 2, so it points backward.
+      (c) Positions count down as calls finish, so `f(v) < f(w)` means `w` finishes first.
+      Case 1, `v` reached first: `w` is discovered during `v`'s call, either by `v` itself or by a deeper call, so `w`'s call is nested inside `v`'s and finishes first.
+      Case 2, `w` reached first: `w` cannot reach `v`, since a path from `w` to `v` plus the edge `(v, w)` would be a cycle. So `w`'s call never discovers `v`, and it finishes before `v` is discovered.
+      Acyclicity is used only in Case 2.
+    rubric:
+      - "Correct `f` values: `b 1, d 2, a 3, c 4, e 5`"
+      - "Ordering `b, d, a, c, e`, checked against every edge"
+      - "Marking order `a, c, e, b, d`, with a backward edge (`b → c`) named"
+      - "Case 1: nested call finishes first"
+      - "Case 2: `w` cannot reach `v` without a cycle; the DAG assumption is used here and only here"
 ---
-98 multiple-choice questions across all seven weeks. The paper is divided into sections, and nothing is revealed until you
+113 multiple-choice questions across all eight weeks. The paper is divided into sections, and nothing is revealed until you
 submit: pick an answer for each question (you can change it as often as you like), then submit a
 section to see your score for it, the correct answers, an explanation for each one you chose, and a
 worked solution. You can submit one section at a time, in any order, or the whole exam at once.
 
 There is no penalty for a wrong answer. Questions you leave blank in a section you submit count as wrong.
 
-Part 2, below the multiple-choice paper, has 18 short-answer questions in the style of the
+Part 2, below the multiple-choice paper, has 20 short-answer questions in the style of the
 assignments: write out the working, then check it against a model answer and mark yourself with the
 rubric. On the real midterm you may bring one handwritten, double-sided reference sheet for this part.

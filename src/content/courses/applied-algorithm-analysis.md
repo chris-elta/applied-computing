@@ -146,4 +146,33 @@ sections:
     summary: Two greedy rules, one answer, and where they differ on the way there.
   - id: w7-review
     title: Week 7 · Where we landed
+  - id: w9-graphs
+    title: Week 9 · Graphs and how to store them
+    summary: >-
+      Two lists, things and pairs of things, and two layouts for them whose costs differ by
+      more than a constant: `n²` cells against about `n + m`.
+  - id: w9-search
+    title: Week 9 · Reachability and the generic search
+    summary: >-
+      One loop that finds every reachable vertex, with one line deliberately left open.
+  - id: w9-bfs
+    title: Week 9 · Breadth-first search and shortest paths
+    summary: >-
+      Fill the open line with a queue: the graph comes out in layers, and the layers are the
+      distances.
+  - id: w9-components
+    title: Week 9 · Connected components
+    summary: >-
+      One search per piece, sharing its marks, and the whole graph still costs `O(m + n)`.
+  - id: w9-dfs
+    title: Week 9 · Depth-first search
+    summary: >-
+      Follow one path as far as it goes, then go back — with recursion, or with a stack and
+      one carefully placed mark.
+  - id: w9-topo
+    title: Week 9 · Topological ordering
+    summary: >-
+      Ordering tasks so every prerequisite comes first, and why DFS finishing order does it.
+  - id: w9-review
+    title: Week 9 · Where we landed
 ---

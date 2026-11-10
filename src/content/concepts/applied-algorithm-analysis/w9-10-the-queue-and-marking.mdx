@@ -1,0 +1,107 @@
+---
+course: applied-algorithm-analysis
+section: w9-bfs
+order: 1590
+title: The Queue, and Marking on the Way In
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week9.html?hash=true#/27
+    caption: Slides 28–30 of 66 — the queue, BFS pseudocode, and a step-by-step run (press Play on slide 30).
+notation:
+  - symbol: "Q"
+    reads: capital Q
+    means: >-
+      A queue: items join at the end and leave from the front, so whatever has waited
+      longest leaves first. First in, first out (FIFO).
+  - symbol: FIFO
+    reads: fife-oh, or first in first out
+    means: The queue's rule — the earliest arrival is the next to leave.
+  - symbol: discovered, processed
+    reads: discovered, processed
+    means: >-
+      Discovered: marked and placed in the queue. Processed: removed from the queue with its
+      adjacency list scanned.
+questions:
+  - ask: >-
+      A student moves "mark `w` as explored" from line 7 (when `w` joins the queue) to just
+      after line 4 (when `w` leaves it). What goes wrong?
+    choices:
+      - text: >-
+          A vertex can join the queue several times — once for each already-processed
+          neighbor that sees it still unmarked
+        correct: true
+        explains: >-
+          Between joining and leaving, a vertex is unmarked, so every neighbor that scans it
+          in that window adds it again. The queue fills with duplicates, and the bound
+          "each vertex joins once" is lost.
+      - text: Nothing — the vertex is marked eventually either way
+        explains: >-
+          It is, but too late. The mark is what stops duplicates, and in the gap between
+          joining and leaving other vertices can add it again.
+      - text: BFS would then explore unreachable vertices
+        explains: >-
+          Every vertex added is still a neighbor of an explored vertex, so it is still
+          reachable. The problem is duplicates, not wrong vertices.
+---
+
+BFS needs, at every step, *the vertex marked longest ago*. A **queue** hands that over in
+one step. Items join at one end and leave from the other, so the item that has waited
+longest is always the next out. Since all of layer 1 joins the queue before any of layer 2,
+all of layer 1 leaves before any of layer 2 — the queue produces the layers by itself.
+
+Queue operations must take `O(1)` time, which a linked queue or a circular buffer gives.
+
+## The pseudocode
+
+Input: a graph in adjacency-list form and a start vertex `s`.
+
+```
+1  mark s as explored, all other vertices as unexplored
+2  Q := a queue data structure, initialized with s
+3  while Q is not empty do
+4      remove the vertex from the front of Q, call it v
+5      for each neighbor w in Adj[v] do
+6          if w is unexplored then
+7              mark w as explored
+8              add w to the end of Q
+```
+
+| lines | what happens |
+| --- | --- |
+| 1–2 | `s` is marked and waits in the queue |
+| 4 | take the vertex that has waited longest |
+| 5–8 | each unexplored neighbor is marked and joins the queue |
+
+## Mark on the way in
+
+The important design choice is *where the mark goes*: line 7, at the moment a vertex
+**joins** the queue, not when it leaves.
+
+Suppose you marked on line 4 instead. A vertex that has joined the queue but not yet left
+is still unmarked, so every neighbor processed in the meantime sees it as unexplored and
+adds it again. In the run below, `c` is a neighbor of both `a` and `b`. Marking on entry,
+`a` adds `c`, and when `b` scans `c` it is already marked and skipped. Marking on exit, `b`
+would add `c` a second time.
+
+Marking on entry means **each reachable vertex joins the queue exactly once** — the fact
+the running-time count on the next page stands on.
+
+## Tracing it
+
+Slide 30 steps through the six-vertex graph, scanning neighbors alphabetically:
+
+| remove | scan | marked and queued | queue after |
+| --- | --- | --- | --- |
+| `s` | `a`, `b` | `a`, `b` | `a b` |
+| `a` | `c`, `s` | `c` (`s` skipped) | `b c` |
+| `b` | `c`, `d`, `s` | `d` | `c d` |
+| `c` | `a`, `b`, `d`, `e` | `e` | `d e` |
+| `d` | `b`, `c`, `e` | — | `e` |
+| `e` | `c`, `d` | — | empty |
+
+Marking order: `s, a, b, c, d, e`. Layer 0 is marked first, then all of layer 1, then all
+of layer 2. A different neighbor order can change the marking order within a layer, and
+which vertex discovers which, but never the layers themselves.
+
+> BFS is the generic search with a queue in the open line. Mark a vertex the moment it
+> joins the queue, and each reachable vertex is queued exactly once.

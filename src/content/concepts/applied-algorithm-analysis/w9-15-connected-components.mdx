@@ -1,0 +1,124 @@
+---
+course: applied-algorithm-analysis
+section: w9-components
+order: 1640
+title: Connected Components
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week9.html?hash=true#/38
+    caption: Slides 39–42 of 66 — the pieces of a graph, what "maximal" rules out, how many there can be, and the labelling problem.
+notation:
+  - symbol: connected component
+    reads: connected component
+    means: >-
+      A maximal set of vertices with a path between every two of them — one piece of an
+      undirected graph.
+  - symbol: maximal
+    reads: maximal
+    means: >-
+      Nothing more can be added. `{1, 3}` is connected but not maximal if 5 can join it and
+      keep it connected.
+  - symbol: UCC
+    reads: U C C, undirected connected components
+    means: The problem of labelling every vertex with its component.
+  - symbol: "cc(v)"
+    reads: c c of v
+    means: >-
+      The component number given to `v`. Two vertices get the same number exactly when they
+      are in the same component.
+questions:
+  - ask: >-
+      A graph has vertices 1 to 5 and edges `1–2`, `2–3` and `4–5`. Which of these is a
+      connected component?
+    choices:
+      - text: "`{4, 5}`"
+        correct: true
+        explains: >-
+          4 and 5 are joined, and no other vertex has an edge to either, so nothing can be
+          added. It is connected and maximal.
+      - text: "`{1, 2}`"
+        explains: >-
+          1 and 2 are connected, but 3 can join through edge `2–3`. The set is not maximal,
+          so it is part of a component, not one.
+      - text: "`{1, 2, 3, 4, 5}`"
+        explains: >-
+          There is no path from 1 to 4, so this set is not connected. A component cannot
+          span two pieces.
+  - ask: >-
+      Among undirected graphs on `n ≥ 2` vertices, what are the fewest and most connected
+      components possible?
+    choices:
+      - text: 1 and `n`
+        correct: true
+        explains: >-
+          A connected graph is one component. With no edges, every vertex is its own
+          component. Each component holds at least one vertex, so there cannot be more than
+          `n`.
+      - text: 0 and `n`
+        explains: >-
+          Every vertex lies in some component, so with `n ≥ 2` vertices there is always at
+          least one.
+      - text: 1 and `n − 1`
+        explains: >-
+          `n − 1` is an edge count, from the fewest-edges argument. With no edges at all, the
+          `n` vertices are `n` separate components.
+---
+
+One BFS from `s` finds everything reachable from `s` — and nothing else. On a graph in
+several pieces, the rest stays unexplored. To cover the whole graph, you need a way to talk
+about the pieces.
+
+## The pieces of a graph
+
+Take the slide's ten vertices with edges joining `1, 3, 5, 7, 9` into one piece, `2–4`
+into another, and `6, 8, 10` into a third. Each piece is a **connected component**:
+
+| component | vertices |
+| --- | --- |
+| 1 | `{1, 3, 5, 7, 9}` |
+| 2 | `{2, 4}` |
+| 3 | `{6, 8, 10}` |
+
+Every vertex lies in exactly one component. An isolated vertex is a component on its own.
+
+## Why "maximal"
+
+The formal definition: *a maximal set of vertices with a path between every two of them.*
+
+The first half — "a path between every two" — is not enough on its own. `{1, 3}` has a path
+between its two vertices, and so does every single vertex alone. Without another condition,
+all of those would count as components.
+
+**Maximal** rules them out: no other vertex can join the set and keep it connected. `{1, 3}`
+fails, because 5 can join. Only the whole piece `{1, 3, 5, 7, 9}` is maximal.
+
+## How many components?
+
+For `n ≥ 2` vertices with any number of edges:
+
+| | count | graph |
+| --- | --- | --- |
+| fewest | 1 | any connected graph |
+| most | `n` | no edges at all: every vertex alone |
+
+Adding an edge either merges two components into one or, if both ends were already in the
+same component, changes nothing. That is the same fact behind the `n − 1` minimum for a
+connected graph: start at `n` components and each edge removes at most one.
+
+## The labelling problem
+
+**Undirected Connected Components (UCC).** Given an undirected graph, give every vertex a
+number `cc(v)` so that two vertices get the same number *exactly when* they are in the same
+component.
+
+For the example: `cc = 1` for 1, 3, 5, 7, 9; `cc = 2` for 2 and 4; `cc = 3` for 6, 8, 10.
+
+With these labels, "are `u` and `v` connected?" becomes one comparison, `cc(u) = cc(v)`,
+instead of a search. The next page computes them in linear time.
+
+This is a problem about **undirected** graphs. In a directed graph, `u` reaching `v` does not
+mean `v` reaches `u`, so "being in the same piece" needs a more careful definition.
+
+> A connected component is a piece of the graph that cannot be made any bigger. Labelling
+> every vertex with its piece turns every later "are these connected?" question into a
+> lookup.

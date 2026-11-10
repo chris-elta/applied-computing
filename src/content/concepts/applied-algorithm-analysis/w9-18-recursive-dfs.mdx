@@ -1,0 +1,112 @@
+---
+course: applied-algorithm-analysis
+section: w9-dfs
+order: 1670
+title: Recursive DFS
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week9.html?hash=true#/50
+    caption: Slides 51–52 of 66 — the recursive pseudocode, then a run with the call stack shown (press Play on slide 52).
+notation:
+  - symbol: "DFS(G, x)"
+    reads: D F S of G comma x
+    means: >-
+      One call of the search, standing at vertex `x`. It calls itself on each unexplored
+      neighbor.
+  - symbol: "x, y"
+    reads: x, y
+    means: >-
+      The current vertex and the neighbor being looked at. The slides use these letters
+      because the example graph already has a vertex named `s`.
+  - symbol: call stack
+    reads: call stack
+    means: >-
+      The chain of calls that have started but not yet returned. It records the path back
+      to the start, so the program knows where to resume.
+  - symbol: finish
+    reads: finish
+    means: A call finishes when its loop is done and it returns to the vertex that called it.
+questions:
+  - ask: >-
+      In the run on slide 52, `b` is a neighbor of `s`, yet it is marked last. Why?
+    choices:
+      - text: >-
+          The call on `s` went deep through `a` first, and `b` was reached from `d` before
+          control ever came back to `s`
+        correct: true
+        explains: >-
+          DFS does not return to `s` until everything reachable through `a` is done. `b` was
+          reached along that deep path, five steps in, even though it is one edge from `s`.
+      - text: Because `b` is the furthest vertex from `s`
+        explains: >-
+          `b` is one edge from `s`. DFS's marking order does not follow distance — that is
+          BFS's property, not DFS's.
+      - text: Because DFS scans every neighbor of a vertex before going deeper
+        explains: >-
+          That describes BFS. DFS calls itself on the *first* unexplored neighbor it finds and
+          only looks at the next one after that call returns.
+---
+
+DFS has a short recursive form. Start with every vertex unexplored, then call it on the
+start vertex.
+
+```
+DFS(G, x)
+1   mark x as explored
+2   for each edge (x, y) in x's adjacency list do
+3       if y is unexplored then
+4           DFS(G, y)
+```
+
+| line | what happens |
+| --- | --- |
+| 1 | mark `x` the moment its call starts |
+| 2–4 | for each unexplored neighbor `y`, go deeper with a new call |
+| end | when the loop is done, the call **finishes** and returns to whoever called it |
+
+There is no queue and no visible stack. The **call stack** — the chain of calls that have
+started but not finished — remembers where to go back to. When the call on `e` returns, the
+program resumes inside the call on `d`, exactly where it left off in `d`'s list.
+
+## A run
+
+On the six-vertex graph, with adjacency lists in the order the slide uses (`c` lists `d`
+first, and `d` lists `e` first):
+
+| step | call stack | what happens |
+| --- | --- | --- |
+| 1 | `s` | mark `s`; first neighbor `a` is unexplored → call |
+| 2 | `s a` | mark `a`; neighbor `c` unexplored → call |
+| 3 | `s a c` | mark `c`; neighbor `d` unexplored → call |
+| 4 | `s a c d` | mark `d`; neighbor `e` unexplored → call |
+| 5 | `s a c d e` | mark `e`; neighbors `c`, `d` explored — **dead end**, return |
+| 6 | `s a c d` | back in `d`; next neighbor `b` unexplored → call |
+| 7 | `s a c d b` | mark `b`; all neighbors explored — return |
+| 8 | `s a c d` → … → `s` | `d`, `c`, `a`, `s` each find nothing new and return |
+
+Marking order: **`s, a, c, d, e, b`**.
+
+Look at `b`. It is one edge from `s`, yet it is marked last. The call on `s` only reaches
+its second neighbor after the whole excursion through `a` has returned — and by then `b`
+was already found from `d`. DFS goes deep, not layer by layer.
+
+## Why it goes back only at dead ends
+
+The mark is set at the **start** of a call. A call scans its list and immediately dives into
+the first unexplored neighbor. It returns only when its loop finds nothing more to do — when
+`x` has no unexplored neighbors left. That is the maze rule exactly, and it comes for free
+from the recursion.
+
+A different adjacency order gives a different but equally valid DFS. The examples on the
+next page use alphabetical order and get a different marking order.
+
+## Cost
+
+One call per reachable vertex, and each call scans its own list once: `O(m + n)` with
+adjacency lists, the same count as BFS.
+
+Topological sort uses this recursive version, because it needs to know the moment each call
+*finishes*.
+
+> Recursive DFS marks a vertex when its call starts and dives into the first unexplored
+> neighbor. The call stack remembers the way back, and a call returns only at a dead end.

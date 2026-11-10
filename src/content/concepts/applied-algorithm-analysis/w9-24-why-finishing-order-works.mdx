@@ -1,0 +1,101 @@
+---
+course: applied-algorithm-analysis
+section: w9-topo
+order: 1730
+title: Why Finishing Order Works
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week9.html?hash=true#/63
+    caption: Slide 64 of 66 — the two cases for an edge (v, w), and where the DAG assumption is used.
+notation:
+  - symbol: "(v, w)"
+    reads: the edge v to w
+    means: A directed edge from `v` to `w`. The goal is to show `f(v) < f(w)` for it.
+  - symbol: nested call
+    reads: nested call
+    means: >-
+      A call that starts and finishes while another call is still running — it sits inside
+      that call's lifetime.
+questions:
+  - ask: >-
+      Take an edge `(v, w)` in a DAG, and suppose DFS-Topo reaches `w` before `v`. Why does
+      `w` finish before `v` is even discovered?
+    choices:
+      - text: >-
+          `w` cannot reach `v` — a path from `w` to `v` plus the edge `(v, w)` would be a
+          cycle — so `w`'s call never discovers `v`
+        correct: true
+        explains: >-
+          `w`'s call explores only what `w` can reach. Since `v` is not among those, the call
+          on `w` returns without touching `v`. This is the one place the proof uses the DAG
+          assumption.
+      - text: Because `w` comes before `v` alphabetically
+        explains: >-
+          The names do not matter. The case is about the order in which the search reaches
+          them, and the argument must hold for any order.
+      - text: Because `w` has no outgoing edges
+        explains: >-
+          `w` may have plenty of outgoing edges. What matters is that none of its paths lead
+          back to `v`.
+---
+
+The claim is that the `f`-values TopoSort assigns form a topological ordering: for **every**
+edge `(v, w)`, `f(v) < f(w)`.
+
+Positions are handed out counting **down** as calls finish. So a larger number means an
+earlier finish, and the goal becomes:
+
+```
+for every edge (v, w):   w finishes before v
+```
+
+Take any edge `(v, w)`. Either the search reaches `v` first, or it reaches `w` first.
+
+## Case 1: `v` first
+
+The call on `v` starts while `w` is still unexplored. During that call, `v`'s outgoing list
+is scanned, and it contains `w`. By the time the scan reaches `w`, one of two things has
+happened:
+
+- `w` is still unexplored, so `v`'s call makes the call on `w` right there; or
+- some deeper call, started from inside `v`'s call, has already explored `w`.
+
+Either way, `w`'s call starts *inside* `v`'s call, and a nested call returns before the call
+around it. So `w` finishes first, and gets the larger number.
+
+```
+DFS-Topo(v) ───────────────────────────┐
+      DFS-Topo(w) ──────┐              │
+                        f(w) = larger  f(v) = smaller
+```
+
+## Case 2: `w` first
+
+The call on `w` starts while `v` is unexplored. Could it reach `v`? If it could, there would
+be a path from `w` to `v` — and that path plus the edge `(v, w)` would make a directed
+cycle. A DAG has none. So `w`'s call explores only what `w` can reach, never discovers `v`,
+and finishes before `v` is even discovered.
+
+```
+DFS-Topo(w) ────┐       DFS-Topo(v) ────┐
+                f(w) = larger            f(v) = smaller
+```
+
+Again `w` finishes first.
+
+## Where the assumption went
+
+| case | needs the DAG assumption? |
+| --- | --- |
+| 1: `v` first | no — nesting alone does it |
+| 2: `w` first | **yes** — `w` must not be able to reach `v` |
+
+The DAG assumption is used exactly once, in Case 2. That tells you what happens on a graph
+with a cycle: run the same algorithm, and Case 2 is the case that fails. Take the cycle
+`v → w → v`. Starting at `w`, its call reaches `v` through the edge `w → v`, so `v` finishes
+first and gets the larger number — and the edge `(v, w)` then points backward. The code
+still produces numbers, but they are no longer an ordering.
+
+> Every edge `(v, w)` ends with `w` finishing first — nested inside `v`'s call if `v` came
+> first, or before `v` was even found if `w` came first. The second case needs the graph to
+> have no cycles, and that is the only place the proof needs it.

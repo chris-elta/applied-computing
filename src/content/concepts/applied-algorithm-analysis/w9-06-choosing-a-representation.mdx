@@ -1,0 +1,92 @@
+---
+course: applied-algorithm-analysis
+section: w9-graphs
+order: 1550
+title: Choosing a Representation
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week9.html?hash=true#/17
+    caption: Slide 18 of 66 — the two representations, operation by operation.
+notation:
+  - symbol: "deg(u)"
+    reads: degree of u
+    means: The number of edges touching `u`, which is also the length of `Adj[u]`.
+  - symbol: amortized
+    reads: amortized
+    means: >-
+      Averaged over a long run of operations. A dynamic array occasionally pays to grow, but
+      the average cost per insertion stays constant.
+  - symbol: expected O(1)
+    reads: expected big O of one
+    means: >-
+      Constant time on average over the hash function's behaviour — not a worst-case
+      guarantee.
+questions:
+  - ask: >-
+      A program stores a sparse graph of 100 000 vertices and spends nearly all its time
+      visiting every neighbor of one vertex after another. Which representation suits it, and
+      why?
+    choices:
+      - text: Adjacency lists — enumerating `u`'s neighbors costs `deg(u)`, not `n`
+        correct: true
+        explains: >-
+          Visiting neighbors is the operation search algorithms do, and lists hand over
+          exactly the neighbors. The matrix reads a full row of 100 000 cells to find a
+          handful of 1s.
+      - text: Adjacency matrix — every lookup is `O(1)`
+        explains: >-
+          Only the *edge check* "is `u` joined to `v`?" is `O(1)` in a matrix. Listing all
+          neighbors still means reading the whole row: `Θ(n)` per vertex.
+      - text: Either — both cost `O(1)` per neighbor
+        explains: >-
+          Lists cost `O(1)` per neighbor. The matrix costs `O(1)` per *cell*, and a row has
+          `n` cells whatever the degree.
+---
+
+Neither representation wins everywhere. The table compares them for an undirected graph,
+assuming you can reach any vertex's list or row directly.
+
+| operation | unsorted adjacency lists | adjacency matrix |
+| --- | --- | --- |
+| space | `Θ(n + m)` | `Θ(n²)` |
+| is `{u, v}` an edge? | `O(1 + deg(u))`, scanning `Adj[u]` | `O(1)`, one cell |
+| list `u`'s neighbors | `Θ(deg(u))` entries | `Θ(n)` cells |
+| insert an edge known to be absent | `O(1)` with linked lists | `O(1)` |
+| delete `{u, v}` | `O(deg(u) + deg(v))` by scanning; `O(1)` with a handle and back-references | `O(1)` |
+| add a vertex | amortized `O(1)` with a dynamic array | `Θ(n²)` if the matrix is reallocated |
+| store weights | in each neighbor or edge record | in each cell, with a marker for no edge |
+
+## Reading the table
+
+Two rows decide almost every choice.
+
+**Listing neighbors.** This is the operation graph search does over and over, and the
+representations differ by more than a constant. Lists cost the degree; the matrix costs `n`
+every time, because it has to read the whole row to find which cells hold 1. On a sparse
+graph that is the difference between linear and quadratic total time — the next section
+counts it exactly.
+
+**Checking one edge.** Here the matrix wins: one cell, `O(1)`. Lists have to scan. If an
+algorithm's inner loop asks "are these two joined?" for arbitrary pairs, a matrix — or
+lists replaced by hash sets, which give *expected* `O(1)` checks — pays off.
+
+## The small print
+
+- "Insert" assumes the edge is not already there. Checking for a duplicate first adds a
+  lookup.
+- Fast deletion in lists needs the extra references from the previous page. Plain lists
+  scan.
+- Adding a vertex to a matrix means a new row and column. If that means copying the whole
+  grid into a bigger one, it costs `Θ(n²)`; other growth strategies cost differently.
+
+## A rule of thumb
+
+| graph | likely choice |
+| --- | --- |
+| sparse, and you traverse it | adjacency lists |
+| dense, or you test arbitrary pairs often | adjacency matrix |
+| sparse, and you test pairs often | lists of hash sets |
+
+> Choose the representation by the operation your algorithm repeats. Traversal repeats
+> "give me the neighbors", which lists do in `deg(u)` and a matrix does in `n` — so for
+> graph search, the answer is almost always lists.

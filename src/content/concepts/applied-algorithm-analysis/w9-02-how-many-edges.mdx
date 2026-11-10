@@ -1,0 +1,110 @@
+---
+course: applied-algorithm-analysis
+section: w9-graphs
+order: 1510
+title: How Many Edges Can a Graph Have?
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week9.html?hash=true#/4
+    caption: Slides 5–7 of 66 — the size question, the two extreme graphs, then sparse and dense.
+notation:
+  - symbol: "n = |V|"
+    reads: n equals the size of V
+    means: >-
+      The number of vertices. The vertical bars around a set mean "how many elements it
+      has", not absolute value.
+  - symbol: "m = |E|"
+    reads: m equals the size of E
+    means: The number of edges.
+  - symbol: simple graph
+    reads: simple graph
+    means: >-
+      A graph with no self-loops (an edge from a vertex to itself) and no parallel edges
+      (two edges joining the same pair).
+  - symbol: connected
+    reads: connected
+    means: In one piece — every vertex can reach every other along edges.
+  - symbol: "n(n − 1)/2"
+    reads: n times n minus one, over two
+    means: >-
+      The number of unordered pairs of `n` things. For `n = 4` it is `4 · 3 / 2 = 6`.
+  - symbol: "Θ(n²)"
+    reads: theta of n squared
+    means: >-
+      Grows like `n²`, bounded above and below by constant multiples of it. Week 1's
+      notation.
+questions:
+  - ask: >-
+      A connected simple undirected graph has 10 vertices. Which edge count is impossible?
+    choices:
+      - text: "8"
+        correct: true
+        explains: >-
+          Ten vertices with no edges are ten separate pieces, and each edge merges at most two
+          pieces into one. Reaching a single piece needs at least `10 − 1 = 9` edges.
+      - text: "9"
+        explains: >-
+          Nine is exactly the minimum, `n − 1`, and it is achieved: any tree on ten vertices,
+          such as a path, is connected with nine edges.
+      - text: "45"
+        explains: >-
+          That is the maximum, `10 · 9 / 2 = 45`: one edge for every pair of vertices, the
+          complete graph. It is connected.
+      - text: "30"
+        explains: >-
+          Anything between 9 and 45 is possible: start from a tree and keep adding edges
+          between pairs not yet joined. Extra edges never disconnect a graph.
+---
+
+Take four vertices. Allow no edge from a vertex to itself and no two edges joining the same
+pair. Then add the condition that matters: the graph must be **connected**, in one piece. What is the fewest number of edges it can have, and the most?
+
+Try it before reading on. Draw four dots and join them.
+
+## The fewest: `n − 1`
+
+Start with `n` vertices and no edges. That is `n` separate pieces. Now add edges one at a
+time. An edge either joins two vertices already in the same piece, which changes nothing,
+or joins two different pieces, which merges them into one. Either way, **one edge reduces
+the number of pieces by at most one.**
+
+To get from `n` pieces down to 1, you need at least `n − 1` edges. A tree achieves it
+exactly — for four vertices, the star `1–2, 2–3, 2–4` on the slide. This is the argument
+worth remembering, because it is a counting argument that never needs a picture.
+
+## The most: `n(n − 1)/2`
+
+Now join every pair. Each of the `n` vertices pairs with `n − 1` others, giving `n(n − 1)`,
+but that counts each edge from both ends, so halve it. For four vertices, `4 · 3 / 2 = 6`:
+the complete graph.
+
+| `n` | fewest edges, `n − 1` | most edges, `n(n − 1)/2` |
+| --- | --- | --- |
+| 4 | 3 | 6 |
+| 10 | 9 | 45 |
+| 1000 | 999 | 499 500 |
+
+Every connected simple graph lives between these two pictures:
+
+```
+n − 1  ≤  m  ≤  n(n − 1)/2
+```
+
+## Sparse and dense
+
+The gap between the two ends is huge — linear against quadratic — so two informal words
+describe where a graph sits:
+
+| | means | typical example |
+| --- | --- | --- |
+| **sparse** | few edges compared with the possible pairs | `m = O(n)`, such as a tree |
+| **dense** | edges on the order of the possible pairs | `m = Θ(n²)`, such as a complete graph |
+
+There is no official cutoff between them, and a graph with `m = n log n` edges is
+neither clearly one nor the other. The words are a prompt to ask how `m` compares with `n²`,
+not a substitute for stating a bound on `m`. That comparison is exactly what decides which
+way to store a graph, on the next two pages.
+
+> In a connected graph, `m` can be anything from `n − 1` up to about `n²/2`. Since `m` and
+> `n²` can be so far apart, an algorithm's cost has to be stated in terms of both `n` and
+> `m`, not `n` alone.

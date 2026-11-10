@@ -1,0 +1,92 @@
+---
+course: applied-algorithm-analysis
+section: w9-dfs
+order: 1660
+title: Deep First, Then Back
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week9.html?hash=true#/47
+    caption: Slides 48–50 of 66 — the switch from BFS to DFS, and the maze picture of going deep.
+notation:
+  - symbol: dead end
+    reads: dead end
+    means: A vertex with no unexplored neighbor left. DFS goes back from here.
+  - symbol: go back, backtrack
+    reads: go back, or backtrack
+    means: >-
+      Return to the most recent vertex that still has an unexplored neighbor, and continue
+      from there.
+  - symbol: DAG
+    reads: dag, directed acyclic graph
+    means: A directed graph with no directed cycle. Its use for DFS comes in the topological-ordering section.
+questions:
+  - ask: >-
+      Both BFS and DFS are run from `s` on the same graph. Which statement is true?
+    choices:
+      - text: They mark the same set of vertices, usually in a different order
+        correct: true
+        explains: >-
+          Both are the generic search, which finds exactly the reachable vertices whichever
+          crossing edge it picks. What differs is the order — and each order is useful for
+          something different.
+      - text: DFS finds more vertices, because it goes deeper
+        explains: >-
+          Going deep changes the order, not the reach. A reachable vertex is found by any
+          version of the generic search.
+      - text: DFS gives shortest paths too, since it also follows edges from `s`
+        explains: >-
+          DFS can reach a neighbor of `s` last, through a long detour. Its paths need not be
+          shortest. Distances come from BFS's layer order.
+---
+
+BFS spreads out from the start, layer by layer: everything one edge away, then everything
+two away. **Depth-first search** does the opposite. It follows one path as far as it can,
+and only when it is stuck does it step back.
+
+## The maze
+
+Think of walking a maze with a piece of chalk. You follow one corridor to its end. At the
+dead end you walk back to the last junction where a corridor went unexplored, and take it.
+You never turn around while a new corridor is still open in front of you.
+
+In graph terms:
+
+| maze | graph |
+| --- | --- |
+| a corridor | an edge to an unexplored neighbor |
+| a junction | a vertex that still has an unexplored neighbor |
+| a dead end | a vertex whose neighbors are all explored |
+| chalk on the wall | the explored mark |
+| walking back | returning to the most recent junction |
+
+The rule worth stating exactly: **DFS goes back only at a dead end.** It never abandons a
+vertex while that vertex still has an unexplored neighbor. Much of the DFS section — and one
+very common bug — turns on getting this right.
+
+## Same vertices, different order
+
+Both searches are the generic search, so both find **exactly the reachable vertices**, in
+directed and undirected graphs. What separates them is the order:
+
+| | explores | its order gives |
+| --- | --- | --- |
+| BFS | by distance: all of one layer, then the next | shortest paths in an unweighted graph |
+| DFS | one path to its end, then back | topological ordering of a DAG |
+
+Neither is better. A question about distance wants BFS's order. A question about
+*dependency* — what has to come before what — wants DFS's, for reasons the topological-sort
+pages make precise.
+
+## What this section covers
+
+1. DFS written recursively, where the program's own call stack remembers where to go back
+   to.
+2. DFS written with an explicit stack — and why the mark must move compared with BFS.
+3. Using DFS's *finishing* order to put the vertices of a DAG into an order where every edge
+   points forward.
+
+All three run in `O(m + n)` with adjacency lists.
+
+> DFS follows one path until it is stuck, then goes back to the last vertex with an
+> unexplored neighbor. It finds the same vertices as BFS; its different order is what makes
+> it useful.

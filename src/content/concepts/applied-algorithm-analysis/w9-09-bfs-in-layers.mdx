@@ -1,0 +1,94 @@
+---
+course: applied-algorithm-analysis
+section: w9-bfs
+order: 1580
+title: BFS Explores in Layers
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week9.html?hash=true#/24
+    caption: Slides 25–27 of 66 — the BFS rule, the layers it produces, and how many layers there can be.
+notation:
+  - symbol: "Lᵢ, layer i"
+    reads: layer i
+    means: >-
+      The vertices BFS reaches in round `i`: neighbors of layer `i − 1` that are in no
+      earlier layer. Layer 0 is `s` alone.
+  - symbol: "i − 1"
+    reads: i minus one
+    means: The layer before layer `i`.
+questions:
+  - ask: >-
+      BFS runs from `s` on an undirected graph with `n ≥ 2` vertices, not necessarily
+      connected. What are the fewest and the most nonempty layers, counting layer 0?
+    choices:
+      - text: 1 and `n`
+        correct: true
+        explains: >-
+          If `s` has no neighbors, only layer 0 exists. If the graph is a path starting at
+          `s`, every vertex gets its own layer, 0 through `n − 1` — that is `n` layers.
+      - text: 2 and `n`
+        explains: >-
+          Two is the fewest only if the graph is connected, so that `s` is guaranteed a
+          neighbor. The question allows a disconnected graph, and an isolated `s` has one
+          layer.
+      - text: 1 and `n − 1`
+        explains: >-
+          A path on `n` vertices uses layers numbered 0 to `n − 1`, which is `n` layers.
+          This answer counts the largest index instead of the number of layers.
+---
+
+The generic search leaves one line open: which crossing edge comes next? BFS answers:
+**take a crossing edge from the vertex that was marked earliest.** The effect is that the
+search spreads out evenly from `s`, like a ripple.
+
+## The layers
+
+Describe the ripple in rounds:
+
+| layer | contains |
+| --- | --- |
+| 0 | `s` alone |
+| 1 | the neighbors of `s` |
+| 2 | the neighbors of layer 1 that are in no earlier layer |
+| `i` | the neighbors of layer `i − 1` that are in no earlier layer |
+
+Stop when a layer comes out empty. On the slide's six-vertex graph from `s`:
+
+| layer | vertices |
+| --- | --- |
+| 0 | `s` |
+| 1 | `a`, `b` |
+| 2 | `c`, `d` |
+| 3 | `e` |
+| 4 | empty — `e`'s neighbors `c` and `d` already have layers |
+
+**Why "in no earlier layer"?** Because neighbor-of is symmetric in an undirected graph.
+`s` is a neighbor of `a`, which is in layer 1, so without the rule `s` would come back in
+layer 2 — and again in layer 4, and so on forever. The rule gives every vertex exactly one
+layer: the first one it could join.
+
+In a directed graph, the same rule applies following outgoing edges only.
+
+## How many layers?
+
+The number of layers depends on the shape, and the two extremes are worth knowing.
+
+- **Fewest: 1.** If `s` has no neighbors at all, layer 0 is the only nonempty layer. That
+  can happen only if the graph is disconnected; if it is connected and `n ≥ 2`, `s` has a
+  neighbor, and the fewest becomes 2 (a complete graph has exactly two).
+- **Most: `n`.** On a path that starts at `s` — `s – a – b – c` — each vertex sits one step
+  further out than the last, so each gets a layer to itself: layers 0 to `n − 1`, which is
+  `n` layers.
+
+Count *nonempty layers*, not the largest layer index. The path's largest index is `n − 1`,
+but layer 0 counts too.
+
+## Why layers matter
+
+A vertex in layer 3 is three edges from `s`, and — because it was in no earlier layer —
+*not* reachable in two. Layers are distances. Every remaining page of this section is about
+making that fact precise and useful: the queue that produces the layers, the labels that
+record them, and the parent pointers that turn them into actual paths.
+
+> BFS finishes all of one layer before it starts the next. A vertex's layer is the fewest
+> edges it takes to reach it from `s`.

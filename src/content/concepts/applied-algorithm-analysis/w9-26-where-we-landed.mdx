@@ -1,0 +1,104 @@
+---
+course: applied-algorithm-analysis
+section: w9-review
+order: 1750
+title: Where We Landed
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week9.html?hash=true#/64
+    caption: Slide 65 of 66 — BFS and DFS side by side. The BFS summary is slide 47.
+notation:
+  - symbol: FIFO, LIFO
+    reads: fife-oh, life-oh
+    means: First in, first out (a queue); last in, first out (a stack).
+  - symbol: "O(n + m)"
+    reads: big O of n plus m
+    means: Linear in the size of the graph — the cost of every search this week, with adjacency lists.
+questions:
+  - ask: >-
+      Which task needs DFS's finishing order specifically, so that neither BFS nor a
+      mark-on-push stack search will do?
+    choices:
+      - text: Putting the vertices of a DAG in topological order
+        correct: true
+        explains: >-
+          Topological sort numbers vertices as their calls finish. BFS has no such moment, and
+          a mark-on-push stack search can turn back early, so its processing order is not a
+          substitute.
+      - text: Labelling the connected components of an undirected graph
+        explains: >-
+          Any search works for components, as long as the marks are kept between restarts.
+          UCC used BFS.
+      - text: Finding every vertex reachable from `s`
+        explains: >-
+          Reachability is the generic search's guarantee. Every version finds the same set.
+      - text: Finding the fewest-edge path from `s` to `t`
+        explains: >-
+          That needs BFS's layer order. DFS paths need not be shortest.
+---
+
+## BFS and DFS in one table
+
+| | breadth-first search | depth-first search |
+| --- | --- | --- |
+| data structure | queue: first in, first out | recursion, or a stack: last in, first out |
+| when to mark | when a vertex **joins** the queue | when its call **starts** (recursive); when first **popped** (stack) |
+| traversal | by distance layers | follow a path, then go back |
+| what its order gives | shortest paths in an unweighted graph; connected components | topological order in a DAG; connected components |
+| running time | `O(n + m)` | `O(n + m)` |
+
+All the time bounds assume adjacency lists and `O(1)` queue or stack operations.
+
+## Five things to keep
+
+**1 · A graph is two lists, and how you store them matters.** A matrix costs `Θ(n²)` cells
+whatever `m` is; adjacency lists cost `Θ(m + n)` and hand over neighbors directly. Graph
+search repeats "give me the neighbors", so it uses lists — and a matrix turns the same BFS
+into `Θ(n²)`.
+
+**2 · One search, one open line.** While some edge crosses from explored to unexplored, mark
+its head. Whatever edge you choose, explored ends up exactly the reachable set. BFS and DFS
+are two ways to choose.
+
+**3 · BFS: queue, mark on enqueue, layers are distances.** Each reachable vertex is queued
+once. BFS finishes each layer before the next, so the first label a vertex gets is its
+distance in *edges* — not weight. Parent pointers recover the path in `O(n)` extra space.
+
+**4 · Restart, keep the marks.** Starting a search at every still-unexplored vertex labels
+all connected components, and because the marks persist, the whole run is still
+`O(n + m)`.
+
+**5 · DFS: go back only at a dead end, and use the finishing order.** In a stack version the
+mark goes on the pop. For a DAG, numbering vertices from `n` down as their calls finish
+gives a topological ordering. Marking order does not.
+
+## Think first
+
+Try each before reading the answer under it.
+
+**Why does marking on enqueue prevent duplicate entries in BFS?**
+Between joining the queue and leaving it, a vertex is already marked, so no other neighbor
+can add it again. Mark on removal and every neighbor processed in that window adds another
+copy.
+
+**Why does BFS finish each layer before the next?**
+All of layer `i` joins the queue before any of layer `i + 1`, because layer `i + 1` is only
+discovered while layer `i` is being removed. A queue releases in arrival order.
+
+**Why do all the component searches together scan each list only once?**
+The marks are set once, outside the outer loop, and never reset. A vertex explored by one
+search is skipped by every later one, and its list is walked by the one search that
+removed it.
+
+**Why can topological sort not use the simple vertex-stack DFS?**
+It has no moment when a vertex's exploration *finishes* — no return event — and the
+numbering is assigned exactly then. Recursion, or a stack of explicit call frames, provides
+it.
+
+## Reading
+
+- The course tutorial, Part 11, develops DFS further.
+- Cornell CS 2110, [lecture 22](https://courses.cis.cornell.edu/courses/cs2110/2026sp/lectures/lec22/),
+  exercise 22.9 — why replacing BFS's queue with a stack, while still marking every neighbor at
+  once, does not build a DFS tree.
+- The practice problems on the previous page: LeetCode 200, 127, 1091, 79 and 101.

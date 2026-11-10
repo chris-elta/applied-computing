@@ -1,0 +1,100 @@
+---
+course: applied-algorithm-analysis
+section: w9-review
+order: 1740
+title: Model the Graph First
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week9.html?hash=true#/45
+    caption: Slide 46 of 66 — three BFS practice problems, modelled before coding. The DFS problems are on slide 66.
+notation:
+  - symbol: implicit graph
+    reads: implicit graph
+    means: >-
+      A graph that is never stored as lists. Its neighbors are generated when needed — the
+      four cells around a grid cell, or every word one letter away.
+  - symbol: "dist + 1"
+    reads: dist plus one
+    means: >-
+      Counting vertices on a path instead of edges. A path with 3 edges passes through 4
+      vertices.
+  - symbol: unmark
+    reads: unmark
+    means: Clear a vertex's mark when its DFS call returns, so a different path may use it again.
+questions:
+  - ask: >-
+      In *Shortest Path in Binary Matrix*, the answer is the number of **cells** on the
+      shortest path, or −1 if there is none. BFS from the top-left cell gives the bottom-right
+      cell the label `l = 4`. What should you return?
+    choices:
+      - text: "5"
+        correct: true
+        explains: >-
+          BFS's `l` counts edges. A path with 4 edges visits 5 cells, so the problem's
+          convention is `dist + 1` — and only for a path that exists.
+      - text: "4"
+        explains: >-
+          That is the distance in edges, the convention this course uses. The problem counts
+          cells, which is one more.
+      - text: "3"
+        explains: >-
+          Subtracting would be right only if the problem excluded both endpoints. It counts
+          every cell on the path, including the first and last.
+---
+
+Graph problems in practice rarely arrive as a list of vertices and edges. They arrive as a
+grid, a word list or a tree. Before writing any code, answer three questions:
+
+1. **What are the vertices?**
+2. **What are the edges?**
+3. **What exactly is the required output** — including what to return when there is no
+   answer?
+
+## BFS problems
+
+| problem | vertices and edges | required output |
+| --- | --- | --- |
+| LeetCode 200, *Number of Islands* | land cells; joined horizontally or vertically | the number of connected components |
+| LeetCode 127, *Word Ladder* | the allowed words plus the start; joined if they differ in one letter | words in the sequence: `dist + 1`, or 0 if impossible |
+| LeetCode 1091, *Shortest Path in Binary Matrix* | open cells; joined in all eight directions | cells on the path: `dist + 1`, or −1 if impossible |
+
+Each row hides a detail that sinks solutions:
+
+- *Islands*: diagonals do **not** connect land. The count is the outer-loop pattern from UCC
+  — one search per unexplored land cell.
+- *Word Ladder*: every word after the start must be in the list; the start need not be.
+- *Binary Matrix*: diagonals **do** connect. A blocked start or end cell makes the answer −1
+  immediately.
+
+### Check the counting convention
+
+This course's `dist` counts **edges**. Both shortest-path problems count **vertices** —
+words, cells — which is one more. The `+ 1` applies only when a path exists; the "no path"
+value is separate, and it is 0 in one problem and −1 in the other. Read it off the problem
+statement, every time.
+
+### Implicit neighbors cost something
+
+These graphs are **implicit**: the neighbors of a cell or word are generated when needed,
+not stored. The `O(n + m)` bound counted reading stored lists. Generating every word one
+letter away costs string operations, and that cost has to be counted too.
+
+## DFS problems
+
+| problem | vertices and edges | how DFS helps |
+| --- | --- | --- |
+| LeetCode 200, *Number of Islands* | land cells; horizontal or vertical | start DFS at each unexplored land cell; count the starts |
+| LeetCode 79, *Word Search* | grid cells; adjacent, matching the next letter | mark a cell, go deeper, **unmark** it when the call returns |
+| LeetCode 101, *Symmetric Tree* | tree nodes; left and right children | compare two subtrees recursively, in mirror order |
+
+*Number of Islands* appears in both tables: counting components works with either search.
+
+**Why unmark in Word Search?** A cell may not repeat *within one path* — but a different
+path might need it. Marks in ordinary DFS mean "never visit again". Here they mean "on the
+current path", so the call clears its mark as it returns. This is a different use of the
+same recursion, and it gives up the `O(n + m)` bound: one cell can be visited by many
+paths.
+
+> Decide the vertices, the edges and the exact output — including the no-answer value —
+> before writing a line. Most wrong answers on these problems are a modelling error, not a
+> search error.

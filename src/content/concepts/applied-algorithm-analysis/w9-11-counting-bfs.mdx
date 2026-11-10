@@ -1,0 +1,99 @@
+---
+course: applied-algorithm-analysis
+section: w9-bfs
+order: 1600
+title: "Counting BFS: O(m + n)"
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week9.html?hash=true#/30
+    caption: Slides 31–32 of 66 — counting each line of BFS with lists, then the same search on a matrix.
+notation:
+  - symbol: "nₛ"
+    reads: n sub s
+    means: The number of vertices reachable from `s`. At most `n`.
+  - symbol: "mₛ"
+    reads: m sub s
+    means: >-
+      The number of edges in the reachable part: undirected edges among reachable vertices,
+      or directed edges whose tail is reachable. At most `m`.
+  - symbol: "O(m + n)"
+    reads: big O of m plus n
+    means: >-
+      Linear in the size of the graph — a constant amount of work per vertex and per edge.
+  - symbol: "Θ(n²)"
+    reads: theta of n squared
+    means: Grows like `n²`; here, the cost of BFS when it must read a full matrix row per vertex.
+questions:
+  - ask: >-
+      BFS runs on an undirected graph with 1000 vertices and 3000 edges, all reachable from
+      `s`. About how many neighbor scans does line 5 perform with adjacency lists, and how
+      many cell reads with an adjacency matrix?
+    choices:
+      - text: 6000 scans with lists; 1 000 000 reads with a matrix
+        correct: true
+        explains: >-
+          Each undirected edge is in two lists, so the lists give `2m = 6000` scans. The
+          matrix reads a full row of `n = 1000` cells for each of the 1000 vertices.
+      - text: 3000 scans with lists; 3000 reads with a matrix
+        explains: >-
+          Lists scan each undirected edge from both ends, giving `2m`, not `m`. And the
+          matrix cannot read only the 1s — it has to look at every cell in the row to find
+          them.
+      - text: 6000 scans either way — the work is the same, just stored differently
+        explains: >-
+          The *facts* are the same, but finding a vertex's neighbors in a matrix means
+          reading all `n` cells of its row, including the zeroes. That makes it
+          `n · n = 1 000 000`.
+---
+
+How long does BFS take? Count how many times each line runs, and why.
+
+Name the part of the graph the search can actually reach: **`nₛ`** vertices and **`mₛ`**
+edges. On the six-vertex example, everything is reachable, so `nₛ = 6` and `mₛ = 8`.
+
+| code | runs | why |
+| --- | --- | --- |
+| line 1: set every mark | `n` times | one mark for every vertex in the graph |
+| line 4: remove a vertex | `nₛ` times | each reachable vertex joins the queue once, because it is marked on joining |
+| line 5: scan a neighbor | at most `2mₛ` times | an undirected edge is in two lists, so it is scanned twice; a directed edge, once |
+
+The `2mₛ` row is the one that needs thought. Line 5 runs once for every entry in
+`Adj[v]`, for every `v` removed. Each vertex is removed once, so each list is walked once,
+and the lists together hold `2mₛ` entries. In the example: 6 removals and 16 scans.
+
+Since `nₛ ≤ n`, `mₛ ≤ m` and queue operations are `O(1)`, the total is
+
+```
+O(m + n)
+```
+
+— linear in the size of the graph. Every search algorithm this week is counted the same
+way, so this one is worth doing slowly once.
+
+## Where each letter comes from
+
+- The **`n`** comes from initialisation: every vertex gets a mark, reachable or not.
+- The **`m`** comes from line 5: each list is walked exactly once.
+
+There is no `n · m` term, because the loop on line 5 does not run "for every vertex, over
+every edge". It runs over *one vertex's* list, and each list is visited only once in the
+whole search.
+
+## With an adjacency matrix
+
+Change only the representation. Line 5 now has to find `v`'s neighbors by reading row `v`
+of the matrix — all `n` cells, 1s and 0s alike. For each reachable vertex that costs `n`:
+
+| | per reachable vertex | example |
+| --- | --- | --- |
+| lists | `deg(v)` | 16 scans in total |
+| matrix | `n` | 6 rows of 6 cells, 36 reads |
+
+When every vertex is reachable the matrix version costs **`Θ(n²)`** — even on a sparse
+graph, where nearly every cell read is a 0. (Exactly, it is `Θ(n + n · nₛ)`.)
+
+This is the "list a vertex's neighbors" row of the representation table, made concrete:
+the algorithm is identical, and the storage alone moves it from linear to quadratic.
+
+> BFS with adjacency lists costs `O(m + n)`: each vertex is queued once and each list is
+> walked once. With a matrix, each vertex costs a full row, and the same search is `Θ(n²)`.

@@ -1,0 +1,106 @@
+---
+course: applied-algorithm-analysis
+section: w9-search
+order: 1560
+title: Reachability and the Generic Search
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week9.html?hash=true#/19
+    caption: Slides 20–21 of 66 — which vertices s can reach, then one loop that finds them all.
+notation:
+  - symbol: reachable
+    reads: reachable
+    means: >-
+      `v` is reachable from `s` if some sequence of edges leads from `s` to `v`, following
+      directed edges only tail to head.
+  - symbol: "s ∈ V"
+    reads: s is in V, or s is an element of V
+    means: "`s` is one of the graph's vertices — the start."
+  - symbol: explored
+    reads: explored
+    means: >-
+      Marked as found. An explored vertex has been discovered; its own edges may not have
+      been looked at yet.
+  - symbol: frontier
+    reads: frontier
+    means: The boundary between the explored and unexplored vertices.
+  - symbol: crossing edge
+    reads: crossing edge
+    means: An edge from an explored vertex to an unexplored one — it crosses the frontier.
+  - symbol: postcondition
+    reads: postcondition
+    means: A statement guaranteed to be true when the algorithm finishes.
+questions:
+  - ask: >-
+      In a directed graph, `s → u`, `u → v` and `w → u` are the only edges. Which vertices
+      does the generic search from `s` mark as explored?
+    choices:
+      - text: "`s`, `u` and `v`"
+        correct: true
+        explains: >-
+          From `s` the crossing edge `s → u` marks `u`; then `u → v` marks `v`. The edge
+          `w → u` has its tail at `w`, which is unexplored, so it never crosses from explored
+          to unexplored — `w` cannot be reached from `s`.
+      - text: "`s`, `u`, `v` and `w`"
+        explains: >-
+          That would be right if the edges were undirected. `w → u` can only be followed
+          from `w` to `u`, and the search never stands at `w`.
+      - text: "`s` and `u` only"
+        explains: >-
+          The loop does not stop after one step. Once `u` is explored, `u → v` becomes a
+          crossing edge and `v` is marked too.
+---
+
+In an undirected graph in three pieces — `s, u, v, w` joined together, `x` and `y`
+joined to each other, and `z` alone — which vertices can you get to from `s`? Every vertex
+in its own piece, `s, u, v, w`, and none of the others.
+
+Now put arrows on the same edges. If both of `w`'s edges point *away* from `w`, it can no
+longer be reached: you can leave `w`, but never arrive. From `s`, only `s, u, v` remain.
+
+A vertex is **reachable** from `s` if some sequence of edges leads there from `s`. The
+question this section answers is: how do you find them all, mechanically?
+
+## One loop
+
+Divide the vertices into two sets — **explored** (found so far) and **unexplored** — and
+keep moving one across the boundary.
+
+```
+mark s as explored, all other vertices as unexplored
+while there is an edge from v to w with v explored and w unexplored do
+    choose some such edge from v to w        // underspecified
+    mark w as explored
+```
+
+The boundary between the two sets is the **frontier**, and an edge from an explored vertex
+to an unexplored one is a **crossing edge**. Each pass of the loop picks one crossing edge
+and pulls its far end across the frontier.
+
+| edge | can it be chosen? |
+| --- | --- |
+| explored → unexplored | yes: it crosses the frontier |
+| explored → explored | no: nothing new to mark |
+| unexplored → anything | no: the search is not standing at its tail |
+
+An undirected edge can be followed either way; a directed edge only from tail to head.
+
+**Postcondition:** when the loop stops, a vertex is explored *if and only if* it is
+reachable from `s`.
+
+## What "explored" means here
+
+Explored means **found and marked**. It does not mean finished. A vertex that has just been
+marked may still have outgoing edges no one has looked at — and those are exactly the edges
+that can cross next. Keeping "marked" and "finished with" apart becomes important in both
+searches that follow.
+
+## The deliberate gap
+
+Look at the comment on the `choose` line: *underspecified*. The algorithm does not say
+*which* crossing edge to take. That is not carelessness. The next page shows that the
+answer does not affect which vertices are found — and the two famous searches, BFS and DFS,
+are nothing more than two ways of filling in that one line.
+
+> Graph search is one loop: while some edge crosses from explored to unexplored, take it
+> and mark the far end. When no edge crosses, explored is exactly reachable.

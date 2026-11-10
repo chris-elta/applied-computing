@@ -1,0 +1,122 @@
+---
+course: applied-algorithm-analysis
+section: w9-dfs
+order: 1690
+title: Why Mark When Popped
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week9.html?hash=true#/55
+    caption: Slides 56–57 of 66 — the same graph searched with the mark on pop and on push, then DFS's guarantee and cost.
+notation:
+  - symbol: mark on pop
+    reads: mark on pop
+    means: Check and mark a vertex when it comes off the stack. This is DFS.
+  - symbol: mark on push
+    reads: mark on push
+    means: >-
+      Mark a vertex when it goes onto the stack, as BFS does with its queue. With a stack,
+      this is not DFS.
+  - symbol: "2m + 1"
+    reads: two m plus one
+    means: >-
+      The most pushes iterative DFS makes on an undirected graph: one for `s`, and one per
+      adjacency-list entry.
+questions:
+  - ask: >-
+      You write DFS by taking BFS code and replacing its queue with a stack, keeping the mark
+      on line 7 (when a vertex is added). What happens?
+    choices:
+      - text: >-
+          It still finds every reachable vertex, but it is not a depth-first search: it can go
+          back from a vertex that still has an unexplored neighbor
+        correct: true
+        explains: >-
+          Marking on push lets an early vertex claim a neighbor before the deep path gets
+          there. That neighbor is then skipped from the deep path and reached later from far
+          back. Reachability tests cannot see the difference; topological sort can.
+      - text: It is a correct DFS — only the data structure matters
+        explains: >-
+          The data structure decides who comes out next, but the mark decides who may still be
+          visited. Both have to change for the search to go back only at dead ends.
+      - text: It misses some reachable vertices
+        explains: >-
+          Any version of the generic search finds every reachable vertex. The error is in the
+          order, which is why it slips through simple tests.
+  - ask: >-
+      Iterative DFS runs on a directed graph with 8 edges, all reachable from `s`. What is the
+      most pushes it can make?
+    choices:
+      - text: "9"
+        correct: true
+        explains: >-
+          One push for `s`, then one per outgoing edge of each vertex, since each vertex's list
+          is pushed once — on its first pop. A directed edge is in one list, so `m + 1 = 9`.
+      - text: "17"
+        explains: >-
+          `2m + 1` is the count for an *undirected* graph, where each edge is in two lists.
+          Here each edge is stored once, in its tail's list.
+      - text: There is no fixed bound, because vertices can be pushed many times
+        explains: >-
+          A vertex can be pushed many times, but each push comes from one list entry, and each
+          list is pushed out only once. That caps the total.
+---
+
+Iterative DFS made two changes to BFS: a stack, and the mark moved to the pop. It is
+tempting to make only the first change and keep marking on push, as BFS does. That search
+finds the right vertices. It is not DFS.
+
+## The same graph, two ways
+
+Five vertices `s, a, b, c, d`. Each vertex pushes its neighbors in this order, so the last
+one listed ends up on top:
+
+```
+s: a, b      a: s, b, c      b: s, d, a
+```
+
+**Mark when popped (DFS).** Pop `s` and push `a, b`; `b` is on top. Pop `b`, mark it, push
+`s, d, a`. Now `a` is on top — pop it, mark it, and continue from `a`. The search goes from
+`s` to `b` to `a` and dives on. Processing order: `s, b, a, c, d`.
+
+**Mark when pushed (not DFS).** Pop `s`; push *and mark* `a` and `b`. Pop `b`. Its neighbors
+are `s, d, a` — but `a` was already marked by `s`, so `b` skips it and only `d` goes on.
+`a` is reached much later, from `s`. Processing order: `s, b, d, a, c`.
+
+Stand at `b` in each run and ask: *does `b` still have an unexplored neighbor?* Yes — `a`
+has not been processed. DFS continues to it. The mark-on-push version goes back to `s`
+anyway, because it already decided `a` belonged to `s`. That breaks the rule from the maze
+picture: **go back only at a dead end.**
+
+## Why nobody notices
+
+Both versions find all five vertices. A test that only checks *which* vertices are reachable
+cannot tell them apart. The difference appears only when something depends on DFS's order —
+the tree it builds, or which vertex finishes first. That is precisely what topological sort
+depends on, which is why this bug matters.
+
+The recursive version never has this problem: it marks a vertex at the moment a call
+arrives there, so no vertex can claim a neighbor in advance.
+
+## The guarantee and the cost
+
+**Same guarantee as BFS.** When DFS ends, a vertex is explored exactly when there is a path
+to it from the start, in directed and undirected graphs.
+
+**Recursive cost.** One call per reachable vertex, and each call scans its own list once:
+`O(m + n)`.
+
+**Iterative cost.** Each vertex's list is pushed only on its *first* pop — later pops skip.
+So the pushes are one for `s` plus one per list entry:
+
+| graph | list entries | most pushes |
+| --- | --- | --- |
+| undirected | `2m` | `2m + 1` |
+| directed | `m` | `m + 1` |
+
+Each push is matched by at most one pop, and both are `O(1)`. On the six-vertex example
+with 8 edges, that is `2 · 8 + 1 = 17` pushes. Marking every vertex at the start adds
+`O(n)`. Total: **`O(m + n)`**.
+
+> In a stack-based DFS, the mark goes on the pop. Marking on push still finds every vertex,
+> but lets one vertex claim another early, so the search turns back before it reaches a dead
+> end.

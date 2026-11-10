@@ -1,0 +1,113 @@
+---
+course: applied-algorithm-analysis
+section: w9-dfs
+order: 1680
+title: DFS With Your Own Stack
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week9.html?hash=true#/52
+    caption: Slides 53–55 of 66 — two changes from BFS, the iterative pseudocode, and a run (press Play on slide 55).
+notation:
+  - symbol: "S"
+    reads: capital S
+    means: >-
+      A stack: items are added ("pushed") on top and removed ("popped") from the top, so
+      the newest item leaves first. Last in, first out (LIFO).
+  - symbol: push, pop
+    reads: push, pop
+    means: >-
+      Push adds an item to the top of the stack. Pop removes the top item. Push `a`, push
+      `b`, pop — you get `b`.
+  - symbol: LIFO
+    reads: life-oh, or last in first out
+    means: The stack's rule — the most recent arrival is the next to leave.
+questions:
+  - ask: >-
+      In iterative DFS, `c` has been pushed onto the stack three times by the time the
+      search ends. Is that a bug?
+    choices:
+      - text: No — every neighbor is pushed, explored or not, and a vertex already explored is skipped when popped
+        correct: true
+        explains: >-
+          Duplicates are expected. Lines 7–8 push every neighbor; lines 5–6 check and mark on
+          the pop, so the second and third copies of `c` do nothing. The total number of
+          pushes is still bounded by the number of edges.
+      - text: Yes — a vertex should be marked when pushed, so it enters the stack once
+        explains: >-
+          That is the BFS rule, and moving it into DFS breaks the depth-first order: a vertex
+          can be claimed by an early neighbor before the deep path reaches it. The next page
+          shows exactly how.
+      - text: Yes — it makes the running time quadratic
+        explains: >-
+          Each push comes from scanning one adjacency-list entry, so there are at most
+          `2m + 1` pushes on an undirected graph. Duplicates cost a constant factor, not an
+          extra power of `n`.
+---
+
+Recursion hides its stack inside the program. You can keep your own instead, starting from
+BFS and changing **two** things:
+
+1. **A stack instead of the queue.** Push adds to the top and pop removes from the top: push
+   `a`, then push `b`, and the next pop gives `b`. The newest vertex is handled first, which
+   is what makes the search go deep.
+2. **Check and mark when a vertex is popped, not when it is pushed.** A vertex may sit on the
+   stack several times; only its first pop counts.
+
+Both changes are needed. The first alone does not give DFS — the next page shows why.
+
+## The pseudocode
+
+```
+1   mark all vertices as unexplored
+2   S := a stack data structure, initialized with s
+3   while S is not empty do
+4       remove ("pop") the vertex v from the top of S
+5       if v is unexplored then
+6           mark v as explored
+7           for each edge (v, w) in v's adjacency list do
+8               add ("push") w onto the top of S
+```
+
+Compare it with BFS line by line:
+
+| | BFS | iterative DFS |
+| --- | --- | --- |
+| structure | queue, oldest out first | stack, newest out first |
+| check and mark | when a vertex **joins** (line 7 of BFS) | when a vertex is **popped** (lines 5–6) |
+| which neighbors are added | only unexplored ones | **all** of them, even explored ones |
+| can a vertex be stored twice? | no | yes; later copies are skipped |
+
+## A run
+
+On the six-vertex graph, pushing neighbors alphabetically (so the last one pushed is on
+top):
+
+| pop | explored? | action | stack after (top on right) |
+| --- | --- | --- | --- |
+| `s` | no | mark; push `a, b` | `a b` |
+| `b` | no | mark; push `c, d, s` | `a c d s` |
+| `s` | yes | skip | `a c d` |
+| `d` | no | mark; push `b, c, e` | `a c b c e` |
+| `e` | no | mark; push `c, d` | `a c b c c d` |
+| `d` | yes | skip | `a c b c c` |
+| `c` | no | mark; push `a, b, d, e` | `a c b c a b d e` |
+| `e, d, b` | yes | skip | `a c b c a` |
+| `a` | no | mark; push `c, s` | `a c b c c s` |
+| the rest | yes | skip | empty |
+
+Marking order: **`s, b, d, e, c, a`**. It differs from the recursive run's `s, a, c, d, e,
+b` only because the neighbor order is different. Both are depth-first: each runs a path to
+its end before stepping back.
+
+Notice the explored vertices that land on the stack — `s` on top after `b` is processed,
+`d` after `e`. They are pushed because line 8 pushes every neighbor, and skipped because
+line 5 checks on the pop.
+
+## What it does not give you
+
+This loop gives the DFS *marking* order. It has no moment that corresponds to a recursive
+call *returning*, so it does not directly give finishing times. Topological sort needs
+those, and uses recursion, or a stack that stores where each vertex was in its list.
+
+> Iterative DFS is BFS with a stack and the mark moved to the pop. Pushing every neighbor
+> and skipping explored ones on the way out is deliberate, not waste.

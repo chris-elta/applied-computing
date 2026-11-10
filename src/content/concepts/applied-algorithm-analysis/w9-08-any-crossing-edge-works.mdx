@@ -1,0 +1,89 @@
+---
+course: applied-algorithm-analysis
+section: w9-search
+order: 1570
+title: Any Crossing Edge Works
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week9.html?hash=true#/21
+    caption: Slides 22–24 of 66 — why the choice does not matter, the one line left open, and a recap.
+notation:
+  - symbol: if and only if
+    reads: if and only if, sometimes written iff
+    means: >-
+      Both directions at once. "Explored iff reachable" means every explored vertex is
+      reachable, and every reachable vertex is explored.
+  - symbol: BFS
+    reads: B F S, breadth-first search
+    means: Fill the open line by taking a crossing edge from the vertex marked earliest.
+  - symbol: DFS
+    reads: D F S, depth-first search
+    means: Fill the open line by going on from the vertex marked most recently, as deep as possible.
+questions:
+  - ask: >-
+      The generic search has stopped. Why can no reachable vertex still be unexplored?
+    choices:
+      - text: >-
+          A path from `s` to it would start explored and end unexplored, so some edge on it
+          would cross the frontier — and the loop only stops when no edge crosses
+        correct: true
+        explains: >-
+          That is the whole argument. Walk the path from `s`; at the first unexplored vertex,
+          the edge into it is a crossing edge, so the loop could not have stopped.
+      - text: Because the loop runs once for every vertex in the graph
+        explains: >-
+          It runs once per *reachable* vertex other than `s`, and stops when no edge crosses.
+          Counting iterations does not show that nothing was missed.
+      - text: Because the algorithm chooses the best crossing edge each time
+        explains: >-
+          There is no best edge — the choice is deliberately left open. The guarantee holds
+          whichever edge is chosen, which is exactly what makes it useful.
+---
+
+The generic search says "choose some crossing edge" and leaves it there. Does the choice
+matter? For *which vertices end up explored*, no. Two short arguments show it, one for each
+half of "explored if and only if reachable".
+
+## It never marks an unreachable vertex
+
+Every new vertex is marked by following an edge from a vertex that was already explored.
+So each explored vertex was reached from an earlier one, which was reached from an earlier
+one, and so on back to `s`. Following those edges forwards gives a path from `s`. An
+explored vertex is always reachable.
+
+## It never misses a reachable vertex
+
+Suppose the loop has stopped but some reachable vertex `t` is still unexplored. Take a path
+from `s` to `t`. It starts at an explored vertex (`s`) and ends at an unexplored one
+(`t`), so somewhere along it there is a first step from explored to unexplored. That step
+is a crossing edge — and the loop stops only when *no* crossing edge exists. Contradiction.
+
+Neither argument mentions which edge was chosen. So any rule for choosing — random,
+alphabetical, oldest first, newest first — finds exactly the reachable vertices.
+
+## The one line left open
+
+Since the choice is free, use it. The two standard searches are two answers to the same
+question: *which crossing edge next?*
+
+| | fills the open line with | data structure | order it explores in |
+| --- | --- | --- | --- |
+| **BFS** | an edge from the vertex marked **earliest** | queue | layer by layer, by distance |
+| **DFS** | an edge from the vertex marked **most recently** | recursion, or a stack | one path as deep as it goes, then back |
+
+Both find the same set of vertices. What differs is the *order* they find them in — and
+that order is what each search is used for. BFS's order gives shortest paths; DFS's gives
+topological orderings. The specific running times and these extra properties each need
+their own argument, which the coming pages supply.
+
+## Where the first part landed
+
+- **What a graph is.** `G = (V, E)`, with `n = |V|` and `m = |E|`. In a connected simple
+  undirected graph, `n − 1 ≤ m ≤ n(n − 1)/2`.
+- **Two ways to store it.** A matrix costs `Θ(n²)` and checks one edge in `O(1)`; lists cost
+  `Θ(m + n)` and give neighbors directly. The degrees sum to `2m` either way.
+- **One search.** While some edge goes from explored to unexplored, mark its head. When it
+  stops, explored is exactly reachable, whichever edge was chosen.
+
+> BFS and DFS are the same loop with one line filled in differently. They find the same
+> vertices; they are worth telling apart because of the order they find them in.

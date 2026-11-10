@@ -1,0 +1,112 @@
+---
+course: applied-algorithm-analysis
+section: w9-components
+order: 1650
+title: One BFS per Component
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week9.html?hash=true#/42
+    caption: Slides 43–45 of 66 — the UCC algorithm, a run over three components (press Play on slide 44), and why it is still linear.
+notation:
+  - symbol: numCC
+    reads: num C C
+    means: The number of components found so far. It doubles as the label for the current one.
+  - symbol: "for i := 1 to n"
+    reads: for i from 1 to n
+    means: The outer loop, which tries every vertex in turn as a possible new start.
+  - symbol: "cc(v) := numCC"
+    reads: c c of v becomes num C C
+    means: Label `v` with the number of the component currently being searched.
+questions:
+  - ask: >-
+      UCC runs on a graph with `n` vertices and `m` edges in `k` components. It starts `k`
+      separate BFS searches. What is the total running time?
+    choices:
+      - text: "`O(m + n)`, whatever `k` is"
+        correct: true
+        explains: >-
+          The searches share one set of marks, so each vertex is queued once in the whole run
+          and each edge, lying inside one component, is scanned twice in total. Splitting the
+          work into `k` searches does not repeat any of it.
+      - text: "`O(k(m + n))`, since each BFS costs `O(m + n)`"
+        explains: >-
+          Each BFS costs `O(m + n)` *on the whole graph*, but here each one only touches its
+          own component. Added up, the components' sizes are the graph's size.
+      - text: "`O(n(m + n))`, since the outer loop tries all `n` vertices"
+        explains: >-
+          The outer loop runs `n` times, but almost every iteration is one test that fails:
+          the vertex is already explored. Only `k` iterations start a search, and they never
+          repeat each other's work.
+---
+
+One BFS labels one component. To label them all, try every vertex as a start, and skip the
+ones an earlier search already reached.
+
+```
+1   mark all vertices as unexplored
+2   numCC := 0
+3   for i := 1 to n do                   // try all vertices
+4       if i is unexplored then           // avoid redundancy
+5           numCC := numCC + 1            // a new component
+6           mark i as explored
+7           Q := a queue, initialized with i
+8           while Q is not empty do
+9               remove the vertex from the front of Q, call it v
+10              cc(v) := numCC
+11              for each neighbor w in Adj[v] do
+12                  if w is unexplored then
+13                      mark w as explored
+14                      add w to the end of Q
+```
+
+Lines 6–14 are BFS from `i`, with one new line: line 10, which writes the label. Line 4
+is what gives each component exactly one search.
+
+## A run
+
+On the ten-vertex example:
+
+| `i` | explored already? | action | labels written |
+| --- | --- | --- | --- |
+| 1 | no | `numCC := 1`, BFS from 1 | `cc = 1` for 1, 3, 5, 7, 9 |
+| 2 | no | `numCC := 2`, BFS from 2 | `cc = 2` for 2, 4 |
+| 3, 4, 5 | yes | skip | — |
+| 6 | no | `numCC := 3`, BFS from 6 | `cc = 3` for 6, 8, 10 |
+| 7–10 | yes | skip | — |
+
+Three searches, and every vertex queued exactly once.
+
+## Why it is still `O(m + n)`
+
+The tempting count is "`k` searches at `O(m + n)` each". It is wrong, because the searches
+share their marks:
+
+- **Each vertex joins a queue once in the whole run.** Line 1 runs once, outside the outer
+  loop; a vertex marked by search 1 stays marked during search 3.
+- **Each edge is scanned twice in the whole run.** An edge lies inside one component, so
+  only that component's search ever scans it — once from each end.
+- **The outer loop costs `O(n)`.** Most iterations are a single failed test on line 4.
+
+Add them: `O(m + n)` in total. In the example, 3 searches, 10 vertices queued once each,
+and 16 scans for 8 edges.
+
+## Two things that break it
+
+- **Resetting the marks inside the outer loop.** Each search would then re-explore its
+  whole component, and the cost really would grow with the number of starts.
+- **Dropping the test on line 4.** Searches would restart from vertices already labelled
+  and overwrite their labels: on a single edge `1–2`, the first search gives both `cc = 1`,
+  and restarting at 2 overwrites `cc(2) = 2`.
+
+## Labels are names, not facts
+
+Which component is called 1 depends on the outer loop's order. Try vertices in a different
+order and the numbers move around. *Which vertices share a number* does not change.
+
+The same "outer loop, then a search from each unexplored vertex" pattern returns twice more
+this week: DFS can label components just as well, and topological sort uses the identical
+outer loop.
+
+> Restart BFS at every vertex still unexplored, keeping the marks between searches. Each
+> vertex and edge is handled once in the whole run, so labelling every component costs the
+> same `O(m + n)` as one search.

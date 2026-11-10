@@ -1,0 +1,116 @@
+---
+course: applied-algorithm-analysis
+section: w9-graphs
+order: 1530
+title: The Adjacency List
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week9.html?hash=true#/12
+    caption: Slide 13 of 66 — one neighbor list per vertex. Its memory cost is the question on slide 17.
+notation:
+  - symbol: "Adj[v]"
+    reads: adj of v
+    means: >-
+      The list of `v`'s neighbors. The square brackets index an array or dictionary by
+      vertex. In a directed graph it lists only outgoing neighbors.
+  - symbol: "v → w"
+    reads: v to w
+    means: A directed edge from `v` to `w`. It appears in `Adj[v]`, not in `Adj[w]`.
+  - symbol: "Σ deg(v)"
+    reads: the sum of the degrees
+    means: >-
+      Add up every vertex's degree. In an undirected graph it always equals `2m`, because
+      each edge has two ends.
+  - symbol: "Θ(m + n)"
+    reads: theta of m plus n
+    means: >-
+      Grows like the number of vertices plus the number of edges — linear in the size of
+      the graph.
+questions:
+  - ask: >-
+      Why is the space for an adjacency list `Θ(m + n)` rather than `Θ(m)`?
+    choices:
+      - text: Every vertex needs a list head, even one with no neighbors
+        correct: true
+        explains: >-
+          A million vertices and no edges still need a million (empty) lists. The `n` term
+          pays for those heads; the `m` term pays for the entries.
+      - text: Each undirected edge is stored twice
+        explains: >-
+          True, but storing every edge twice is `2m`, which is still `Θ(m)`. Doubling is a
+          constant factor and cannot add an `n` term.
+      - text: The list has to be sorted, which costs extra
+        explains: >-
+          Nothing here is sorted, and sorting is a time cost, not a space cost.
+  - ask: >-
+      A directed graph has 5 vertices and 7 edges. How many neighbor entries do its
+      adjacency lists hold in total?
+    choices:
+      - text: "7"
+        correct: true
+        explains: >-
+          A directed edge `v → w` is stored once, in its tail's outgoing list `Adj[v]`. So
+          there is one entry per edge.
+      - text: "14"
+        explains: >-
+          That is `2m`, the count for an *undirected* graph, where each edge appears in both
+          endpoints' lists. Directed lists store outgoing edges only.
+      - text: "12"
+        explains: >-
+          That adds `n` to `m`. The 5 list heads exist, but they are heads, not neighbor
+          entries.
+---
+
+The adjacency matrix spends a cell on every pair that is *not* an edge. The other way to
+store a graph keeps only what is there: for each vertex, a list of its neighbors.
+
+```
+Adj[1] → 2
+Adj[2] → 1, 3, 4
+Adj[3] → 2, 4
+Adj[4] → 2, 3
+```
+
+This is the same four-vertex graph as the matrix example, with edges `1–2`, `2–3`, `2–4`
+and `3–4`. The lists hang off an array (or dictionary) indexed by vertex, so `Adj[v]` is
+found in one step.
+
+## Counting the entries
+
+Add up the list lengths: `1 + 3 + 2 + 2 = 8`. The graph has four edges, so that is `2m`.
+Each undirected edge `{2, 4}` appears twice — once as 4 in vertex 2's list, once as 2 in
+vertex 4's. Each list's length is that vertex's degree, so this is the same fact as the
+matrix's row sums:
+
+```
+Σ deg(v) = 2m        (undirected)
+```
+
+In a **directed** graph, store only **outgoing** neighbors: `Adj[v]` holds every `w` with
+an edge `v → w`. Each edge then appears once, in its tail's list, for `m` entries in all.
+The search algorithms this week all use this outgoing-list convention.
+
+## What it costs
+
+| part | how many |
+| --- | --- |
+| list heads, one per vertex | `n` |
+| neighbor entries | `2m` undirected, `m` directed |
+| **total** | **`Θ(m + n)`** |
+
+Why not `Θ(m)`? Because a vertex with no neighbors still has a list — an empty one. A
+million vertices and no edges need a million list heads. The `n` term is what keeps the
+bound honest for graphs with isolated vertices.
+
+Compare that with the matrix's `Θ(n²)`. For a sparse graph with `m = O(n)`, the list uses
+space linear in `n`; the matrix uses space quadratic in it. The gap is not a constant
+factor. A road network with a million intersections and a few million roads fits in a few
+million list entries, against a trillion matrix cells.
+
+The list also hands over a vertex's neighbors directly: to visit everything next to `u`,
+walk `Adj[u]` — `deg(u)` steps. The matrix would make you read a whole row of `n` cells to
+find the same few 1s. That difference is what makes graph search linear, a few pages on.
+
+> An adjacency list stores the graph in space proportional to its size, `n + m`, and gives
+> each vertex's neighbors without searching for them. It is the default for sparse graphs,
+> and every search algorithm this week assumes it.

@@ -1,0 +1,94 @@
+---
+course: applied-algorithm-analysis
+section: w9-topo
+order: 1700
+title: Every Edge Points Forward
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week9.html?hash=true#/57
+    caption: Slides 58–59 of 66 — the definition of a topological ordering, and counting the orderings of a four-vertex graph.
+notation:
+  - symbol: "v → w"
+    reads: v to w
+    means: A directed edge meaning `v` must come before `w` — for example, `v` is a prerequisite of `w`.
+  - symbol: "f(v)"
+    reads: f of v
+    means: >-
+      The position given to `v` in the ordering, a whole number from 1 to `n`. Each vertex
+      gets a different one.
+  - symbol: "{1, …, n}"
+    reads: the set one to n
+    means: The positions available, one per vertex.
+  - symbol: "f(v) < f(w)"
+    reads: f of v is less than f of w
+    means: "`v` is placed before `w`."
+questions:
+  - ask: >-
+      A DAG has edges `a → b`, `a → c`, `b → d` and `c → d`. Which of these is **not** a
+      topological ordering?
+    choices:
+      - text: "`a, b, d, c`"
+        correct: true
+        explains: >-
+          The edge `c → d` needs `c` before `d`, but here `d` is third and `c` fourth. One
+          backward edge is enough to fail.
+      - text: "`a, c, b, d`"
+        explains: >-
+          Check each edge: `a` before `b` and `c`, and both `b` and `c` before `d`. Every edge
+          points forward. `b` and `c` have no edge between them, so their order is free.
+      - text: "`a, b, c, d`"
+        explains: >-
+          Every edge points forward here too. This graph has the same shape as the slide's
+          example, and it has two orderings — this is one of them.
+---
+
+You have tasks, and some must be done before others. A degree has courses with
+prerequisites; a build has files that depend on other files; a recipe has steps that need
+earlier steps. Can you list everything in an order that never does a task before something
+it depends on?
+
+## As a graph
+
+Make each task a vertex, and draw an edge `v → w` whenever `v` must come before `w`. A
+**topological ordering** is a list of the vertices in which **every edge points forward**.
+
+Formally: give each vertex a different position `f(v)` in `{1, …, n}`, so that
+
+```
+every edge v → w  has  f(v) < f(w)
+```
+
+Lay the vertices out on a line in position order. If the ordering is topological, every
+arrow points left to right.
+
+## How many orderings?
+
+Take the slide's graph: `s → v`, `s → w`, `v → t`, `w → t`.
+
+- `s` has edges *to* `v` and `w`, so it must be first.
+- `t` has edges *from* `v` and `w`, so it must be last.
+- `v` and `w` take positions 2 and 3. No edge joins them, so either can go first.
+
+| ordering | `s → v` | `s → w` | `v → t` | `w → t` |
+| --- | --- | --- | --- | --- |
+| `s, v, w, t` | 1 < 2 ✓ | 1 < 3 ✓ | 2 < 4 ✓ | 3 < 4 ✓ |
+| `s, w, v, t` | 1 < 3 ✓ | 1 < 2 ✓ | 3 < 4 ✓ | 2 < 4 ✓ |
+
+**Two** orderings. In general a graph can have many, and the definition does not prefer one
+of them: any order that keeps every edge forward is correct. An algorithm may return any of
+them, so two correct programs can print different answers.
+
+## Checking an answer
+
+Checking is easy even when finding is not: for each edge `v → w`, compare positions. One
+backward edge and the ordering fails. That costs `O(m + n)` — set up the positions, then one
+comparison per edge.
+
+## Not every graph has one
+
+If `a` must come before `b` and `b` must come before `a`, no list can satisfy both. Any
+directed **cycle** creates this problem. The next page shows that cycles are the *only*
+obstacle, and the pages after it find an ordering with one DFS.
+
+> A topological ordering lists the vertices so that every edge points forward. There may be
+> several; any one that keeps every edge forward is correct.

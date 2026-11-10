@@ -1,0 +1,111 @@
+---
+course: applied-algorithm-analysis
+section: w9-bfs
+order: 1620
+title: Distance Labels
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week9.html?hash=true#/35
+    caption: Slides 36–37 of 66 — Augmented-BFS, then a run that labels every vertex with its distance (press Play on slide 37).
+notation:
+  - symbol: "l(v)"
+    reads: l of v, or the label of v
+    means: >-
+      The distance from `s` to `v` found so far. It starts at `+∞` and is set once, when `v`
+      is discovered.
+  - symbol: "l(w) := l(v) + 1"
+    reads: l of w becomes l of v plus one
+    means: >-
+      `w` was found from `v`, so it is one edge further from `s` than `v` is. `:=` is
+      assignment, not equality.
+  - symbol: "v ≠ s"
+    reads: v is not equal to s
+    means: Every vertex other than the start.
+questions:
+  - ask: >-
+      Halfway through Augmented-BFS, a vertex `x` has `l(x) = +∞`. What can you conclude?
+    choices:
+      - text: Only that `x` has not been discovered yet
+        correct: true
+        explains: >-
+          During the run, `+∞` is just the starting value. `x` might be found in the next
+          layer. Only a label still `+∞` when the queue empties means `x` is unreachable.
+      - text: That there is no path from `s` to `x`
+        explains: >-
+          That conclusion is safe only at the end. Mid-run, BFS may simply not have reached
+          `x`'s layer yet.
+      - text: That `x` is in the queue
+        explains: >-
+          A vertex in the queue has already been discovered, so its label has been set to a
+          finite number. An infinite label means it has not joined the queue.
+---
+
+BFS already finds the layers. To *record* them, add one number per vertex: the label
+`l(v)`, holding the distance from `s` found so far.
+
+```
+1   mark s as explored, all other vertices as unexplored
+2   l(s) := 0,  l(v) := +∞ for every v ≠ s
+3   Q := a queue data structure, initialized with s
+4   while Q is not empty do
+5       remove the vertex from the front of Q, call it v
+6       for each neighbor w in Adj[v] do
+7           if w is unexplored then
+8               mark w as explored
+9               l(w) := l(v) + 1
+10              add w to the end of Q
+```
+
+Only lines 2 and 9 are new. Everything else is plain BFS.
+
+- **Line 2** starts `s` at distance 0 and everything else at `+∞` — "not found yet".
+- **Line 9** runs at the moment `w` is discovered from `v`: `w` is one edge further out than
+  `v`.
+
+**Postcondition:** for every vertex `v`, `l(v) = dist(s, v)`.
+
+## A run
+
+On the six-vertex graph, neighbors in alphabetical order:
+
+| remove | discovers | labels set |
+| --- | --- | --- |
+| `s` (0) | `a`, `b` | `l(a) = l(b) = 1` |
+| `a` (1) | `c` | `l(c) = 2` |
+| `b` (1) | `d` | `l(d) = 2` |
+| `c` (2) | `e` | `l(e) = 3` |
+| `d`, `e` | — | nothing changes |
+
+`e` is a neighbor of both `c` and `d`, and both have label 2. It takes its label from `c`
+only because `c` left the queue first. Either would have given 3.
+
+## Why the first label is the right one
+
+Each label is set **once**, when the vertex is discovered, and never revised. Why can no
+later scan improve it? Because BFS finishes a whole layer before starting the next. When
+`w` is first discovered from `v`, every vertex closer to `s` than `v` has already been
+removed and scanned. If `w` were reachable in fewer steps, one of those earlier vertices
+would have discovered it first.
+
+So line 9 never needs a comparison like "if this is shorter". The queue's order guarantees
+that the first answer is the best one.
+
+## Reading `+∞` correctly
+
+A label of `+∞` means two different things at two different times:
+
+| when | `l(v) = +∞` means |
+| --- | --- |
+| during the run | `v` has not been discovered *yet* |
+| after the queue empties | `v` is **unreachable** from `s` |
+
+Do not conclude "no path" from an infinite label mid-run.
+
+## What it costs
+
+Lines 2 and 9 add constant work per vertex. The total stays `O(m + n)`. This holds in
+directed and undirected graphs, with every edge counting as one step.
+
+> Augmented-BFS sets each vertex's label once, to its parent's label plus one, and that
+> first label is already the distance — because BFS never reaches a layer before finishing
+> the one before it.

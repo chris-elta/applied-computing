@@ -1,0 +1,99 @@
+---
+course: applied-algorithm-analysis
+section: w9-topo
+order: 1710
+title: A Cycle Rules It Out
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week9.html?hash=true#/59
+    caption: Slide 60 of 66 — a directed cycle laid out in a line, and the theorem that cycles are the only obstacle.
+notation:
+  - symbol: directed cycle
+    reads: directed cycle
+    means: >-
+      A path that follows edges in their direction and returns to where it started, such as
+      `u → v → w → u`.
+  - symbol: DAG
+    reads: dag, directed acyclic graph
+    means: A directed graph with no directed cycle.
+  - symbol: sink
+    reads: sink
+    means: A vertex with no outgoing edges. Nothing has to come after it.
+  - symbol: if and only if
+    reads: if and only if
+    means: Both directions — a topological ordering exists exactly when there is no directed cycle.
+questions:
+  - ask: >-
+      Why must every DAG have a sink?
+    choices:
+      - text: >-
+          Keep following outgoing edges from any vertex. If you never got stuck, you would
+          eventually revisit a vertex — which would be a cycle
+        correct: true
+        explains: >-
+          There are only `n` vertices, so a walk of more than `n` steps repeats one. A repeat
+          along directed edges is a directed cycle, which a DAG does not have. So the walk
+          must get stuck, and where it gets stuck is a sink.
+      - text: Because every graph has a vertex with no edges at all
+        explains: >-
+          Many graphs have no isolated vertex. A sink can have plenty of *incoming* edges; it
+          only needs no outgoing ones.
+      - text: Because the vertex with the largest label is always a sink
+        explains: >-
+          Vertex labels are arbitrary names. A sink comes from the edge structure, and the
+          argument has to say why the structure guarantees one.
+---
+
+Lay six vertices `u, v, w, x, y, z` in a ring with the arrows running all the way around:
+`u → v → w → x → y → z → u`. Now try to put them on a line with every arrow pointing right.
+
+Put them in the obvious order `u, v, w, x, y, z`, positions 1 to 6. Five of the arrows point
+right. The sixth, `z → u`, runs from position 6 back to position 1. Try moving `u` later to
+fix it, and the edge `u → v` points backward instead.
+
+## Why no order can work
+
+In *any* ordering of a cycle, look at the cycle vertex with the **largest** position. It has
+an outgoing edge in the cycle, and that edge goes to some other cycle vertex — one with a
+smaller position, since this one has the largest. That edge points backward.
+
+So a directed cycle has no topological ordering, however you arrange it. The same argument
+works for a cycle sitting inside a larger graph: the cycle's own edges cannot all point
+forward.
+
+## The theorem
+
+> A directed graph has a topological ordering **if and only if** it has no directed cycle.
+
+A directed graph with no directed cycle is a **directed acyclic graph**, or **DAG**. The
+argument above is one direction: a cycle rules out an ordering. The other direction says
+every DAG *has* one.
+
+## Every DAG has an ordering
+
+The proof is a construction.
+
+**Step 1 — every DAG has a sink.** A sink is a vertex with no outgoing edges. Start anywhere
+and keep following outgoing edges. If you never got stuck, then after more than `n` steps
+you would have revisited a vertex — and a walk along directed edges that comes back to a
+vertex is a directed cycle. A DAG has none, so the walk gets stuck, at a sink.
+
+**Step 2 — put the sink last.** Nothing has to come after a vertex with no outgoing edges,
+so the last position is safe for it.
+
+**Step 3 — delete it and repeat.** Deleting a vertex cannot create a cycle, so what is left
+is still a DAG, and it has a sink of its own. Put that one second-to-last, and so on.
+
+| round | find | place it at |
+| --- | --- | --- |
+| 1 | a sink of the whole graph | position `n` |
+| 2 | a sink of what remains | position `n − 1` |
+| … | … | … |
+| `n` | the last vertex | position 1 |
+
+This builds an ordering *from right to left*. Searching the remaining graph for a sink every
+round gives a simple `O(n(m + n))` bound. The next page gets the same right-to-left
+ordering out of a single DFS in `O(m + n)`.
+
+> A cycle has no ordering, because its last vertex points back. Without cycles there is
+> always a sink to put last — so an ordering exists exactly when the graph is a DAG.

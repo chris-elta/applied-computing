@@ -1,0 +1,92 @@
+---
+course: applied-algorithm-analysis
+section: w9-bfs
+order: 1610
+title: Shortest Means Fewest Edges
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week9.html?hash=true#/32
+    caption: Slides 33–35 of 66 — layers as distances, the definition of dist, and a weighted graph where BFS's answer is wrong.
+notation:
+  - symbol: "dist(v, w)"
+    reads: dist of v comma w, or the distance from v to w
+    means: >-
+      The minimum number of edges on any path from `v` to `w`. For example
+      `dist(s, e) = 3` in the slide's graph.
+  - symbol: "+∞"
+    reads: plus infinity
+    means: >-
+      The distance when no path exists. Programs often use a sentinel such as −1 or 0
+      instead; check which a problem expects.
+  - symbol: unweighted
+    reads: unweighted
+    means: A graph whose edges have no numbers on them, so every edge counts as one step.
+questions:
+  - ask: >-
+      A road graph has a direct road from `s` to `t` that takes 10 minutes, and a route
+      through `a` and `b` whose three roads take 1 minute each. You run BFS from `s`,
+      ignoring the times. What does it report as the shortest route to `t`?
+    choices:
+      - text: The direct road — 1 edge — even though it takes 10 minutes against 3
+        correct: true
+        explains: >-
+          BFS counts edges. The direct road is in layer 1; the other route reaches `t` in
+          three edges. BFS has no way to see that the one edge is slow.
+      - text: The route through `a` and `b`, because it takes 3 minutes in total
+        explains: >-
+          That is the shortest route by *weight*. BFS never looks at weights — it would find
+          this route only if every road took the same time.
+      - text: Neither — BFS cannot run on a weighted graph
+        explains: >-
+          It can run; it ignores the weights. The danger is exactly that it runs and returns
+          an answer that minimises the wrong thing.
+---
+
+BFS puts `e` in layer 3. The shortest path from `s` to `e` — say `s → a → c → e` — also has
+three edges. That is not a coincidence, and it is worth recording for every vertex.
+
+## Distance, defined
+
+```
+dist(v, w) = the minimum number of edges in a path from v to w
+```
+
+On the slide's graph:
+
+| vertex | layer | `dist(s, ·)` |
+| --- | --- | --- |
+| `s` | 0 | 0 |
+| `a`, `b` | 1 | 1 |
+| `c`, `d` | 2 | 2 |
+| `e` | 3 | 3 |
+
+If no path exists, `dist(v, w) = +∞`. That is the mathematical convention; code and
+exercises often use a sentinel like −1 or 0 instead, so read what the problem expects
+before returning one.
+
+**The claim:** for every vertex, its BFS layer *is* its distance from `s`. This holds in
+directed and undirected graphs alike, as long as each edge counts as one step. The reason
+is the layer rule — a vertex joins the first layer it can, so it cannot be reachable in
+fewer steps than its layer number, and its layer gives a path with exactly that many.
+
+## "Shortest" means fewest edges
+
+The word *shortest* here carries a specific meaning: **fewest edges**, not smallest total
+weight. In an unweighted graph those are the same thing. In a weighted graph they need not
+be.
+
+| path from `s` to `t` | edges | total weight |
+| --- | --- | --- |
+| `s → t` directly | 1 | 10 |
+| `s → a → b → t` | 3 | 1 + 1 + 1 = 3 |
+
+BFS reaches `t` in layer 1 through the direct edge and prefers it. If the weights were
+minutes, a driver would take the three-edge route. BFS cannot see that, because it never
+reads a weight.
+
+You can run BFS on a weighted graph — it ignores the weights and runs fine — but it still
+minimises the number of edges. That is the dangerous case: an answer comes back, and it
+answers a different question. Shortest paths by weight need a different algorithm.
+
+> BFS layers are distances in edges. That is the right answer when every step costs the
+> same, and the wrong one as soon as edges carry different weights.

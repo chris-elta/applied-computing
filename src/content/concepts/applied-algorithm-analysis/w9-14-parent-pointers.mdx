@@ -1,0 +1,108 @@
+---
+course: applied-algorithm-analysis
+section: w9-bfs
+order: 1630
+title: Parent Pointers and the Path Itself
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week9.html?hash=true#/37
+    caption: Slide 38 of 66 — recording who discovered each vertex, then walking back from the target (press Play).
+notation:
+  - symbol: "parent[v]"
+    reads: parent of v
+    means: The vertex from which `v` was first discovered. Following it steps one edge back toward `s`.
+  - symbol: NIL
+    reads: nil
+    means: No parent. The start `s` keeps `parent[s] = NIL`, and so does any vertex never discovered.
+  - symbol: "x"
+    reads: x
+    means: A cursor that walks backwards from the target to the start, one parent at a time.
+questions:
+  - ask: >-
+      After BFS, the parents are `a: s`, `b: s`, `c: a`, `d: b`, `e: c`. You walk back from
+      `e` adding each vertex to a list until you reach NIL. What do you have before the last
+      step of the procedure?
+    choices:
+      - text: "`e, c, a, s` — the path backwards, which must then be reversed"
+        correct: true
+        explains: >-
+          Parent pointers point toward `s`, so the walk starts at the target. Reversing gives
+          `s → a → c → e`, three edges, matching `l(e) = 3`.
+      - text: "`s, a, c, e` — the path, ready to use"
+        explains: >-
+          The walk begins at `e`, not `s`, so the first vertex added is `e`. The list comes
+          out backwards, which is why the procedure ends with a reversal.
+      - text: "`e, d, b, s` — through `d`, since `e` is also next to `d`"
+        explains: >-
+          `e` is adjacent to `d`, but `parent[e]` is `c`, because `c` left the queue first and
+          discovered `e`. The walk follows the recorded parents, not any neighbor.
+---
+
+The label `l(e) = 3` says how far `e` is. It does not say *which* three edges to take. To
+recover an actual shortest path, record one more thing during BFS: who discovered each
+vertex.
+
+```
+1   parent[v] := NIL for every vertex v
+2   when w is first discovered from v:  parent[w] := v
+```
+
+Line 2 sits right beside the label assignment — the same moment, `w` is marked, labelled
+and queued. On the example graph, BFS records:
+
+| vertex | `s` | `a` | `b` | `c` | `d` | `e` |
+| --- | --- | --- | --- | --- | --- | --- |
+| parent | NIL | `s` | `s` | `a` | `b` | `c` |
+
+## Walking back
+
+Each parent pointer is one edge back toward `s`. To find a path to a target `t`, start at
+`t` and follow them until they run out:
+
+```
+3   x := t
+4   while x ≠ NIL do  add x to the list
+5       x := parent[x]
+6   reverse the list
+```
+
+From `e`:
+
+| `x` | list so far | next `x` |
+| --- | --- | --- |
+| `e` | `e` | `parent[e] = c` |
+| `c` | `e, c` | `parent[c] = a` |
+| `a` | `e, c, a` | `parent[a] = s` |
+| `s` | `e, c, a, s` | `parent[s] = NIL` — stop |
+
+Reversed: **`s → a → c → e`**, three edges, matching `l(e) = 3`.
+
+## Why reverse?
+
+Parents point *toward* the start, so the walk can only begin at the target. The list comes
+out target-first. Reversing it is one pass over a list as long as the path. Alternatively,
+push onto a stack and pop — same effect.
+
+## Why it always works
+
+Along the parent chain, every step decreases the distance label by exactly one: `parent[w]
+= v` was set together with `l(w) = l(v) + 1`. A sequence of numbers that drops by one each
+step cannot loop, and must reach 0 — which only `s` has. So the walk always ends at `s`,
+with exactly `l(t)` edges: a shortest path.
+
+Two edge cases:
+
+- The path to `s` itself is just `[s]`, with zero edges, since `parent[s] = NIL`.
+- A target whose label is still `+∞` was never discovered, has no parent, and has no path.
+
+## What it costs
+
+One extra field per vertex: `O(n)` space. Recording parents adds constant time per
+discovery, and walking back costs time proportional to the path's length.
+
+A different neighbor order could give `e` the parent `d` instead, producing the path
+`s → b → d → e`. That is equally short. BFS guarantees *a* shortest path, not a particular
+one.
+
+> Record who discovered each vertex, and every vertex points one step back toward `s`.
+> Walking those pointers from the target and reversing the result gives a shortest path.

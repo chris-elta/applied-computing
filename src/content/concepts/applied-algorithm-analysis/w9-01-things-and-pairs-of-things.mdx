@@ -1,0 +1,105 @@
+---
+course: applied-algorithm-analysis
+section: w9-graphs
+order: 1500
+title: Things and Pairs of Things
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week9.html?hash=true#/2
+    caption: Slides 3–4 of 66 — what a graph models, then one undirected and one directed graph on the same four vertices.
+notation:
+  - symbol: "G = (V, E)"
+    reads: G equals V comma E
+    means: >-
+      A graph named `G`, given as a pair: its vertex set `V` and its edge set `E`. The round
+      brackets bundle two things together; they are not a function call.
+  - symbol: "V"
+    reads: capital V
+    means: The set of vertices — the objects. People, intersections, web pages, courses.
+  - symbol: "E"
+    reads: capital E
+    means: The set of edges — the connections between pairs of vertices.
+  - symbol: "{v, w}"
+    reads: the set v, w
+    means: >-
+      An undirected edge. Curly braces make an unordered set, so `{v, w}` and `{w, v}` are
+      the same edge.
+  - symbol: "(v, w)"
+    reads: the pair v, w
+    means: >-
+      A directed edge from `v` to `w`. Order matters: `(v, w)` and `(w, v)` are different
+      edges, like one-way streets in opposite directions.
+  - symbol: tail, head
+    reads: tail, head
+    means: >-
+      For a directed edge `(v, w)`, `v` is the tail (where it starts) and `w` is the head
+      (where the arrow points).
+questions:
+  - ask: >-
+      A directed graph has the edges `(a, b)` and `(b, c)`, and nothing else. Which
+      statement is true?
+    choices:
+      - text: From `a` you can get to `c`, but from `c` you cannot get anywhere
+        correct: true
+        explains: >-
+          Directed edges are followed tail to head only: `a → b → c`. No edge has `c` as its
+          tail, so a walk that starts at `c` goes nowhere.
+      - text: The edges `(a, b)` and `(b, a)` are the same, so you can also get from `b` to `a`
+        explains: >-
+          That is the rule for undirected edges, written `{a, b}`. Round brackets mean order
+          matters, and `(b, a)` is not in this graph.
+      - text: Every vertex can reach every other, because the graph is in one piece
+        explains: >-
+          Drawn without arrows it looks like one piece, but in a directed graph being joined
+          by a line is not enough — the arrows have to point the way you want to go.
+---
+
+A friendship network, a road map, the links between web pages and a list of course
+prerequisites look nothing alike. Strip each one down and the same two lists are left:
+
+| | things | pairs of things |
+| --- | --- | --- |
+| friendships | people | who is friends with whom |
+| road map | intersections | which intersections a road joins |
+| web | pages | which page links to which |
+| prerequisites | courses | which course must come before which |
+
+That is all a **graph** is. There are no coordinates, no lengths and no picture. A drawing
+is a convenience for humans; the algorithm sees only the lists. The benefit of the one name
+is that an algorithm written for graphs works on all four problems, so it never has to be
+invented four times.
+
+## Writing it down
+
+We write `G = (V, E)`. The things are **vertices**, collected in the set `V`. The pairs are
+**edges**, collected in `E`.
+
+Graphs come in two flavours, and the notation records which one you have:
+
+| | undirected | directed |
+| --- | --- | --- |
+| edge written | `{v, w}` — braces | `(v, w)` — round brackets |
+| order matters? | no: `{v, w} = {w, v}` | yes: runs from tail `v` to head `w` |
+| can be followed | either way | tail to head only |
+| example | friendship | a web link, a one-way street, a prerequisite |
+
+The bracket shapes are the whole difference on paper, and they are easy to misread. Braces
+are set notation, and a set has no order. Round brackets make an ordered pair, and swapping
+the entries gives a different pair.
+
+## Why direction changes the answers
+
+Take the four vertices `s, v, w, t` from the slide, joined by five edges. In the undirected
+version, every vertex can get to every other: the graph is in one piece. Put arrows on the
+same five edges and that stops being true. A vertex whose edges all point away from it can
+leave but cannot be reached from anywhere else.
+
+So the question *which vertices can I get to from here?* has different answers on the two
+graphs, even though they have the same drawing without arrows. That question, called
+**reachability**, drives the rest of the week: breadth-first search, depth-first search,
+connected components and topological ordering are all answers to it, or to a refinement of
+it.
+
+> A graph is two lists: things, and pairs of things. Whether the pairs are ordered —
+> `(v, w)` against `{v, w}` — changes which vertices can reach which, and so it changes
+> what every algorithm this week returns.
