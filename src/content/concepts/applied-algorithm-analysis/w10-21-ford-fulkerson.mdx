@@ -1,0 +1,110 @@
+---
+course: applied-algorithm-analysis
+section: w10-flow
+order: 2000
+title: Ford–Fulkerson
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week10.html?hash=true#/44
+    caption: Slide 45 of 66 — the algorithm. The explicit residual-record pseudocode is the supplement on slide 65.
+notation:
+  - symbol: augmenting path
+    reads: awg-MENT-ing path
+    means: >-
+      A directed `s`–`t` path in the residual graph with positive capacity on every edge.
+  - symbol: "Δ"
+    reads: delta
+    means: >-
+      The bottleneck: the smallest residual capacity on the chosen path. That is how much
+      extra flow is sent.
+  - symbol: "f ← f + Δ"
+    reads: f becomes f plus delta
+    means: Update the stored flow. `←` is assignment.
+questions:
+  - ask: >-
+      An augmenting path uses residual edges with capacities 3, 2 (backward) and 5. How
+      does Ford–Fulkerson update the original edge behind the backward residual edge?
+    choices:
+      - text: Its flow decreases by 2
+        correct: true
+        explains: >-
+          The bottleneck is `Δ = min(3, 2, 5) = 2`. A backward residual edge cancels flow, so
+          the original edge's flow goes down by `Δ`.
+      - text: Its flow increases by 2
+        explains: >-
+          Only forward residual edges increase flow. A backward edge `v → u` represents
+          cancelling flow on `u → v`.
+      - text: Its flow decreases by 5
+        explains: >-
+          Every edge on the path changes by the same amount, the bottleneck. 5 is the largest
+          residual capacity on the path, not the smallest.
+      - text: It is unchanged, because backward edges are not part of the network
+        explains: >-
+          The backward edge is not a pipe, but it stands for one. Using it changes the flow
+          on the original edge it represents.
+---
+
+The algorithm is the residual graph put to work: find an improving path, push as much as it
+allows, update, repeat.
+
+## The loop
+
+Start with **zero flow** on every edge. Then repeat:
+
+1. **Find an augmenting path**: any directed `s`–`t` path in the residual graph with positive
+   capacity on every edge.
+2. **Choose `Δ`**, the smallest residual capacity on the path, its **bottleneck**.
+3. **Update the original flows.** For each original edge `u → v` the path represents:
+   - path uses `u → v`, **forward**: `f ← f + Δ`;
+   - path uses `v → u`, **backward**: `f ← f − Δ`.
+4. **Recompute the residual capacities** of the changed edges: forward `c − f`, backward `f`.
+
+**When no augmenting path remains, stop.** The current flow is maximum. The max-flow
+min-cut proof explains why.
+
+## Why the bottleneck
+
+`Δ` is the largest amount every edge on the path can absorb:
+
+- on a forward edge, adding `Δ ≤ c − f` keeps the flow within capacity;
+- on a backward edge, cancelling `Δ ≤ f` keeps the flow non-negative;
+- at every intermediate vertex of the path, one unit comes in and one goes out, so
+  conservation still holds.
+
+So the updated flow is feasible, and its value has gone up by `Δ`.
+
+## Explicit residual records
+
+The supplement on slide 65 writes the loop with both residual records per edge:
+
+```
+for every original edge e = (u, v):  f[e] ← 0
+build residual records: forward c(e), backward 0
+while a positive-capacity residual s–t path P exists:
+    Δ ← smallest residual capacity on P
+    for each residual edge a in P:
+        e ← the original edge represented by a
+        if a is forward:  f[e] ← f[e] + Δ
+        if a is backward: f[e] ← f[e] − Δ
+    for each changed e, update BOTH residual records:
+        forward ← c(e) − f[e];  backward ← f[e]
+return f and its value F
+```
+
+Two details from the slide:
+
+- **Search only positive records.** A zero-capacity residual edge is not usable.
+- **Keep records separate** when the graph has both `u → v` and `v → u` as original edges.
+  The backward record of one is not the forward record of the other.
+
+## Integer capacities, integer flows
+
+The flow starts at 0. If every capacity is an integer, every residual capacity is an
+integer, so every bottleneck `Δ` is an integer, and every update keeps the flows whole.
+Ford–Fulkerson then ends with an **integer** maximum flow. Each round also raises the value
+by at least 1, and the value can never pass a cut's capacity, so the loop must stop. Bipartite
+matching depends on this integrality.
+
+> Ford–Fulkerson starts from zero flow and repeatedly sends the bottleneck amount along an
+> augmenting path, adding on forward edges and cancelling on backward ones. With integer
+> capacities, the flow stays integer throughout and the loop terminates.

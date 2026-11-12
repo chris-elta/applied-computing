@@ -1,0 +1,113 @@
+---
+course: applied-algorithm-analysis
+section: w10-lp-geometry
+order: 1910
+title: When There Is No Best Plan
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week10.html?hash=true#/24
+    caption: Slides 25–26 of 66 — infeasible and unbounded LPs, then an unbounded region that still has a best plan.
+notation:
+  - symbol: infeasible
+    reads: in-FEE-zuh-bull
+    means: No plan satisfies every constraint. The feasible region is empty.
+  - symbol: unbounded objective
+    reads: unbounded objective
+    means: >-
+      Feasible plans exist with objective values as large as you like, so no maximum exists.
+  - symbol: "(t, 0)"
+    reads: t, zero
+    means: >-
+      A family of plans, one for each number `t ≥ 0`. Used to show values growing without
+      limit.
+questions:
+  - ask: >-
+      An LP's feasible region is unbounded: it runs off to infinity in some direction. What
+      can you conclude about its maximum?
+    choices:
+      - text: Nothing yet. It depends on whether the objective improves in a direction the region extends in
+        correct: true
+        explains: >-
+          `max x₁` with `0 ≤ x₁ ≤ 1, x₂ ≥ 0` has an unbounded region and an optimum of 1. The
+          region runs off in `x₂`, which the objective ignores.
+      - text: The objective is unbounded, so there is no maximum
+        explains: >-
+          An unbounded region does not imply an unbounded objective. If the objective does not
+          improve in the directions the region extends in, a best value can still exist.
+      - text: The LP is infeasible
+        explains: >-
+          An unbounded region is as far from empty as possible. It contains infinitely many
+          plans, so the LP is certainly feasible.
+      - text: A vertex is optimal, by the vertex theorem
+        explains: >-
+          The vertex theorem as stated assumes a bounded region. Without that, an optimum may
+          not exist at all, as in `max 3x₁ + 4x₂` with only `x₁, x₂ ≥ 0`.
+---
+
+The bakery has a best plan. Not every LP does, and there are exactly two ways for it to go
+wrong.
+
+## 1 · Infeasible: no plan at all
+
+```
+x₁ + x₂ ≤ 5
+x₁ + x₂ ≥ 10
+```
+
+No pair of numbers is both at most 5 and at least 10 in total. The two half-planes do not
+overlap, the feasible region is empty, and there is nothing to optimise.
+
+## 2 · Unbounded objective: no largest value
+
+```
+maximise  3x₁ + 4x₂
+subject to  x₁, x₂ ≥ 0
+```
+
+Plans exist, but none is best. The plan `(t, 0)` is feasible for every `t ≥ 0` and earns
+`3t`. Take `t` large enough and it beats any proposed maximum. The profit keeps rising
+without limit.
+
+## Real, or a mistake?
+
+| result | could be real | usually a sign of |
+| --- | --- | --- |
+| infeasible | demands that genuinely conflict | a `≤` typed as `≥`, or a wrong bound |
+| unbounded | rare in practice | a forgotten constraint: a capacity, a demand limit |
+
+Both are worth taking seriously, but a real bakery cannot earn infinite profit. If a model
+says so, check it before believing it. In the example, the missing rules are the demand and
+capacity limits.
+
+## Unbounded region is not unbounded objective
+
+These two are easy to confuse:
+
+```
+maximise  x₁
+subject to  0 ≤ x₁ ≤ 1,   x₂ ≥ 0
+```
+
+The region is a strip, 1 wide and infinitely tall, so it is **unbounded**: `x₂` has no
+upper limit. But the objective only looks at `x₁`, which never exceeds 1. So:
+
+- the maximum exists and equals 1;
+- every point `(1, x₂)` is optimal, a whole infinite edge of them;
+- `(1, 0)` is a vertex, and it is among the optimal points.
+
+What matters is whether the region extends in a direction **the objective rewards**. Here it
+extends upward, and moving upward does not change `x₁`.
+
+## The complete picture
+
+Every LP ends in one of three ways:
+
+| outcome | feasible region | maximum |
+| --- | --- | --- |
+| optimal | nonempty | attained, at a vertex if the region has one |
+| infeasible | empty | none: nothing to choose |
+| unbounded | nonempty and unbounded | none: values grow without limit |
+
+> An LP either has an optimum, has no feasible plan, or has feasible plans with no upper
+> limit on value. An unbounded region alone does not cause the third case. The region must
+> extend in a direction the objective improves in.

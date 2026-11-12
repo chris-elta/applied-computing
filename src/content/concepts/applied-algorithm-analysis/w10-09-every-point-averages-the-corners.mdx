@@ -1,0 +1,122 @@
+---
+course: applied-algorithm-analysis
+section: w10-lp-geometry
+order: 1880
+title: Every Point Averages the Corners
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week10.html?hash=true#/17
+    caption: Slides 18–21 of 66 — the worked example at P = (100, 200), then the general proof.
+notation:
+  - symbol: "P = ½L + ½C"
+    reads: P equals half L plus half C
+    means: >-
+      `P` is the midpoint of `L` and `C`: each coordinate of `P` is the average of theirs.
+  - symbol: "x = Σ λᵢvᵢ"
+    reads: x equals the sum of lambda i times v i
+    means: >-
+      `x` is a weighted average of the vertices `v₁, …, vₖ`, with weight `λᵢ` on vertex
+      `vᵢ`.
+  - symbol: "λᵢ ≥ 0, Σ λᵢ = 1"
+    reads: each lambda i is at least zero, and the lambdas sum to one
+    means: The conditions that make the weighted average a convex combination.
+  - symbol: "max over 1 ≤ i ≤ k of Z(vᵢ)"
+    reads: the largest of Z at v one through Z at v k
+    means: The objective value at the best vertex.
+questions:
+  - ask: >-
+      The proof writes a feasible point as `x = Σ λᵢvᵢ` and concludes
+      `Z(x) ≤ max Z(vᵢ)`. Which step needs the objective to be linear?
+    choices:
+      - text: "`Z(Σ λᵢvᵢ) = Σ λᵢ Z(vᵢ)`, splitting the objective across the average"
+        correct: true
+        explains: >-
+          Only a linear objective lets you evaluate a weighted average of points as the same
+          weighted average of their values. A curved objective could reward the middle of
+          the region.
+      - text: Writing the point as a weighted average of vertices
+        explains: >-
+          That step is about the region, not the objective. It uses the region being a
+          bounded convex polygon. The objective has not appeared yet.
+      - text: Checking that the weights sum to 1
+        explains: >-
+          The weights sum to 1 because of how they were built, from segments between points.
+          No objective is involved.
+      - text: Concluding that a weighted average is at most its largest input
+        explains: >-
+          That holds for any numbers with non-negative weights summing to 1. It is
+          arithmetic, not a property of `Z`.
+---
+
+The equal-profit picture shows a vertex is optimal. This proof shows that *no* feasible
+point can beat the best vertex, and that works in any number of dimensions, where pictures
+stop.
+
+## A worked example
+
+Take the feasible point `P = (100, 200)`, which is inside the bakery region and not a
+corner. The relevant vertices are `A = (0, 0)`, `B = (0, 300)` and `C = (200, 200)`.
+
+**Step 1: go sideways to the boundary.** A horizontal line through `P` hits the boundary at
+`L = (0, 200)` on the left and `C = (200, 200)` on the right. `P` is halfway between them:
+
+```
+P = ½L + ½C
+```
+
+`C` is already a vertex. `L` is not. It lies on the edge from `A` to `B`.
+
+**Step 2: replace `L` by its edge's endpoints.** `L` is two-thirds of the way from `A` up to
+`B`, since 200 is ⅔ of 300:
+
+```
+L = ⅓A + ⅔B
+```
+
+Substitute it in:
+
+```
+P = ½(⅓A + ⅔B) + ½C = ⅙A + ⅓B + ½C
+```
+
+The weights ⅙, ⅓ and ½ are non-negative and sum to 1. Check the coordinates:
+`⅙(0, 0) + ⅓(0, 300) + ½(200, 200) = (100, 200)`.
+
+**Step 3: compare profits.** Because `Z = x₁ + 6x₂` is linear, the same weights apply to the
+profits:
+
+| vertex | profit |
+| --- | --- |
+| A | $0 |
+| B | $1800 |
+| C | $1400 |
+
+```
+Z(P) = ⅙(0) + ⅓(1800) + ½(1400) = 0 + 600 + 700 = 1300 ≤ 1800
+```
+
+Directly, `100 + 6(200) = 1300`, which agrees. `P` cannot beat `B`, because a weighted
+average cannot exceed its largest input.
+
+## The general argument
+
+In a nonempty, bounded, convex polygon, the same two moves work from any point: draw a line
+to the boundary, then write each endpoint using its edge's vertices. So every feasible `x`
+is a convex combination of the vertices `v₁, …, vₖ`:
+
+```
+x = Σ λᵢvᵢ,     λᵢ ≥ 0,     Σ λᵢ = 1
+```
+
+Linearity then gives
+
+```
+Z(x) = Σ λᵢ Z(vᵢ) ≤ max Z(vᵢ)
+```
+
+No feasible point beats the best vertex, so at least one vertex is optimal. Nothing stops
+two vertices from tying, and then the whole edge between them is optimal too.
+
+> Every point of a bounded convex region is a weighted average of its vertices. A linear
+> objective takes the same average of the vertices' values, and an average cannot exceed
+> its largest input, so the best vertex is at least as good as any feasible point.

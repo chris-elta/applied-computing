@@ -1,0 +1,110 @@
+---
+course: applied-algorithm-analysis
+section: w10-flow
+order: 1960
+title: The Flow Network
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week10.html?hash=true#/36
+    caption: Slides 36–38 of 66 — why flow belongs here, the seven-node network, and one flow variable per edge.
+notation:
+  - symbol: "G = (V, E)"
+    reads: G equals V, E
+    means: A directed graph with vertex set `V` and edge set `E`.
+  - symbol: "s, t"
+    reads: s, t, the source and the sink
+    means: Where flow starts and where it ends.
+  - symbol: "c_uv"
+    reads: c u v, the capacity of u to v
+    means: >-
+      The most the edge `u → v` can carry. An input: fixed before you start.
+  - symbol: "f_uv"
+    reads: f u v, the flow on u to v
+    means: >-
+      How much you choose to send along `u → v`. A decision variable.
+  - symbol: "0 ≤ f_uv ≤ c_uv"
+    reads: f u v is between zero and c u v
+    means: >-
+      The capacity condition. Flow goes only in the edge's direction and never exceeds its
+      capacity.
+questions:
+  - ask: >-
+      In the max-flow model, which quantities are decision variables and which are given
+      inputs?
+    choices:
+      - text: Each flow `f_uv` is a decision variable. Each capacity `c_uv` is an input
+        correct: true
+        explains: >-
+          The capacities describe the network and are fixed before you start. The flows are
+          what you choose, one per edge, subject to `0 ≤ f_uv ≤ c_uv`.
+      - text: Each capacity `c_uv` is a decision variable. Each flow `f_uv` is an input
+        explains: >-
+          That has the roles reversed. You cannot choose how wide a pipe is. You choose how
+          much to send down it.
+      - text: Only the total flow value is a decision variable
+        explains: >-
+          The total is the objective, worked out from the edge flows. There is one variable
+          per edge, and the total is their sum out of `s`.
+      - text: The paths from `s` to `t` are the decision variables
+        explains: >-
+          The LP has one variable per *edge*, not per path. Paths appear later, in how
+          Ford–Fulkerson searches for improvements.
+---
+
+## Why flow is here
+
+The LP section ended with general tools. Maximum flow is a concrete LP with three reasons
+to study it now:
+
+1. It *is* a linear program, so everything about LPs applies.
+2. Its graph structure supports a **specialised algorithm**, Ford–Fulkerson, which needs no
+   general LP solver.
+3. A flow and a cut of equal value prove the flow is optimal. That is the plan-and-bound
+   argument again, and the first example of **duality**.
+
+## The network
+
+A flow network is a directed graph `G = (V, E)` with two special vertices, the **source** `s`
+and the **sink** `t`, and a **capacity** `c_uv` on each edge. Think of pipes: `c_uv` is how
+much the pipe from `u` to `v` can carry, in that direction only.
+
+The running example has seven vertices and eleven edges:
+
+| from `s` | middle | into `t` |
+| --- | --- | --- |
+| `s → a` (3) | `b → a` (10), `a → d` (2), `b → d` (1) | `d → t` (2) |
+| `s → b` (3) | `d → c` (1), `d → e` (1) | `e → t` (5) |
+| `s → c` (4) | `c → e` (5) | |
+
+The edge `d → c` points *towards* `c`. The slide points this out because the long diagonal
+in the drawing is easy to read the wrong way.
+
+The slides assume three things: capacities are finite and non-negative, no edge enters `s`,
+and no edge leaves `t`.
+
+## One variable per edge
+
+The decisions are how much to send along each edge:
+
+| item | example | meaning |
+| --- | --- | --- |
+| input | `c_sa = 3` | the pipe `s → a` carries at most 3 units |
+| decision | `f_sa = 2` | this plan sends 2 units along it |
+| capacity condition | `0 ≤ f_sa ≤ 3` | the flow respects the direction and the limit |
+
+For every edge,
+
+```
+0 ≤ f_uv ≤ c_uv
+```
+
+The lower bound 0 is the direction rule. Negative flow on `u → v` would mean sending along
+`v → u`, which is not a pipe. Eleven edges give eleven variables, each with its own pair of
+bounds.
+
+Capacities alone do not make a flow. Nothing yet stops flow from appearing at `a` or
+disappearing at `d`. The next concept adds the rule that ties the edges together.
+
+> A flow network is a directed graph with a source, a sink and a capacity on every edge.
+> The decisions are the edge flows, one variable per edge, each between 0 and its edge's
+> capacity.

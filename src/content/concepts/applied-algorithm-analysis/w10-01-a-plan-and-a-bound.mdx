@@ -1,0 +1,92 @@
+---
+course: applied-algorithm-analysis
+section: w10-lp-model
+order: 1800
+title: A Plan and a Bound
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week10.html?hash=true#/1
+    caption: Slide 2 of 66 — how to prove an answer is best, and the plan for the week.
+notation:
+  - symbol: "⇒"
+    reads: implies
+    means: >-
+      If the left side holds, the right side follows. "Feasible value = upper bound ⇒
+      optimality" says that when the two numbers meet, the answer is proved best.
+  - symbol: feasible
+    reads: FEE-zuh-bull
+    means: >-
+      Allowed: satisfies every rule of the problem. A feasible answer might still be a poor
+      one.
+questions:
+  - ask: >-
+      You are maximising profit. You have a plan that satisfies every constraint and earns
+      $1700, and an argument that no plan can earn more than $2000. What do you know about
+      the best possible profit?
+    choices:
+      - text: It is somewhere from $1700 to $2000, and neither number is proved best yet
+        correct: true
+        explains: >-
+          The plan is a lower bound and the argument an upper bound. The optimum lies between
+          them. Only when the two numbers meet is the plan proved optimal.
+      - text: It is $2000
+        explains: >-
+          An upper bound says nothing can do *better* than $2000. It does not promise that any
+          plan actually reaches it. The bound may simply be loose.
+      - text: It is $1700, since that is the best plan found
+        explains: >-
+          Being the best you have found is not a proof. A plan earning, say, $1850 may exist.
+      - text: Nothing, because the two numbers disagree
+        explains: >-
+          They do not disagree: $1700 ≤ optimum ≤ $2000 is consistent. A gap between the bounds
+          is normal. It means the work is unfinished, not that something is wrong.
+---
+
+Suppose someone hands you a production plan and says it is the best one. How could you
+check? Testing every other plan is out of the question when quantities can take any value.
+This week's tools all answer that question with the same two-part argument.
+
+For a **maximisation** problem:
+
+| step | what you produce | what it proves |
+| --- | --- | --- |
+| 1 | a **feasible** answer, one that satisfies every constraint | the optimum is *at least* this good: a **lower bound** |
+| 2 | an argument that *every* feasible answer is at most some value | the optimum is *at most* this good: an **upper bound** |
+
+If the two numbers are equal, the plan from step 1 is optimal. Nothing can beat the upper
+bound, and the plan already reaches it.
+
+The week's running example is a bakery. A plan that earns $1900 a day is a lower bound. A
+proof that no plan can earn more than $1900 is an upper bound. Together they settle the
+question.
+
+## Why both halves are needed
+
+Each half alone is weak:
+
+- **A feasible answer alone** proves nothing about the others. The next plan you try might
+  be better.
+- **An upper bound alone** might be loose. "No plan earns more than a million dollars" is
+  true and useless.
+
+Real progress is closing the gap: better plans push the lower bound up, better arguments
+push the upper bound down. When they meet, you stop.
+
+## The road through the week
+
+The same idea appears three times:
+
+1. **Linear programs.** For an LP, a corner of the feasible region is always at least as
+   good as any other point. Comparing the corners gives both halves at once.
+2. **Network flow.** A flow is the feasible answer. A *cut*, a set of edges every unit of
+   flow must cross, is the upper bound. When a flow and a cut have equal value, the flow is
+   maximum.
+3. **Bipartite matching.** Matching is rewritten as a flow problem, so it inherits the
+   flow argument.
+
+Matching the flow to the cut is the course's first example of *duality*, which a later
+lesson develops in full.
+
+> To prove an answer is best, give a feasible answer and a bound that every feasible answer
+> obeys. When the two values are equal, you have both the answer and the proof that it is
+> optimal.

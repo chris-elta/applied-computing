@@ -1,0 +1,108 @@
+---
+course: applied-algorithm-analysis
+section: w10-lp-forms
+order: 1930
+title: Two Standard Forms
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week10.html?hash=true#/27
+    caption: Slides 28–29 of 66 — the max / ≤ form and the equality form, then reversing the objective.
+notation:
+  - symbol: max / ≤ form
+    reads: max, less-than-or-equal form
+    means: >-
+      Maximise. Every constraint is `≤` and every variable is `≥ 0`. Used for duality.
+  - symbol: equality form
+    reads: equality form
+    means: >-
+      Maximise. Every constraint is `=` and every variable is `≥ 0`. Used for simplex.
+  - symbol: "min(−Z)"
+    reads: minimise minus zed
+    means: >-
+      Find the plan with the smallest negated objective. It is the same plan that makes `Z`
+      largest.
+questions:
+  - ask: >-
+      The bakery problem `max x₁ + 6x₂` is rewritten as `min (−x₁ − 6x₂)` with the same
+      constraints. What does the rewritten problem return?
+    choices:
+      - text: The same plan `(100, 300)`, with value −1900
+        correct: true
+        explains: >-
+          Negating every value reverses the order of plans. The best plan for `Z` is the best
+          plan for `−Z`. Only the sign of the value changes.
+      - text: The plan `(0, 0)`, the one with the smallest profit
+        explains: >-
+          That would be `min Z`. Minimising `−Z` finds the most negative `−Z`, which is the
+          largest `Z`.
+      - text: The same plan with value 1900, provided the constraints are negated too
+        explains: >-
+          The constraints must stay as they are. Negating them would describe a different
+          region and a different problem. Only the objective is negated.
+      - text: A different plan, because minimising and maximising are different problems
+        explains: >-
+          They are different problems in general. But maximising `Z` and minimising `−Z` are
+          the same question with the sign flipped.
+---
+
+Methods are picky about the shape of their input. Simplex wants every constraint as an
+equation. Duality, coming next, wants every constraint as `≤`. Neither cares how *you* first
+wrote the bakery. So you rewrite the LP into the form the method expects, **without changing
+which plans are allowed or which is best**.
+
+## The two forms this course uses
+
+| | max / ≤ form | equality form |
+| --- | --- | --- |
+| used for | duality | simplex |
+| objective | maximise | maximise |
+| constraints | every one uses `≤` | every one uses `=` |
+| variables | all `≥ 0` | all `≥ 0` |
+
+They agree on two rules, maximise and non-negative variables, and differ only in the
+constraints. Rewriting means fixing three things in turn:
+
+1. the **direction** of the objective;
+2. the **type** of each constraint;
+3. the **domain** of each variable.
+
+The two concepts after this one cover constraints and variables. The objective is the easy
+one.
+
+## Reversing the objective
+
+Both forms maximise. A minimisation problem is converted by **negating the entire objective
+and leaving every constraint unchanged**. The same works in reverse. For the bakery:
+
+```
+max  Z = x₁ + 6x₂     ⟺     min  −Z = −x₁ − 6x₂
+```
+
+Why the same plan wins: negation reverses order. If plan A earns more than plan B, then
+`−Z(A)` is *less* than `−Z(B)`. The plan with the largest `Z` is the plan with the smallest
+`−Z`.
+
+| plan | `Z` | `−Z` |
+| --- | --- | --- |
+| `(0, 300)` | 1800 | −1800 |
+| `(100, 300)` | **1900** | **−1900** |
+| `(200, 200)` | 1400 | −1400 |
+
+**Same optimal plans, opposite objective values.** Undo the sign when you report the answer.
+
+## Two mistakes to avoid
+
+- **Negating the constraints as well.** They define which plans are allowed, and that must not
+  change. Only the objective's sign flips.
+- **Reporting the negated value.** The rewritten problem says −1900. The bakery earns $1900.
+
+## What "equivalent" means here
+
+Every rewrite in this section is checked by asking the same question: does each plan of the
+original correspond to a plan of the new form with the same objective value, and the other
+way round? If so, solving one solves the other.
+
+> Rewrite an LP into the form a method needs by changing the objective's direction, the
+> constraint types and the variable domains, while keeping the same plans. To switch
+> between max and min, negate the objective only. The optimal plan is unchanged and its
+> value changes sign.

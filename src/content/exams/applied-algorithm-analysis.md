@@ -1,7 +1,7 @@
 ---
 course: applied-algorithm-analysis
 title: "Applied Algorithm Analysis · Final Exam"
-minutes: 160
+minutes: 180
 passMark: 60
 questions:
   - topic: "Week 1 · Big-O and growth"
@@ -1857,6 +1857,272 @@ questions:
     work: |-
       Unweighted graph, cost = number of edges → BFS distances.
       `l(destination)` is the number of hops; walking `parent` from the destination and reversing gives the route.
+  - topic: "Week 10 · Linear programming, flow and matching"
+    ask: "A workshop makes chairs (`x₁`) and tables (`x₂`). A chair takes 2 hours, a table takes 5 hours, and 40 hours are available each week. Which constraint models the hours?"
+    choices:
+      - text: "`x₁ + x₂ ≤ 40`"
+        explains: "That counts items, not hours. A table uses 5 hours, so it must weigh 5 times as much as one unit of `x₂`."
+      - text: "`2x₁ + 5x₂ ≤ 40`"
+        correct: true
+        explains: "Hours used are 2 per chair plus 5 per table, and they may not exceed the 40 available."
+      - text: "`5x₁ + 2x₂ ≤ 40`"
+        explains: "The coefficients are swapped. Each coefficient belongs to the variable whose resource use it measures."
+      - text: "`2x₁ + 5x₂ ≥ 40`"
+        explains: "Available hours are a limit, so the constraint is `≤`. `≥` would force at least 40 hours of work."
+    work: |-
+      Hours used = (hours per chair)·x₁ + (hours per table)·x₂ = 2x₁ + 5x₂.
+      The limit is 40, so 2x₁ + 5x₂ ≤ 40. For example, (5, 6) uses 10 + 30 = 40 hours, exactly the limit.
+  - topic: "Week 10 · Linear programming, flow and matching"
+    ask: "Which of these objectives cannot be used in a linear program?"
+    choices:
+      - text: "`(x₁ + x₂)/4`"
+        explains: "Dividing by the constant 4 gives coefficients ¼ and ¼. That is linear."
+      - text: "`7 + 2x₁ − x₂`"
+        explains: "This is affine. The constant 7 does not change which plan is optimal, so LPs accept it."
+      - text: "`x₁/(x₁ + x₂)`"
+        correct: true
+        explains: "The denominator contains decision variables, so the expression is not a fixed number times a single variable."
+      - text: "`0.5x₁`"
+        explains: "A fixed coefficient of 0.5 on one variable is as linear as an objective can be."
+    work: |-
+      Test each term: it must be a fixed number times one variable, plus perhaps a constant.
+      (x₁ + x₂)/4 = ¼x₁ + ¼x₂ ✓. 7 + 2x₁ − x₂ ✓ (affine). 0.5x₁ ✓.
+      x₁/(x₁ + x₂) divides by a variable expression ✗.
+  - topic: "Week 10 · Linear programming, flow and matching"
+    ask: "A maximisation problem needs whole-number variables. Its LP relaxation has optimum 47.6. You have also found a whole-number plan worth 46. What do you know about the best whole-number plan?"
+    choices:
+      - text: "Its value is 47.6"
+        explains: "The relaxation reaches 47.6 at a fractional plan. Whole-number plans may fall short of it."
+      - text: "Its value is 48, found by rounding the LP plan up"
+        explains: "No whole-number plan can beat the relaxation's 47.6, so 48 is impossible. Rounding up may also break a constraint."
+      - text: "Its value is 46, since that plan was found"
+        explains: "46 is a lower bound only. A better whole-number plan may exist between 46 and 47.6."
+      - text: "Its value is at least 46 and at most 47.6"
+        correct: true
+        explains: "The plan you found is a lower bound. The relaxation, which has more plans to choose from, is an upper bound."
+    work: |-
+      Every whole-number plan is feasible for the relaxation, so integer optimum ≤ LP optimum = 47.6.
+      A feasible whole-number plan is worth 46, so integer optimum ≥ 46.
+      Hence 46 ≤ integer optimum ≤ 47.6.
+  - topic: "Week 10 · Linear programming, flow and matching"
+    ask: "Solve: maximise `3x₁ + 2x₂` subject to `x₁ + x₂ ≤ 4`, `x₁ ≤ 3`, `x₁, x₂ ≥ 0`. Where is the optimum?"
+    choices:
+      - text: "`(3, 1)`, with value 11"
+        correct: true
+        explains: "The four vertices give 0, 9, 11 and 8. `(3, 1)` is where `x₁ = 3` meets `x₁ + x₂ = 4`."
+      - text: "`(4, 0)`, with value 12"
+        explains: "`(4, 0)` breaks `x₁ ≤ 3`. It is where two boundary lines cross, but it lies outside the region."
+      - text: "`(3, 0)`, with value 9"
+        explains: "`(3, 1)` keeps `x₁ = 3` and adds a unit of `x₂`, worth 2 more, while still meeting `x₁ + x₂ ≤ 4`."
+      - text: "`(0, 4)`, with value 8"
+        explains: "This vertex makes the most in total, 4 items, but `x₁` earns 3 against `x₂`'s 2. Compare objective values, not totals."
+    work: |-
+      Vertices: (0,0), (3,0), (3,1) from x₁ = 3 and x₁ + x₂ = 4, and (0,4).
+      Rejected intersection: (4,0), since x₁ = 4 > 3.
+      Values: 0, 9, 3·3 + 2·1 = 11, 2·4 = 8. Best: (3,1) with 11.
+  - topic: "Week 10 · Linear programming, flow and matching"
+    ask: "`p = (0, 4)` and `q = (4, 0)` are feasible points of some LP. Which other point must also be feasible?"
+    choices:
+      - text: "`(4, 4)`"
+        explains: "That is not on the segment from `p` to `q`. Convexity only guarantees the points between them."
+      - text: "`(2, 2)`"
+        correct: true
+        explains: "It is the midpoint, `½p + ½q`. Every LP feasible region is convex, so the whole segment from `p` to `q` is feasible."
+      - text: "`(6, −2)`"
+        explains: "It is on the line through `p` and `q`, but beyond `q`, at `λ = 1.5`. Only `0 ≤ λ ≤ 1` is guaranteed."
+      - text: "`(0, 0)`"
+        explains: "The origin is not on the segment between `p` and `q`. Some LPs exclude it, for instance with `x₁ + x₂ ≥ 4`."
+    work: |-
+      The segment is r = (1 − λ)p + λq for 0 ≤ λ ≤ 1. At λ = ½: r = ½(0,4) + ½(4,0) = (2,2).
+      (6,−2) = (1 − 1.5)(0,4) + 1.5(4,0), so λ = 1.5, outside the segment.
+      (4,4) and (0,0) are not of this form for any λ.
+  - topic: "Week 10 · Linear programming, flow and matching"
+    ask: "Maximise `2x₁ + 2x₂` subject to `x₁ + x₂ ≤ 4`, `x₁ ≤ 3`, `x₁, x₂ ≥ 0`. How many optimal solutions are there?"
+    choices:
+      - text: "Exactly one"
+        explains: "Two vertices tie at 8, `(3, 1)` and `(0, 4)`, so the optimum is not unique."
+      - text: "Exactly two, the tied vertices"
+        explains: "When neighbouring vertices tie, every point on the edge between them ties too. `(1.5, 2.5)` is also worth 8."
+      - text: "Infinitely many: every point on the edge from `(3, 1)` to `(0, 4)`"
+        correct: true
+        explains: "The objective's lines are parallel to `x₁ + x₂ = 4`, so the whole edge touches the last contact line at once."
+      - text: "None, because the vertex theorem needs a unique best vertex"
+        explains: "The theorem guarantees at least one optimal vertex. Ties are allowed."
+    work: |-
+      Vertices: (0,0) → 0, (3,0) → 6, (3,1) → 8, (0,4) → 8.
+      On x₁ + x₂ = 4 the objective is 2(x₁ + x₂) = 8 for every point, for instance (1.5, 2.5).
+      So the whole edge from (3,1) to (0,4) is optimal.
+  - topic: "Week 10 · Linear programming, flow and matching"
+    ask: "Maximise `x₁ − x₂` subject to `x₁ − x₂ ≤ 2`, `x₁, x₂ ≥ 0`. The feasible region is unbounded. What is the outcome?"
+    choices:
+      - text: "Unbounded: no maximum, because the region is unbounded"
+        explains: "An unbounded region alone does not make the objective unbounded. Moving along `(t, t)` keeps `x₁ − x₂` at 0."
+      - text: "An optimum of 2, at `(2, 0)` among other points"
+        correct: true
+        explains: "The constraint itself says `x₁ − x₂ ≤ 2`, and `(2, 0)` reaches 2. Every `(2 + t, t)` also reaches it."
+      - text: "Infeasible"
+        explains: "`(0, 0)` satisfies every constraint, so the region is not empty."
+      - text: "An optimum of 0, at `(0, 0)`"
+        explains: "`(2, 0)` is feasible, since `2 − 0 ≤ 2`, and it scores 2. The origin is feasible, but it is not best."
+    work: |-
+      Upper bound: the constraint gives x₁ − x₂ ≤ 2 for every feasible plan.
+      Feasible plan reaching it: (2, 0), since 2 − 0 = 2 and both variables are ≥ 0.
+      The region contains (t, t) for every t ≥ 0, so it is unbounded, but the objective there is 0.
+  - topic: "Week 10 · Linear programming, flow and matching"
+    ask: "Which pair of `≤` constraints is equivalent to `x₁ + 2x₂ = 6`, as the max / ≤ form requires?"
+    choices:
+      - text: "`x₁ + 2x₂ ≤ 6` and `−x₁ − 2x₂ ≤ −6`"
+        correct: true
+        explains: "The second is `x₁ + 2x₂ ≥ 6` multiplied by −1. At most 6 and at least 6 together force exactly 6."
+      - text: "`x₁ + 2x₂ ≤ 6` and `x₁ + 2x₂ ≥ 6`"
+        explains: "These together are equivalent, but the second is `≥`. The max / ≤ form needs it negated."
+      - text: "`x₁ + 2x₂ ≤ 6` alone"
+        explains: "That allows every plan below 6 as well, for instance `(0, 0)`. Something has to rule out the plans below 6."
+      - text: "`x₁ + 2x₂ + s ≤ 6` with `s ≥ 0`"
+        explains: "Slack belongs to the equality form, where it turns `≤` into `=`. Here it changes nothing that helps, and it allows plans below 6."
+    work: |-
+      x₁ + 2x₂ = 6  ⟺  x₁ + 2x₂ ≤ 6  and  x₁ + 2x₂ ≥ 6.
+      Multiply the second by −1, which reverses the inequality: −x₁ − 2x₂ ≤ −6.
+  - topic: "Week 10 · Linear programming, flow and matching"
+    ask: "The constraint `3x₁ + x₂ ≤ 12` becomes `3x₁ + x₂ + s = 12` with `s ≥ 0`. What is the slack at the plan `(2, 4)`?"
+    choices:
+      - text: "10"
+        explains: "10 is the amount used, `3(2) + 4`. Slack is what is left over."
+      - text: "0"
+        explains: "Slack 0 would mean the plan sits on the boundary, using all 12. This plan uses 10."
+      - text: "2"
+        correct: true
+        explains: "`12 − (3·2 + 4) = 12 − 10 = 2` units of the resource go unused."
+      - text: "6"
+        explains: "That adds the coordinates, `2 + 4`, and ignores the coefficient 3 on `x₁`."
+    work: |-
+      Used: 3x₁ + x₂ = 3(2) + 4 = 10.
+      Slack s = 12 − 10 = 2 ≥ 0, so the plan is feasible and not tight on this constraint.
+  - topic: "Week 10 · Linear programming, flow and matching"
+    ask: "A free variable `x` is replaced by `u − v` with `u, v ≥ 0`. Which pair `(u, v)` represents `x = −3`?"
+    choices:
+      - text: "`(3, 0)`"
+        explains: "`3 − 0 = 3`, not −3. The negative part belongs in `v`."
+      - text: "`(−3, 0)`"
+        explains: "`u` must be non-negative. Allowing negative `u` would undo the point of the substitution."
+      - text: "`(0, −3)`"
+        explains: "`v` must also be non-negative, and `0 − (−3) = 3` has the wrong sign as well."
+      - text: "`(1, 4)`"
+        correct: true
+        explains: "`1 − 4 = −3`, and both parts are non-negative. `(0, 3)` works too. The pair is not unique, and only the difference matters."
+    work: |-
+      Need u − v = −3 with u ≥ 0 and v ≥ 0.
+      (1, 4): 1 − 4 = −3 ✓. (0, 3) also works.
+  - topic: "Week 10 · Linear programming, flow and matching"
+    ask: "A network has edges `s → a` (5), `s → b` (4), `a → b` (2), `b → a` (3), `a → t` (3), `b → t` (6). What is the capacity of the cut `S = {s, a}`, `T = {b, t}`?"
+    choices:
+      - text: "9"
+        correct: true
+        explains: "The edges from `S` to `T` are `s → b` (4), `a → b` (2) and `a → t` (3). `b → a` points into `S`, so it does not count."
+      - text: "12"
+        explains: "That adds `b → a` (3) as well. It runs from `T` back into `S`, so it is not part of the cut capacity."
+      - text: "6"
+        explains: "That subtracts `b → a`'s capacity. Backward edges are ignored in cut capacity. They are not subtracted."
+      - text: "14"
+        explains: "`s → a` (5) is inside `S`, so it does not cross the cut."
+    work: |-
+      S → T edges: s → b (4), a → b (2), a → t (3). Sum = 9.
+      T → S: b → a, not counted. Inside S: s → a, not counted. Inside T: b → t, not counted.
+      So every flow in this network is at most 9.
+  - topic: "Week 10 · Linear programming, flow and matching"
+    ask: "An original edge `u → v` has capacity 7 and carries flow 3. Which residual edges does it give?"
+    choices:
+      - text: "`u → v` with 3, and `v → u` with 4"
+        explains: "This has the two swapped. Forward is what is *unused*, `c − f`, and backward is what can be *cancelled*, `f`."
+      - text: "`u → v` with 4, and `v → u` with 3"
+        correct: true
+        explains: "4 more units fit, `7 − 3`, and the 3 units already sent can be cancelled."
+      - text: "`u → v` with 7 only"
+        explains: "The original capacity is not the residual capacity once flow is on the edge, and the backward edge is missing."
+      - text: "`u → v` with 4 only"
+        explains: "The forward edge is right, but without the backward edge the 3 units could never be rerouted."
+    work: |-
+      Forward residual: c − f = 7 − 3 = 4.
+      Backward residual: f = 3.
+  - topic: "Week 10 · Linear programming, flow and matching"
+    ask: "A flow has value 9. Ford–Fulkerson finds an augmenting path whose residual capacities are 5, 2 (on a backward edge) and 4. What is the flow value after this step?"
+    choices:
+      - text: "7, because the backward edge removes flow"
+        explains: "The backward edge cancels flow on one interior edge only. The path still carries `Δ` more units from `s` to `t`."
+      - text: "14, the path's largest capacity added"
+        explains: "Every edge on the path must absorb the change, so the amount is the smallest residual capacity, not the largest."
+      - text: "11"
+        correct: true
+        explains: "`Δ = min(5, 2, 4) = 2`, and every augmentation raises the value by `Δ`, whichever edges are backward."
+      - text: "20, adding all the residual capacities"
+        explains: "The path carries one amount along its whole length. It does not add the capacities."
+    work: |-
+      Δ = min(5, 2, 4) = 2.
+      The path starts at s, so the outflow from s rises by Δ: 9 + 2 = 11.
+      The backward edge's original edge loses 2 units of flow, which conservation balances elsewhere on the path.
+  - topic: "Week 10 · Linear programming, flow and matching"
+    ask: "Ford–Fulkerson has stopped. In the final residual graph, `s` reaches exactly `{s, a}`. The original edge `a → t` has capacity 6. What flow does it carry?"
+    choices:
+      - text: "0"
+        explains: "Zero flow is the rule for edges from `T` back into `S`. `a → t` goes from `S` to `T`."
+      - text: "It cannot be determined from this information"
+        explains: "It can. Stopping fixes it: an `S → T` edge with spare capacity would make its far end reachable."
+      - text: "Anything from 0 to 6"
+        explains: "If it carried less than 6, the forward residual edge `a → t` would exist, and `t` would be reachable. The algorithm would not have stopped."
+      - text: "6, so it is full"
+        correct: true
+        explains: "`a` is in `S` and `t` in `T`. Every original `S → T` edge is full when the algorithm stops."
+    work: |-
+      S = {s, a}, T = everything else, t included.
+      If f(a → t) < 6, the residual edge a → t would have capacity 6 − f > 0, and t would be reachable, a contradiction.
+      So f(a → t) = 6.
+  - topic: "Week 10 · Linear programming, flow and matching"
+    ask: "A program shows you a flow of value 8 and a cut of capacity 10 in the same network. What follows?"
+    choices:
+      - text: "The maximum flow is somewhere from 8 to 10, and neither is proved optimal"
+        correct: true
+        explains: "The flow is a lower bound and the cut an upper bound. A larger flow or a smaller cut may exist."
+      - text: "The flow is not feasible, since a feasible flow equals every cut"
+        explains: "Every feasible flow is *at most* every cut. Equality holds only for a maximum flow and a minimum cut."
+      - text: "The maximum flow is 10"
+        explains: "10 is a bound. A minimum cut may be smaller, and the maximum flow is the minimum cut capacity."
+      - text: "The maximum flow is 8, because the flow was computed by a program"
+        explains: "The program might have stopped early. Only a cut of capacity 8 would prove it."
+    work: |-
+      Any flow ≤ any cut, so 8 ≤ max flow = min cut ≤ 10.
+      To settle it: find an augmenting path, which raises the flow, or a cut of capacity 8, which proves the flow optimal.
+  - topic: "Week 10 · Linear programming, flow and matching"
+    ask: "A bipartite graph has `L = {1, 2, 3}`, `R = {x, y, z}` and edges `1–x`, `2–x`, `3–x`, `3–y`. What is the maximum flow in its unit-capacity matching network?"
+    choices:
+      - text: "3, one for each vertex in L"
+        explains: "`1` and `2` can only be matched to `x`, and `x` can take one partner. One of them must go unmatched."
+      - text: "2"
+        correct: true
+        explains: "For instance `1–x` and `3–y`. Only `x` and `y` have edges, and `z` has none, so no matching can have more than 2 edges."
+      - text: "4, one for each edge"
+        explains: "Three edges share `x`. Unit capacity on `x → t` lets only one of them carry flow."
+      - text: "1, because every edge touches x except one"
+        explains: "`3–y` avoids `x`, so it can be added to any edge at `x` that does not use vertex 3."
+    work: |-
+      Upper bound: the cut S = {s, 1, 2, x}, T = {3, y, z, t} has S → T edges s → 3 and x → t only, so capacity 1 + 1 = 2.
+      Achieved: 1–x and 3–y, two disjoint edges. Flow s → 1 → x → t and s → 3 → y → t.
+      Max matching = max flow = 2.
+  - topic: "Week 10 · Linear programming, flow and matching"
+    ask: "Building the matching network, someone sets every source edge `s → u` to capacity 2 and leaves everything else at 1. What does the maximum flow now compute?"
+    choices:
+      - text: "Still the maximum matching, since the middle edges have capacity 1"
+        explains: "Each middle edge carries at most 1, but a left vertex with two edges could now use both. That is not a matching."
+      - text: "Twice the maximum matching"
+        explains: "Right-side vertices are still capped at 1 by `v → t`, so the flow cannot simply double."
+      - text: "The largest assignment in which each left vertex takes up to two partners and each right vertex at most one"
+        correct: true
+        explains: "Conservation at `u` now allows outflow up to 2. The caps on `v → t` still give each right vertex one partner at most."
+      - text: "Nothing meaningful, since capacities must all be equal"
+        explains: "Max flow works with any non-negative capacities. The result is still an assignment, just not a matching."
+    work: |-
+      At u ∈ L: inflow ≤ c(s → u) = 2, so up to two edges u → v carry flow.
+      At v ∈ R: outflow ≤ c(v → t) = 1, so v is still used at most once.
+      The flow finds the largest such assignment. The matching rule needs capacity 1 on s → u.
 written:
   - topic: "Week 1 · Big-O and growth"
     ask: |-
@@ -2194,7 +2460,7 @@ written:
       - "Case 1: nested call finishes first"
       - "Case 2: `w` cannot reach `v` without a cycle; the DAG assumption is used here and only here"
 ---
-113 multiple-choice questions across all eight weeks. The paper is divided into sections, and nothing is revealed until you
+130 multiple-choice questions across all nine weeks. The paper is divided into sections, and nothing is revealed until you
 submit: pick an answer for each question (you can change it as often as you like), then submit a
 section to see your score for it, the correct answers, an explanation for each one you chose, and a
 worked solution. You can submit one section at a time, in any order, or the whole exam at once.

@@ -1,0 +1,99 @@
+---
+course: applied-algorithm-analysis
+section: w10-lp-geometry
+order: 1850
+title: The Feasible Region
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week10.html?hash=true#/12
+    caption: Slides 12–13 of 66 — four candidate plans, then the region built one half-plane at a time (step through the five stages on slide 13).
+notation:
+  - symbol: feasible region
+    reads: feasible region
+    means: The set of every plan that satisfies all the constraints.
+  - symbol: half-plane
+    reads: half-plane
+    means: >-
+      Everything on one side of a straight line, the line included. A single `≤` constraint
+      in two variables allows a half-plane.
+  - symbol: vertex
+    reads: VER-tex; plural vertices, VER-tih-seez
+    means: >-
+      A corner of the region, where two boundary lines meet.
+questions:
+  - ask: >-
+      Which statement about the bakery plan `(200, 200)` is true?
+    choices:
+      - text: It is feasible but not optimal
+        correct: true
+        explains: >-
+          It meets every constraint, including total production exactly at 400. But
+          `(100, 300)` also uses 400 cookies and earns $1900 against its $1400.
+      - text: It is optimal, because it uses all 400 cookies of capacity
+        explains: >-
+          Using all the capacity is not enough. `(100, 300)` uses it too, with more of the
+          cookie that earns $6.
+      - text: It is infeasible, because the total sits exactly on the 400 limit
+        explains: >-
+          The constraint is `x₁ + x₂ ≤ 400`, and `≤` includes equality. Points on a boundary
+          line are inside the region.
+      - text: It is optimal, because it is a vertex of the region
+        explains: >-
+          Some vertex is always optimal, but not every vertex is. The region has five, and
+          only one of them earns $1900.
+---
+
+Before solving the bakery, separate two words that are easy to blur.
+
+- A **feasible** solution satisfies every constraint.
+- An **optimal** solution is a feasible solution with the best objective value.
+
+Every optimal plan is feasible. Most feasible plans are not optimal.
+
+## Four candidate plans
+
+| plan `(x₁, x₂)` | feasible? | profit, or the rule it breaks |
+| --- | --- | --- |
+| `(200, 200)` | yes | `200 × $1 + 200 × $6 = $1400` |
+| `(100, 300)` | yes | `100 × $1 + 300 × $6 = $1900` |
+| `(0, 400)` | no | 400 Deluxe exceeds the limit of 300 |
+| `(200, 300)` | no | 500 cookies exceeds the total of 400 |
+
+`(200, 300)` is the tempting one. It meets *both* demand limits exactly, and fails only the
+rule that ties the two together. Checking each constraint on its own is not enough. The plan
+must satisfy all of them together.
+
+## Building the region
+
+Each constraint allows one side of a line. The **feasible region** is the set of points
+allowed by all of them at once. With two variables you can draw it, adding one constraint at
+a time:
+
+| step | constraint | keeps |
+| --- | --- | --- |
+| 1 | `x₁ ≥ 0, x₂ ≥ 0` | the first quadrant, axes included |
+| 2 | `x₁ ≤ 200` | everything left of the vertical line `x₁ = 200` |
+| 3 | `x₂ ≤ 300` | everything below the horizontal line `x₂ = 300` |
+| 4 | `x₁ + x₂ ≤ 400` | the side of the diagonal containing the origin |
+
+The diagonal `x₁ + x₂ = 400` crosses the axes at `(400, 0)` and `(0, 400)`. To decide which
+side to keep, test a point. The origin gives `0 + 0 ≤ 400`, so its side stays.
+
+What survives is a five-sided polygon with corners
+
+```
+(0, 0)   (200, 0)   (200, 200)   (100, 300)   (0, 300)
+```
+
+The diagonal cuts the corner off the rectangle the demand limits would otherwise allow, and
+`(200, 300)` is the corner it removes.
+
+## Why the picture helps
+
+The region turns "which plan is best?" into a question about a shape. The next concepts
+show that the shape is always **convex**, and that the best plan can always be found at one
+of its corners. For the bakery, that reduces infinitely many feasible plans to five.
+
+> The feasible region is the intersection of every constraint's allowed side, and a plan
+> must lie in all of them at once. Feasible means allowed. Optimal means the best of the
+> allowed plans.

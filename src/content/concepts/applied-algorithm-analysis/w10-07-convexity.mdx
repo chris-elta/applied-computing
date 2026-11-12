@@ -1,0 +1,116 @@
+---
+course: applied-algorithm-analysis
+section: w10-lp-geometry
+order: 1860
+title: Why the Region Is Convex
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week10.html?hash=true#/13
+    caption: Slides 14–15 of 66 — what convex means, then the proof that every LP region has it.
+notation:
+  - symbol: "λ"
+    reads: lambda
+    means: >-
+      A weight between 0 and 1 saying how far along the segment from `p` to `q` you are. 0
+      is at `p`, 1 is at `q`, and ½ is halfway.
+  - symbol: "r = (1 − λ)p + λq"
+    reads: r equals one minus lambda times p, plus lambda times q
+    means: >-
+      The point a fraction `λ` of the way from `p` to `q`.
+  - symbol: convex combination
+    reads: convex combination
+    means: >-
+      A weighted average whose weights are non-negative and sum to 1.
+  - symbol: "aᵀx ≤ b"
+    reads: a transpose x is at most b
+    means: >-
+      Any single linear constraint, with fixed coefficients `a` and a fixed bound `b`.
+questions:
+  - ask: >-
+      The convexity proof takes `0 ≤ λ ≤ 1`. Which step would fail for a `λ` outside that
+      range?
+    choices:
+      - text: Multiplying the inequalities by the weights, because a negative weight reverses an inequality
+        correct: true
+        explains: >-
+          The proof multiplies `aᵀp ≤ b` by `1 − λ` and `aᵀq ≤ b` by `λ`. That keeps the
+          direction only if both are non-negative. Points beyond `p` or `q` on the line need
+          not be feasible.
+      - text: Making the weights sum to 1
+        explains: >-
+          `(1 − λ) + λ = 1` for *every* `λ`, inside the range or not. That is not where the
+          restriction is used.
+      - text: "The linearity step, `aᵀr = (1 − λ)aᵀp + λaᵀq`"
+        explains: >-
+          Linearity holds for any weights at all. That equality is true whatever `λ` is.
+      - text: Keeping `r` a whole number
+        explains: >-
+          LP variables are real numbers, so `r` never needed to be whole. The proof does not
+          mention integers.
+---
+
+## Convex, in a picture
+
+A set is **convex** if, for any two points in it, the whole straight segment between them
+also lies in it. A filled circle and a filled pentagon are convex. A crescent or a star is
+not: some pair of points has a segment that leaves the shape.
+
+To show a set is **not** convex, one bad pair is enough. To show it **is** convex, you must
+handle every pair, which needs an argument rather than a picture.
+
+## Points on a segment
+
+For points `p` and `q`, the segment between them is every point
+
+```
+r = (1 − λ)p + λq,     0 ≤ λ ≤ 1
+```
+
+| `λ` | where `r` is |
+| --- | --- |
+| 0 | at `p` |
+| ½ | the midpoint `(p + q)/2` |
+| 1 | at `q` |
+
+The weights `1 − λ` and `λ` are non-negative and sum to 1, so `r` is a weighted average of
+`p` and `q`. A weighted average like this is a **convex combination**. The term is needed
+again in the corner proof.
+
+## Every LP region is convex
+
+Take any two feasible points `p` and `q`, and any one constraint `aᵀx ≤ b`. Both points
+satisfy it:
+
+```
+aᵀp ≤ b,     aᵀq ≤ b
+```
+
+Now take a point `r` on their segment and evaluate the constraint there:
+
+```
+aᵀr = (1 − λ)aᵀp + λaᵀq     (linearity)
+    ≤ (1 − λ)b + λb          (both weights ≥ 0)
+    = b
+```
+
+So `r` satisfies the constraint too. The two steps use different facts:
+
+1. **Linearity** lets the constraint be split across the weighted average.
+2. **Non-negative weights** keep the inequalities pointing the same way when they are
+   multiplied. This is where `0 ≤ λ ≤ 1` matters.
+
+The argument works for one arbitrary constraint, so it works for all of them. Every point on
+the segment is feasible, and the feasible region is convex. An equality constraint gives
+`aᵀr = b` by the same calculation, and a `≥` constraint works the same way with the
+inequality reversed.
+
+## What it buys
+
+The proof never used the bakery's numbers. *Every* LP's feasible region is convex, in any
+number of dimensions. The corner theorem and simplex both depend on that. A nonlinear
+constraint such as `x₁x₂ ≤ 200` breaks the linearity step, and its region can curve inwards.
+
+> An LP's feasible region is convex because a weighted average of two feasible points
+> satisfies every linear constraint they do. The proof uses linearity to split the
+> constraint across the average, and non-negative weights to keep each inequality pointing
+> the same way.

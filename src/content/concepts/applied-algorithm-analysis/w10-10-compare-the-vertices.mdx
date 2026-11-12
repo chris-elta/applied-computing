@@ -1,0 +1,104 @@
+---
+course: applied-algorithm-analysis
+section: w10-lp-geometry
+order: 1890
+title: Solving by Comparing Vertices
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week10.html?hash=true#/21
+    caption: Slides 22–23 of 66 — finding a vertex by intersecting boundary lines, then the five-vertex comparison.
+notation:
+  - symbol: boundary line
+    reads: boundary line
+    means: >-
+      A constraint written with `=` in place of `≤`, such as `x₁ + x₂ = 400`. Vertices lie
+      where two of these meet.
+  - symbol: "Z(100, 300)"
+    reads: zed at one hundred, three hundred
+    means: The objective evaluated at that plan.
+questions:
+  - ask: >-
+      Keep the bakery's constraints, but change the objective to `Z = 2x₁ + x₂`. Which vertex
+      is optimal?
+    choices:
+      - text: "`(200, 200)`, with Z = 600"
+        correct: true
+        explains: >-
+          The five values are 0, 400, 600, 500 and 300. `(200, 200)` wins, because Classic
+          now earns more per cookie and this corner makes the most Classic without giving up
+          Deluxe.
+      - text: "`(100, 300)`, with Z = 500"
+        explains: >-
+          That was the answer for `x₁ + 6x₂`. The region has not changed, but a new objective
+          means re-comparing all five vertices, and `(200, 200)` now gives 600.
+      - text: "`(200, 0)`, with Z = 400"
+        explains: >-
+          Maximising Classic alone ignores that Deluxe still earns $1 each. `(200, 200)` has
+          the same Classic and 200 more Deluxe.
+      - text: "`(200, 300)`, with Z = 700"
+        explains: >-
+          `(200, 300)` breaks `x₁ + x₂ ≤ 400`. It is where two boundary lines meet, but it is
+          outside the region, so it is not a vertex.
+---
+
+The vertex theorem turns an LP with two variables into a short procedure:
+
+1. **Find the vertices.** Intersect pairs of boundary lines and keep the intersections that
+   satisfy every constraint.
+2. **Evaluate** the objective at each one.
+3. **Pick the best.**
+
+## Step 1: finding a vertex
+
+A vertex is where two boundary lines meet. For the corner between the Deluxe limit and the
+total limit, solve both as equations:
+
+```
+x₂       = 300
+x₁ + x₂  = 400
+⇒  x₁    = 100
+```
+
+Then **check the remaining constraints**: `100 ≤ 200`, and both coordinates are
+non-negative. So `(100, 300)` is a feasible vertex.
+
+The check is not a formality. Intersections can lie outside the region:
+
+| lines | intersection | kept? |
+| --- | --- | --- |
+| `x₁ = 200` and `x₂ = 300` | `(200, 300)` | no, `500 > 400` |
+| `x₁ + x₂ = 400` and `x₂ = 0` | `(400, 0)` | no, `400 > 200` |
+| `x₁ + x₂ = 400` and `x₁ = 0` | `(0, 400)` | no, `400 > 300` |
+
+Of the eight points where two of the boundary lines cross, five survive. Those are the five
+corners of the region.
+
+## Steps 2 and 3: compare
+
+| feasible vertex | `Z = x₁ + 6x₂` | profit/day |
+| --- | --- | --- |
+| `(0, 0)` | `0 + 6(0)` | $0 |
+| `(200, 0)` | `200 + 6(0)` | $200 |
+| `(200, 200)` | `200 + 6(200)` | $1400 |
+| `(100, 300)` | `100 + 6(300)` | **$1900** |
+| `(0, 300)` | `0 + 6(300)` | $1800 |
+
+**Optimal plan: 100 Classic and 300 Deluxe, earning $1900 a day.** This finishes the
+argument from the week's opening concept. `(100, 300)` is a feasible plan worth $1900, and
+the vertex theorem says nothing beats the best vertex, which is the upper bound.
+
+## And whole cookies
+
+The LP allowed fractions, but its optimum `(100, 300)` is whole. Because the integer optimum
+is at most the LP optimum, and this integer plan reaches the LP optimum, it solves the
+whole-cookie problem too.
+
+## The limits of the method
+
+This works because there are few vertices. With `n` variables and many constraints, the
+number of vertices can grow exponentially, and listing them all is hopeless. Simplex keeps
+the vertex idea but moves between neighbouring vertices without listing them all.
+
+> Find each vertex by solving two boundary equations, then check the remaining
+> constraints. Discard intersections that fail. Evaluate the objective at the survivors,
+> and the best one is the LP optimum.

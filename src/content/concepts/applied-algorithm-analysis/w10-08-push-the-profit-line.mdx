@@ -1,0 +1,99 @@
+---
+course: applied-algorithm-analysis
+section: w10-lp-geometry
+order: 1870
+title: Push the Profit Line
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week10.html?hash=true#/15
+    caption: Slides 16–17 of 66 — the vertex claim, then the equal-profit line pushed outwards in four steps (use the step buttons on slide 17).
+notation:
+  - symbol: "x₁ + 6x₂ = Z"
+    reads: x one plus six x two equals zed
+    means: >-
+      The equal-profit line: every plan on it earns exactly `Z` dollars.
+  - symbol: slope −1/6
+    reads: slope minus one sixth
+    means: >-
+      Moving right by 6 means moving down by 1. Six Classic earn the same as one Deluxe.
+  - symbol: bounded
+    reads: bounded
+    means: Fits inside some finite box. The region does not run off to infinity.
+questions:
+  - ask: >-
+      Two bakery plans lie on the same equal-profit line `x₁ + 6x₂ = 1200`. What do they have
+      in common?
+    choices:
+      - text: They earn the same profit, $1200
+        correct: true
+        explains: >-
+          That is what the line is: every point on it gives the objective the same value.
+          Moving along it trades 6 Classic for 1 Deluxe at no change in profit.
+      - text: They make the same total number of cookies
+        explains: >-
+          Equal total would be a line `x₁ + x₂ = constant`, with slope −1. Along an
+          equal-profit line the total changes: `(1200, 0)` and `(0, 200)` are both on it.
+      - text: They are both feasible
+        explains: >-
+          The line runs beyond the region. `(1200, 0)` is on it and breaks `x₁ ≤ 200`.
+          Profit is defined for every plan, not only feasible ones.
+      - text: They are both optimal
+        explains: >-
+          The $1200 line still crosses the region with room to move outwards. The optimum is
+          on the $1900 line, the last one that touches the region.
+---
+
+## The claim
+
+For a linear objective on a **nonempty, bounded, convex polygon**:
+
+- **at least one vertex** attains the maximum, so to find the best value it is enough to
+  compare the vertices;
+- there may also be optimal points along an **edge**, which a later concept covers.
+
+The slide gives two routes to this. The picture, here, shows why it is true. The proof, in
+the next concept, shows that no feasible point can beat the best vertex.
+
+## Lines of equal profit
+
+Fix a profit, say $600. The plans that earn exactly that satisfy
+
+```
+x₁ + 6x₂ = 600     ⟺     x₂ = 600/6 − x₁/6
+```
+
+That is a straight line with slope **−1/6**. Going right 6 Classic and down 1 Deluxe leaves
+profit unchanged, because six Classic earn what one Deluxe does. Every profit value has its
+own line, and all of them are parallel.
+
+## Pushing outwards
+
+| profit `Z` | what the line does |
+| --- | --- |
+| $600 | cuts through the region: many feasible plans earn $600 |
+| $1200 | shifted up, still cutting through |
+| $1900 | touches the region at exactly one point, `(100, 300)` |
+| $2000 | misses the region entirely: no feasible plan earns $2000 |
+
+Raising `Z` slides the line upward, parallel to itself. Feasible plans exist on the line as
+long as it touches the region. The best profit is the **last contact**: the largest `Z` whose
+line still meets the region. Here that is $1900, at `(100, 300)`.
+
+Check: `100 + 6(300) = 100 + 1800 = 1900`.
+
+## Why the last contact is a corner
+
+A straight line sliding over a polygon with straight sides leaves it at a corner or along a
+whole side. It cannot leave from the middle of a side unless the side is parallel to the
+line, and then the entire side touches at once. Either way, a vertex is among the last
+points touched.
+
+This is also why the conditions matter:
+
+- **nonempty**: there must be something to touch;
+- **bounded**: otherwise the line might never leave the region, a case covered later;
+- **convex**: without convexity, a line could touch the region again after leaving it.
+
+> Every value of a linear objective is a straight line, and all those lines are parallel.
+> Slide the line in the improving direction until it last touches the region. That last
+> contact always includes a vertex.

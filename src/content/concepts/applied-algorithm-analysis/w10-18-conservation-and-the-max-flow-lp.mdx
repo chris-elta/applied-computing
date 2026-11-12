@@ -1,0 +1,111 @@
+---
+course: applied-algorithm-analysis
+section: w10-flow
+order: 1970
+title: Conservation and the Max-Flow LP
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week10.html?hash=true#/38
+    caption: Slides 39–40 of 66 — conservation at node d, then the whole maximum-flow LP.
+notation:
+  - symbol: "Σ over u : (u, v) ∈ E of f_uv"
+    reads: the sum, over every u with an edge from u to v, of f u v
+    means: Total flow *into* `v`, adding every edge that ends at `v`.
+  - symbol: "Σ over w : (v, w) ∈ E of f_vw"
+    reads: the sum, over every w with an edge from v to w, of f v w
+    means: Total flow *out of* `v`, adding every edge that starts at `v`.
+  - symbol: "V ∖ {s, t}"
+    reads: V minus s and t
+    means: Every vertex except the source and the sink, the intermediate nodes.
+  - symbol: "F"
+    reads: F, the flow value
+    means: Total flow leaving `s`, which is what the LP maximises.
+questions:
+  - ask: >-
+      At an intermediate node `v`, edges `x → v` and `y → v` carry 2 and 3 units. Edges
+      `v → p` and `v → q` have capacities 4 and 4. Which outgoing flows obey conservation
+      and capacity?
+    choices:
+      - text: "`f_vp = 4`, `f_vq = 1`"
+        correct: true
+        explains: >-
+          Inflow is `2 + 3 = 5`, so outflow must be 5. `4 + 1 = 5`, and both are within
+          capacity 4.
+      - text: "`f_vp = 4`, `f_vq = 4`"
+        explains: >-
+          Each is within capacity, but the outflow is 8 against an inflow of 5. A node cannot
+          create flow.
+      - text: "`f_vp = 2`, `f_vq = 2`"
+        explains: >-
+          Outflow 4 against inflow 5 leaves a unit stuck at `v`. Conservation requires equality,
+          not at most.
+      - text: "`f_vp = 5`, `f_vq = 0`"
+        explains: >-
+          Conservation holds, but `f_vp = 5` exceeds the capacity of 4.
+---
+
+## Conservation: what goes in comes out
+
+At every node other than `s` and `t`, flow is neither created nor destroyed:
+
+```
+Σ_{u : (u,v) ∈ E} f_uv   =   Σ_{w : (v,w) ∈ E} f_vw        for every v ∈ V ∖ {s, t}
+        inflow                      outflow
+```
+
+Read the subscripts as "every edge ending at `v`" on the left and "every edge starting at
+`v`" on the right.
+
+At node `d` in the running network, the edges into `d` come from `a` and `b`, and the edges
+out go to `c`, `e` and `t`:
+
+```
+f_ad + f_bd = f_dc + f_de + f_dt
+```
+
+With the slide's example flow: `2 + 1 = 3` enter, and `1 + 0 + 2 = 3` leave.
+
+Conservation is a **linear equality**, a sum of variables equal to another sum, so it fits
+straight into an LP.
+
+## The whole LP
+
+```
+maximise    F = Σ_{v : (s,v) ∈ E} f_sv
+subject to  0 ≤ f_uv ≤ c_uv                       for every edge (u, v)
+            inflow(v) = outflow(v)                for every v ≠ s, t
+```
+
+The **flow value** `F` is the total leaving the source. For the running network,
+
+```
+F = f_sa + f_sb + f_sc = f_dt + f_et
+```
+
+The second equality is not a separate constraint. It follows from conservation: whatever
+leaves `s` and is never lost along the way must arrive at `t`.
+
+## Counting the pieces
+
+| piece | count | why |
+| --- | --- | --- |
+| variables | 11 | one per edge |
+| capacity bounds | 11 | one pair `0 ≤ f ≤ c` per edge |
+| conservation equations | 5 | one per intermediate node: `a`, `b`, `c`, `d`, `e` |
+
+## Is the LP well behaved?
+
+The LP has an optimum, for the reasons from the previous section:
+
+- **feasible:** zero flow on every edge satisfies every constraint;
+- **bounded:** finite capacities cap every variable, and so cap `F`.
+
+One caveat from the slides: these examples have no edges *into* `s`. In general, define the
+flow value as flow out of `s` *minus* flow into `s`.
+
+A general LP solver could now finish the job. The rest of the section shows that the graph
+structure allows something more direct.
+
+> Maximum flow is an LP: one variable per edge, bounded by its capacity, with inflow equal
+> to outflow at every intermediate node, and the total leaving the source as the objective.
+> Zero flow is always feasible and capacities bound the value, so an optimum exists.

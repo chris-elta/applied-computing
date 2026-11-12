@@ -1,0 +1,108 @@
+---
+course: applied-algorithm-analysis
+section: w10-flow
+order: 2030
+title: A Full Trace, Then Your Turn
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week10.html?hash=true#/51
+    caption: Slides 52–54 of 66 — the twelve-step seven-node trace, then the exercise and its answer.
+notation:
+  - symbol: "4/4"
+    reads: four out of four
+    means: An edge carrying flow 4 with capacity 4, which is full.
+  - symbol: "S = {s}"
+    reads: S is just s
+    means: The cut that puts the source alone on one side, and every other vertex on the other.
+questions:
+  - ask: >-
+      In the exercise's final flow (`s → a` 4/4, `s → b` 3/3, `a → b` 1/2, `a → t` 3/3,
+      `b → t` 4/4), which vertices are reachable from `s` in the residual graph?
+    choices:
+      - text: Only `s`
+        correct: true
+        explains: >-
+          Both edges out of `s` are full, so `s` has no forward residual edge. No edge enters
+          `s`, so there is no backward edge out of it either. `S = {s}` is the cut that
+          proves the flow of 7.
+      - text: "`s`, `a` and `b`"
+        explains: >-
+          That would need positive residual capacity on `s → a` or `s → b`. Both are full,
+          4/4 and 3/3.
+      - text: "`s` and `b`, because `a → b` still has room"
+        explains: >-
+          `a → b` has room, but you cannot reach `a` in the first place. Reachability starts
+          at `s`, and both edges out of `s` are full.
+      - text: Every vertex, since `t` is reachable
+        explains: >-
+          If `t` were reachable there would be an augmenting path and the flow would not be
+          maximum. It is maximum, because the cut `{s}` has capacity 7.
+---
+
+## The seven-node trace
+
+The network from the start of the section, with its bound of 7 from the cut around `t`. The
+slide runs Ford–Fulkerson for five paths:
+
+| path | route | `Δ` | value |
+| --- | --- | --- | --- |
+| 1 | `s → a → d → c → e → t` | `min(3, 2, 1, 5, 5) = 1` | 1 |
+| 2 | `s → a → d → e → t` | `min(2, 1, 1, 4) = 1` | 2 |
+| 3 | `s → c → e → t` | `min(4, 4, 3) = 3` | 5 |
+| 4 | `s → c → e → d → t` (backward `e → d`) | `min(1, 1, 1, 2) = 1` | 6 |
+| 5 | `s → b → d → t` | `min(3, 1, 1) = 1` | 7 |
+
+Read path 2's capacities carefully. `s → a` has `3 − 1 = 2` left after path 1, `a → d` has
+`2 − 1 = 1`, and `e → t` has `5 − 1 = 4`. Each `Δ` is taken from the *current* residual
+graph, not from the original capacities.
+
+Path 4 is the backward step. After path 3, `a → d` and `e → t` are full. The way to `t` is
+through `d → t`, reached by going backward along `d → e`. That cancels the unit path 2 sent
+on `d → e`, which drops from 1 to 0. That unit had been entering `e` from `d`. Now `c → e`
+supplies it instead.
+
+At value 7, the flow equals the capacity of the cut `T = {t}`, `2 + 5 = 7`, so it is maximum.
+The slide notes that `s → b → d → t` also works at step 4. The order of paths can change
+while the final value stays the same.
+
+## The exercise
+
+Network: `s → a` (4), `s → b` (3), `a → b` (2), `a → t` (3), `b → t` (4). A feasible flow of 6
+is given: `s → a` 4, `s → b` 2, `a → b` 2, `a → t` 2, `b → t` 4.
+
+1. Draw the residual graph, positive capacities only.
+2. Find an augmenting path and its bottleneck, then update the flows.
+3. Is the new flow maximum? Give a cut whose capacity equals its value.
+
+Try it before reading on.
+
+## Answer
+
+**Residual edges:**
+
+| edge | capacity | from |
+| --- | --- | --- |
+| `s → b` | 1 | `3 − 2` unused |
+| `a → t` | 1 | `3 − 2` unused |
+| `a → s` | 4 | cancel `s → a` |
+| `b → s` | 2 | cancel `s → b` |
+| `b → a` | 2 | cancel `a → b` |
+| `t → a` | 2 | cancel `a → t` |
+| `t → b` | 4 | cancel `b → t` |
+
+`s → a`, `a → b` and `b → t` are full, so they have no forward residual edge.
+
+**Path:** `s → b → a → t`, with `Δ = min(1, 2, 1) = 1`.
+
+| edge | before → after |
+| --- | --- |
+| `s → b` | 2 → 3 |
+| `a → b` | 2 → 1 (cancel) |
+| `a → t` | 2 → 3 |
+
+**Proof of optimality:** the new value is 7. Take `S = {s}`: both edges leaving it are full,
+and `C(S, T) = 4 + 3 = 7`. The flow equals the cut capacity, so it is maximum.
+
+> To work a max-flow problem by hand: list the residual edges, find a path and take its
+> current bottleneck, update only that path's edges, and stop when the reachable set
+> excludes `t`. That set is your cut, and its capacity must equal your flow.

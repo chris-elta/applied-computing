@@ -1,0 +1,111 @@
+---
+course: applied-algorithm-analysis
+section: w10-lp-forms
+order: 1950
+title: Free Variables, and the Bakery in Equality Form
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week10.html?hash=true#/31
+    caption: Slides 32–34 of 66 — replacing a free variable, then the bakery exercise and its answer.
+notation:
+  - symbol: free variable
+    reads: free variable
+    means: A variable with no sign restriction. It may be positive, zero or negative.
+  - symbol: "x = u − v"
+    reads: x equals u minus v
+    means: >-
+      Write the free variable as the difference of two non-negative variables, `u ≥ 0` and
+      `v ≥ 0`.
+  - symbol: "s₁, s₂, s₃"
+    reads: s one, s two, s three
+    means: One slack variable per upper-limit constraint, numbered in order.
+questions:
+  - ask: >-
+      In the bakery's equality form, with `x₁ + s₁ = 200`, `x₂ + s₂ = 300` and
+      `x₁ + x₂ + s₃ = 400`, what are the slacks at the plan `(200, 200)`?
+    choices:
+      - text: "`(s₁, s₂, s₃) = (0, 100, 0)`"
+        correct: true
+        explains: >-
+          `200 + s₁ = 200`, `200 + s₂ = 300` and `400 + s₃ = 400`. The Classic limit and the
+          capacity are fully used. Deluxe has 100 to spare.
+      - text: "`(100, 0, 0)`"
+        explains: >-
+          Those are the slacks at the optimum `(100, 300)`. Each plan has its own slacks.
+          Solve each equation for the plan you are given.
+      - text: "`(200, 200, 400)`"
+        explains: >-
+          These are amounts *used*, not left over. Slack is the bound minus what is used.
+      - text: "`(0, 100, 400)`"
+        explains: >-
+          The third constraint adds both variables. `200 + 200 = 400`, so nothing is left
+          over: `s₃ = 0`.
+---
+
+## Free variables
+
+Both standard forms require every variable to be `≥ 0`. Some quantities are naturally
+signed: a change in stock, a temperature, a profit that might be a loss. A variable with no
+sign restriction is **free**.
+
+The fix is to write it as a difference of two non-negative variables:
+
+```
+x = u − v,     u ≥ 0,   v ≥ 0
+```
+
+and replace `x` by `u − v` **everywhere**, in every constraint and in the objective. Any real
+number is a difference of two non-negative ones: `−3 = 0 − 3` and `5 = 5 − 0`.
+
+The pair is not unique. `5 = 7 − 2` as well. That does no harm, because the problem only ever
+sees `u − v`, and every pair with the same difference gives the same plan.
+
+## Exercise: the bakery in equality form
+
+Rewrite the bakery so that every constraint is an equation and every variable is `≥ 0`:
+
+```
+max  x₁ + 6x₂
+     x₁ ≤ 200
+     x₂ ≤ 300
+     x₁ + x₂ ≤ 400
+     x₁, x₂ ≥ 0
+```
+
+Try it before reading on. The objective is already a maximisation and both variables are
+already non-negative, so only the constraints change.
+
+## Answer
+
+Add one slack per upper limit:
+
+```
+max  x₁ + 6x₂
+     x₁       + s₁           = 200
+          x₂       + s₂      = 300
+     x₁ + x₂            + s₃ = 400
+     x₁, x₂, s₁, s₂, s₃ ≥ 0
+```
+
+Two variables have become five, and each slack belongs to exactly one constraint.
+
+## Reading the slacks
+
+At the optimum `(x₁, x₂) = (100, 300)`:
+
+| slack | value | meaning |
+| --- | --- | --- |
+| `s₁` | 100 | 100 Classic of demand unmet |
+| `s₂` | 0 | Deluxe demand fully used |
+| `s₃` | 0 | production capacity fully used |
+
+The two zeros name the two constraints that meet at the optimal vertex, `x₂ = 300` and
+`x₁ + x₂ = 400`. That is no coincidence. At a vertex, the constraints that define it have
+zero slack. Simplex uses exactly this when it represents a vertex algebraically.
+
+The rewritten LP has the same feasible production plans and the same optimal value, $1900.
+Only its description has changed.
+
+> A free variable becomes the difference of two non-negative ones. A `≤` constraint gains a
+> slack variable. After the rewrite, the slacks show which constraints a plan uses
+> completely: a zero slack marks a constraint the plan sits on.

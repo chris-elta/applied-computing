@@ -1,0 +1,111 @@
+---
+course: applied-algorithm-analysis
+section: w10-matching
+order: 2040
+title: Matchings and Bipartite Graphs
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week10.html?hash=true#/55
+    caption: Slides 56–59 of 66 — the pairing puzzle, the definitions of matching and bipartite, and a perfect matching.
+notation:
+  - symbol: "M ⊆ E"
+    reads: M is a subset of E
+    means: The matching `M` is a selection of the graph's edges.
+  - symbol: "L, R"
+    reads: L and R, left and right
+    means: The two sides of a bipartite graph. Every edge joins one vertex of `L` to one of `R`.
+  - symbol: "|L| = |R|"
+    reads: the size of L equals the size of R
+    means: The two sides have the same number of vertices. `| |` around a set means its size.
+  - symbol: bipartite
+    reads: by-PAR-tite
+    means: Splittable into two sides with every edge going across, none within a side.
+questions:
+  - ask: >-
+      A graph's edges are `{Al, Alice}`, `{Al, Beatrice}`, `{Bob, Beatrice}` and
+      `{Chet, Alice}`. Which set of edges is a matching?
+    choices:
+      - text: "`{Al, Beatrice}` and `{Chet, Alice}`"
+        correct: true
+        explains: >-
+          The two edges share no vertex: Al, Beatrice, Chet and Alice each appear once. Bob is
+          unmatched, which a matching allows.
+      - text: "`{Al, Alice}` and `{Al, Beatrice}`"
+        explains: >-
+          Both edges use Al. A matching allows each vertex in at most one chosen edge.
+      - text: "`{Al, Beatrice}` and `{Bob, Beatrice}`"
+        explains: >-
+          Both use Beatrice. The rule applies to vertices on both sides, not only to one.
+      - text: All four edges, since every edge joins the two sides
+        explains: >-
+          Joining the two sides is what makes the graph *bipartite*. It is a property of the
+          graph, not a matching. A matching is a set of edges with no shared vertex.
+---
+
+## The puzzle
+
+Four people on each side, and an edge between two people means they like each other:
+
+| left | right |
+| --- | --- |
+| Al, Bob, Chet, Dan | Alice, Beatrice, Carol, Danielle |
+
+Can everyone be paired with someone they like, with nobody in two pairs? That question needs
+two definitions.
+
+## Matching
+
+A **matching** `M` in a graph `G = (V, E)` is a subset of edges, `M ⊆ E`, such that **no two
+edges in `M` share a vertex**.
+
+It pairs off some of the vertices so that every vertex is in **at most one** pair. Some
+vertices may be left out. The empty set is a matching, and so is any single edge. The goal
+is usually a **maximum** matching, one with as many edges as possible.
+
+To check a proposed matching, list every vertex the chosen edges touch. If any appears twice,
+it is not a matching.
+
+## Bipartite
+
+A graph is **bipartite**, or **two-colourable**, if its vertices can be split into two
+disjoint sets `L` and `R` such that
+
+- every edge connects a vertex in `L` to a vertex in `R`;
+- no edge lies within `L` or within `R`.
+
+The pairing puzzle is bipartite by construction: edges join a person on the left to a person
+on the right. The name "two-colourable" comes from colouring `L` one colour and `R` the other,
+so every edge joins two different colours.
+
+Being bipartite is a property of the **graph**. Being a matching is a property of a **set of
+chosen edges**. The flow construction in the next concept needs both.
+
+## Perfect matching
+
+When `|L| = |R|`, a **perfect matching** gives *everyone* exactly one partner. It has `|L|`
+edges and touches every vertex.
+
+For the opening puzzle, one exists:
+
+| left | right |
+| --- | --- |
+| Al | Beatrice |
+| Bob | Danielle |
+| Chet | Alice |
+| Dan | Carol |
+
+Every name appears exactly once, so it is a matching, and it covers all eight people, so it
+is perfect.
+
+A perfect matching need not exist. If two people on the left like only the same one person
+on the right, one of them must go unmatched. In general you cannot tell by inspection, which
+is why the next step is an algorithm.
+
+## Not only people
+
+The same model fits anything that assigns one item to one other: people to jobs, where an
+edge means the person can do that job; students to project slots; tasks to machines.
+
+> A matching chooses edges so that no vertex is used twice. A bipartite graph splits its
+> vertices into two sides with every edge going across. A perfect matching on equal sides
+> gives every vertex exactly one partner.

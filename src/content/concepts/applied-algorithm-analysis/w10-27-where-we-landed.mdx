@@ -1,0 +1,100 @@
+---
+course: applied-algorithm-analysis
+section: w10-review
+order: 2060
+title: Where We Landed
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week10.html?hash=true#/50
+    caption: Slide 51 of 66 — the max-flow min-cut theorem, which closes the week's argument. The reading is Dasgupta, Papadimitriou and Vazirani, chapter 7 (slide 66).
+notation:
+  - symbol: LP
+    reads: L P, linear program
+    means: A linear objective maximised or minimised under linear constraints, with continuous variables.
+  - symbol: "C(S, T)"
+    reads: C of S, T
+    means: Capacity of a cut, the total capacity of edges from `S` to `T`.
+  - symbol: duality
+    reads: dew-AL-ih-tee
+    means: >-
+      Pairing a maximisation with a minimisation that bounds it. Flow and cut are the first
+      example. A later lesson covers LP duality in general.
+questions:
+  - ask: >-
+      A maximum-flow program reports a flow of value 12 and a cut of capacity 12. A
+      colleague asks how you know 12 is the best possible. What is the complete answer?
+    choices:
+      - text: "The flow shows 12 is achievable, the cut shows nothing can exceed 12, and together they prove 12 is optimal"
+        correct: true
+        explains: >-
+          That is the week's two-part argument, a feasible answer plus a bound every feasible
+          answer obeys. When the two meet, the answer is proved.
+      - text: Because Ford–Fulkerson always finds the maximum
+        explains: >-
+          True, but it asks the colleague to trust the algorithm. The cut is a certificate
+          anyone can check by adding capacities, without rerunning anything.
+      - text: Because 12 is the capacity of the edges out of the source
+        explains: >-
+          Edges out of the source form one cut, but not necessarily the minimum one. The
+          certificate is whichever cut has capacity 12.
+      - text: The cut alone proves it, since every flow is at most every cut
+        explains: >-
+          The cut proves no flow *exceeds* 12. You also need a flow that *reaches* 12, or the
+          bound might be loose.
+---
+
+## The week in one table
+
+| part | the feasible answer | the bound | when they meet |
+| --- | --- | --- | --- |
+| LP | a feasible plan | a vertex at least as good as every point | compare vertices: the best one is optimal |
+| max flow | a feasible flow | any s–t cut's capacity | no augmenting path: flow equals cut |
+| matching | a matching, as a unit flow | a cut in the matching network | max matching size equals max flow |
+
+## Linear programs
+
+- **Model:** decision variables, a linear objective, linear constraints, variable domains.
+  Every term is a fixed number times a single variable.
+- **Relaxation:** dropping integrality gives an upper bound for a max problem. Rounding is not
+  a method.
+- **Geometry:** the feasible region is convex, because a weighted average of feasible points
+  is feasible.
+- **Corners:** for a nonempty bounded region, some vertex is optimal, because every point is a
+  weighted average of vertices and a linear objective averages the same way. Ties along an
+  edge are possible.
+- **Failure modes:** infeasible, with an empty region, or unbounded, with no largest value.
+  An unbounded region alone does not make the objective unbounded.
+- **Simplex:** walk to better neighbouring vertices and stop when none improves. For an LP,
+  that is the global optimum.
+- **Forms:** negate to switch max and min, add slack or subtract surplus to make equations,
+  negate to turn `≥` into `≤`, and split a free variable into `u − v`.
+
+## Network flow
+
+- **LP:** one variable per edge, `0 ≤ f ≤ c`, with conservation at intermediate nodes.
+- **Cuts:** every flow is at most every cut. Count only edges from `S` to `T`.
+- **Residual graph:** a forward edge `c − f` to add, a backward edge `f` to cancel.
+- **Ford–Fulkerson:** augment by the bottleneck along any residual path, and stop when none
+  remains.
+- **Max-flow min-cut:** at the end, the reachable set is a cut with full outgoing and empty
+  incoming edges, so flow equals cut.
+
+## Matching
+
+Add `s` and `t`, give every edge capacity 1, and run max flow. Integer capacities give an
+integer flow, and its middle edges are the matching.
+
+## The mistakes worth checking for
+
+| mistake | correction |
+| --- | --- |
+| "an optimum must be a vertex" | *some* optimum is a vertex. Edges can tie. |
+| "unbounded region, so no maximum" | only if the objective improves in that direction |
+| counting `T → S` edges in a cut | only `S → T` capacities count |
+| dropping backward residual edges | the algorithm can get stuck below the maximum |
+| `Δ` from the original capacities | `Δ` is the smallest *current residual* capacity |
+| rounding an LP answer | it can break a constraint or miss the integer optimum |
+
+> To prove an answer optimal, give a feasible answer and a bound every feasible answer must
+> obey. When the two meet, you have both the answer and its proof. This week that was a
+> vertex for an LP, a cut for a flow, and a cut again for a matching.

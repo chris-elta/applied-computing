@@ -1,0 +1,111 @@
+---
+course: applied-algorithm-analysis
+section: w10-lp-model
+order: 1810
+title: The Bakery as a Linear Program
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week10.html?hash=true#/2
+    caption: Slides 3–6 of 66 — the bakery's problem, its variables and objective, its constraints, and the finished LP.
+notation:
+  - symbol: "x₁, x₂"
+    reads: x one, x two
+    means: >-
+      The decision variables: Classic and Deluxe cookies made per day. Subscripts number the
+      variables. They never multiply.
+  - symbol: "Z"
+    reads: zed (or zee)
+    means: >-
+      The objective, the quantity being maximised. Here, daily profit in dollars.
+  - symbol: "x₁, x₂ ∈ ℝ"
+    reads: x one and x two are in R, the real numbers
+    means: >-
+      The variables can take any real value, fractions included. Whole cookies come later.
+  - symbol: subject to
+    reads: subject to
+    means: >-
+      "Under these rules." The constraints listed after it must all hold.
+questions:
+  - ask: >-
+      Which constraint expresses the bakery's rule "at most 400 cookies in total per day"?
+    choices:
+      - text: "`x₁ + x₂ ≤ 400`"
+        correct: true
+        explains: >-
+          The total is the number of Classic plus the number of Deluxe, and the rule caps that
+          sum. Profit plays no part in a capacity rule.
+      - text: "`x₁ ≤ 400` and `x₂ ≤ 400`"
+        explains: >-
+          These cap each type separately, so together they allow 800 cookies. A total limit
+          needs a constraint that adds the two.
+      - text: "`x₁ + 6x₂ ≤ 400`"
+        explains: >-
+          That mixes in the profit coefficients. `x₁ + 6x₂` is the profit, not the number of
+          cookies. A Deluxe cookie uses one unit of capacity, not six.
+      - text: "`x₁ + x₂ = 400`"
+        explains: >-
+          "At most" is `≤`. An equation would force the bakery to make exactly 400 cookies,
+          which rules out smaller plans the rule allows.
+---
+
+A bakery makes two kinds of cookie and wants to choose how many of each to bake each day.
+
+| cookie | profit each | maximum daily sales |
+| --- | --- | --- |
+| Classic | $1 | 200 |
+| Deluxe | $6 | 300 |
+
+The kitchen can make **400 cookies a day in total**, and everything baked within the sales
+limits is sold. How many of each should it make?
+
+Every **linear program** (LP) is built from the same three parts, and building one is
+mostly a matter of naming them in order.
+
+## 1 · Decision variables: what you choose
+
+| variable | meaning |
+| --- | --- |
+| `x₁` | Classic cookies made per day |
+| `x₂` | Deluxe cookies made per day |
+
+Choose the variables first. Everything else is written in terms of them.
+
+## 2 · Objective: what you are scoring
+
+Each Classic earns $1 and each Deluxe earns $6, so the daily profit is
+
+```
+Z = x₁ + 6x₂
+```
+
+and the goal is to **maximise** `Z`.
+
+## 3 · Constraints: what is allowed
+
+| rule | constraint |
+| --- | --- |
+| Classic sales at most 200 | `x₁ ≤ 200` |
+| Deluxe sales at most 300 | `x₂ ≤ 300` |
+| total production at most 400 | `x₁ + x₂ ≤ 400` |
+| cannot make negative cookies | `x₁ ≥ 0, x₂ ≥ 0` |
+
+The last row is the one people forget. Nothing in the story says it, because no baker would
+think of making −50 cookies. A model does not know that, so the rule has to be written down.
+
+## The finished LP
+
+```
+maximise    Z = x₁ + 6x₂
+subject to  x₁ ≤ 200
+            x₂ ≤ 300
+            x₁ + x₂ ≤ 400
+            x₁, x₂ ≥ 0,   x₁, x₂ ∈ ℝ
+```
+
+The last line allows fractions. That is deliberate: a *continuous* LP sets aside the
+requirement for whole cookies for now. The concept on the LP relaxation explains why
+that is allowed and what it costs.
+
+> An LP is three things written in terms of the decision variables: an objective to
+> maximise or minimise, constraints that every plan must satisfy, and a domain for each
+> variable. Write each story rule as one constraint, including the obvious ones.

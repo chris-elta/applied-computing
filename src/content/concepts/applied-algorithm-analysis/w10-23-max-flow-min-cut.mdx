@@ -1,0 +1,114 @@
+---
+course: applied-algorithm-analysis
+section: w10-flow
+order: 2020
+title: The Max-Flow Min-Cut Theorem
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week10.html?hash=true#/47
+    caption: Slides 48–51 of 66 — the cut read off the final residual graph, why its edges are full and empty, and the theorem.
+notation:
+  - symbol: "S = vertices reachable from s"
+    reads: S is the set of vertices reachable from s
+    means: >-
+      Reachable in the final residual graph, using edges with positive residual capacity only.
+  - symbol: contradiction
+    reads: contradiction
+    means: >-
+      A conclusion that clashes with something known to be true. It shows the assumption
+      that led there was false.
+  - symbol: "F ≤ min-cut ≤ C(S, T) = F"
+    reads: F is at most the min-cut, which is at most C of S, T, which equals F
+    means: >-
+      A chain that starts and ends at `F`, so every link must be an equality.
+questions:
+  - ask: >-
+      When Ford–Fulkerson stops, let `S` be the vertices reachable from `s` in the residual
+      graph. Why must every original edge from `T` back into `S` carry zero flow?
+    choices:
+      - text: Flow on it would create a backward residual edge from S into T, making a vertex of T reachable
+        correct: true
+        explains: >-
+          Flow on `v → u`, with `v` in `T` and `u` in `S`, gives a residual edge `u → v` of
+          positive capacity. From `u`, which is reachable, `v` would be reachable too. But `v`
+          is in `T`, a contradiction.
+      - text: Conservation forbids flow from T into S
+        explains: >-
+          Conservation balances inflow and outflow at each vertex. It says nothing about the
+          direction in which flow crosses a cut, and many flows do cross some cut backwards.
+      - text: The algorithm never sends flow towards the source
+        explains: >-
+          It can. In the four-node network with `S = {s, B}`, the edge `A → B` carries flow
+          from `T` into `S` at the maximum. The zero-flow claim is about the final reachable
+          set only.
+      - text: A cut only counts edges from S to T, so the others are zero by definition
+        explains: >-
+          The definition decides which edges' *capacities* are added. It does not set any
+          flow. The zero flow has to be proved, from the reachability of `S`.
+---
+
+Ford–Fulkerson stops when no augmenting path remains. Why should that mean the flow is
+**maximum**, and not only that the algorithm is stuck? The proof builds a cut from the final
+residual graph and shows the flow equals its capacity.
+
+## Step 1 · Every cut limits the flow
+
+From the earlier concept on cuts: for any cut, `any feasible flow ≤ C(S, T)`, so
+
+```
+F ≤ min-cut value
+```
+
+## Step 2 · Read a cut off the final residual graph
+
+When the algorithm stops, define
+
+- `S` = every vertex reachable from `s` in the residual graph;
+- `T` = everything else. `t` is in `T`, since otherwise there would be an augmenting path.
+
+The key fact: **no positive residual edge leaves `S`**. If one did, its far end would be
+reachable, so it would be in `S`. Apply that to the two kinds of original edge crossing the
+cut.
+
+**2a · S → T edges are full.** Suppose an original edge `u → v` from `S` to `T` had
+`f < c`, say flow 3 of capacity 5. Its unused capacity creates a forward residual edge
+`u → v` of capacity 2. Then `v` is reachable, although it is in `T`, a contradiction. So
+`f = c`.
+
+**2b · T → S edges carry zero flow.** Suppose an original edge `v → u` from `T` to `S`
+carried flow 2. That flow could be cancelled, which creates a backward residual edge
+`u → v` of capacity 2, again from `S` into `T`. Same contradiction. So `f = 0`.
+
+Now use the identity `F = (flow S→T) − (flow T→S)`:
+
+```
+F = C(S, T) − 0 = C(S, T)
+```
+
+In the four-node trace this cut was `S = {s, A, B}`, with `4 = 2 + 2`.
+
+## Step 3 · Combine
+
+```
+F ≤ min-cut value ≤ C(S, T) = F
+```
+
+The first `≤` is step 1. The second holds because the minimum is at most any particular
+cut. The `=` is step 2. A chain that starts and ends at `F` forces every link to be equal.
+So the flow equals the min-cut value, no flow can exceed it, and **the flow is maximum**.
+
+## The theorem
+
+> **Max-flow min-cut.** The maximum s–t flow value equals the minimum s–t cut capacity.
+
+The proof gives more than the statement:
+
+- **Ford–Fulkerson is correct.** Stopping means maximum.
+- **It certifies its own answer.** The reachable set is a minimum cut, a proof anyone can
+  check by adding capacities.
+- **This is duality in miniature.** One maximisation, flow, and one minimisation, cut,
+  bound each other and meet at the optimum. The lesson on LP duality generalises this.
+
+> When no augmenting path remains, the vertices reachable from `s` form a cut whose outgoing
+> edges are full and whose incoming edges are empty, so the flow equals that cut's capacity.
+> Since every flow is at most every cut, the flow is maximum and the cut is minimum.

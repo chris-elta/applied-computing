@@ -1,0 +1,115 @@
+---
+course: applied-algorithm-analysis
+section: w10-flow
+order: 1980
+title: Every Cut Bounds the Flow
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week10.html?hash=true#/40
+    caption: Slide 41 of 66 — a cut around t with capacity 7. The general bound is slide 47, and its algebra is in the supplement on slide 64.
+notation:
+  - symbol: "(S, T)"
+    reads: S, T, an s–t cut
+    means: >-
+      A split of the vertices into two groups, with `s` in `S` and `t` in `T`.
+  - symbol: "C(S, T)"
+    reads: C of S, T, the cut capacity
+    means: >-
+      The sum of the capacities of original edges going *from* `S` *to* `T`. Edges from `T`
+      back to `S` do not count.
+  - symbol: min-cut value
+    reads: min-cut value
+    means: The smallest capacity of any s–t cut in the network.
+questions:
+  - ask: >-
+      In the four-node network (`s → A` 3, `s → B` 3, `A → B` 4, `A → t` 2, `B → t` 2), what
+      is the capacity of the cut `S = {s, B}`, `T = {A, t}`?
+    choices:
+      - text: "5"
+        correct: true
+        explains: >-
+          The edges from `S` to `T` are `s → A` (3) and `B → t` (2). `A → B` runs from `T`
+          back into `S`, so it does not count.
+      - text: "9"
+        explains: >-
+          That adds `A → B` (4) as well. It points from `T` into `S`. Cut capacity counts
+          only edges leaving `S`.
+      - text: "1"
+        explains: >-
+          That subtracts the backward edge's capacity, `5 − 4`. A backward edge's capacity is
+          never subtracted. In the flow identity, the backward edge's *flow* is subtracted.
+      - text: "4"
+        explains: >-
+          4 is the network's maximum flow and the capacity of a *minimum* cut. This cut is not
+          a minimum one, and its capacity is larger.
+---
+
+Before finding a good flow, find a limit on how good any flow can be. This is the
+upper-bound half of the plan-and-bound argument.
+
+## A cut around the sink
+
+In the seven-node network, every unit that reaches `t` arrives on `d → t` or `e → t`. Those
+pipes carry 2 and 5:
+
+```
+F = f_dt + f_et ≤ 2 + 5 = 7
+```
+
+No flow can exceed 7, whatever happens elsewhere in the network.
+
+## Cuts in general
+
+An **s–t cut** splits the vertices into two groups, `S` containing `s` and `T` containing
+`t`. The example used `S = {s, a, b, c, d, e}` and `T = {t}`.
+
+The **cut capacity** `C(S, T)` adds the capacities of the original edges directed **from S to
+T**. Here those are `d → t` and `e → t`, so `C(S, T) = 7`.
+
+**Every feasible flow is at most every cut's capacity.** Each unit must cross from `S` into `T`
+at some point, and the edges it can cross on hold `C(S, T)` in total. So
+
+```
+any feasible flow  ≤  min-cut value
+```
+
+where the min-cut value is the smallest capacity over all cuts.
+
+## Only forward edges count
+
+Edges from `T` back to `S` are not added to the capacity. Take the four-node network with
+`S = {s, B}` and `T = {A, t}`:
+
+| edge | direction | counted? |
+| --- | --- | --- |
+| `s → A` (3) | S to T | yes |
+| `B → t` (2) | S to T | yes |
+| `A → B` (4) | T to S | no |
+
+`C(S, T) = 3 + 2 = 5`.
+
+## Why the bound holds: the algebra
+
+Sum conservation over every vertex in `S`. Edges inside `S` cancel, since each is outflow for
+one endpoint and inflow for the other. Only `s` has net outflow, which is `F`. What remains
+is the identity
+
+```
+F = (flow on S→T edges) − (flow on T→S edges)
+```
+
+In the four-node example with the maximum flow, 3 + 2 units cross into `T` and 1 returns on
+`A → B`: `5 − 1 = 4 = F`.
+
+Then two facts finish it. Returning flow is at least 0, and forward flow is at most capacity:
+
+```
+F ≤ flow on S→T edges ≤ C(S, T)
+```
+
+The bound is tight exactly when **every S→T edge is full and every T→S edge is empty**. The
+max-flow min-cut proof shows that Ford–Fulkerson ends in exactly that state.
+
+> Every s–t cut bounds every flow, because each unit must cross from `S` to `T`. The bound
+> is the total capacity of the edges leaving `S`. Edges back into `S` are not counted. A
+> flow equal to some cut's capacity is therefore maximum.

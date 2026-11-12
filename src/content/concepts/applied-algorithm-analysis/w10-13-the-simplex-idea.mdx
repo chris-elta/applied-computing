@@ -1,0 +1,93 @@
+---
+course: applied-algorithm-analysis
+section: w10-lp-geometry
+order: 1920
+title: Simplex, the Geometric Idea
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week10.html?hash=true#/26
+    caption: Slide 27 of 66 — one route simplex could take round the bakery region.
+notation:
+  - symbol: simplex
+    reads: SIM-plex
+    means: >-
+      An algorithm for LPs that walks from vertex to neighbouring vertex, improving each
+      time.
+  - symbol: adjacent vertices
+    reads: uh-JAY-sent
+    means: Two vertices joined directly by an edge of the region.
+questions:
+  - ask: >-
+      Simplex stops at a vertex as soon as no neighbouring vertex is better. Why is that
+      vertex optimal over the whole region, not only better than its neighbours?
+    choices:
+      - text: For a linear objective on a convex region, a vertex no neighbour improves on is globally best
+        correct: true
+        explains: >-
+          Convexity and linearity together rule out a local peak that is not the highest.
+          If something better existed, an edge leaving this vertex would lead towards it.
+      - text: Because by then simplex has checked every vertex
+        explains: >-
+          It has not. On the bakery route `(0, 0) → (0, 300) → (100, 300)` it never visits
+          `(200, 0)` or `(200, 200)`. Not having to visit them is the point of simplex.
+      - text: Because the region has only five vertices
+        explains: >-
+          The stopping rule works in any number of dimensions, with any number of vertices.
+          It relies on the geometry, not on the bakery's size.
+      - text: It is not. Simplex may stop at a local optimum and need restarting
+        explains: >-
+          That happens with non-convex problems. LPs are linear and convex, so the first
+          vertex with no improving neighbour is a global optimum.
+---
+
+Comparing every vertex works for the bakery's five. A real LP might have thousands of
+variables and an astronomical number of vertices. **Simplex** keeps the vertex idea but
+visits only some of them.
+
+## The walk
+
+1. **Start** at a feasible vertex.
+2. **Move** along an edge to a neighbouring vertex with a better objective value.
+3. **Stop** when no neighbouring vertex is better.
+
+## On the bakery
+
+Starting from the origin, one possible route:
+
+| step | vertex | profit |
+| --- | --- | --- |
+| start | `(0, 0)` | $0 |
+| up the `x₂` axis | `(0, 300)` | $1800 |
+| along the Deluxe limit | `(100, 300)` | $1900 |
+
+At `(100, 300)` the neighbours are `(0, 300)` at $1800 and `(200, 200)` at $1400. Neither is
+better, so simplex stops. It never looked at `(200, 0)`, and it did not need to.
+
+Other routes exist. Starting along the `x₁` axis gives `(0, 0) → (200, 0) → (200, 200) →
+(100, 300)`. That takes more steps and reaches the same answer.
+
+## Why stopping locally is safe
+
+This is the claim that makes simplex correct:
+
+> For a linear objective on this convex polygon, no improving edge means the vertex is
+> globally optimal.
+
+The reason is the shape. On a convex region, if some better point existed anywhere, the
+segment from the current vertex to it would lie inside the region. Along that segment a
+linear objective changes at a steady rate, so it would rise immediately on leaving the
+vertex. Some edge out of the vertex would then have to improve too. Since none does, nothing
+better exists.
+
+On a non-convex region, or with a curved objective, a walk like this can get stuck on a
+local peak. Linearity and convexity rule that out.
+
+## What comes later
+
+The slide gives only the idea. The detailed method, which moves between vertices with
+algebra instead of pictures using the equality form in the next section, comes after
+duality in the second LP deck. The lecturer assigns two videos to watch before that lesson.
+
+> Simplex walks from vertex to better neighbouring vertex and stops when none improves.
+> For an LP, that local stopping point is the global optimum, because a convex region and a
+> linear objective have no false peaks.

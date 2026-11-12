@@ -1,0 +1,101 @@
+---
+course: applied-algorithm-analysis
+section: w10-lp-model
+order: 1840
+title: Translating a Changed Rule
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week10.html?hash=true#/9
+    caption: Slides 10–11 of 66 — the exercise, then its answer.
+notation:
+  - symbol: "2x₁ + x₂ ≤ 400"
+    reads: two x one plus x two is at most four hundred
+    means: >-
+      Each Classic uses 2 units of capacity and each Deluxe uses 1. The units used must not
+      exceed 400.
+  - symbol: "x₂ ≥ 50"
+    reads: x two is at least fifty
+    means: "A minimum order: at least 50 Deluxe cookies a day."
+questions:
+  - ask: >-
+      Under the changed rules (`2x₁ + x₂ ≤ 400`, `x₁ ≤ 200`, `50 ≤ x₂ ≤ 300`, both
+      variables non-negative), is the plan `(150, 100)` feasible?
+    choices:
+      - text: Yes, and it uses all 400 units of capacity
+        correct: true
+        explains: >-
+          `2(150) + 100 = 400`, which meets `≤ 400` exactly. `150 ≤ 200`, and `100` is between
+          50 and 300. Every constraint holds.
+      - text: No, because `2(150) + 100` equals 400 rather than being below it
+        explains: >-
+          `≤` allows equality. A plan that uses the capacity exactly is feasible. The best
+          plans often do exactly that.
+      - text: Yes, and it uses 250 units of capacity
+        explains: >-
+          250 is the number of cookies, `x₁ + x₂`. Under the new rule a Classic uses 2 units,
+          so the capacity used is `2x₁ + x₂ = 400`.
+      - text: No, because 150 + 100 is below the 400-cookie limit, so capacity is wasted
+        explains: >-
+          The old 400-cookie limit has been replaced. Leaving capacity unused never makes a
+          plan infeasible in any case. It only affects how good the plan is.
+---
+
+Writing an LP is a translation exercise. This one changes the bakery's rules and asks you
+to rewrite the model.
+
+## The changed rules
+
+The profit per cookie and the demand limits stay the same. What changes:
+
+- A Classic now uses **2 units** of production capacity, and a Deluxe uses **1**.
+- Daily capacity is **400 units**, no longer 400 cookies.
+- There is a **minimum order of 50 Deluxe**.
+
+Try writing the objective, every constraint and the variable domain before reading on.
+Then check whether the plan `(100, 250)` satisfies every constraint.
+
+## The answer, rule by rule
+
+```
+maximise  Z = x₁ + 6x₂
+```
+
+The profits have not changed, so neither has the objective.
+
+| condition | constraint |
+| --- | --- |
+| demand limits | `x₁ ≤ 200`, `x₂ ≤ 300` |
+| 2 units per Classic, 1 per Deluxe, 400 available | `2x₁ + x₂ ≤ 400` |
+| minimum Deluxe order | `x₂ ≥ 50` |
+| continuous, non-negative production | `x₁, x₂ ∈ ℝ`, `x₁, x₂ ≥ 0` |
+
+The capacity row is where the translation happens. Count what each unit of a variable
+*consumes*, multiply, and add.
+
+## Checking `(100, 250)`
+
+| constraint | value at `(100, 250)` | holds? |
+| --- | --- | --- |
+| `x₁ ≤ 200` | 100 | yes |
+| `x₂ ≤ 300` | 250 | yes |
+| `2x₁ + x₂ ≤ 400` | `200 + 250 = 450` | **no** |
+| `x₂ ≥ 50` | 250 | yes |
+
+One failed constraint is enough. `(100, 250)` is **infeasible**. It was fine under the old
+rule, where `100 + 250 = 350 ≤ 400`, which shows how one changed coefficient changes which
+plans are allowed.
+
+## Habits worth keeping
+
+- **Change only what the story changes.** The objective and the demand limits carry over
+  unchanged here.
+- **Keep the units consistent.** "400" meant cookies before and units of capacity now. The
+  coefficients must count the same thing as the bound.
+- **Check feasibility constraint by constraint.** A plan is feasible only if *every* row
+  holds, so a table is the fastest check.
+- **A minimum is a `≥`.** Writing `x₂ ≤ 50` for "at least 50" is the most common
+  translation error.
+
+> To translate a rule into a constraint, decide what each unit of each variable uses,
+> multiply and add, and compare with the bound in the same units. To check a plan, test
+> every constraint. One failure makes it infeasible.

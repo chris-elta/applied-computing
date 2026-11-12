@@ -1,0 +1,114 @@
+---
+course: applied-algorithm-analysis
+section: w10-lp-model
+order: 1820
+title: What Makes It Linear
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week10.html?hash=true#/6
+    caption: Slides 7–8 of 66 — the definition of a linear function, and which expressions qualify.
+notation:
+  - symbol: "f : ℝⁿ → ℝ"
+    reads: f from R n to R
+    means: >-
+      `f` takes a list of `n` real numbers and returns one real number.
+  - symbol: "α, β"
+    reads: alpha, beta
+    means: Fixed real numbers used as weights.
+  - symbol: "aᵀx"
+    reads: a transpose x
+    means: >-
+      Multiply matching entries of `a` and `x` and add: `a₁x₁ + a₂x₂ + ⋯ + aₙxₙ`. The `ᵀ`
+      (transpose) turns `a` from a column into a row so the product is a single number.
+  - symbol: "Σ"
+    reads: sigma, "the sum of"
+    means: >-
+      Add up the terms. `Σᵢ aᵢxᵢ` for `i` from 1 to `n` is the same sum as `aᵀx`.
+  - symbol: affine
+    reads: uh-FINE
+    means: >-
+      Linear plus a fixed constant: `aᵀx + b`.
+questions:
+  - ask: >-
+      Which of these constraints stops a model from being a linear program?
+    choices:
+      - text: "`x₁x₂ ≤ 200`"
+        correct: true
+        explains: >-
+          Two decision variables are multiplied together. Every term in an LP must be a fixed
+          number times a single variable.
+      - text: "`x₁/2 + x₂ ≤ 200`"
+        explains: >-
+          Dividing by the constant 2 is multiplying by ½. The coefficient is still a fixed
+          number, so the term is linear. Division by a *variable* would not be.
+      - text: "`3x₁ − x₂ + 7 ≥ 10`"
+        explains: >-
+          The left side is affine: linear plus a constant. Move the 7 across to get
+          `3x₁ − x₂ ≥ 3`, which is linear. LPs allow this.
+      - text: "`x₁ ≥ 0`"
+        explains: >-
+          A non-negativity constraint is as linear as a constraint gets: coefficient 1 on one
+          variable, bound 0.
+---
+
+An LP is *linear* in a precise sense, and checking it takes one rule.
+
+> **Every term must be a fixed number times a single decision variable.**
+
+Add any number of such terms and you have a linear function.
+
+## Testing the rule
+
+| expression | linear? | why |
+| --- | --- | --- |
+| `x₁ + 6x₂` | yes | 1 and 6 are fixed numbers |
+| `x₁/2 + x₂ ≤ 200` | yes | dividing by 2 is a coefficient of ½ |
+| `x₁x₂ ≤ 200` | no | two decision variables multiplied |
+| `x₁² + x₂ ≤ 200` | no | a variable squared is a variable times itself |
+| `x₁/x₂` | no | the denominator is a decision variable |
+
+The danger sign is two variables in one term, whether multiplied, divided or a variable raised
+to a power.
+
+## The formal definition
+
+A function `f : ℝⁿ → ℝ` is **linear** if, for all inputs `u`, `v` and all numbers `α`, `β`,
+
+```
+f(αu + βv) = α f(u) + β f(v)
+```
+
+Scaling or adding the inputs scales or adds the outputs the same way. That is the same as
+saying `f` has the form
+
+```
+f(x) = aᵀx = Σᵢ aᵢxᵢ = a₁x₁ + ⋯ + aₙxₙ
+```
+
+with the coefficients `aᵢ` fixed in advance. That is the table's rule in algebra.
+
+## Constants are allowed, in a sense
+
+Add a fixed constant and you get an **affine** function, `g(x) = aᵀx + b`. Strictly it is
+not linear unless `b = 0`. Every linear function has `f(0) = 0`, and `g(0) = b`.
+
+LPs accept affine terms anyway, because constants are easy to remove:
+
+| where the constant is | what to do |
+| --- | --- |
+| in a constraint, `x₁ + x₂ + 50 ≤ 400` | move it to the right: `x₁ + x₂ ≤ 350` |
+| in the objective, `max x₁ + 6x₂ + 100` | ignore it. It adds 100 to every plan, so the best plan does not change. |
+
+The constant in the objective changes the optimal *value* by 100, but not which plan
+achieves it.
+
+## Why linearity matters
+
+The whole of the next section depends on this rule. Linearity makes the feasible region
+convex, and it is the step in the proof that a corner is always optimal. A model with
+`x₁x₂` in it loses both properties. Its region can curve, and its best point can be
+anywhere.
+
+> A linear program allows only a fixed coefficient times a single variable in each term. A
+> product of variables or a variable raised to a power breaks that rule, and with it the
+> geometry that makes LPs solvable.

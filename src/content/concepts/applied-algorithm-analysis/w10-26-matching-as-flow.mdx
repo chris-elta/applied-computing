@@ -1,0 +1,111 @@
+---
+course: applied-algorithm-analysis
+section: w10-matching
+order: 2050
+title: Matching as a Flow Problem
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week10.html?hash=true#/59
+    caption: Slides 60–63 of 66 — the unit-capacity network, why matching size equals flow value, and the jobs example.
+notation:
+  - symbol: "s → L → R → t"
+    reads: s to L to R to t
+    means: >-
+      The shape of the constructed network: source to every left vertex, the original edges
+      left to right, every right vertex to sink.
+  - symbol: integral flow
+    reads: IN-ti-grul flow
+    means: A flow in which every edge carries a whole number, here 0 or 1.
+  - symbol: reduction
+    reads: reduction
+    means: >-
+      Solving one problem by rewriting it as another that you already know how to solve.
+questions:
+  - ask: >-
+      In the matching network, what stops a left vertex `u` from being matched to two right
+      vertices?
+    choices:
+      - text: "The edge `s → u` has capacity 1, so at most one unit can leave `u`"
+        correct: true
+        explains: >-
+          Conservation at `u` makes the outflow equal the inflow, and the inflow is at most 1.
+          So at most one of `u`'s edges into `R` carries flow.
+      - text: The edges from L to R have capacity 1
+        explains: >-
+          Each edge can carry one unit, but `u` might have several of them. Without the cap
+          on `s → u`, it could send one unit down each.
+      - text: Ford–Fulkerson only ever uses one path through each vertex
+        explains: >-
+          The algorithm can route many paths through a vertex when capacities allow. The
+          restriction comes from the capacities, not from the algorithm.
+      - text: Nothing. The flow must be checked and conflicts removed afterwards
+        explains: >-
+          The construction rules conflicts out in advance. Unit capacities plus conservation
+          make every integral flow a valid matching.
+---
+
+Bipartite matching looks like a new problem. It is a maximum-flow problem in disguise, so the
+algorithm from the last section solves it.
+
+## The construction
+
+Start from the bipartite graph with sides `L` and `R`, and build a network:
+
+1. Add a **source** `s` with an edge `s → u` to every `u` in `L`.
+2. Direct every original edge **from L to R**.
+3. Add a **sink** `t` with an edge `v → t` from every `v` in `R`.
+4. Give **every edge capacity 1**.
+
+## Paths are pairs
+
+A unit of flow travels `s → u → v → t` with `u` in `L` and `v` in `R`. Its middle step,
+`u → v`, is an original edge, so the unit **selects the pair `(u, v)`**.
+
+## Why the pairs never clash
+
+The unit capacities enforce the matching rule, through conservation:
+
+| vertex | capacity that limits it | so |
+| --- | --- | --- |
+| `u` in `L` | inflow from `s → u` is at most 1 | outflow at most 1: `u` in at most one pair |
+| `v` in `R` | outflow on `v → t` is at most 1 | inflow at most 1: `v` in at most one pair |
+
+Each vertex carries at most one unit-flow path, which is exactly the requirement for a
+matching.
+
+The correspondence also runs the other way. Any matching gives a flow: send one unit along
+`s → u → v → t` for each pair. So
+
+```
+maximum matching size  =  maximum flow value
+```
+
+## The integrality step
+
+One thing could go wrong: an LP optimum could put ½ a unit on two different edges out of
+`u`. Half-matches mean nothing. The slides settle this with a property shown earlier.
+**When capacities are integers, Ford–Fulkerson starts from zero and keeps every flow integer.**
+So it returns a flow in which every edge carries exactly 0 or 1, and the edges `u → v` with
+flow 1 are the matching.
+
+This is the point flagged in the LP relaxation concept. Rounding a fractional LP answer is
+not reliable in general, but flow problems with integer capacities give integer answers
+directly.
+
+## On the opening example
+
+Run max flow on the eight-person network. The answer is 4, the largest possible with four on
+each side, and the four middle edges carrying flow are a perfect matching, for instance
+Al–Beatrice, Bob–Danielle, Chet–Alice and Dan–Carol. The jobs example works the same way,
+with people on one side, jobs on the other, and an edge wherever a person can do a job.
+
+## Why reductions matter
+
+The flow algorithm was not written for matching. The work was in the construction, and the
+correctness argument came down to "unit capacities enforce one partner each". Rewriting a
+new problem as one you can already solve is a technique to look for every time you meet one.
+
+> Bipartite matching reduces to max flow: source to the left side, original edges left to
+> right, right side to sink, all capacity 1. Unit capacities and conservation give each
+> vertex at most one partner, and integer capacities give an integer flow, so the maximum
+> flow is a maximum matching.

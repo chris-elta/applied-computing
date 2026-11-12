@@ -1,0 +1,117 @@
+---
+course: applied-algorithm-analysis
+section: w10-lp-forms
+order: 1940
+title: Slack, Surplus and Flipped Inequalities
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week10.html?hash=true#/29
+    caption: Slides 30–31 of 66 — slack for ≤ constraints, then surplus, negation and splitting an equality.
+notation:
+  - symbol: "s"
+    reads: s, for slack or surplus
+    means: >-
+      A new non-negative variable recording the gap between the two sides of an inequality.
+  - symbol: "⟺"
+    reads: if and only if
+    means: >-
+      The two sides allow exactly the same plans. Each implies the other.
+  - symbol: slack
+    reads: slack
+    means: Unused capacity in a `≤` constraint, the bound minus what is used.
+  - symbol: surplus
+    reads: SUR-plus
+    means: The amount by which a `≥` constraint is exceeded, what is achieved minus the minimum.
+questions:
+  - ask: >-
+      Rewrite `2x₁ + x₂ ≥ 100` for the max / ≤ form.
+    choices:
+      - text: "`−2x₁ − x₂ ≤ −100`"
+        correct: true
+        explains: >-
+          Multiplying both sides by −1 reverses the inequality. Every term changes sign,
+          including the bound.
+      - text: "`2x₁ + x₂ ≤ 100`"
+        explains: >-
+          That turns "at least 100" into "at most 100", a different rule. Reversing the sign
+          without negating the sides changes the allowed plans.
+      - text: "`−2x₁ − x₂ ≥ −100`"
+        explains: >-
+          Both sides were negated, but the inequality was not reversed. This allows exactly
+          the plans with `2x₁ + x₂ ≤ 100`.
+      - text: "`2x₁ + x₂ − s = 100`, `s ≥ 0`"
+        explains: >-
+          That is correct for the *equality* form. The max / ≤ form needs a `≤` constraint, not
+          an equation.
+---
+
+## Slack: unused capacity
+
+The bakery's capacity constraint is an inequality:
+
+```
+x₁ + x₂ ≤ 400
+```
+
+Simplex needs an equation. Name the unused capacity `s` and the inequality becomes one:
+
+```
+x₁ + x₂ + s = 400,     s ≥ 0
+```
+
+`s` is the **slack**: used capacity plus unused capacity equals the total.
+
+| plan `(x₁, x₂)` | slack `s = 400 − x₁ − x₂` |
+| --- | --- |
+| `(0, 0)` | 400 |
+| `(200, 0)` | 200 |
+| `(100, 300)` | 0 |
+
+The requirement `s ≥ 0` carries the inequality. A plan using more than 400 would need
+negative slack, which is forbidden. Slack 0 means the constraint is **tight**: the plan
+sits on that boundary line. At the optimum `(100, 300)` the capacity is fully used.
+
+## Surplus: going over a minimum
+
+For a `≥` constraint, **subtract** a non-negative variable, the amount by which the
+minimum is exceeded:
+
+```
+2x₁ + x₂ ≥ 100     ⟺     2x₁ + x₂ − s = 100,   s ≥ 0
+```
+
+That `s` is the **surplus**. Adding slack for `≤` and subtracting surplus for `≥` covers
+every inequality.
+
+## For the max / ≤ form
+
+The max / ≤ form keeps inequalities but wants every one to be `≤`.
+
+**A `≥` constraint:** negate both sides. Multiplying by −1 reverses an inequality:
+
+```
+2x₁ + x₂ ≥ 100     ⟺     −2x₁ − x₂ ≤ −100
+```
+
+A negative right-hand side is fine. Only the variables have to be non-negative.
+
+**An equality:** replace it with two inequalities that together force equality, "at most"
+and "at least", with the second negated:
+
+```
+x₁ + x₂ = 50     ⟺     x₁ + x₂ ≤ 50   and   −x₁ − x₂ ≤ −50
+```
+
+## Summary
+
+| you have | equality form | max / ≤ form |
+| --- | --- | --- |
+| `≤` | add slack: `+ s = b` | already fine |
+| `≥` | subtract surplus: `− s = b` | negate both sides |
+| `=` | already fine | split into `≤` and negated `≥` |
+
+Each new `s` must be declared `≥ 0`. That condition is what keeps the inequality.
+
+> A slack or surplus variable turns an inequality into an equation by naming the gap
+> between its sides, and `s ≥ 0` keeps the gap pointing the right way. To turn `≥` into
+> `≤`, negate both sides. To turn `=` into `≤`, write it as two inequalities.

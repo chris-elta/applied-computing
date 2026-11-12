@@ -1,0 +1,127 @@
+---
+course: applied-algorithm-analysis
+section: w10-flow
+order: 2010
+title: Tracing the Four-Node Network
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week10.html?hash=true#/45
+    caption: Slide 46 of 66 — ten steps of Ford–Fulkerson, original flow beside residual graph (use the step buttons).
+notation:
+  - symbol: "min(3, 4, 2)"
+    reads: the minimum of three, four and two
+    means: The smallest of the listed numbers, here 2. Used for the bottleneck.
+  - symbol: dashed edge
+    reads: dashed edge
+    means: On the slide, a backward residual edge, one that cancels flow.
+questions:
+  - ask: >-
+      In the trace, after paths 1 and 2 the flow is 3 and `B → t` is full. Why can path 3,
+      `s → B → A → t`, still send a unit into `t`?
+    choices:
+      - text: "Going backward along `A → B` cancels a unit there, so `A` sends it to `t` directly and the new unit from `s` takes its place at `B`"
+        correct: true
+        explains: >-
+          The new unit enters `B` from `s`. The unit `A` had been sending to `B` is redirected
+          along `A → t`. `B → t` still carries 2, but now one of those units came from `s`
+          through `B`.
+      - text: Because `B → t` has residual capacity left over
+        explains: >-
+          `B → t` is full, 2 out of 2, so it has no forward residual capacity. The path does not
+          use it.
+      - text: "Because `B → A` is an original edge with spare capacity"
+        explains: >-
+          The network has no original edge `B → A`. The residual edge `B → A` exists only
+          because `A → B` carries flow that can be cancelled.
+      - text: It cannot. The flow of 3 is already maximum
+        explains: >-
+          The cut `S = {s, A, B}`, `T = {t}` has capacity 4, and path 3 reaches it. Being
+          stuck when only adding flow does not mean the flow is maximum.
+---
+
+The network has `s → A` (3), `s → B` (3), `A → B` (4), `A → t` (2) and `B → t` (2). Follow
+the paths, then watch the slide step through them.
+
+## Path 1: s → A → B → t
+
+Every residual capacity starts equal to the original capacity.
+
+```
+Δ = min(3, 4, 2) = 2
+```
+
+| edge | before → after |
+| --- | --- |
+| `s → A` | 0 → 2 |
+| `A → B` | 0 → 2 |
+| `B → t` | 0 → 2 |
+
+**Flow value 2.** `B → t` is now full. Its forward residual edge is gone, and a backward
+`t → B` of 2 appears.
+
+## Path 2: s → A → t
+
+Residual `s → A` has `3 − 2 = 1` left. `A → t` has 2.
+
+```
+Δ = min(1, 2) = 1
+```
+
+| edge | before → after |
+| --- | --- |
+| `s → A` | 2 → 3 |
+| `A → t` | 0 → 1 |
+
+**Flow value 3.** `s → A` is now full.
+
+## Stuck when only adding
+
+Using unused original capacity only: `s` reaches `B`, but `B → t` is full, and nothing else
+leaves `B`. A version of the algorithm without backward edges stops here, at 3.
+
+## Path 3: s → B → A → t
+
+The residual graph has a **backward** edge `B → A` of capacity 2, the flow on `A → B` that
+can be cancelled.
+
+```
+Δ = min(3, 2, 1) = 1
+```
+
+| edge | before → after |
+| --- | --- |
+| `s → B` | 0 → 1 |
+| `A → B` | 2 → 1 (cancel) |
+| `A → t` | 1 → 2 |
+
+**Flow value 4.** In effect, one unit `A` used to send through `B` now goes to `t` directly,
+and the unit arriving from `s` at `B` takes its place on `B → t`.
+
+## Is anything left?
+
+From `s` the residual graph reaches:
+
+- `A`? `s → A` is full, but `B → A` has residual 1, since `A → B` still carries 1. So yes,
+  through `B`.
+- `B`? yes, `s → B` has residual 2.
+- `t`? `A → t` and `B → t` are both full. **No.**
+
+So `S = {s, A, B}` and `T = {t}`. The original edges from `S` to `T` are `A → t` and `B → t`,
+both full:
+
+```
+C(S, T) = 2 + 2 = 4 = flow value
+```
+
+A flow equal to a cut's capacity is maximum, so the answer is **4**.
+
+## What to take from the trace
+
+- Each step changes only the edges on the path, all by the same `Δ`.
+- A backward edge is used exactly when no path of forward edges remains.
+- When the algorithm stops, the vertices it can still reach form the cut that proves the
+  answer. No separate search for a cut is needed.
+
+> Ford–Fulkerson on the four-node network sends 2, then 1, then 1 by cancelling a unit on
+> `A → B`. At the end, the vertices still reachable from `s` form a cut whose capacity
+> equals the flow, which proves the flow of 4 is maximum.

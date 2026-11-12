@@ -1,0 +1,109 @@
+---
+course: applied-algorithm-analysis
+section: w10-flow
+order: 1990
+title: The Residual Graph
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week10.html?hash=true#/41
+    caption: Slides 42–44 of 66 — a flow that adding alone cannot improve, residual edges for one pipe, and why backward edges matter.
+notation:
+  - symbol: residual graph
+    reads: ri-ZID-you-ul graph
+    means: >-
+      The same vertices, with an edge for every change the current flow still allows.
+  - symbol: "c − f"
+    reads: c minus f
+    means: >-
+      Forward residual capacity. How much more flow `u → v` can take.
+  - symbol: "f (backward)"
+    reads: f, on the backward edge
+    means: >-
+      Backward residual capacity on `v → u`. How much of the flow already on `u → v` can be
+      cancelled.
+  - symbol: "a / b"
+    reads: a out of b
+    means: An edge label meaning flow `a` on an edge of capacity `b`.
+questions:
+  - ask: >-
+      An original edge `u → v` has capacity 6 and carries flow 6. Which residual edges does
+      it create?
+    choices:
+      - text: Only a backward edge `v → u` with residual capacity 6
+        correct: true
+        explains: >-
+          The pipe is full, so the forward capacity `c − f` is 0 and that edge is left out.
+          All 6 units can still be cancelled, so the backward edge has capacity 6.
+      - text: Only a forward edge `u → v` with residual capacity 6
+        explains: >-
+          Forward residual capacity is what remains *unused*, `c − f = 0`. The 6 belongs to
+          the backward edge, the amount that can be cancelled.
+      - text: Forward 0 and backward 0, since a full edge cannot change
+        explains: >-
+          A full edge cannot take more, but its flow can be reduced. That possibility is the
+          backward edge, with capacity equal to the current flow.
+      - text: No residual edges, since full edges are removed from the network
+        explains: >-
+          Only the forward direction disappears. If the backward edge were dropped too, the
+          algorithm could never reroute flow through a full pipe.
+---
+
+## When adding alone gets stuck
+
+Take a four-node network and a flow of 3 (labels are flow / capacity):
+
+| edge | flow / capacity |
+| --- | --- |
+| `s → A` | 3 / 3 |
+| `s → B` | 0 / 3 |
+| `A → B` | 2 / 4 |
+| `A → t` | 1 / 2 |
+| `B → t` | 2 / 2 |
+
+Look for an `s`–`t` path where every edge has room left. `s → A` is full. `s → B` has room,
+but the only way on from `B` is `B → t`, and that is full. Adding flow is blocked.
+
+Yet a flow of 4 exists. **Move one unit off `A → B`** and reroute:
+
+- `s → B` carries 1 more, 0 → 1,
+- `A → B` carries 1 less, 2 → 1,
+- `A → t` carries 1 more, 1 → 2.
+
+Now `A`'s unit takes `A → t` directly, which frees space on `B → t` for the new unit from
+`s → B`. To improve a flow you must sometimes **cancel earlier choices**, so you need to
+record what can be cancelled as well as what can be added.
+
+## Residual edges for one pipe
+
+An original edge `u → v` with capacity `c = 6` and current flow `f = 4` allows two kinds of
+change:
+
+| possible change | residual edge | residual capacity |
+| --- | --- | --- |
+| add up to 2 more | forward `u → v` | `c − f = 6 − 4 = 2` |
+| cancel up to 4 | backward `v → u` | `f = 4` |
+
+Using `v → u` does not send anything from `v` to `u`. It **cancels** flow on `u → v`.
+Cancelling 1 unit takes the flow from 4 to 3.
+
+The **residual graph** keeps the same vertices and includes every residual edge with
+**positive** capacity. A full edge loses its forward edge. An empty edge has no backward one.
+
+## Why backward edges are essential
+
+| residual graph | outcome on the example |
+| --- | --- |
+| forward edges only | stuck at flow 3 |
+| forward and backward | path `s → B → A → t` gives flow 4, the maximum |
+
+The path goes forward on `s → B`, *backward* along `A → B` from `B` to `A`, then forward on
+`A → t`. Think of revising a delivery plan: undo part of one route so more can be sent along
+another.
+
+Without backward edges, the first few paths chosen can block the maximum. With them, no early
+choice is permanent.
+
+> The residual graph records every allowed change. Each original edge gives a forward edge
+> for its unused capacity `c − f` and a backward edge for its cancellable flow `f`. Backward
+> edges let the algorithm undo earlier choices, and without them it can get stuck below the
+> maximum.

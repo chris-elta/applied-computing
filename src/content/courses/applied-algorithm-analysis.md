@@ -175,4 +175,29 @@ sections:
       Ordering tasks so every prerequisite comes first, and why DFS finishing order does it.
   - id: w9-review
     title: Week 9 · Where we landed
+  - id: w10-lp-model
+    title: Week 10 · Modelling a linear program
+    summary: >-
+      Decision variables, a linear objective and linear constraints — and what a feasible answer
+      and an upper bound each prove.
+  - id: w10-lp-geometry
+    title: Week 10 · The geometry of an LP
+    summary: >-
+      The constraints cut out a convex region, and some corner of it is always at least as good
+      as any other point.
+  - id: w10-lp-forms
+    title: Week 10 · Rewriting an LP
+    summary: >-
+      Slack, surplus and split variables: changing an LP's form without changing its plans.
+  - id: w10-flow
+    title: Week 10 · Maximum flow
+    summary: >-
+      Push flow along residual paths until none is left, and a cut of equal capacity proves the
+      flow is the most there is.
+  - id: w10-matching
+    title: Week 10 · Bipartite matching
+    summary: >-
+      Pairing two sides off without sharing, solved by turning it into a unit-capacity flow.
+  - id: w10-review
+    title: Week 10 · Where we landed
 ---

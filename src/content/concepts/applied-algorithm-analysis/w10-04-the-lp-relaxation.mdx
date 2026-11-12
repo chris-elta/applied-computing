@@ -1,0 +1,104 @@
+---
+course: applied-algorithm-analysis
+section: w10-lp-model
+order: 1830
+title: Whole Cookies and the LP Relaxation
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week10.html?hash=true#/8
+    caption: Slide 9 of 66 — continuous against integer variables. The integer-optimum remark is on slide 23.
+notation:
+  - symbol: "ℝ"
+    reads: R, the real numbers
+    means: Every number on the number line, fractions and irrationals included.
+  - symbol: "{0, 1, 2, …}"
+    reads: the set zero, one, two, and so on
+    means: The whole numbers. A variable restricted to this set must be an integer.
+  - symbol: relaxation
+    reads: relaxation
+    means: >-
+      The same problem with a rule loosened. Here the rule "must be a whole number" is
+      dropped.
+questions:
+  - ask: >-
+      A maximisation problem needs integer variables. Its LP relaxation has optimum 1900.5,
+      reached at a plan with fractional values. What can you say about the best integer plan?
+    choices:
+      - text: Its value is at most 1900.5
+        correct: true
+        explains: >-
+          Every integer plan is also a plan in the relaxation, so none can beat the
+          relaxation's optimum. Here it may well fall short of it.
+      - text: It is the LP plan rounded to the nearest integers
+        explains: >-
+          Rounding can break a constraint or land on a plan worse than the integer optimum.
+          The relaxation gives a bound, not the integer answer.
+      - text: Its value is exactly 1900.5
+        explains: >-
+          An LP optimum is reached by an integer plan only if the LP optimum happens to be
+          integer. This one is fractional, so the integer optimum may be lower.
+      - text: Its value is at least 1900.5
+        explains: >-
+          This has the direction backwards. Adding the integer requirement removes plans,
+          and removing plans can only lower the best value of a maximisation.
+---
+
+The bakery LP lets `x₁` and `x₂` be any real numbers, but nobody sells 137.4 cookies. Why
+model it that way?
+
+## Two models of the same bakery
+
+| model | variable domain |
+| --- | --- |
+| linear program (LP) | `x₁, x₂ ∈ ℝ`, `x₁, x₂ ≥ 0` |
+| whole-cookie production | `x₁, x₂ ∈ {0, 1, 2, …}` |
+
+Dropping the integer requirement gives the **LP relaxation** of the whole-cookie problem.
+The relaxation is what this week's methods can solve. The geometry, the corner argument and
+simplex all need continuous variables.
+
+## What the relaxation tells you
+
+Every whole-cookie plan is also a real-number plan. So the relaxation's feasible region
+*contains* the integer one, and for a maximisation,
+
+```
+integer optimum  ≤  LP optimum
+```
+
+The relaxation can only do as well or better, because it has more plans to choose from.
+That gives two uses:
+
+- **as a bound.** The LP optimum is an upper bound on what whole cookies can earn.
+- **as a solution, when you are lucky.** If the LP optimum happens to be integer, it is a
+  feasible integer plan that reaches the bound, so it solves both models. The bakery's LP
+  optimum is `(100, 300)`. It is already whole, and the bakery is done.
+
+## Why not round?
+
+If the LP answer is fractional, rounding it is tempting. The slide warns that it can fail
+in two ways. A small example shows both:
+
+```
+maximise    x₁ + x₂
+subject to  2x₁ + 2x₂ ≤ 3,   x₁, x₂ ≥ 0
+```
+
+The LP optimum is 1.5, for instance at `(0.75, 0.75)`.
+
+| rounding | plan | outcome |
+| --- | --- | --- |
+| up | `(1, 1)` | `2 + 2 = 4 > 3`: **violates the constraint** |
+| down | `(0, 0)` | value 0, but `(1, 0)` is feasible with value 1: **misses the integer optimum** |
+
+The integer optimum is 1, which the bound 1.5 allows. Neither rounding finds it.
+
+## The quiet assumption
+
+This week's LPs assume fractions are acceptable or that the answer comes out whole. Some
+problems give integer answers for structural reasons. Maximum flow with integer capacities
+is one, and matching later depends on it.
+
+> The LP relaxation drops the integer requirement. Its optimum bounds the integer optimum,
+> and solves the integer problem only when it is already whole. Rounding a fractional LP
+> answer is not a method, because it can break constraints or miss the best integer plan.

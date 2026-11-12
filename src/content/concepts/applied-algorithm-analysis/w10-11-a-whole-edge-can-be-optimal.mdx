@@ -1,0 +1,96 @@
+---
+course: applied-algorithm-analysis
+section: w10-lp-geometry
+order: 1900
+title: A Whole Edge Can Be Optimal
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week10.html?hash=true#/23
+    caption: Slide 24 of 66 — changing the objective to total production makes a whole edge optimal.
+notation:
+  - symbol: "T = x₁ + x₂"
+    reads: T equals x one plus x two
+    means: A new objective, total cookies made per day.
+  - symbol: edge
+    reads: edge
+    means: >-
+      A straight side of the region, running between two neighbouring vertices.
+questions:
+  - ask: >-
+      The bakery maximises total production `x₁ + x₂` under its usual constraints. A solver
+      returns the plan `(150, 250)`. Is that a correct answer?
+    choices:
+      - text: Yes. It totals 400, the maximum, even though it is not a vertex
+        correct: true
+        explains: >-
+          The theorem promises that *some* vertex is optimal, not that only vertices are.
+          `(150, 250)` lies on the optimal edge from `(100, 300)` to `(200, 200)`.
+      - text: No. An LP optimum must be a vertex
+        explains: >-
+          This reverses the theorem. It guarantees at least one optimal vertex, which is why
+          comparing vertices finds the best value. Non-vertex points can tie with it.
+      - text: No. The unique optimum is `(100, 300)`, as for the profit objective
+        explains: >-
+          The optimum depends on the objective. With every cookie worth the same, `(100, 300)`
+          and `(200, 200)` tie at 400, along with everything between them.
+      - text: It cannot be decided without checking all five vertices first
+        explains: >-
+          A direct bound settles it. `x₁ + x₂ ≤ 400` is a constraint, so no plan totals more
+          than 400, and `(150, 250)` is feasible and reaches it.
+---
+
+The vertex theorem says *at least one* vertex is optimal. Read the words "at least"
+carefully. They allow ties, and a tie can include a whole side of the region.
+
+## A different objective
+
+Keep every bakery constraint, but now maximise **total production**:
+
+```
+maximise  T = x₁ + x₂
+```
+
+The equal-value lines `x₁ + x₂ = T` have slope −1, the same as the boundary
+`x₁ + x₂ = 400`. Pushing the line outwards, the last contact is no longer a single corner.
+The line meets the entire edge at once.
+
+There is also a direct bound: the constraint `x₁ + x₂ ≤ 400` means `T ≤ 400` for every
+feasible plan. Every plan on that edge reaches 400.
+
+| plan | total production |
+| --- | --- |
+| `(100, 300)` | 400 |
+| `(150, 250)` | 400 |
+| `(200, 200)` | 400 |
+
+Every point on the edge from `(100, 300)` to `(200, 200)` is optimal, including both
+endpoint vertices. **The optimum need not be unique.**
+
+## When it happens
+
+An edge is optimal exactly when the objective's lines run **parallel** to it, in the
+direction the objective is pushing. In the profit version, the slope was −1/6, not parallel
+to any side, so the last contact was the single vertex `(100, 300)`.
+
+## What it means for the method
+
+Nothing in the procedure changes. Comparing vertices still finds the best *value*: here
+`(100, 300)` and `(200, 200)` tie at 400 in the vertex table. What changes is the reading of
+the result:
+
+- A tie between **neighbouring** vertices means the whole edge between them is optimal.
+- A solver may report either endpoint, or a point between them. All are correct answers.
+- If you need one particular optimal plan, say the one with the most Deluxe, that is a
+  second criterion, and it has to be stated as part of the problem.
+
+## The direction of the theorem
+
+| statement | true? |
+| --- | --- |
+| some optimal point is a vertex | yes, for a nonempty bounded region |
+| every optimal point is a vertex | no, edges can be optimal |
+| every vertex is optimal | no, the bakery has one optimal vertex out of five |
+
+> The vertex theorem guarantees an optimal vertex, not a unique one. When the objective's
+> lines are parallel to an edge, the whole edge is optimal, and every point on it is a
+> correct answer.
