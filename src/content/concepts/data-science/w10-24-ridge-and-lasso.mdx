@@ -1,0 +1,112 @@
+---
+course: data-science
+section: w10-regularisation
+order: 1560
+title: Ridge and LASSO
+visuals:
+  - type: svg
+    src: data-science/w10-regression-2/46.svg
+    caption: Slide 46 of 48 (linear regression, part 2) — interpreting and penalising coefficients.
+  - type: svg
+    src: data-science/w10-regression-2/47.svg
+    caption: Slide 47 of 48 (linear regression, part 2) — two correlated variables, two models.
+notation:
+  - symbol: "L₂"
+    reads: L two
+    means: >-
+      The penalty on the sum of squared coefficients, Σ θⱼ². Used by ridge regression.
+  - symbol: "L₁"
+    reads: L one
+    means: >-
+      The penalty on the sum of absolute values of coefficients, Σ |θⱼ|. Used by LASSO.
+  - symbol: "Z-score"
+    reads: Z score
+    means: >-
+      A variable rescaled to mean 0 and standard deviation 1, from week 2. Puts every feature in
+      the same units.
+questions:
+  - ask: "v₁ and v₂ are two highly correlated Z-score variables. Model A is Y = 200,001 v₁ − 200,000 v₂ and model B is Y = v₁. Model A fits the training data slightly better. Which does ridge regression prefer, and why?"
+    choices:
+      - text: "Model B: its penalty is 1, against about 8 × 10¹⁰ for model A, and the slightly better fit is nowhere near worth it"
+        correct: true
+        explains: >-
+          The ridge penalty is the sum of squared coefficients: 200,001² + 200,000² for A, 1² for B.
+          A's huge opposite-signed coefficients are fitting noise in the tiny difference between
+          v₁ and v₂. Slide 47 says the second model is better.
+      - text: "Model A, because it fits the training data better"
+        explains: >-
+          A better training fit is exactly what overfitting looks like. A's coefficients would give
+          wild predictions as soon as v₁ and v₂ diverged slightly in new data.
+      - text: "They are equivalent, because the coefficients in A nearly cancel"
+        explains: >-
+          They cancel only while v₁ and v₂ stay almost equal. The penalty sees the coefficients'
+          sizes, not their sum.
+      - text: "Neither; ridge regression only works on uncorrelated variables"
+        explains: >-
+          Correlated variables are where ridge regression is most useful, as this example shows.
+---
+
+The regularised cost from the previous concept has a name. Slide 46 names it and its main
+alternative.
+
+## Coefficients as importance
+
+Slide 46 starts with a condition:
+
+> When variables have mean zero, a coefficient's magnitude is a measure of its value to the
+> objective function.
+
+If features are in wildly different units, a coefficient's size says nothing: price per square foot
+is small because square feet are many. After standardising every feature (Z-scores, or the mean
+normalisation from the feature-scaling concept), a large |θⱼ| really does mean feature j matters a
+lot. That is what makes penalising sizes fair: every coefficient is measured on the same scale.
+
+## Two penalties
+
+| method | penalty | in words |
+| --- | --- | --- |
+| **ridge regression** | `λ Σ θⱼ²` | the sum of **squared** coefficients: the L₂ penalty |
+| **LASSO** | `λ Σ abs(θⱼ)` | the sum of **absolute values**: the L₁ penalty |
+
+Ridge is exactly the regularised cost from the previous concept. Week 9's Occam's razor concept
+mentioned both as methods that "employ penalty functions to minimise features".
+
+They behave differently in one important way. Squaring makes a tiny coefficient cost almost nothing,
+so ridge shrinks every coefficient but rarely to exactly zero. The absolute value keeps charging
+small coefficients at full rate, so LASSO tends to push the least useful ones **all the way to zero**,
+dropping those features from the model. LASSO does feature selection as part of fitting.
+
+## Correlated variables
+
+Slide 47's example shows what ridge buys you. `v₁` and `v₂` are two **highly correlated** Z-score
+variables: nearly the same number every time. Two models:
+
+```
+A:  Y = 200,001·v₁ − 200,000·v₂
+B:  Y = v₁
+```
+
+While `v₁ ≈ v₂`, model A gives about `200,001·v₁ − 200,000·v₁ = v₁`. The two models make almost the
+same predictions, and A may even fit the training data slightly better: its enormous coefficients
+let it chase the tiny, noisy differences between v₁ and v₂.
+
+Now compare their ridge penalties:
+
+| model | Σ θⱼ² |
+| --- | --- |
+| A | 200,001² + 200,000² ≈ 8 × 10¹⁰ |
+| B | 1² = 1 |
+
+Ridge prefers B by a vast margin. That is the right answer:
+
+> The second is better even if it fits slightly less well on the training data.
+
+Rewrite model A as `Y = v₁ + 200,000·(v₁ − v₂)`. On new data where v₁ and v₂ differ by even 0.01,
+its prediction shifts by about 2,000. Model B ignores v₂, so the gap does not move it at all. A's training-set advantage was noise, and its coefficients would make it
+unstable on anything new. This is high variance from week 9, and also the redundant-features problem
+from the normal-equation concept, in a softer form: when features nearly duplicate each other, many
+very different θs fit almost equally, and ridge picks the small, stable one.
+
+> Ridge penalises squared coefficients and shrinks them all; LASSO penalises absolute values and sets
+> some to exactly zero. Both need standardised features, and both prefer a simple model to a
+> slightly better training fit, which is what protects against correlated features and overfitting.

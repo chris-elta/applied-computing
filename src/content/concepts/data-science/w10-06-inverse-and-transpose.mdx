@@ -1,0 +1,125 @@
+---
+course: data-science
+section: w10-linalg
+order: 1380
+title: Inverse and Transpose
+visuals:
+  - type: svg
+    src: data-science/w10-linalg/24.svg
+    caption: Slide 24 of 25 (linear algebra review) — the matrix inverse, and singular matrices.
+  - type: svg
+    src: data-science/w10-linalg/25.svg
+    caption: Slide 25 of 25 (linear algebra review) — the transpose.
+notation:
+  - symbol: "A⁻¹"
+    reads: A inverse
+    means: >-
+      The matrix that multiplies with A, in either order, to give the identity. Not 1/A:
+      there is no matrix division.
+  - symbol: "Aᵀ"
+    reads: A transpose
+    means: >-
+      A flipped over its diagonal, so rows become columns. An m × n matrix becomes n × m.
+  - symbol: "Bᵢⱼ = Aⱼᵢ"
+    reads: B i j equals A j i
+    means: >-
+      The definition of the transpose: the entry in row i, column j of B is the one in row j,
+      column i of A.
+questions:
+  - ask: "A = [[1, 2, 0], [3, 5, 9]], written row by row. What is Aᵀ?"
+    choices:
+      - text: "[[1, 3], [2, 5], [0, 9]], a 3 × 2 matrix"
+        correct: true
+        explains: >-
+          The first row of A, [1, 2, 0], becomes the first column, and the second row becomes
+          the second column. A 2 × 3 matrix becomes 3 × 2.
+      - text: "[[0, 2, 1], [9, 5, 3]], each row reversed"
+        explains: >-
+          Reversing rows is a mirror left to right. Transposing flips over the diagonal, so
+          rows become columns.
+      - text: "[[3, 5, 9], [1, 2, 0]], the rows swapped"
+        explains: >-
+          Swapping rows keeps the matrix 2 × 3. A transpose changes the shape to 3 × 2.
+      - text: "Undefined, because only square matrices have a transpose"
+        explains: >-
+          Every matrix has a transpose. It is the inverse that needs a square matrix.
+  - ask: "Which matrices can have an inverse?"
+    choices:
+      - text: "Only square matrices, and not all of those: a square matrix without one is singular"
+        correct: true
+        explains: >-
+          The definition AA⁻¹ = A⁻¹A = I needs A to be m × m. Even then some, like the all-zero
+          matrix, have no inverse; slide 24 calls them singular or degenerate.
+      - text: "Every square matrix"
+        explains: >-
+          Like 0 among the numbers, some square matrices have no inverse. Slide 24 names them
+          singular.
+      - text: "Every matrix, if it has no zero entries"
+        explains: >-
+          A non-square matrix never has an inverse in this sense, and a square one with no zeros
+          can still be singular, such as [[1, 2], [2, 4]].
+      - text: "Only the identity matrix"
+        explains: >-
+          The identity is its own inverse, but many other square matrices have inverses too.
+---
+
+The last two operations in the review both appear in the **normal equation**, later this
+week, which solves linear regression in one formula: `θ = (XᵀX)⁻¹Xᵀy`.
+
+## The inverse
+
+With numbers, most have a reciprocal: `3 × 3⁻¹ = 1`. "Not all numbers have an inverse"
+(slide 24): zero does not.
+
+For an `m × m` matrix `A`, an inverse `A⁻¹` is a matrix such that
+
+```
+A × A⁻¹ = A⁻¹ × A = I
+```
+
+where `I` is the identity from the previous concept. For example:
+
+```
+⎡ 3   4 ⎤ ⎡  0.4    −0.1  ⎤   ⎡ 1  0 ⎤
+⎣ 2  16 ⎦ ⎣ −0.05   0.075 ⎦ = ⎣ 0  1 ⎦
+```
+
+Check the top-left entry: `3 × 0.4 + 4 × (−0.05) = 1.2 − 0.2 = 1`.
+
+Three facts:
+
+- **only square matrices** can have an inverse in this sense;
+- **some square matrices have none.** Slide 24: matrices that do not have an inverse are
+  **singular** or **degenerate**. The all-zero matrix is the obvious one; so is
+  `[[1, 2], [2, 4]]`, whose second row is just twice the first;
+- you do not compute inverses by hand in this course. Software does it: `np.linalg.inv`, or
+  `pinv`, which copes with the singular case.
+
+That last pair matters for regression. The normal-equation concept shows when `XᵀX` turns out
+singular: when one feature is a multiple of another, just like the rows here.
+
+## The transpose
+
+The **transpose** flips a matrix over its diagonal, so rows become columns (slide 25):
+
+```
+       ⎡ 1  2  0 ⎤              ⎡ 1  3 ⎤
+A  =   ⎣ 3  5  9 ⎦      Aᵀ  =   ⎢ 2  5 ⎥
+                                ⎣ 0  9 ⎦
+```
+
+If `A` is `m × n`, then `B = Aᵀ` is `n × m`, and
+
+```
+Bᵢⱼ = Aⱼᵢ
+```
+
+Every matrix has a transpose; no conditions.
+
+The transpose's most common use in these lectures is turning a column into a row so that two
+vectors can be multiplied. With `θ` and `x` both columns, `θᵀx` is a `1 × n` row times an
+`n × 1` column: a single number, the sum of `θᵢxᵢ`. That is exactly how the multi-feature
+hypothesis is written.
+
+> A⁻¹ undoes A: their product is the identity. Only square matrices can have one, and some
+> (singular ones) do not. Aᵀ swaps rows and columns, and exists for every matrix.

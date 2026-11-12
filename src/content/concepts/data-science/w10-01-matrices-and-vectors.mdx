@@ -1,0 +1,117 @@
+---
+course: data-science
+section: w10-linalg
+order: 1330
+title: Matrices, Vectors and Indexing
+visuals:
+  - type: svg
+    src: data-science/w10-linalg/03.svg
+    caption: Slide 3 of 25 (linear algebra review) — matrix elements.
+  - type: svg
+    src: data-science/w10-linalg/04.svg
+    caption: Slide 4 of 25 (linear algebra review) — vectors, and 1-indexed against 0-indexed.
+notation:
+  - symbol: "m × n"
+    reads: m by n
+    means: >-
+      The dimension of a matrix: m rows, then n columns. Always rows first. A 4 × 2 matrix
+      has 4 rows and 2 columns.
+  - symbol: "Aᵢⱼ"
+    reads: A i j, or "the i j entry of A"
+    means: >-
+      The entry of matrix A in row i, column j. Subscripts are positions, never
+      multiplication: A₁₂ is row 1, column 2, not A times 12.
+  - symbol: "yᵢ"
+    reads: y i, or y sub i
+    means: >-
+      The i-th element of vector y.
+  - symbol: "ℝ"
+    reads: R, the real numbers
+    means: >-
+      ℝ⁴ means vectors of 4 real numbers; ℝ⁴ˣ² means 4 × 2 matrices of real numbers.
+questions:
+  - ask: "A = [[1402, 191], [1371, 821], [949, 1437], [147, 1448]], written row by row. What are its dimension and A₃₂?"
+    choices:
+      - text: "4 × 2, and A₃₂ = 1437"
+        correct: true
+        explains: >-
+          Four rows and two columns, rows first. A₃₂ is row 3, column 2: the row is
+          [949, 1437], so the entry is 1437.
+      - text: "2 × 4, and A₃₂ = 1437"
+        explains: >-
+          The entry is right, but dimension is rows × columns. There are 4 rows.
+      - text: "4 × 2, and A₃₂ = 1371"
+        explains: >-
+          1371 is A₂₁: row 2, column 1. The first subscript is the row.
+      - text: "4 × 2, and A₃₂ = 821"
+        explains: >-
+          821 is A₂₂. A₃₂ is in the third row.
+---
+
+Week 10's regression lectures write everything with matrices and vectors, so the lecturer
+starts with an optional review. It is short, and every later slide depends on it.
+
+## Matrices
+
+A **matrix** is a rectangular array of numbers (slide 2). Its **dimension** is *number of rows
+× number of columns*, always rows first:
+
+```
+      ⎡ 1402   191 ⎤
+A  =  ⎢ 1371   821 ⎥       4 rows, 2 columns: a 4 × 2 matrix
+      ⎢  949  1437 ⎥
+      ⎣  147  1448 ⎦
+```
+
+The set of all 4 × 2 matrices of real numbers is written `ℝ⁴ˣ²`.
+
+## Entries
+
+`Aᵢⱼ` is the **"i, j entry"**: row `i`, column `j` (slide 3). Again, row first.
+
+| entry | row, column | value |
+| --- | --- | --- |
+| `A₁₁` | 1, 1 | 1402 |
+| `A₁₂` | 1, 2 | 191 |
+| `A₃₂` | 3, 2 | 1437 |
+| `A₄₁` | 4, 1 | 147 |
+
+`A₄₃` is undefined: there is no third column.
+
+The subscripts are positions. They never mean multiplication.
+
+## Vectors
+
+A **vector** is an `n × 1` matrix: one column (slide 4).
+
+```
+      ⎡ 460 ⎤
+y  =  ⎢ 232 ⎥       a 4-dimensional vector, in ℝ⁴
+      ⎢ 315 ⎥
+      ⎣ 178 ⎦
+```
+
+`yᵢ` is its **i-th element**: `y₂ = 232`. These are the house prices that the regression
+lectures use as the target.
+
+## 1-indexed or 0-indexed
+
+Slide 4 shows the same vector numbered two ways:
+
+| convention | elements | where you see it |
+| --- | --- | --- |
+| 1-indexed | `y₁, y₂, y₃, y₄` | maths, and these slides by default |
+| 0-indexed | `y₀, y₁, y₂, y₃` | most programming languages, including Python and NumPy |
+
+Both are fine; mixing them is the mistake. In NumPy, `y[1]` is the slide's `y₂`. The
+convention also matters soon: the multi-feature regression lectures add an extra feature
+numbered `x₀`, which only makes sense with 0-indexing.
+
+## Conventions
+
+The slides use **capital letters for matrices** (`A`, `B`, `X`) and **lower case for vectors
+and numbers** (`x`, `y`, `θ`). Keep that in mind when a formula like `Xθ = y` appears: it
+tells you which things are tables and which are columns.
+
+> A matrix is m × n, rows first. Aᵢⱼ is row i, column j. A vector is a single column, and you
+> must know whether its first element is numbered 1 or 0.

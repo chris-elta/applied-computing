@@ -1,0 +1,89 @@
+---
+course: data-science
+section: w10-regularisation
+order: 1540
+title: The Problem of Overfitting
+visuals:
+  - type: svg
+    src: data-science/w10-regression-2/38.svg
+    caption: Slide 38 of 48 (linear regression, part 2) — underfit, just right, overfit.
+  - type: svg
+    src: data-science/w10-regression-2/40.svg
+    caption: Slide 40 of 48 (linear regression, part 2) — the two ways to address overfitting.
+notation:
+  - symbol: "J(θ) ≈ 0"
+    reads: J of theta is approximately zero
+    means: >-
+      The model fits the training set almost perfectly. On its own, not a sign of a good model.
+questions:
+  - ask: "A model with 100 features fits 60 training houses with J(θ) almost exactly 0, but predicts new houses badly. Which response does slide 40 describe as keeping all the features?"
+    choices:
+      - text: "Regularisation: keep every feature but reduce the magnitude of the parameters θⱼ"
+        correct: true
+        explains: >-
+          Slide 40's option 2. It works well when there are many features that each contribute a
+          bit to predicting y.
+      - text: "Manually select which features to keep"
+        explains: >-
+          That is option 1, reducing the number of features. It does not keep them all.
+      - text: "Add more polynomial terms so the fit is even closer"
+        explains: >-
+          The training fit is already near perfect. More flexibility makes the overfitting worse.
+      - text: "Raise the learning rate α"
+        explains: >-
+          α controls how gradient descent reaches the minimum, not which minimum the cost defines.
+---
+
+Week 9 introduced the bias-variance trade-off in words. Slide 38 draws it for linear regression.
+
+## Three fits
+
+The same house-price data, fitted three ways:
+
+| hypothesis | fit | week 9's name |
+| --- | --- | --- |
+| `θ₀ + θ₁x` | a straight line that misses the curve the data clearly follows | underfit, high bias |
+| `θ₀ + θ₁x + θ₂x²` | a gentle curve through the middle of the data | just right |
+| `θ₀ + θ₁x + θ₂x² + θ₃x³ + θ₄x⁴` | a wiggly curve through every point | overfit, high variance |
+
+The definition, from slide 38:
+
+> **Overfitting**: if we have too many features, the learned hypothesis may fit the training set
+> very well (J(θ) ≈ 0), but fail to generalise to new examples (predict prices on new examples).
+
+The quartic has a near-zero cost. It is also obviously wrong: between the points it dips and
+swerves in ways no housing market does. Low training cost is not the goal; predicting new houses
+is.
+
+## Why features cause it
+
+Slide 39 lists the features you might throw at the problem: size, bedrooms, floors, age, average
+neighbourhood income, kitchen size, and so on up to `x₁₀₀`. With one sample of houses, a hundred
+parameters can fit almost anything, including the noise. With the polynomial features from earlier
+in the week, each added power gives the curve one more bend.
+
+The more features compared with training examples, the worse it gets. When features outnumber
+examples, the normal-equation concept showed that `XᵀX` is not even invertible.
+
+## Two remedies
+
+Slide 40:
+
+1. **Reduce the number of features.**
+   - Manually select which features to keep.
+   - Use a model-selection algorithm (later in the course).
+2. **Regularisation.**
+   - Keep all the features, but **reduce the magnitude** of the parameters θⱼ.
+   - Works well when there are many features, each of which contributes a bit to predicting y.
+
+Option 1 throws information away: if kitchen size really does help a little, dropping it loses
+that. Option 2 keeps every feature but makes the model pay for leaning on any of them heavily. It
+is Occam's razor, from week 9, written into the cost function, and it is the subject of the next
+two concepts.
+
+Either way, you can only tell whether you have overfitted by testing on data the model has not
+seen: week 9's out-of-sample rule.
+
+> A model overfits when it fits the training data almost perfectly and new data badly, usually
+> because it has too many features or too much flexibility. Remove features, or keep them and shrink
+> their parameters: regularisation.

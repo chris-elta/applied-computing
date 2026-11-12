@@ -1,0 +1,120 @@
+---
+course: data-science
+section: w10-gd
+order: 1460
+title: The Derivative and the Learning Rate
+visuals:
+  - type: svg
+    src: data-science/w10-regression-2/04.svg
+    caption: Slide 4 of 48 (linear regression, part 2) — α too small, and α too large.
+  - type: svg
+    src: data-science/w10-regression-2/05.svg
+    caption: Slide 5 of 48 (linear regression, part 2) — at a local optimum, the step is zero.
+notation:
+  - symbol: "d J(θ₁) / dθ₁"
+    reads: d J by d theta one
+    means: >-
+      The derivative of J with respect to θ₁: the slope of the tangent line to the curve at the
+      current θ₁. Written with d rather than ∂ when there is only one parameter.
+  - symbol: "α"
+    reads: alpha
+    means: >-
+      The learning rate: a positive number that scales each step.
+questions:
+  - ask: "Gradient descent on J(θ₁) starts at a point where the derivative is −4. With α = 0.1, what is the update to θ₁?"
+    choices:
+      - text: "θ₁ increases by 0.4"
+        correct: true
+        explains: >-
+          θ₁ := θ₁ − 0.1 × (−4) = θ₁ + 0.4. A negative slope means J falls to the right, so
+          θ₁ moves right.
+      - text: "θ₁ decreases by 0.4"
+        explains: >-
+          That forgets the minus sign in the rule. Subtracting a negative slope adds.
+      - text: "θ₁ increases by 4"
+        explains: >-
+          The slope is scaled by α = 0.1 before it is applied.
+      - text: "θ₁ is set to −0.4"
+        explains: >-
+          The update changes θ₁ by an amount; it does not replace it.
+  - ask: "You run gradient descent and J goes up after every iteration, faster and faster. What is the most likely cause?"
+    choices:
+      - text: "α is too large, so each step overshoots the minimum to a point even higher up the other side"
+        correct: true
+        explains: >-
+          Slide 4: if α is too large, gradient descent can overshoot, fail to converge, or
+          diverge. The course notes' rule is that if J ever increases, decrease α.
+      - text: "α is too small"
+        explains: >-
+          A small α makes progress slow, but each step still goes downhill, so J falls.
+      - text: "It has reached a local minimum"
+        explains: >-
+          At a minimum the slope is zero and the steps stop. J would level off, not climb.
+      - text: "The simultaneous update was used"
+        explains: >-
+          The simultaneous update is the correct one. It does not cause divergence.
+---
+
+Gradient descent's rule has two ingredients: the slope, which gives the direction, and `α`,
+which gives the step size. Part 2 of the lecture goes back to one parameter to see each
+clearly.
+
+## The derivative gives the direction
+
+With one parameter, the rule is (slide 5):
+
+```
+θ₁ := θ₁ − α · d J(θ₁)/dθ₁
+```
+
+The derivative is the slope of the tangent line at the current θ₁ (the course notes: "the
+slope of tangent aka derivative").
+
+| where θ₁ is | slope | update | effect |
+| --- | --- | --- | --- |
+| right of the minimum | positive | `θ₁ − α × (positive)` | θ₁ moves left |
+| left of the minimum | negative | `θ₁ − α × (negative)` | θ₁ moves right |
+| at a minimum | zero | `θ₁ − 0` | θ₁ stays put |
+
+The minus sign makes it go downhill from either side.
+
+## A worked step
+
+Use the data (1, 1), (2, 2), (3, 3) from the one-parameter cost concept, with `hθ(x) = θ₁x`.
+The derivative of that `J` is `(1/m) Σ (θ₁x⁽ⁱ⁾ − y⁽ⁱ⁾) x⁽ⁱ⁾`, derived in the next concept.
+
+Start at θ₁ = 0, with α = 0.1:
+
+```
+slope = (1/3) × [(0 − 1)·1 + (0 − 2)·2 + (0 − 3)·3] = (1/3) × (−14) ≈ −4.67
+θ₁   := 0 − 0.1 × (−4.67) ≈ 0.47
+```
+
+One step moves θ₁ from 0 to 0.47, toward the best value of 1. The next step will be smaller,
+because closer to the minimum the slope is gentler.
+
+## α gives the size
+
+From slide 4:
+
+- **If α is too small**, gradient descent can be slow. Each step is tiny; it gets there in the
+  end, after many iterations.
+- **If α is too large**, gradient descent can overshoot the minimum. It may fail to converge,
+  or even diverge.
+
+Try α = 1 on the same example. From θ₁ = 0 the step is +4.67, landing at θ₁ ≈ 4.67, far past 1
+and higher up the bowl than where it started. There the slope is steeper still, about +17, so
+the next step goes to roughly −12. Each overshoot is bigger than the last: that is divergence.
+
+The course notes' practical test: plot `J` against the number of iterations. It should fall
+every time. **If J ever increases, α is probably too large; decrease it.** Andrew Ng recommends
+trying values that differ by factors of about 3: 0.001, 0.003, 0.01, 0.03, 0.1, and so on.
+
+## α can stay fixed
+
+Slide 5 also makes a quieter point: at a local optimum the derivative is zero, so the update
+leaves θ₁ unchanged. More generally, the steps shrink on their own as you approach a minimum,
+because the slope shrinks. You do not need to reduce α over time for gradient descent to settle.
+
+> The derivative's sign sends θ downhill; α sets the stride. Too small is slow; too large
+> overshoots and can diverge. If J ever goes up, reduce α.

@@ -1,0 +1,84 @@
+---
+course: data-science
+section: w10-ml
+order: 1400
+title: Unsupervised Learning
+visuals:
+  - type: svg
+    src: data-science/w10-regression-1/08.svg
+    caption: Slide 8 of 37 (linear regression, part 1) — supervised, with labelled points.
+  - type: svg
+    src: data-science/w10-regression-1/09.svg
+    caption: Slide 9 of 37 (linear regression, part 1) — unsupervised, the same points with no labels.
+  - type: svg
+    src: data-science/w10-regression-1/10.svg
+    caption: Slide 10 of 37 (linear regression, part 1) — applications of clustering.
+notation: []
+questions:
+  - ask: "A shop has purchase histories for 50,000 customers and no labels. It wants to discover groups of customers who buy similar things. What kind of problem is this?"
+    choices:
+      - text: "Unsupervised learning, specifically clustering"
+        correct: true
+        explains: >-
+          There are no right answers to learn from; the goal is to find structure. Market
+          segmentation is one of slide 10's examples.
+      - text: "Supervised classification, with the groups as classes"
+        explains: >-
+          Classification needs examples labelled with their class. Here the groups are not
+          known in advance; finding them is the task.
+      - text: "Supervised regression, predicting each customer's spending"
+        explains: >-
+          That would be a different question, and it would need recorded spending as the
+          target. The shop wants groups, not a number.
+      - text: "Not a machine-learning problem, since there are no labels"
+        explains: >-
+          Learning without labels is exactly what unsupervised learning is for.
+---
+
+In supervised learning the data comes with answers. In **unsupervised learning** it does not.
+
+## The picture
+
+Slides 8 and 9 draw the same kind of data twice, with two features on the axes.
+
+- **Supervised** (slide 8): the points are marked as two kinds, crosses and circles. The task
+  is to learn a boundary between them, so a new point can be labelled.
+- **Unsupervised** (slide 9): the points are all the same. No one has said what kind each is.
+  The task is to find structure on your own, such as two clusters of points that sit close
+  together.
+
+The course notes put it this way: unsupervised learning allows us to approach problems with
+little or no idea what our results should look like. We can derive structure from data where we
+don't necessarily know the effect of the variables. And "there is no feedback based on the
+prediction results": no teacher to correct you.
+
+## Clustering
+
+The commonest unsupervised task is **clustering**: grouping data by the relationships among its
+variables. Slide 10's applications:
+
+| application | what is clustered |
+| --- | --- |
+| organising computing clusters | which machines work together, so they can be placed near each other |
+| social network analysis | groups of people who interact |
+| market segmentation | customers with similar behaviour, to target separately |
+
+The notes add an example of their own: take 1,000 essays on the US economy and automatically
+group them by word frequency, sentence length, page count and so on.
+
+## Not only clustering
+
+The notes also give a non-clustering example: the **cocktail party problem**. From a recording
+of a room full of voices and music, separate the individual sources. There are no labels saying
+which sound is whose. The algorithm finds the structure, independent sources mixed together,
+from the data alone.
+
+## Why it is harder to evaluate
+
+Week 9's metrics all compare predictions with correct answers. Unsupervised learning has none,
+so there is no accuracy to compute. Whether the clusters are *good* is judged by whether they
+are useful, which often needs a person to look at them. The rest of week 10 is supervised: linear
+regression.
+
+> Unsupervised learning finds structure in data without labels: clusters of similar items, or
+> sources mixed together. With no right answers, there is no direct accuracy to measure.

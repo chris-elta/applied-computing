@@ -1,0 +1,85 @@
+---
+course: data-science
+section: w9-viz
+order: 1090
+title: Tufte's Aesthetic and the Data-Ink Ratio
+visuals:
+  - type: svg
+    src: data-science/w9-models/03.svg
+    caption: Slide 3 of 90 — Tufte's four principles for judging a visualisation.
+  - type: svg
+    src: data-science/w9-models/04.svg
+    caption: Slide 4 of 90 — the same bar chart in pseudo-3D and flat.
+notation:
+  - symbol: "data-ink ratio"
+    reads: data ink ratio
+    means: >-
+      The share of everything drawn that actually shows data: data ink divided by total
+      ink. A flat bar chart with no frame is near 1; a 3-D bar chart with a shaded floor is
+      far below it.
+questions:
+  - ask: "A chart shows five bars. You remove the 3-D bevel, the shaded background, and the gridlines, and the bars themselves are unchanged. What has happened to the data-ink ratio?"
+    choices:
+      - text: "It went up: the data ink stayed the same while the total ink went down"
+        correct: true
+        explains: >-
+          The ratio is data ink over total ink. Nothing that carried a number was removed, so
+          the top stayed fixed and the bottom shrank.
+      - text: "It went down, because the chart now contains less ink"
+        explains: >-
+          Less ink overall is the point, but the ratio measures the share that is data.
+          Removing non-data ink raises that share.
+      - text: "It is unchanged, because the bars are unchanged"
+        explains: >-
+          The numerator is unchanged, but the denominator includes everything drawn. Shrinking
+          the denominator changes the ratio.
+      - text: "It cannot be judged without knowing the values the bars show"
+        explains: >-
+          The ratio is about ink, not values. You can judge it from what was removed.
+---
+
+Slide 2 puts a classical painting beside a Jackson Pollock and asks which is better. The
+point is that you cannot answer without an *aesthetic*: a set of principles and a vocabulary
+for arguing about them. Charts are the same. "I don't like it" is not a critique; "it has a
+lie factor of 3" is.
+
+## Tufte's four principles
+
+The lecture takes its vocabulary from Edward Tufte's *The Visual Display of Quantitative
+Information*:
+
+| principle | what it guards against |
+| --- | --- |
+| maximise the data-ink ratio | ink spent on decoration rather than numbers |
+| minimise the lie factor | graphics that exaggerate or shrink the effect |
+| minimise chartjunk | elements that distract from the message |
+| use proper scales and clear labels | a reader who cannot decode what they see |
+
+The next two concepts take the lie factor and chartjunk in turn. This one is about ink.
+
+## The ratio
+
+```
+data-ink ratio = data ink / total ink used in the graphic
+```
+
+**Data ink** is the ink that would change if the numbers changed: the bars, the points, the
+line. Everything else, such as frames, shading, background colour, heavy gridlines and 3-D
+depth, is non-data ink. It may be needed (an axis is), but each piece has to earn its place.
+
+Slide 4 draws the same grouped bar chart twice. The pseudo-3D version spends much of its ink
+on side faces and a floor, and the perspective makes the heights harder to compare. The flat
+version shows exactly the same numbers with a fraction of the ink, and you can read it
+faster.
+
+## How to use it
+
+The ratio is a direction to push, not a score to report. Look at each element and ask: *if I
+erased this, would the reader lose any information?* If not, erase it, or make it lighter.
+Gridlines are a common case: often they can go to a pale grey rather than disappear.
+
+The ratio can be pushed too far. An axis with no labels has very little non-data ink and is
+useless. The principle sits alongside "use proper scales and clear labelling", not above it.
+
+> A chart's job is to show numbers. Ink that does not show a number, or help the reader decode
+> one, is a cost. Remove it or lighten it.

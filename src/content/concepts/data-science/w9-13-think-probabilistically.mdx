@@ -1,0 +1,98 @@
+---
+course: data-science
+section: w9-modeling
+order: 1210
+title: Think Probabilistically
+visuals:
+  - type: svg
+    src: data-science/w9-models/60.svg
+    caption: Slide 60 of 90 — Nate Silver's principles.
+  - type: svg
+    src: data-science/w9-models/61.svg
+    caption: Slides 61–62 of 90 — live models and the 2016 election forecast.
+  - type: svg
+    src: data-science/w9-models/64.svg
+    caption: Slide 64 of 90 — Google Flu Trends.
+notation:
+  - symbol: "P(A | B)"
+    reads: probability of A given B
+    means: >-
+      The probability of A in the cases where B holds. From week 2. In Bayes' theorem, A is
+      what you believe and B is the new evidence.
+questions:
+  - ask: "Google Flu Trends predicted flu outbreaks from how often people searched for illness terms. It worked for years, then failed after Google added search suggestions. Which principle does that failure illustrate best?"
+    choices:
+      - text: "A data-driven model rests on a correlation; when the process that generates the data changes, the correlation can break, so a model must be checked against fresh data"
+        correct: true
+        explains: >-
+          Suggestions changed what people searched for, independently of whether they had
+          flu. The model had no theory of why searches tracked flu, so nothing warned it. A
+          live model that compares its forecasts to outcomes would have caught the drift.
+      - text: "Search data can never be used for prediction"
+        explains: >-
+          It worked for a time. The lesson is about relying on a correlation without
+          monitoring it, not about search data as such.
+      - text: "The model was too simple and should have used more features"
+        explains: >-
+          More features would not help if the relationship itself changed. It might even fit
+          the old pattern more tightly.
+      - text: "The model should have output a single number rather than a probability"
+        explains: >-
+          That is the opposite of the principle. A probabilistic forecast at least admits
+          uncertainty; a point prediction hides it.
+---
+
+The third philosophy on slide 56 is a forecaster's, taken from Nate Silver's *The Signal and
+the Noise*. Slide 60 lists four principles.
+
+## 1 · Think probabilistically
+
+A model should output a **probability distribution**, not a single number. The lecture
+notes' example: instead of "the movie will gross $97 million", say
+`P(gross is 90–100M) = 0.45`.
+
+The point forecast pretends to certainty it does not have. The distribution says how
+confident you are, and lets a decision-maker plan for the bad case as well as the likely one.
+
+## 2 · Change your forecast in response to new information
+
+A model is **live** if it continually updates its predictions as new information arrives
+(slide 61). Three questions test a live model:
+
+- Does the forecast ultimately converge on the right answer?
+- Does it display past forecasts, so users can judge its consistency?
+- Does the model retrain on fresher data?
+
+Slide 62 shows a 2016 US presidential forecast: the probability of each candidate winning,
+plotted day by day, moving as polls arrived.
+
+## 3 · Look for consensus
+
+Slide 63 asks: are there competing forecasts to compare with, such as prediction markets?
+What do your **baseline models** say? Do you have several models that use different
+approaches? If your model disagrees with all of them, that needs explaining before you
+trust it. **Boosting**, a machine-learning technique, explicitly combines an ensemble of
+classifiers for the same reason.
+
+## 4 · Employ Bayesian reasoning
+
+Bayes' theorem, from week 2, is the formal way to update a belief on new evidence:
+
+```
+P(A | B) = P(B | A) × P(A) / P(B)
+```
+
+`P(A)` is the **prior**: what you believed before. `P(B | A)` is how likely the new evidence
+is if `A` is true. The result, `P(A | B)`, is the **posterior**: your updated belief. The
+lecture notes' example is updating the probability a candidate will win when a new poll
+comes in. Principles 1 and 2 are this rule applied habitually.
+
+## A failure: Google Flu Trends
+
+Slide 64: Google Flu Trends predicted flu outbreaks from the frequency of illness-related
+searches. It worked, until Google added search suggestions. Suggestions changed what people
+typed, so searches no longer tracked illness, and the model failed. It had a correlation and
+no theory of why it held, and nothing checking it against what actually happened.
+
+> Forecast in probabilities, update as evidence arrives, compare with other models, and keep
+> checking against reality. A correlation that worked yesterday is not guaranteed tomorrow.

@@ -1,0 +1,78 @@
+---
+course: data-science
+section: w9-modeling
+order: 1230
+title: Baseline Models
+visuals:
+  - type: svg
+    src: data-science/w9-models/66.svg
+    caption: Slide 66 of 90 — "a broken clock is right twice a day".
+  - type: svg
+    src: data-science/w9-models/67.svg
+    caption: Slide 67 of 90 — representative baselines.
+notation: []
+questions:
+  - ask: "A model predicting tomorrow's closing price of a stock reports a mean absolute error of $1.20. Which baseline is the essential one to compare it with?"
+    choices:
+      - text: "Predict that tomorrow's price equals today's"
+        correct: true
+        explains: >-
+          For a time series, "same as the previous point" is the classic fair baseline, and for
+          prices it is hard to beat. If it also gets about $1.20, the model has learned nothing.
+      - text: "Predict a uniformly random price between $0 and $1,000"
+        explains: >-
+          That is a baseline, but a stupid one. Beating it proves nothing, which is what the
+          slide means by simple but not stupid.
+      - text: "Predict zero every day"
+        explains: >-
+          Also a straw man. A fair baseline is the simplest *reasonable* model.
+      - text: "No baseline is needed, since $1.20 is a small error"
+        explains: >-
+          Small compared to what? The error only means something next to what a trivial model
+          achieves on the same data.
+---
+
+> A broken clock is right twice a day.
+
+Before you can say a model is good, you need to know what *no skill* looks like. A
+**baseline** is the simplest reasonable model for the problem. From slide 66:
+
+> Only after you decisively beat your baselines can your models be deemed effective.
+
+## Representative baselines
+
+From slide 67, with the lecture notes' examples:
+
+| baseline | example |
+| --- | --- |
+| uniform or random selection among labels | guess "spam" or "not spam" with equal chance, or weighted by how common each is |
+| the most common label in the training data | always predict "not fraud" |
+| the best single-variable model | predict a movie's gross from its budget alone |
+| same label as the previous point in time | tomorrow's price is today's |
+| rule-of-thumb heuristics | flag an email as spam if it contains "free money" |
+
+## Why baselines matter
+
+A number on its own means nothing. "92% accuracy" sounds strong until you learn that 92% of
+the cases are negative, so always saying "no" also scores 92%. The next section makes this
+precise, but the baseline already exposes it.
+
+Baselines also earn their place in three other ways:
+
+- they tell you whether a problem is **hard**: if the simple heuristic scores 98%, there is
+  little room for a complicated model;
+- they catch **bugs**: a sophisticated model that loses to "predict the average" is
+  probably broken;
+- they are part of **consensus**: comparing with other forecasts was one of Silver's
+  principles in the previous concept.
+
+## Fair, not stupid
+
+> Baseline models must be fair: they should be simple but not stupid.
+
+Beating a random guess at house prices proves nothing. Beating "price = average price per
+square foot × size" proves something. Choose the strongest simple model, because that is the
+one a sceptic would propose.
+
+> Report every model next to the best simple model for the problem. If it does not beat that
+> decisively, it has not shown any skill.

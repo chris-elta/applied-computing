@@ -1,0 +1,141 @@
+---
+course: data-science
+section: w10-gd
+order: 1470
+title: Gradient Descent for Linear Regression
+visuals:
+  - type: svg
+    src: data-science/w10-regression-2/09.svg
+    caption: Slide 9 of 48 (linear regression, part 2) — the update rules for θ₀ and θ₁.
+  - type: svg
+    src: data-science/w10-regression-2/18.svg
+    caption: Slides 10–18 of 48 (linear regression, part 2) — gradient descent walking to the centre of the contours.
+notation:
+  - symbol: "hθ(x⁽ⁱ⁾) − y⁽ⁱ⁾"
+    reads: h theta of x i minus y i
+    means: >-
+      The error on training example i: prediction minus truth.
+  - symbol: "convex"
+    reads: convex
+    means: >-
+      Bowl-shaped all the way round, with no dips except the single lowest point. A convex
+      function has one minimum, and it is the global one.
+questions:
+  - ask: "Training data (1, 2) and (2, 4). Starting from θ₀ = 0, θ₁ = 0 with α = 0.1, what are θ₀ and θ₁ after one step of gradient descent?"
+    choices:
+      - text: "θ₀ = 0.3, θ₁ = 0.5"
+        correct: true
+        explains: >-
+          Both predictions are 0, so the errors are −2 and −4. For θ₀: (1/2)(−2 − 4) = −3, so
+          θ₀ := 0 − 0.1 × (−3) = 0.3. For θ₁: (1/2)(−2 × 1 − 4 × 2) = −5, so θ₁ := 0.5.
+      - text: "θ₀ = 0.3, θ₁ = 0.3"
+        explains: >-
+          The θ₁ update multiplies each error by its x⁽ⁱ⁾ before summing. That gives −10, not −6,
+          before dividing by m.
+      - text: "θ₀ = −0.3, θ₁ = −0.5"
+        explains: >-
+          The signs are flipped. The slopes are negative, and subtracting a negative moves the
+          parameters up.
+      - text: "θ₀ = 0.6, θ₁ = 1.0"
+        explains: >-
+          This forgets to divide the sums by m = 2.
+  - ask: "Why does gradient descent on linear regression's squared-error cost not get stuck in a bad local minimum?"
+    choices:
+      - text: "The cost is convex, a single bowl, so its only local minimum is the global minimum"
+        correct: true
+        explains: >-
+          The bumpy surface on slides 35–36 of part 1 had several valleys. The squared error of
+          a linear model is a bowl with one bottom, so every downhill path ends there.
+      - text: "Because α is always small enough"
+        explains: >-
+          α controls whether you converge at all. It cannot get you out of the wrong valley.
+      - text: "Because it always starts at θ = 0"
+        explains: >-
+          Starting point decides the valley only when there is more than one. Here there is only
+          one, so any start works.
+      - text: "It can get stuck; you should run it from several starting points"
+        explains: >-
+          That is good advice for bumpy surfaces, but linear regression's cost has no false
+          minima to get stuck in.
+---
+
+Gradient descent works on any function with slopes. This concept plugs in linear regression's
+`hθ` and `J` to get rules you can actually compute.
+
+## The two ingredients
+
+Slide 7 puts them side by side:
+
+```
+hθ(x) = θ₀ + θ₁x
+J(θ₀, θ₁) = (1 / 2m) Σᵢ₌₁ᵐ (hθ(x⁽ⁱ⁾) − y⁽ⁱ⁾)²
+```
+
+Work out the two partial derivatives (slide 8; the derivation is beyond the course):
+
+```
+∂J/∂θ₀ = (1/m) Σᵢ₌₁ᵐ (hθ(x⁽ⁱ⁾) − y⁽ⁱ⁾)
+∂J/∂θ₁ = (1/m) Σᵢ₌₁ᵐ (hθ(x⁽ⁱ⁾) − y⁽ⁱ⁾) · x⁽ⁱ⁾
+```
+
+The ½ in `J` has cancelled the 2 from differentiating the square, as promised in the
+cost-function concept.
+
+## The update rules
+
+Slide 9:
+
+```
+repeat until convergence {
+    θ₀ := θ₀ − α (1/m) Σ (hθ(x⁽ⁱ⁾) − y⁽ⁱ⁾)
+    θ₁ := θ₁ − α (1/m) Σ (hθ(x⁽ⁱ⁾) − y⁽ⁱ⁾) · x⁽ⁱ⁾
+}                                   (update θ₀ and θ₁ simultaneously)
+```
+
+In words: compute every training example's error. θ₀ moves by the **average error**. θ₁ moves by
+the **average error weighted by x**. The only difference is that trailing `· x⁽ⁱ⁾`, which comes
+from the derivative of `θ₁x`.
+
+The intuition is good. If the line predicts too high on average, the errors are positive and θ₀
+comes down. If it is too high mostly on the large houses, the x-weighted errors are positive and
+the slope comes down.
+
+## A worked step
+
+Two training examples, (1, 2) and (2, 4). Start at θ₀ = θ₁ = 0, with α = 0.1.
+
+| x | y | hθ(x) | error | error × x |
+| --- | --- | --- | --- | --- |
+| 1 | 2 | 0 | −2 | −2 |
+| 2 | 4 | 0 | −4 | −8 |
+| | | **mean** | **−3** | **−5** |
+
+```
+θ₀ := 0 − 0.1 × (−3) = 0.3
+θ₁ := 0 − 0.1 × (−5) = 0.5
+```
+
+Both computed from the old values, then assigned together. The line is now `0.3 + 0.5x`,
+closer to the data's `y = 2x`.
+
+## Watching it converge
+
+Slides 10–18 run the algorithm on the house-price data. Each pair shows the current line on the
+left and its position on the contour plot on the right. The red point starts far out, and each
+step moves it inward; the line swings round from a steep downward slope to one running through
+the data. By slide 18 the point is at the centre of the ellipses.
+
+## No false minima
+
+Part 1 showed gradient descent on a bumpy surface landing in different valleys from different
+starts. That cannot happen here. The squared-error cost for linear regression is **convex**: a
+single bowl with one bottom. Its only local minimum *is* the global minimum, so gradient descent
+with a suitable α always gets there, from any start.
+
+Each step's sums run over all `m` training examples, so every iteration costs one full pass
+over the data. That cost is what the gradient-descent-against-normal-equation comparison
+later this week weighs.
+
+> For linear regression, gradient descent moves θ₀ by the average error and θ₁ by the average
+> error times x, scaled by α. Because the cost is a convex bowl, it always reaches the global
+> minimum.

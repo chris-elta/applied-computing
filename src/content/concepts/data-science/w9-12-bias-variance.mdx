@@ -1,0 +1,90 @@
+---
+course: data-science
+section: w9-modeling
+order: 1200
+title: Bias and Variance
+visuals:
+  - type: svg
+    src: data-science/w9-models/58.svg
+    caption: Slide 58 of 90 — bias, variance and George Box.
+notation:
+  - symbol: "bias"
+    reads: bias
+    means: >-
+      Error from wrong assumptions built into the model, such as assuming a relationship is a
+      straight line when it curves. It is there however much data you add.
+  - symbol: "variance"
+    reads: variance
+    means: >-
+      Here, error from the model being too sensitive to the particular training set. Train on
+      a slightly different sample and the predictions change a lot.
+questions:
+  - ask: "A model scores 99% accuracy on its training data and 62% on new data. Which describes it?"
+    choices:
+      - text: "High variance: it has fitted quirks of the training set that do not carry over"
+        correct: true
+        explains: >-
+          A large gap between training and new-data performance is the signature of
+          overfitting. The model is sensitive to the particular sample it saw.
+      - text: "High bias: its assumptions are too simple"
+        explains: >-
+          A high-bias model does badly on the training data too, because its form cannot
+          capture the pattern. 99% on training data rules that out.
+      - text: "Neither: 62% is the true accuracy and 99% is a bug"
+        explains: >-
+          It may not be a bug at all. Fitting training data far better than new data is the
+          expected behaviour of an over-flexible model.
+      - text: "It is well balanced, since the average of 99% and 62% is acceptable"
+        explains: >-
+          Only performance on unseen data matters for prediction. Averaging in the training
+          score hides the problem.
+---
+
+> All models are wrong, but some models are useful. — George Box
+
+A model is a simplification, so it will make errors. Slide 58 splits those errors into two
+sources that pull against each other.
+
+## Two kinds of error
+
+| | bias | variance |
+| --- | --- | --- |
+| what it is | error from **erroneous assumptions** in the model | error from **sensitivity to small fluctuations** in the training set |
+| typical cause | too simple, such as forcing a straight line | too flexible, such as a curve through every point |
+| name for the failure | **underfitting** | **overfitting** |
+| how it looks | bad on training data *and* new data | excellent on training data, bad on new data |
+
+A concrete picture: fit house prices against size.
+
+- A **horizontal line** (predict the average price for every house) has high bias. Whatever
+  sample you train on, it gives nearly the same line, and that line is wrong.
+- A **wiggly curve** through every training point has high variance. Swap one house for
+  another and the curve changes shape completely. On new houses it guesses wildly.
+- A gently rising line or curve sits between: wrong in the details, stable across samples,
+  and useful.
+
+## The trade-off
+
+Adding flexibility lowers bias and raises variance. Removing it does the opposite. The goal,
+in the lecture notes' words, is "a balance where the model captures underlying patterns
+without memorising noise". Occam's razor is a rule of thumb for this: start simple, and add
+complexity only while it keeps improving performance on data the model has not seen.
+
+You can only tell which side you are on by testing on such data. That is why the evaluation
+concepts later this week insist on out-of-sample testing.
+
+## Which models suffer which
+
+The slide ends with a useful generalisation:
+
+- **first-principles models** (built from theory) are more likely to suffer from **bias**:
+  the theory leaves something out;
+- **data-driven models** (learned from correlations) are in greater danger of
+  **overfitting**: with enough flexibility, they will find patterns in noise.
+
+Week 10's regularisation is a direct tool for this trade-off: it lets a flexible model keep
+its features but pay for using them.
+
+> Bias is being consistently wrong; variance is being inconsistently right. Too simple a model
+> underfits, too flexible a model overfits, and only data the model has not seen tells you
+> which one you have.

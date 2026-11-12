@@ -1,0 +1,94 @@
+---
+course: data-science
+section: w9-validation
+order: 1300
+title: Out-of-Sample Data and the Veil of Ignorance
+visuals:
+  - type: svg
+    src: data-science/w9-models/80.svg
+    caption: Slide 80 of 90 — training, testing and evaluation data.
+  - type: svg
+    src: data-science/w9-models/86.svg
+    caption: Slide 86 of 90 — the veil of ignorance.
+notation: []
+questions:
+  - ask: "A team splits data 60/20/20 into training, testing and evaluation sets. After seeing a disappointing evaluation score, they tweak the model and evaluate again, several times, until the score improves. What is wrong?"
+    choices:
+      - text: "The evaluation set has become part of model selection, so its score is no longer an honest out-of-sample estimate"
+        correct: true
+        explains: >-
+          Each tweak guided by the evaluation score fits the model a little to that set. The
+          split only works if you never open the evaluation data until the end.
+      - text: "Nothing, as long as the model was never trained on the evaluation data"
+        explains: >-
+          Not training on it is necessary but not enough. Choosing among models by their
+          evaluation score leaks information just as surely.
+      - text: "The split should have been 50/25/25"
+        explains: >-
+          The proportions are not the problem. Any split fails if the final set is used to make
+          decisions.
+      - text: "They should have evaluated on the training set instead"
+        explains: >-
+          Training-set performance is the least honest of all: the model has already seen the
+          punchline.
+---
+
+> A joke is not funny the second time, because you already know the punchline.
+
+Slide 86 calls this **the veil of ignorance**. A model tested on data it was trained on
+already knows the answers. Good performance there is "very suspect, because models can easily
+be overfit", which is the variance problem from the bias-variance concept.
+
+## Out-of-sample predictions
+
+From slide 80:
+
+> The best way to assess models involves out-of-sample predictions: results on data you never
+> saw (or even better, did not exist) when you built the model.
+
+"Did not exist" is the gold standard. A model of election results is best tested on the next
+election; a stock model on next month's prices. Then there is no way for the future to have
+leaked into the building of the model.
+
+## Three-way split
+
+When you cannot wait for the future, partition the data you have. The slide's proportions:
+
+| part | share | used for |
+| --- | --- | --- |
+| training | 60% | fitting the model's parameters |
+| testing | 20% | comparing models and tuning settings |
+| evaluation | 20% | one final, honest measurement |
+
+The lecture notes use different names for the last two: testing to tune parameters,
+validation to measure final performance. Many textbooks swap "test" and "validation". The
+names vary; the roles do not. One part fits, one chooses, one judges.
+
+The essential rule is the slide's condition:
+
+> This works only if you never open the evaluation data until the end.
+
+## Why choosing counts as fitting
+
+The trap is subtle. You never trained on the evaluation set, so it seems safe to look. But
+suppose you try ten models and keep the one with the best evaluation score. Some of that
+score is luck: that model happened to suit those particular cases. By picking it, you have
+fitted to the evaluation set, just one level up. Its score is now optimistic, like the joke
+heard twice.
+
+That is why there are three parts and not two. The testing set absorbs all the choosing, and
+the evaluation set stays unseen.
+
+## Sins in evaluation
+
+Slide 81 adds that summary statistics can hide mistakes that no split protects against:
+
+- **Did I mix training and evaluation data?** A duplicated record, or a time series split at
+  random so the future leaks into the past, does this silently.
+- **Do I have bugs in my implementation?**
+
+A suspiciously good score is more often one of these than a breakthrough. The next concept is
+about catching them by looking at the errors themselves.
+
+> Judge a model only on data it never saw, and never use that data to make choices. If you
+> must choose, choose on a separate test set, and open the final evaluation set once.

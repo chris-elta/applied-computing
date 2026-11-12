@@ -1,0 +1,85 @@
+---
+course: data-science
+section: w9-charts
+order: 1180
+title: Keeping a Critical Eye
+visuals:
+  - type: svg
+    src: data-science/w9-models/42.svg
+    caption: Slide 42 of 90 — a word-frequency plot that shows almost nothing.
+  - type: svg
+    src: data-science/w9-models/43.svg
+    caption: Slide 43 of 90 — the same data on a log scale and a log-log scale.
+  - type: svg
+    src: data-science/w9-models/44.svg
+    caption: Slides 44–52 of 90 — terrible professional visualisations.
+notation: []
+questions:
+  - ask: "You plot how often each word appears against its rank, for 100,000 words, on ordinary axes. The plot is a spike at the left edge and a flat line along the bottom. What should you do?"
+    choices:
+      - text: "Plot it on log-log axes, where a power law becomes a straight line"
+        correct: true
+        explains: >-
+          Word frequencies follow a power law: a few words are enormously common, most are
+          rare. On linear axes almost everything sits at zero. Logging both axes spreads the
+          data out, and the straight line is the signature of a power law from week 6.
+      - text: "Restrict the plot to the top 20 words"
+        explains: >-
+          That hides the shape of the distribution, which is what the plot was meant to show.
+      - text: "Use a pie chart of the top words' shares"
+        explains: >-
+          A pie of 100,000 slices is unreadable, and even for the top few it says nothing about
+          how frequency falls with rank.
+      - text: "Nothing: the plot correctly shows that most words are rare"
+        explains: >-
+          It shows that some words are common and the rest near zero, but you cannot read any
+          value off the flat part, nor see the pattern in how frequency falls.
+---
+
+The last stretch of the visualisation lecture is a gallery of failures. Each one breaks a
+principle from earlier in the week.
+
+## Power laws need log plots
+
+Slide 42 is a student plot of word frequency against rank. On ordinary axes, the most common
+words make a spike at the left and every other word is squashed against zero. Nearly all the
+data is invisible.
+
+Slide 43 fixes it in two steps:
+
+1. **log the y-axis** and the frequencies spread out into a visible curve;
+2. **log both axes** and the curve becomes a straight line.
+
+That straight line is how you recognise a power law, which week 6 introduced. A log-log plot
+"can be even more revealing" because it turns the defining property of the distribution into
+the simplest shape there is.
+
+## The anti-rules
+
+Slide 44 states the rules for a terrible professional visualisation, ironically:
+
+- display as little information as possible;
+- obscure your data with chartjunk, like pseudo-3D and excess colour;
+- use poorly chosen scales.
+
+The examples that follow (from wtfviz.net) map onto the week's principles:
+
+| slide | failure | principle broken |
+| --- | --- | --- |
+| 45 | a scatter with a 1.4% correlation presented as if it showed a relationship | the data must support the story |
+| 46 | twenty bars, each a different colour, with a legend to match | uninformative colouring is chartjunk |
+| 47 | circles sized with no regard to the percentages printed in them | lie factor, dimensionality |
+| 48 | elaborate decorated charts | chartjunk |
+| 49 | missing or misleading labels | clear labelling |
+| 50 | far too many details for one figure | data-ink and focus |
+| 51 | sizes and ordering that imply a ranking not in the data | readers assume order and size mean something |
+
+## Keep a critical eye
+
+Slide 52 repeats Tufte's four principles. They work in both directions: for designing your
+own charts, and for reading other people's. When a chart surprises you, ask whether the
+surprise is in the data or in the drawing: check the baseline, the scales, the area and the
+labels before believing it.
+
+> Most bad charts break one of four rules: too little data ink, a lie factor far from 1,
+> chartjunk, or poor scales and labels. For skewed data, the right scale is often a log scale.

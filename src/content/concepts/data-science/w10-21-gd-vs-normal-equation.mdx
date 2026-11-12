@@ -1,0 +1,112 @@
+---
+course: data-science
+section: w10-multi
+order: 1530
+title: Gradient Descent or the Normal Equation?
+visuals:
+  - type: svg
+    src: data-science/w10-regression-2/36.svg
+    caption: Slide 36 of 48 (linear regression, part 2) — m training examples, n features.
+notation:
+  - symbol: "O(n³)"
+    reads: order n cubed
+    means: >-
+      Running time that grows like the cube of n: double the features and it takes about eight
+      times as long.
+  - symbol: "pinv"
+    reads: pseudo-inverse
+    means: >-
+      A generalised inverse that gives a sensible answer even when the matrix is singular. In
+      NumPy, np.linalg.pinv.
+questions:
+  - ask: "A text model has 200,000 features, one per word, and 1 million training examples. Which method should you use to fit linear regression?"
+    choices:
+      - text: "Gradient descent: inverting a 200,000 × 200,000 matrix, at O(n³), is far too slow"
+        correct: true
+        explains: >-
+          The course notes suggest switching to an iterative method once n exceeds about 10,000.
+          Gradient descent works well even when n is large.
+      - text: "The normal equation, because it needs no iterations"
+        explains: >-
+          No iterations, but one enormous inversion. At n = 200,000 the cubic cost dominates
+          everything.
+      - text: "The normal equation, because there are more examples than features"
+        explains: >-
+          m > n means XᵀX may well be invertible, but invertible is not the same as fast to invert.
+      - text: "Either; they always take the same time"
+        explains: >-
+          Their costs grow differently: gradient descent's mainly with iterations, the normal
+          equation's with the cube of n.
+  - ask: "Your features include house size in square feet and the same size in square metres. What happens with the normal equation?"
+    choices:
+      - text: "XᵀX is singular, because one column is a fixed multiple of another, so it has no ordinary inverse"
+        correct: true
+        explains: >-
+          Redundant, linearly dependent features are the notes' first cause of a non-invertible
+          XᵀX. Drop one of the two, or use pinv.
+      - text: "Nothing: the extra feature just adds information"
+        explains: >-
+          It adds no information, since it is the first feature times a constant, and it breaks the
+          inverse.
+      - text: "The model is more accurate, because size is counted twice"
+        explains: >-
+          Duplicate information does not improve the fit. It makes the best θ non-unique.
+      - text: "Only gradient descent would fail"
+        explains: >-
+          Gradient descent copes with redundant features; it just finds one of the many equally
+          good θ. It is the inverse in the normal equation that fails.
+---
+
+Both methods minimise the same `J` and arrive at the same θ. They cost different things.
+
+## The trade-off
+
+Slide 36, for `m` training examples and `n` features, with the costs from the course notes:
+
+| gradient descent | normal equation |
+| --- | --- |
+| need to choose α | no need to choose α |
+| needs many iterations | no need to iterate |
+| works well even when n is large | need to compute `(XᵀX)⁻¹` |
+| | slow if n is very large |
+
+The cost of inverting `XᵀX`, an `(n+1) × (n+1)` matrix, grows like **O(n³)**. Gradient descent's
+cost grows with the number of iterations times the work per iteration, which is far gentler in n.
+
+| n | normal equation, roughly |
+| --- | --- |
+| 100 | instant |
+| 1,000 | fine |
+| 10,000 | getting slow |
+| 1,000,000 | out of the question |
+
+The notes' rule of thumb: **when n exceeds about 10,000**, it might be time to go from the normal
+equation to an iterative method. Below that, the normal equation is usually simpler: no α to tune,
+no scaling, no convergence check.
+
+## When XᵀX has no inverse
+
+The linear-algebra review warned that some square matrices are **singular**. `XᵀX` can be one of
+them. The notes give two common causes:
+
+| cause | example | fix |
+| --- | --- | --- |
+| **redundant features**: two are linearly dependent | size in feet² and size in metres² | delete one |
+| **too many features**: m ≤ n | 10 houses, 100 features | delete some, or use regularisation |
+
+In both, there is no single best θ: infinitely many fit equally well, so the formula has no unique
+answer.
+
+The first case is easy to see. If `x₂ = 0.093 × x₁` exactly, then for any θ you can take some
+weight off θ₂ and put a matching amount on θ₁ without changing a single prediction.
+
+The notes' practical advice: compute the inverse with **pinv** rather than **inv**. The
+pseudo-inverse returns a sensible θ even when `XᵀX` is singular. But a singular `XᵀX` is also a
+signal that your features have a problem worth fixing.
+
+For the too-many-features case, the notes point ahead to regularisation, the subject of the next
+section.
+
+> Use the normal equation when n is modest: no α, no iterations, no scaling. Switch to gradient
+> descent when n is large, because inverting XᵀX costs O(n³). If XᵀX is singular, look for
+> redundant features or too few examples.

@@ -1,0 +1,96 @@
+---
+course: data-science
+section: w9-classifiers
+order: 1270
+title: ROC Curves and AUC
+visuals:
+  - type: svg
+    src: data-science/w9-models/76.svg
+    caption: Slide 76 of 90 — the score distributions and the ROC curve they produce.
+notation:
+  - symbol: "TPR"
+    reads: true positive rate
+    means: >-
+      TP / (TP + FN): the fraction of actual positives the model catches. The same thing as
+      recall.
+  - symbol: "FPR"
+    reads: false positive rate
+    means: >-
+      FP / (FP + TN): the fraction of actual negatives the model wrongly flags.
+  - symbol: "AUC"
+    reads: A U C, area under the curve
+    means: >-
+      The area under the ROC curve, from 0 to 1. 0.5 is guessing; 1 is perfect separation.
+questions:
+  - ask: "A classifier's ROC curve lies almost exactly on the diagonal from (0, 0) to (1, 1). What does that tell you?"
+    choices:
+      - text: "Its scores do not separate positives from negatives: its AUC is about 0.5, the same as random guessing"
+        correct: true
+        explains: >-
+          On the diagonal, every threshold catches the same fraction of positives as it wrongly
+          flags negatives. That is what a coin would do.
+      - text: "It is perfect, because the curve reaches (1, 1)"
+        explains: >-
+          Every ROC curve reaches (1, 1): with the threshold at the bottom, everything is
+          positive. A perfect classifier's curve goes straight up to (0, 1) first.
+      - text: "Its threshold is set badly; moving it would fix the problem"
+        explains: >-
+          The ROC curve already shows every threshold. If all of them sit on the diagonal, no
+          threshold helps.
+      - text: "It has high precision but low recall"
+        explains: >-
+          The diagonal says nothing about one threshold's precision and recall. It says the
+          scores carry no information at any threshold.
+---
+
+Every metric so far is measured at **one threshold**. Move the threshold and precision,
+recall and F all change. An ROC curve shows the classifier at **every** threshold at once.
+
+## Building the curve
+
+From the lecture notes, two rates:
+
+```
+TPR = TP / (TP + FN)        true positive rate: the same as recall
+FPR = FP / (FP + TN)        false positive rate: negatives wrongly flagged
+```
+
+Now sweep the threshold from the top to the bottom of the score range, and plot one point
+(FPR, TPR) at each setting.
+
+| threshold | what happens | point |
+| --- | --- | --- |
+| above every score | nothing is called positive | (0, 0) |
+| moving down | more of both groups pass the line | the curve rises and moves right |
+| below every score | everything is called positive | (1, 1) |
+
+Slide 76 draws the result beside the two score distributions it came from. The **Receiver
+Operating Characteristic** curve (the slide titles it "Receiver-Operator") is the path from
+(0, 0) to (1, 1).
+
+## Reading it
+
+The shape tells you how well the scores separate the classes:
+
+- **A good classifier** bows toward the top-left corner. As the threshold drops, it gains
+  positives (TPR climbs) long before it starts flagging negatives (FPR stays low).
+- **A random classifier** runs along the **diagonal**. Each step catches as large a share of
+  negatives as positives.
+- **A perfect classifier** goes straight up the left edge to (0, 1), then across. Some
+  threshold separates the groups completely.
+
+## Area under the curve
+
+The **AUC** turns the curve into one number. From the lecture notes: a random classifier has
+AUC = 0.5, a perfect one has AUC = 1.0, and "the larger the area under the curve, the better
+the model's discriminatory power". Slide 76 calls it "a measure of accuracy"; the notes'
+word, *discrimination*, is more precise. AUC measures how well the scores rank positives above
+negatives, across all thresholds, before you have committed to one.
+
+That is its strength and its limit. AUC compares *models*. Once you deploy, you still choose
+one threshold, and then the precision-recall trade-off from the last concept decides whether
+that point on the curve suits the application.
+
+> An ROC curve plots true positive rate against false positive rate at every threshold. Hugging
+> the top-left is good; the diagonal is guessing. AUC sums it up from 0.5 for chance to 1.0 for
+> perfect.

@@ -1,0 +1,112 @@
+---
+course: data-science
+section: w9-validation
+order: 1320
+title: Cross-Validation and Small Evaluation Sets
+visuals:
+  - type: svg
+    src: data-science/w9-models/87.svg
+    caption: Slide 87 of 90 — k-fold cross-validation.
+  - type: svg
+    src: data-science/w9-models/88.svg
+    caption: Slides 88–89 of 90 — amplifying small evaluation sets, and top-k scoring.
+notation:
+  - symbol: "k"
+    reads: k
+    means: >-
+      The number of folds: how many equal parts the data is cut into. Common choices are 5
+      and 10.
+  - symbol: "LOOCV"
+    reads: leave-one-out cross-validation
+    means: >-
+      Cross-validation with as many folds as data points, so each model is tested on a
+      single held-out case.
+questions:
+  - ask: "You have 500 labelled examples and run 5-fold cross-validation. How many models are trained, and on how many examples each?"
+    choices:
+      - text: "5 models, each trained on 400 examples and evaluated on the other 100"
+        correct: true
+        explains: >-
+          Each fold of 100 is held out once. The model trains on the remaining (k − 1)/k =
+          4/5 of the data, and the five scores are averaged.
+      - text: "1 model, trained on 400 examples and evaluated on 100"
+        explains: >-
+          That is a single train/test split. Cross-validation repeats it once per fold.
+      - text: "5 models, each trained on 100 examples and evaluated on the other 400"
+        explains: >-
+          This is the wrong way round. Each model trains on most of the data and is evaluated on
+          the one fold left out.
+      - text: "500 models, each trained on 499 examples"
+        explains: >-
+          That is leave-one-out cross-validation, the limiting case, not 5-fold.
+  - ask: "A classifier assigns each image to one of 1,000 species, and gets the top answer right only 8% of the time. Which approach does slide 89 suggest for making progress visible?"
+    choices:
+      - text: "Report a top-k success rate, such as whether the right species is among the first 5 guesses"
+        correct: true
+        explains: >-
+          With many classes, a very low exact-match rate is discouraging and can hide real
+          improvement. Top-k gives credit when the right answer is near the top, with k chosen
+          so improvements can be recognised.
+      - text: "Switch to accuracy measured on the training data"
+        explains: >-
+          That would raise the number by measuring memorisation, which is the veil-of-ignorance
+          mistake.
+      - text: "Use leave-one-out cross-validation"
+        explains: >-
+          That changes how the data is split, not how a hard many-class problem is scored.
+      - text: "Merge the 1,000 species into 2 classes"
+        explains: >-
+          That changes the problem rather than scoring it more usefully.
+---
+
+The previous concepts assume you have enough data to lock 20% away. Often you do not.
+Slide 87 offers **cross-validation**.
+
+## k-fold cross-validation
+
+> Train on (k − 1)/k of the data, evaluate on the rest, then repeat, and average.
+
+Concretely, with `k = 5` and 500 examples:
+
+1. cut the data into 5 **folds** of 100;
+2. train on folds 2–5 (400 examples), evaluate on fold 1;
+3. train on folds 1 and 3–5, evaluate on fold 2;
+4. …and so on, until each fold has been held out once;
+5. average the 5 scores.
+
+Every example is used for evaluation exactly once and for training `k − 1` times. No data is
+wasted, and no model is ever scored on data it trained on.
+
+Slide 87 points out the bonus: "you get a variance as to the accuracy of your model!" Five
+scores, not one, tell you how much the result depends on which cases happened to be held out.
+Accuracy of 0.80 ± 0.01 is a different claim from 0.80 ± 0.15.
+
+The limiting case is **leave-one-out** cross-validation: `k` equals the number of examples, so
+each model trains on everything but one case. It uses the data most fully, and costs one model
+per example.
+
+## Amplifying small evaluation sets
+
+Slide 88 gives three more tricks for when labelled data is scarce:
+
+| trick | idea |
+| --- | --- |
+| create negative examples | when positives are rare, a random unlabelled case is very likely negative |
+| perturb real examples | add noise to real cases to make similar synthetic ones |
+| give partial credit | score by how far a prediction is from the boundary, not just which side |
+
+The lecture notes add the standard tools for **class imbalance**: undersampling the majority
+class, oversampling or generating synthetic minority examples (such as SMOTE), and giving
+minority examples higher weight.
+
+## Scoring hard problems easier
+
+Slide 89: with many classes, the exact-match rate can be so low that it is discouraging and
+misleading, because real improvements do not show. The **top-k success rate** gives credit if
+the right label is among the model's first `k` guesses. Choose `k` "so that real improvements
+can be recognised": large enough that the rate moves, small enough that it still means
+something.
+
+> When data is short, cross-validate: rotate which fold is held out, average the scores, and
+> read their spread as a measure of uncertainty. When the task is hard, score it so that
+> progress is visible.

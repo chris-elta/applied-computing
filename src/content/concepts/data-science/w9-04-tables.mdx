@@ -1,0 +1,79 @@
+---
+course: data-science
+section: w9-charts
+order: 1120
+title: When a Table Beats a Plot
+visuals:
+  - type: svg
+    src: data-science/w9-models/17.svg
+    caption: Slide 17 of 90 — country statistics in a raw table.
+  - type: svg
+    src: data-science/w9-models/19.svg
+    caption: Slide 19 of 90 — the same table, sorted, right-justified and with uniform precision.
+notation: []
+questions:
+  - ask: "A table of 15 countries lists population with anywhere from 0 to 3 decimal places, left-justified, in alphabetical order. Which single change does most to let a reader compare populations at a glance?"
+    choices:
+      - text: "Right-justify the column at a uniform precision, so the digits line up by place value"
+        correct: true
+        explains: >-
+          With aligned digits, a number's length shows its magnitude, so 1,313,973,713 visibly
+          dwarfs 4,076,140 before you read either. Mixed decimals and left-justification hide
+          that.
+      - text: "Bold every population over 100 million"
+        explains: >-
+          Emphasis helps highlight a few entries, but it does not help compare the rest, and
+          bolding many rows dilutes it.
+      - text: "Replace the table with a pie chart"
+        explains: >-
+          Fifteen slices are far harder to compare than fifteen aligned numbers, and the pie
+          loses the precision that was the table's advantage.
+      - text: "Add a longer, more descriptive column heading"
+        explains: >-
+          The slide warns against excessive-length column descriptors. A heading does not help
+          compare values.
+---
+
+Not every data set wants a chart. The lecture opens its tour of chart types with the one
+people forget: the table.
+
+## What a table does better
+
+From slide 16, tables have four advantages over plots:
+
+| advantage | why |
+| --- | --- |
+| numerical precision | a reader can see 99.6, not "about 100" |
+| understandable multivariate display | each column is another dimension, with no encoding to learn |
+| heterogeneous data | names, counts, rates and money can sit side by side |
+| compactness for few points | a dozen numbers fit in less space than a chart of them |
+
+If the reader needs exact values, or there are only a handful of points, a table is often the
+better choice.
+
+## Making a table readable
+
+Slide 17 shows a raw table of countries with area, density, birth rate, population,
+mortality and GDP. Every number is there, but nothing invites comparison. Slide 18 lists what
+to fix:
+
+- **Order rows to invite comparisons.** Alphabetical order is rarely what the reader wants;
+  sort by the column that matters.
+- **Order columns** to highlight importance or to put related pairs side by side.
+- **Right-justify uniform-precision numbers.** Then digits line up by place value and a
+  number's length shows its size.
+- **Use emphasis, font or colour** for the few entries that matter.
+- **Avoid excessive-length column descriptors.**
+
+Slide 19 applies them. Thousands separators and a fixed number of decimal places make the
+population column scannable, and the eye can now see that two countries are an order of
+magnitude bigger than the rest without reading a digit.
+
+## The general point
+
+A table is a visualisation too, and the same aesthetic applies: remove what does not help,
+arrange what remains so the comparison the reader wants is the easy one. Right-justification
+is the table's version of a zero baseline: it makes length mean size.
+
+> Use a table when precision matters or there are few values. Then sort it, align it, and fix
+> its precision so the comparison the reader wants needs no effort.

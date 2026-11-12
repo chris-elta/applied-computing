@@ -1,0 +1,120 @@
+---
+course: data-science
+section: w10-linalg
+order: 1360
+title: Matrix–Matrix Multiplication
+visuals:
+  - type: svg
+    src: data-science/w10-linalg/16.svg
+    caption: Slide 16 of 25 (linear algebra review) — each column of C is A times a column of B.
+  - type: svg
+    src: data-science/w10-linalg/18.svg
+    caption: Slide 18 of 25 (linear algebra review) — three competing hypotheses in one product.
+notation:
+  - symbol: "(m × n)(n × o) = (m × o)"
+    reads: m by n times n by o gives m by o
+    means: >-
+      The dimension rule: the inner sizes must match, and the outer ones give the result's
+      shape.
+questions:
+  - ask: "A is 4 × 2 and B is 2 × 3. What is the dimension of AB, and is BA defined?"
+    choices:
+      - text: "AB is 4 × 3; BA is undefined"
+        correct: true
+        explains: >-
+          For AB the inner sizes are 2 and 2, which match, and the outer sizes give 4 × 3. For
+          BA the inner sizes would be 3 and 4, which do not.
+      - text: "AB is 2 × 2; BA is 3 × 3"
+        explains: >-
+          The result takes the outer sizes, not the inner ones, and BA fails the inner check.
+      - text: "AB is 4 × 3; BA is 3 × 4"
+        explains: >-
+          BA would need B's 3 columns to match A's 4 rows. They do not, so BA does not exist.
+      - text: "Neither is defined, because A and B have different shapes"
+        explains: >-
+          Multiplication does not need equal shapes, only that the first matrix has as many
+          columns as the second has rows.
+---
+
+Matrix–matrix multiplication is matrix–vector multiplication done several times side by side.
+
+## The rule
+
+Multiply an `m × n` matrix `A` by an `n × o` matrix `B`, and you get an `m × o` matrix `C`
+(slide 16):
+
+> The i-th column of the matrix C is obtained by multiplying A with the i-th column of B.
+
+So split `B` into its columns, multiply `A` by each one using the previous concept's rule, and
+stand the resulting vectors side by side.
+
+## A worked example
+
+Slide 15:
+
+```
+⎡ 1  3  2 ⎤   ⎡ 1  3 ⎤
+⎣ 4  0  1 ⎦ × ⎢ 0  1 ⎥
+              ⎣ 5  2 ⎦
+```
+
+Column 1 of `B` is `[1, 0, 5]`:
+
+```
+row 1: 1×1 + 3×0 + 2×5 = 11
+row 2: 4×1 + 0×0 + 1×5 =  9
+```
+
+Column 2 of `B` is `[3, 1, 2]`:
+
+```
+row 1: 1×3 + 3×1 + 2×2 = 10
+row 2: 4×3 + 0×1 + 1×2 = 14
+```
+
+So:
+
+```
+⎡ 11  10 ⎤
+⎣  9  14 ⎦
+```
+
+`2 × 3` times `3 × 2` gives `2 × 2`. Equivalently, entry `Cᵢⱼ` is row `i` of `A` times column
+`j` of `B`.
+
+## The dimension check
+
+```
+(m × n) × (n × o) = (m × o)
+      └─────┘
+     must match
+```
+
+`A` must have as many columns as `B` has rows. Otherwise the product is undefined.
+
+## The trick: three hypotheses at once
+
+Slide 18 extends the house-price example. You have three competing models:
+
+| | hypothesis |
+| --- | --- |
+| 1 | `hθ(x) = −40 + 0.25x` |
+| 2 | `hθ(x) = 200 + 0.1x` |
+| 3 | `hθ(x) = −150 + 0.4x` |
+
+Put each model's parameters in a column, and multiply once:
+
+```
+⎡ 1  2104 ⎤                           ⎡ 486  410  692 ⎤
+⎢ 1  1416 ⎥   ⎡ −40   200  −150 ⎤     ⎢ 314  342  416 ⎥
+⎢ 1  1534 ⎥ × ⎣ 0.25  0.1   0.4 ⎦  =  ⎢ 344  353  464 ⎥
+⎣ 1   852 ⎦                           ⎣ 173  285  191 ⎦
+```
+
+Each **column** of the result is one model's predictions for all four houses (the slide
+rounds to whole numbers). Twelve predictions, one product, and linear-algebra libraries are
+heavily optimised for exactly this kind of product.
+
+> An m × n matrix times an n × o matrix gives an m × o matrix, each column being A times one
+> column of B. Put the data in one matrix and several models' parameters in the other, and you
+> get every model's predictions at once.

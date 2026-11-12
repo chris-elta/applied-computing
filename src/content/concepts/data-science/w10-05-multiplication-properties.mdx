@@ -1,0 +1,109 @@
+---
+course: data-science
+section: w10-linalg
+order: 1370
+title: Not Commutative, but Associative; the Identity
+visuals:
+  - type: svg
+    src: data-science/w10-linalg/20.svg
+    caption: Slide 20 of 25 (linear algebra review) — A × B ≠ B × A.
+  - type: svg
+    src: data-science/w10-linalg/22.svg
+    caption: Slide 22 of 25 (linear algebra review) — identity matrices.
+notation:
+  - symbol: "I, or Iₙₓₙ"
+    reads: I, the identity, or the n by n identity
+    means: >-
+      The square matrix with 1s down the diagonal and 0s everywhere else. Multiplying by it
+      changes nothing, like multiplying a number by 1.
+  - symbol: "≠"
+    reads: is not equal to
+    means: >-
+      Here, "not equal in general". There are particular matrices for which AB = BA, but you
+      cannot assume it.
+questions:
+  - ask: "For matrices A and B where both AB and BA are defined, which statement is true?"
+    choices:
+      - text: "AB and BA may be different, so the order in a product must be kept"
+        correct: true
+        explains: >-
+          Matrix multiplication is not commutative. Slide 20 gives two 2 × 2 matrices whose
+          products in the two orders differ entry by entry.
+      - text: "AB = BA always, as with ordinary numbers"
+        explains: >-
+          That is the habit from arithmetic that this slide exists to break. For matrices the
+          order matters.
+      - text: "AB = BA whenever both are square"
+        explains: >-
+          Slide 20's counterexample uses two square 2 × 2 matrices.
+      - text: "(AB)C may differ from A(BC)"
+        explains: >-
+          That is associativity, which does hold. You may regroup a product; you may not
+          reorder it.
+---
+
+Matrix multiplication keeps some of the rules from ordinary arithmetic and breaks one of them.
+
+## Not commutative
+
+With numbers, `3 × 5 = 5 × 3`. With matrices, in general (slide 20):
+
+```
+A × B ≠ B × A
+```
+
+The slide's example:
+
+```
+⎡ 1  1 ⎤ ⎡ 0  0 ⎤   ⎡ 2  0 ⎤
+⎣ 0  0 ⎦ ⎣ 2  0 ⎦ = ⎣ 0  0 ⎦
+
+⎡ 0  0 ⎤ ⎡ 1  1 ⎤   ⎡ 0  0 ⎤
+⎣ 2  0 ⎦ ⎣ 0  0 ⎦ = ⎣ 2  2 ⎦
+```
+
+Same two matrices, different order, different answers. Often it is worse: if `A` is `m × n`
+and `B` is `n × m`, then `AB` is `m × m` and `BA` is `n × n`, so they are not even the same
+shape. And if the dimensions only fit one way, the other product does not exist at all.
+
+The practical rule: **never swap the order of a product**. `Xθ` and `θX` are different things,
+and usually only one of them is defined.
+
+## Associative
+
+What does carry over is regrouping. Slide 21 sets up the exercise: let `D = B × C` and compute
+`A × D`; let `E = A × B` and compute `E × C`. They give the same matrix:
+
+```
+A × (B × C) = (A × B) × C
+```
+
+So you can write `A × B × C` without brackets. You can choose *which* pair to multiply first,
+which matters for speed when the matrices are large, but not swap their positions.
+
+## The identity matrix
+
+The number 1 has the property `1 × z = z × 1 = z`. The **identity matrix** `I` plays that role
+(slide 22). It is square, with 1s on the diagonal and 0s elsewhere:
+
+```
+2 × 2:  ⎡ 1  0 ⎤        3 × 3:  ⎡ 1  0  0 ⎤
+        ⎣ 0  1 ⎦                ⎢ 0  1  0 ⎥
+                                ⎣ 0  0  1 ⎦
+```
+
+For any matrix `A`:
+
+```
+A × I = I × A = A
+```
+
+One subtlety: if `A` is `m × n`, the `I` on the left must be `m × m` and the one on the right
+`n × n`, so the dimensions fit. The identity is one of the few cases where the order does not
+matter.
+
+The identity matters for the next concept: the inverse of a matrix is defined as the thing
+that multiplies with it to give `I`.
+
+> Matrix products can be regrouped but not reordered: (AB)C = A(BC), but AB ≠ BA in general.
+> The identity I, 1s on the diagonal, leaves any matrix unchanged.

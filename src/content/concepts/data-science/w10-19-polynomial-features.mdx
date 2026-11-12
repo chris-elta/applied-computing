@@ -1,0 +1,90 @@
+---
+course: data-science
+section: w10-multi
+order: 1510
+title: Polynomial Features
+notation:
+  - symbol: "x₁²"
+    reads: x one squared
+    means: >-
+      Here the superscript really is a power, unlike the bracketed ⁽ⁱ⁾ that numbers training
+      examples.
+questions:
+  - ask: "You fit hθ(x) = θ₀ + θ₁x + θ₂x² + θ₃x³ with x = house size, which ranges from 1 to 1000. What must you be careful about?"
+    choices:
+      - text: "Feature scaling: x² ranges up to a million and x³ up to a billion, so the new features are on wildly different scales"
+        correct: true
+        explains: >-
+          The course notes make exactly this point. Without scaling, gradient descent on these
+          features will crawl.
+      - text: "Nothing: the model is no longer linear, so gradient descent does not apply"
+        explains: >-
+          It is still linear in the parameters θ. That is all linear regression needs, so the same
+          cost, gradient descent and normal equation all apply.
+      - text: "You must use three separate models, one per power"
+        explains: >-
+          The powers are just extra features in one model.
+      - text: "x² and x³ must be scaled with the same μ and s as x"
+        explains: >-
+          Each new feature has its own mean and range and must be scaled with its own.
+---
+
+Linear regression fits a straight line, or a flat plane. Data often curves. This concept, from the
+course notes rather than the slides, shows that a "linear" model can fit curves too.
+
+## Making new features
+
+The features in `hθ(x)` do not have to be the raw columns of your data. You can build new ones.
+
+**Combine features.** Two columns, frontage and depth of a plot, can become one, area:
+`x₃ = x₁ · x₂`.
+
+**Raise a feature to a power.** Starting from `hθ(x) = θ₀ + θ₁x₁`, add squares and cubes of `x₁` as
+extra features:
+
+| model | features |
+| --- | --- |
+| quadratic: `θ₀ + θ₁x₁ + θ₂x₁²` | `x₁`, `x₁²` |
+| cubic: `θ₀ + θ₁x₁ + θ₂x₁² + θ₃x₁³` | `x₁`, `x₁²`, `x₁³` |
+| square root: `θ₀ + θ₁x₁ + θ₂√x₁` | `x₁`, `√x₁` |
+
+In the cubic, the notes define `x₂ = x₁²` and `x₃ = x₁³`. As far as the algorithm is concerned,
+these are just two more columns, and you fit them with the same multi-feature gradient descent.
+
+## Why it is still linear regression
+
+The model is linear **in the parameters** θ: each θ multiplies a feature, and the products are
+added. What the features *are* does not matter. That is all the cost function, gradient descent and
+the normal equation need, so every method this week still works.
+
+## Choosing the shape
+
+The notes point out that shapes behave differently. A quadratic with a negative `θ₂` eventually
+curves back **down**, which is implausible for house price against size: bigger houses would get
+cheaper. A square-root term rises but flattens, and never comes back down. A cubic can rise again.
+The choice should come from what makes sense for the data, not only from what fits.
+
+That is a first-principles judgement, from week 9's methodology concept, applied to a data-driven
+model.
+
+## Scaling matters even more
+
+Powers spread a feature's range dramatically. From the notes: if `x₁` ranges from 1 to 1000, then
+
+| feature | range |
+| --- | --- |
+| `x₁` | 1 – 1,000 |
+| `x₁²` | 1 – 1,000,000 |
+| `x₁³` | 1 – 1,000,000,000 |
+
+Without feature scaling, gradient descent on these would barely move. Scale each new feature with
+its own mean and range.
+
+## The danger
+
+Each added power gives the curve another bend. Enough of them and it can pass through every
+training point, which is exactly the overfitting that the regularisation section starts with.
+
+> Build new features by combining or raising existing ones, and linear regression can fit curves:
+> it only has to be linear in θ. Scale the new features, and choose shapes that make sense, because
+> more bends also means more room to overfit.

@@ -1,0 +1,90 @@
+---
+course: data-science
+section: w10-univariate
+order: 1440
+title: The Cost with Two Parameters
+visuals:
+  - type: svg
+    src: data-science/w10-regression-1/28.svg
+    caption: Slide 28 of 37 (linear regression, part 1) — J(θ₀, θ₁) as a 3-D surface.
+  - type: svg
+    src: data-science/w10-regression-1/32.svg
+    caption: Slides 29–32 of 37 (linear regression, part 1) — each line on the left is one point on the contour plot.
+notation:
+  - symbol: "contour plot"
+    reads: contour plot
+    means: >-
+      A map of a surface seen from above, where each closed curve joins points of equal
+      height, like the contour lines on a hiking map.
+questions:
+  - ask: "On a contour plot of J(θ₀, θ₁), two points lie on the same ellipse. What do they have in common?"
+    choices:
+      - text: "The two lines they represent fit the training data equally well: they have the same cost"
+        correct: true
+        explains: >-
+          A contour joins points of equal height, and height here is J. The lines may look
+          completely different on the data plot and still have identical cost.
+      - text: "They represent the same line"
+        explains: >-
+          Each point is a different (θ₀, θ₁) pair, so a different line. They only share a cost.
+      - text: "They both have the same slope θ₁"
+        explains: >-
+          Points with the same θ₁ lie on a horizontal line across the plot, not on an ellipse.
+      - text: "They are both at the minimum of J"
+        explains: >-
+          The minimum is a single point at the centre of the innermost ellipse. Other ellipses
+          are higher up the bowl.
+---
+
+Put the intercept `θ₀` back, and `J` depends on two numbers. Slide 26 restates the problem:
+
+```
+hθ(x) = θ₀ + θ₁x         minimise J(θ₀, θ₁) over θ₀, θ₁
+```
+
+## A surface
+
+With two parameters, `J` is a surface over a plane. Slide 28 draws it in 3-D: `θ₀` and `θ₁`
+along the floor, `J` as height. It is the one-parameter bowl from the previous concept, extended
+in both directions. One point at the bottom is the best line.
+
+3-D surfaces are hard to read on a page, so the slides switch to a **contour plot**: the same
+surface seen from directly above, drawn as a set of closed curves. Each curve joins points of
+**equal cost**. For the squared-error cost of a line, the curves are **ellipses**, nested
+inside each other, and the minimum is at the centre of the innermost one.
+
+## Two pictures again
+
+Slides 27 and 29–32 pair the data with the contour plot, as before:
+
+| left: `hθ(x)` | right: `J(θ₀, θ₁)` |
+| --- | --- |
+| house prices against size, with one line | contours, with one red point marking that line's (θ₀, θ₁) |
+
+Stepping through them:
+
+| slide | line on the left | point on the right |
+| --- | --- | --- |
+| 27 | `hθ(x) = 50 + 0.06x`, below almost every price | high up the bowl |
+| 29 | a steeply falling line | on an outer ellipse, far from the centre |
+| 30–31 | flat or gently falling lines | further in, but still off-centre |
+| 32 | a rising line through the middle of the data | very near the centre |
+
+As the point moves toward the centre of the ellipses, the line on the left moves to run through
+the middle of the data.
+
+## Reading it
+
+- **Same ellipse, same cost.** Two points on one contour are two different lines that fit the
+  data equally badly. A steep line with a low intercept can tie with a flat line with a high one.
+- **The ellipses are tilted.** Changing `θ₀` and `θ₁` together along the tilt costs little,
+  because a higher intercept can make up for a lower slope. That slant will matter for gradient
+  descent.
+- **The centre is the answer.** Finding the best line means finding the lowest point of this
+  surface.
+
+You would not want to search by eye with more parameters. The next section describes the
+algorithm that does it.
+
+> With two parameters, J is a bowl-shaped surface, drawn from above as nested ellipses of equal
+> cost. Each point is one line, and the centre is the best fit.

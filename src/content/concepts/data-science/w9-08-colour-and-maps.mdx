@@ -1,0 +1,95 @@
+---
+course: data-science
+section: w9-charts
+order: 1160
+title: Colour Scales and Data Maps
+visuals:
+  - type: svg
+    src: data-science/w9-models/33.svg
+    caption: Slide 33 of 90 — brightness and saturation are seen as ordered; hue is not.
+  - type: svg
+    src: data-science/w9-models/34.svg
+    caption: Slide 34 of 90 — a greyscale ramp against a rainbow.
+  - type: svg
+    src: data-science/w9-models/32.svg
+    caption: Slide 32 of 90 — the 2012 US election as a map and as a cartogram.
+notation:
+  - symbol: "hue"
+    reads: hue
+    means: >-
+      Which colour something is (red, yellow, green, blue), as opposed to how light or how
+      vivid it is.
+  - symbol: "diverging scale"
+    reads: diverging scale
+    means: >-
+      Two distinct colours that grow stronger in opposite directions from a neutral centre,
+      for data with a meaningful midpoint such as zero.
+questions:
+  - ask: "A heatmap shows temperature change since 1950, from −2 °C to +3 °C. Which colour scale fits best?"
+    choices:
+      - text: "A diverging scale: blue for cooling, red for warming, both fading to a neutral colour at zero"
+        correct: true
+        explains: >-
+          The data has a meaningful centre, zero change, and two directions from it. Slide 34
+          recommends distinct positive and negative colours reflected about a centre.
+      - text: "A rainbow scale from violet to red, because it has the most distinct colours"
+        explains: >-
+          Many distinct colours is the problem: hue is not perceived as ordered, and the
+          rainbow's bright yellow band creates a false boundary. Slide 34 calls it perceptually
+          non-linear.
+      - text: "A single hue from white to dark red across the whole range"
+        explains: >-
+          This is ordered, which is good, but it hides the zero point: a reader cannot tell
+          cooling from slight warming.
+      - text: "Random distinct colours for each 0.5 °C band"
+        explains: >-
+          That treats ordered numbers as unordered categories, so the reader has to consult the
+          legend for every cell.
+---
+
+Colour is the most tempting channel in a chart and the easiest to get wrong, because people
+read some colour properties as *amounts* and others only as *labels*.
+
+## What is seen as ordered
+
+Slide 33 shows three ramps:
+
+| property | perceived as ordered? | use it for |
+| --- | --- | --- |
+| brightness (light to dark) | yes | amounts |
+| saturation (grey to vivid) | yes | amounts |
+| hue (red, yellow, green, blue…) | not as much | categories |
+
+Show someone five greys and they can sort them. Show them red, yellow, green, blue and purple
+and there is no natural order: hue says *different*, not *more*.
+
+## Rainbows
+
+The rainbow colour map is the classic mistake. Slide 34 says it plainly: "rainbows are
+perceptually non-linear". Equal steps in the data do not look like equal steps in colour.
+The yellow band looks much brighter than its neighbours, so it reads as a sharp boundary that
+is not in the data, while wide stretches of green look uniform.
+
+The better choices:
+
+- **sequential**: one hue getting lighter or darker, for data from low to high;
+- **diverging**: "distinct positive/negative colours reflected about a center", for data with
+  a meaningful midpoint, such as change from zero.
+
+Slide 35 compares two colourings of the same gene-expression chart: when one category shares
+a similar colour with its neighbour, the reader loses the boundary. Pick colours that are
+distinct when they must be told apart, and ordered when they encode an amount.
+
+## Maps and cartograms
+
+A map is a chart whose position encodes geography. That raises a problem: area on a map
+tracks land, not people. Slide 32 shows the 2012 US election. On the ordinary map, large
+sparse states dominate the picture. A **cartogram** "distorts regions to reflect an
+underlying variable", here electoral votes, so each state's area matches its weight.
+
+The cartogram is a lie-factor fix: the ordinary map makes area mean something the reader
+did not ask about.
+
+> Use brightness or saturation for amounts and hue for categories. Avoid rainbows. Use a
+> diverging scale when the data has a centre, and remember that on a map, area means land
+> unless you make it mean something else.

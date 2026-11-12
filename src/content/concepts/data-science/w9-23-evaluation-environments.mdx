@@ -1,0 +1,89 @@
+---
+course: data-science
+section: w9-validation
+order: 1310
+title: Evaluation Environments and Error Distributions
+visuals:
+  - type: svg
+    src: data-science/w9-models/83.svg
+    caption: Slide 83 of 90 — designing good evaluation systems.
+  - type: svg
+    src: data-science/w9-models/84.svg
+    caption: Slide 84 of 90 — error histograms for random and naive Bayes models.
+  - type: svg
+    src: data-science/w9-models/85.svg
+    caption: Slide 85 of 90 — results stratified by topic and length.
+notation: []
+questions:
+  - ask: "A document-dating model has a reasonable average error. Which addition to the evaluation report would most help you find where it fails?"
+    choices:
+      - text: "A table of errors broken down by document length and by topic"
+        correct: true
+        explains: >-
+          Stratifying shows whether the error is spread evenly or concentrated, for example in
+          short documents. Slide 85 does exactly this. An average cannot tell you.
+      - text: "The same average error reported to more decimal places"
+        explains: >-
+          More precision on one summary does not reveal where the errors are.
+      - text: "The model's accuracy on its training data"
+        explains: >-
+          That measures memorisation, not where the model fails on new data.
+      - text: "A single pass or fail result for each document"
+        explains: >-
+          Slide 83 asks for the opposite: how close each prediction was, not only right or
+          wrong.
+---
+
+A single score says how good a model is. It does not say *why*, or where it fails, or whether
+the score is even real. Slide 81 put it this way: formal evaluation metrics reduce models to a
+few summary statistics, and many problems can be hidden by statistics.
+
+## Build an evaluation environment
+
+Slide 82 sketches an **evaluation environment**: a harness that runs any model against the
+test data and produces a standard report. Building it once, before the models, means every
+model is judged the same way and comparing them is honest.
+
+Slide 83 lists what a good one produces:
+
+| output | why |
+| --- | --- |
+| **error distributions**, not only right or wrong | how close was each prediction? |
+| a report with multiple plots, generated automatically | so you actually read it, every time |
+| relevant summary statistics | to gauge quality at a glance |
+
+## Error histograms
+
+Slide 84 returns to dating documents by decade, the example from the confusion-matrix
+concept. It plots a histogram of each model's error, the predicted decade minus the true one:
+
+- **a random model** produces a wide, flat histogram: its errors are spread across two
+  centuries;
+- **a naive Bayes model** produces a tall peak at zero, with errors falling off quickly on
+  either side.
+
+The histogram shows what a single accuracy figure cannot: that the second model is usually
+within a decade or two when it is wrong. The lecture notes add that the shape matters too. An
+**asymmetric** error distribution, consistently predicting too early, say, points to
+**systematic bias** or imbalance in the data.
+
+## Stratify the results
+
+Slide 85 shows a results table that breaks performance down by **topic** and by
+**difficulty**, measured as document length. The lecture notes call this stratifying the
+errors "by class, document length, or context" to identify weak spots.
+
+A model with a good average can be excellent on long documents and hopeless on short ones.
+That is not visible in the average, and it is exactly what you need to know: either to
+improve the model where it is weak, or to tell users where not to trust it.
+
+## Catching the sins
+
+This is also how the "sins in evaluation" from the previous concept get caught. A bug or a
+leak tends to produce errors that *look wrong*: a spike of perfect predictions on one topic,
+or a distribution with a strange shape. You only see that if the report shows distributions,
+not just averages.
+
+> Build the evaluation harness before the models. Have it report how far off each prediction
+> was, plot the distribution of errors, and break results down by kind of case, because
+> averages hide both weaknesses and bugs.

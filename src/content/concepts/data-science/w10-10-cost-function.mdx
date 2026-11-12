@@ -1,0 +1,116 @@
+---
+course: data-science
+section: w10-univariate
+order: 1420
+title: The Squared-Error Cost Function
+visuals:
+  - type: svg
+    src: data-science/w10-regression-1/17.svg
+    caption: Slide 17 of 37 (linear regression, part 1) — three choices of θ₀ and θ₁, three lines.
+  - type: svg
+    src: data-science/w10-regression-1/18.svg
+    caption: Slide 18 of 37 (linear regression, part 1) — the cost function J and the goal.
+notation:
+  - symbol: "J(θ₀, θ₁)"
+    reads: J of theta nought, theta one
+    means: >-
+      The cost function: how badly the line with these parameters fits the training data.
+      Lower is better; 0 is a perfect fit.
+  - symbol: "Σᵢ₌₁ᵐ"
+    reads: sum from i equals 1 to m
+    means: >-
+      Add up the expression after it for every training example, from the first to the m-th.
+  - symbol: "minimize over θ₀, θ₁"
+    reads: minimise over theta nought and theta one
+    means: >-
+      Find the values of θ₀ and θ₁ that make the expression as small as possible.
+questions:
+  - ask: "Training data (0, 4), (1, 7), (2, 7), (3, 8), and hypothesis hθ(x) = 2 + 2x. What is J(θ₀, θ₁)?"
+    choices:
+      - text: "1.75"
+        correct: true
+        explains: >-
+          Predictions 2, 4, 6, 8. Errors −2, −3, −1, 0. Squares 4, 9, 1, 0, summing to 14.
+          J = 14 / (2 × 4) = 1.75.
+      - text: "3.5"
+        explains: >-
+          That is 14 / 4, the plain mean of the squared errors. J divides by 2m, not m.
+      - text: "14"
+        explains: >-
+          That is the sum of squared errors before dividing by 2m.
+      - text: "−0.75"
+        explains: >-
+          That averages the raw errors, (−2 − 3 − 1 + 0) / (2 × 4). The errors must be squared
+          first, so negatives cannot cancel positives.
+---
+
+Slide 17 draws three lines with different `θ₀` and `θ₁`. Which fits best? We need a number that
+measures fit, and then we pick the parameters that make it smallest.
+
+## The idea
+
+From slide 18:
+
+> Choose θ₀, θ₁ so that hθ(x) is close to y for our training examples (x, y).
+
+"Close" needs a definition. For each training example, the error is the prediction minus the
+truth, `hθ(x⁽ⁱ⁾) − y⁽ⁱ⁾`. Squaring it makes every error positive and punishes big misses most.
+Averaging over the training set gives one number.
+
+## The cost function
+
+```
+J(θ₀, θ₁) = (1 / 2m) Σᵢ₌₁ᵐ (hθ(x⁽ⁱ⁾) − y⁽ⁱ⁾)²
+```
+
+and the goal is
+
+```
+minimize J(θ₀, θ₁)  over θ₀, θ₁
+```
+
+Read it from the inside out:
+
+| piece | meaning |
+| --- | --- |
+| `hθ(x⁽ⁱ⁾) − y⁽ⁱ⁾` | how far off the line is on example i |
+| `( … )²` | squared, so the sign goes and big misses dominate |
+| `Σᵢ₌₁ᵐ` | added up over every example |
+| `1 / 2m` | averaged, and halved |
+
+This is called the **squared error function**, or **mean squared error**: the same MSE as in
+week 9's numeric-error concept, apart from the extra half.
+
+## Why the ½?
+
+The course notes explain: the mean is halved "as a convenience for the computation of gradient
+descent". When you differentiate the square, a factor of 2 comes down, and the ½ cancels it.
+Halving does not change *which* θ is best, because the minimum of `J` is in the same place
+whether or not you halve it.
+
+## A worked example
+
+The notes' data and guess from the previous concept: points (0, 4), (1, 7), (2, 7), (3, 8), and
+`hθ(x) = 2 + 2x`.
+
+| x | y | hθ(x) | error | squared |
+| --- | --- | --- | --- | --- |
+| 0 | 4 | 2 | −2 | 4 |
+| 1 | 7 | 4 | −3 | 9 |
+| 2 | 7 | 6 | −1 | 1 |
+| 3 | 8 | 8 | 0 | 0 |
+| | | | **sum** | **14** |
+
+With `m = 4`: `J = 14 / (2 × 4) = 1.75`.
+
+Change `θ₀` or `θ₁` and `J` changes. If a line passed through every point, every error would be
+zero and `J` would be 0, its smallest possible value.
+
+## The shift in viewpoint
+
+`hθ(x)` is a function of `x`, for fixed parameters: give it a house, get a price. `J(θ₀, θ₁)` is
+a function of the **parameters**, for fixed data: give it a line, get a score. Learning happens in
+the second picture. The next two concepts draw it.
+
+> The cost J(θ₀, θ₁) is half the mean squared error of the line's predictions on the training
+> set. Learning means finding the θ₀ and θ₁ that make it smallest.

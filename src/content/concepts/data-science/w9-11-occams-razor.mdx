@@ -1,0 +1,81 @@
+---
+course: data-science
+section: w9-modeling
+order: 1190
+title: The Modelling Pipeline and Occam's Razor
+visuals:
+  - type: svg
+    src: data-science/w9-models/54.svg
+    caption: Slide 54 of 90 — the data science analysis pipeline.
+  - type: svg
+    src: data-science/w9-models/57.svg
+    caption: Slide 57 of 90 — Occam's razor.
+notation: []
+questions:
+  - ask: "A linear model with 4 features and a model with 400 features score 0.81 and 0.82 on held-out data. What does Occam's razor recommend?"
+    choices:
+      - text: "Prefer the 4-feature model: performance is comparable, and it is simpler, easier to interpret and less likely to be overfit"
+        correct: true
+        explains: >-
+          The razor applies when the simpler model explains the data about as well. A 0.01
+          difference does not justify a hundred times the parameters.
+      - text: "Prefer the 400-feature model, since it scored higher"
+        explains: >-
+          The razor says simplicity wins when performance is comparable. A higher score by a
+          sliver is not enough to buy that much complexity.
+      - text: "Occam's razor does not apply, since both models are linear"
+        explains: >-
+          It applies to any choice between explanations. Parameter count is exactly the sense
+          of "simple" the slide uses.
+      - text: "Average the two models' predictions"
+        explains: >-
+          Combining models is a different idea, from the consensus principle later this week.
+          It does not answer which single explanation the data supports.
+---
+
+The second half of week 9 turns from showing data to modelling it.
+
+## The pipeline
+
+Slide 54 defines modelling as "the process of encapsulating information into a tool which can
+make forecasts or predictions". The key steps are:
+
+1. **build**: choose the model's form, from a first-principles formula to a learned function;
+2. **fit**: set its parameters from training data;
+3. **validate**: check how well it predicts data it has not seen.
+
+There are many ways to model any data set (slide 55), so you need principles for choosing.
+Slide 56 names three: Occam's razor, the bias-variance trade-off, and Nate Silver's habits of
+forecasting. Each gets its own concept.
+
+## Occam's razor
+
+The principle states that **the simplest explanation is best**. For a model, "simple" usually
+means **fewest parameters**.
+
+The lecture notes give the working version: when two models perform about equally well,
+prefer the one with fewer parameters. If a linear model and a deep neural network achieve
+similar accuracy, the linear model is typically preferred.
+
+Why should simpler be better, if both fit?
+
+| reason | explanation |
+| --- | --- |
+| interpretability | you can read four coefficients; you cannot read four hundred |
+| generalisation | every extra parameter is another way to fit the noise in the training data |
+| robustness | fewer moving parts break in fewer ways when the data shifts |
+
+The second reason is the bias-variance trade-off, coming next.
+
+## Making it mechanical
+
+Slide 57 notes that machine-learning methods like **LASSO and ridge regression** build the
+razor into the fitting itself: they add a penalty for large or numerous coefficients, so the
+fit has to justify every parameter it uses. Week 10 ends with exactly these methods.
+
+The slide also says to do "a sniff test". A penalty can trim features, but it cannot tell you
+whether the features that remain make sense. If a model predicts house prices mostly from
+the seller's surname, it needs a human to say that is absurd, however well it scores.
+
+> Between models that predict comparably, choose the one with fewer parameters. It is easier
+> to understand and less likely to have memorised noise.

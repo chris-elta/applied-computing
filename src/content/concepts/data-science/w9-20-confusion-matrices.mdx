@@ -1,0 +1,78 @@
+---
+course: data-science
+section: w9-classifiers
+order: 1280
+title: Confusion Matrices for Many Classes
+visuals:
+  - type: svg
+    src: data-science/w9-models/77.svg
+    caption: Slide 77 of 90 — the confusion matrix for handwritten digits.
+  - type: svg
+    src: data-science/w9-models/78.svg
+    caption: Slide 78 of 90 — dating documents by decade.
+notation: []
+questions:
+  - ask: "In a digit classifier's confusion matrix, rows are the true digit and columns the predicted one. The cell at row 5, column 3 is large. What does that mean?"
+    choices:
+      - text: "Many images of a 5 were classified as a 3"
+        correct: true
+        explains: >-
+          Row is the truth, column is the prediction. Slide 77 points out exactly this error,
+          written 5 → 3.
+      - text: "Many images of a 3 were classified as a 5"
+        explains: >-
+          That reads the matrix the wrong way round. That error would sit in row 3, column 5.
+      - text: "The model is accurate on 5s and 3s"
+        explains: >-
+          Correct predictions lie on the diagonal: row 5, column 5. An off-diagonal cell is a
+          mistake.
+      - text: "5 and 3 are the most common digits in the data"
+        explains: >-
+          The size of a single off-diagonal cell is a count of one kind of error, not of how
+          common either digit is overall.
+---
+
+With two classes, four counts describe every outcome. "Classification gets harder with more
+classes" (slide 77), and the four-cell table grows into a **confusion matrix**.
+
+## The matrix
+
+A confusion matrix for `k` classes is a `k × k` table:
+
+- each **row** is an actual class;
+- each **column** is a predicted class;
+- the cell at row `i`, column `j` counts the cases of class `i` that were predicted as `j`.
+
+So:
+
+- the **diagonal** holds the correct predictions;
+- every **off-diagonal** cell is one specific kind of mistake.
+
+The binary table from the four-outcomes concept is the case `k = 2`: TP and TN on the
+diagonal, FN and FP off it.
+
+## Reading where mistakes happen
+
+Slide 77 shows a matrix for handwritten digits 0–9 from a zip-code reader. Most of the weight
+is on the diagonal, but some off-diagonal cells stand out. The slide picks two: **5 → 3** and
+**8 → 2**, meaning true 5s read as 3s and true 8s read as 2s. These pairs share strokes.
+Overall accuracy would say only that the model is "about 90% right"; the matrix says which
+digits to collect more examples of.
+
+## When the diagonal is not the peak
+
+Slide 78 is a harder case: dating documents by the decade they were written, 1800 to 2000.
+The matrix is shaded by the fraction of each row. Two features stand out:
+
+- **errors cluster next to the diagonal.** A document from the 1920s is often predicted as
+  the 1910s or 1930s, rarely as the 1820s. The classes have an order, and the model is
+  usually close when it is wrong.
+- **"the main diagonal is not exactly where the heaviest weight always is"**. For some
+  decades, the model's most common prediction is a neighbouring decade.
+
+The first point matters for scoring: for ordered classes, a near miss is better than a far
+one, and plain accuracy treats them the same. The evaluation section returns to this with
+error distributions and partial credit.
+
+> A confusion matrix puts true classes on rows and predictions on columns. The diagonal is what
+> you got right; each off-diagonal cell names a specific confusion, which tells you what to fix.

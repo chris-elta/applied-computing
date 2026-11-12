@@ -1,0 +1,95 @@
+---
+course: data-science
+section: w10-univariate
+order: 1430
+title: The Cost with One Parameter
+visuals:
+  - type: svg
+    src: data-science/w10-regression-1/20.svg
+    caption: Slide 20 of 37 (linear regression, part 1) — the simplified hypothesis hθ(x) = θ₁x.
+  - type: svg
+    src: data-science/w10-regression-1/23.svg
+    caption: Slides 21–24 of 37 (linear regression, part 1) — each line on the left is one point of J on the right.
+notation:
+  - symbol: "J(θ₁)"
+    reads: J of theta one
+    means: >-
+      The cost as a function of the single parameter θ₁, with θ₀ fixed at 0.
+questions:
+  - ask: "With training data (1, 1), (2, 2), (3, 3) and hθ(x) = θ₁x, what is J(0.5)?"
+    choices:
+      - text: "About 0.58"
+        correct: true
+        explains: >-
+          Predictions 0.5, 1, 1.5. Errors −0.5, −1, −1.5. Squares 0.25 + 1 + 2.25 = 3.5.
+          J = 3.5 / (2 × 3) ≈ 0.58.
+      - text: "0"
+        explains: >-
+          J is 0 only at θ₁ = 1, where the line passes through every point.
+      - text: "About 2.33"
+        explains: >-
+          That is J(0), where the line is flat along the x-axis and every point is missed by its
+          full height.
+      - text: "3.5"
+        explains: >-
+          That is the sum of squared errors. J divides it by 2m = 6.
+---
+
+`J` is a function of two parameters, which is hard to picture. Slide 20 simplifies: fix the
+intercept at zero, so the hypothesis is a line through the origin.
+
+```
+hθ(x) = θ₁x            J(θ₁) = (1 / 2m) Σᵢ₌₁ᵐ (θ₁x⁽ⁱ⁾ − y⁽ⁱ⁾)²
+```
+
+Now there is one dial, `θ₁`, the slope, and `J` is an ordinary function of one variable you can
+draw.
+
+## Two pictures side by side
+
+Slides 21–24 put two plots next to each other:
+
+| left | right |
+| --- | --- |
+| `hθ(x)`, **a function of x**, for one fixed `θ₁` | `J(θ₁)`, **a function of the parameter** `θ₁` |
+| the data and one line | one point per line you could have drawn |
+
+The training data is three points: (1, 1), (2, 2) and (3, 3), with `m = 3`.
+
+## Computing points on J
+
+**θ₁ = 1.** The line `y = x` passes through all three points. Every error is 0, so `J(1) = 0`.
+
+**θ₁ = 0.5.** The line is too shallow:
+
+| x | y | 0.5x | error | squared |
+| --- | --- | --- | --- | --- |
+| 1 | 1 | 0.5 | −0.5 | 0.25 |
+| 2 | 2 | 1 | −1 | 1 |
+| 3 | 3 | 1.5 | −1.5 | 2.25 |
+
+`J(0.5) = 3.5 / 6 ≈ 0.58`.
+
+**θ₁ = 0.** The line is flat on the x-axis. The squared errors are 1, 4 and 9, so
+`J(0) = 14 / 6 ≈ 2.33`.
+
+Plot those, plus a few more (`θ₁ = 1.5` gives the same 0.58 as 0.5 by symmetry, `θ₁ = −0.5`
+gives about 5.25), and the right-hand plot becomes a **bowl**: a parabola with its lowest point
+at `θ₁ = 1`.
+
+## What the picture says
+
+Each point on the right-hand curve *is* a whole line on the left. Moving along the curve is
+trying different slopes. The lowest point is the best line.
+
+So "learning the parameters" has become "find the bottom of the bowl". With one parameter you
+could do it by eye; with two the bowl becomes a surface (next concept); with hundreds you need an
+algorithm that walks downhill, which is gradient descent.
+
+That `J` is a single smooth bowl here is not luck. A squared error of a line is a quadratic in
+`θ₁`, and quadratics with a positive leading term have exactly one minimum. That property
+returns in the gradient-descent concepts, where it means there are no false bottoms to get
+stuck in.
+
+> Fix θ₀ = 0 and J becomes a function of the slope alone: a bowl, whose lowest point is the
+> slope that fits best. Every point on J is one line through the data.

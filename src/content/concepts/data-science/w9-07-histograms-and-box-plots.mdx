@@ -1,0 +1,90 @@
+---
+course: data-science
+section: w9-charts
+order: 1150
+title: Histograms, CDFs and Box Plots
+visuals:
+  - type: svg
+    src: data-science/w9-models/27.svg
+    caption: Slide 27 of 90 — one distribution as a histogram and as a CDF.
+  - type: svg
+    src: data-science/w9-models/28.svg
+    caption: Slide 28 of 90 — the same data at 5, 10 and 100 bins.
+  - type: svg
+    src: data-science/w9-models/29.svg
+    caption: Slide 29 of 90 — box plots for each hour of the day.
+notation:
+  - symbol: "CDF"
+    reads: C D F, cumulative distribution function
+    means: >-
+      For each value x, the fraction of the data at or below x. It rises from 0 to 1. From
+      week 2.
+  - symbol: "quartile"
+    reads: quartile
+    means: >-
+      The values that cut sorted data into four equal parts. The middle one is the median.
+questions:
+  - ask: "You need to report what fraction of delivery times exceed 60 minutes, where long delays are rare. Which chart makes that easiest to read?"
+    choices:
+      - text: "A CDF: read its height at 60 minutes and subtract from 1"
+        correct: true
+        explains: >-
+          The CDF gives the fraction at or below any value directly. Rare long delays are a
+          thin tail, which is exactly what the CDF shows and the histogram hides.
+      - text: "A histogram with very many bins, so the tail shows up"
+        explains: >-
+          More bins make each tail bar even shorter and noisier. You would also have to add up
+          bars by eye to get a fraction.
+      - text: "A box plot, because it marks the outliers"
+        explains: >-
+          A box plot shows quartiles and some outliers, not the fraction beyond an arbitrary
+          threshold like 60 minutes.
+      - text: "A pie chart of on-time against late deliveries"
+        explains: >-
+          That would show one fraction once you computed it, but it is not a chart of the
+          distribution and loses everything else about it.
+---
+
+The charts so far compare categories or relate two variables. These three show the
+**distribution** of one continuous variable: where its values fall.
+
+## Histogram or CDF
+
+Slide 27 draws one data set both ways, with the rule:
+
+> Histograms are better for displaying peaks, CDFs for showing tails.
+
+| chart | what you read off it | weakness |
+| --- | --- | --- |
+| histogram | where the data is most common, how many peaks, rough shape | tails are bars too short to see |
+| CDF | any percentile: read across from 0.9 to find the 90th | peaks become a steep section, easy to miss |
+
+A heavy tail barely registers on a histogram. On a CDF it is the slow final climb toward 1,
+and you can read off exactly what fraction lies beyond any value.
+
+## Bin size matters
+
+A histogram depends on a choice the data does not make: how wide the bins are. Slide 28
+draws the same values with 5, 10 and 100 bins, and then the same at a smaller sample size.
+
+- **Too few bins** smooth away real structure: a two-peaked distribution can look like one.
+- **Too many bins** for the amount of data, and each bin holds a handful of points; the chart
+  becomes noise, with spikes and gaps that are just sampling luck.
+
+The right number grows with the amount of data. Try a few and look for the shape that stays
+stable. A CDF has no bins, which is one more reason to check it alongside the histogram.
+
+## Box and whisker plots
+
+A box plot "concisely shows the range and quartiles" of a distribution (slide 29):
+
+- the **box** runs from the first quartile to the third, so it holds the middle half;
+- the **line** inside it is the median;
+- the **whiskers** reach toward the extremes, with outliers often drawn as separate points.
+
+Its strength is compactness. Slide 29 places one box per hour of the day side by side, so
+you can compare twenty-four distributions at once, which twenty-four histograms would not
+allow. Its weakness is the same compactness: two peaks inside the box are invisible.
+
+> To show one distribution, use a histogram for peaks and a CDF for tails, and try several bin
+> sizes. To compare many distributions side by side, use box plots.

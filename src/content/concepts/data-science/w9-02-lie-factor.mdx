@@ -1,0 +1,91 @@
+---
+course: data-science
+section: w9-viz
+order: 1100
+title: The Lie Factor
+visuals:
+  - type: svg
+    src: data-science/w9-models/05.svg
+    caption: Slide 5 of 90 — the lie factor, and the shrinking-doctor and oil-barrel pictograms.
+  - type: svg
+    src: data-science/w9-models/06.svg
+    caption: Slide 6 of 90 — the same two tax rates, with and without a zero baseline.
+  - type: svg
+    src: data-science/w9-models/07.svg
+    caption: Slide 7 of 90 — one series at three aspect ratios.
+notation:
+  - symbol: "lie factor"
+    reads: lie factor
+    means: >-
+      Size of the effect shown in the graphic divided by size of the effect in the data. 1
+      is honest; above 1 exaggerates; below 1 understates.
+questions:
+  - ask: "A tax rate rises from 35% to 39.6%. A bar chart starts its axis at 34%. Comparing bar heights, roughly what is its lie factor?"
+    choices:
+      - text: "About 35"
+        correct: true
+        explains: >-
+          Above the 34% baseline the bars are 1 and 5.6 points tall, so the graphic shows a
+          460% increase. The data shows 4.6 / 35 ≈ 13%. 460 / 13 ≈ 35: the picture
+          exaggerates the change about thirty-five times over.
+      - text: "1, because both bars are labelled with the correct values"
+        explains: >-
+          Correct labels do not make the picture honest. The lie factor compares the visual
+          effect to the data, and readers judge bars by their height.
+      - text: "About 1.13, the ratio of the two rates"
+        explains: >-
+          39.6 / 35 ≈ 1.13 describes the data alone. The lie factor divides the effect in the
+          graphic by the effect in the data, so you need both.
+      - text: "Below 1, because cutting the axis makes the bars shorter"
+        explains: >-
+          Both bars get shorter, but the smaller one shrinks proportionally far more, so the
+          difference looks bigger, not smaller.
+---
+
+A chart makes a visual claim: *this one is that much bigger than that one*. The **lie factor**
+measures whether the claim matches the data.
+
+```
+lie factor = size of effect in graphic / size of effect in data
+```
+
+A value of 1 is honest. The lecture names three ways to drift away from it.
+
+## 1 · Dimensionality
+
+Slide 5 shows pictograms: a doctor whose height tracks a number, and oil barrels sized by
+price. The trouble is that a reader perceives *area* or *volume*, not height. If a number
+doubles and you double the barrel's height, its width doubles too, so its area goes up four
+times and its volume eight times.
+
+> Fixing a two- or three-dimensional representation by a single parameter yields a lie,
+> because area or volume increase non-proportionally to length.
+
+Use a bar, which only varies in one dimension, or scale the area, not the length.
+
+## 2 · Scale distortion
+
+Slide 6 shows a news graphic of the top tax rate rising from 35% to 39.6%. With its axis
+starting at 34%, the second bar towers over the first. Redrawn from zero, the two bars are
+close. The slide's rules:
+
+- **always start bar graphs at zero**, because a bar's length is the value;
+- **always label your axes**;
+- **use continuous scales**, linear or clearly labelled (a log scale is fine if it says so).
+
+## 3 · Aspect ratio
+
+Slide 7 plots one series three times. Stretched tall and narrow, a dip looks like a cliff;
+squashed wide and short, it looks like nothing. The steepness of a slope is a property of the
+chart's shape, not the data. The lecture's guidance is to aim for lines near **45°**, or a
+golden-ratio frame, which is the shape at which slopes are easiest to compare.
+
+## The common thread
+
+Each case is a choice the reader cannot see. They assume a bar starts at zero, that a
+barrel's size tracks the number, that a steep line is a big change. When those assumptions
+fail, the chart lies even though every label on it is correct.
+
+> Readers judge by length, area and slope. A chart is honest when those match the data, which
+> means zero baselines for bars, one-dimensional scaling, and an aspect ratio that does not
+> invent cliffs.

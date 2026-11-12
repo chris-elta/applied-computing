@@ -1,0 +1,97 @@
+---
+course: data-science
+section: w10-ml
+order: 1390
+title: Learning from Experience; Regression and Classification
+visuals:
+  - type: svg
+    src: data-science/w10-regression-1/04.svg
+    caption: Slide 4 of 37 (linear regression, part 1) — housing prices, a regression problem.
+  - type: svg
+    src: data-science/w10-regression-1/05.svg
+    caption: Slide 5 of 37 (linear regression, part 1) — malignant or benign, a classification problem.
+  - type: svg
+    src: data-science/w10-regression-1/06.svg
+    caption: Slide 6 of 37 (linear regression, part 1) — adding features.
+notation:
+  - symbol: "E, T, P"
+    reads: E for experience, T for task, P for performance
+    means: >-
+      Tom Mitchell's definition: a program learns if its performance P at task T improves with
+      experience E.
+questions:
+  - ask: "Which of these is a classification problem rather than a regression problem?"
+    choices:
+      - text: "Deciding from a credit history whether to grant a loan"
+        correct: true
+        explains: >-
+          The output is one of two discrete categories, grant or refuse. That is classification.
+      - text: "Predicting a person's age from a photograph"
+        explains: >-
+          Age is a continuous number, so this is regression. The course notes use this exact
+          example.
+      - text: "Predicting the price a house will sell for"
+        explains: >-
+          Price is continuous: regression. It becomes classification only if you change the
+          question, for example to "will it sell above asking price?"
+      - text: "Predicting tomorrow's temperature in degrees"
+        explains: >-
+          Temperature in degrees is continuous, so regression.
+---
+
+The second half of week 10 is machine learning, starting from its definition.
+
+## What machine learning is
+
+The course notes give two definitions. Arthur Samuel's older, informal one: "the field of study
+that gives computers the ability to learn without being explicitly programmed". Tom Mitchell's
+modern one:
+
+> A computer program is said to learn from experience E with respect to some class of tasks T
+> and performance measure P, if its performance at tasks in T, as measured by P, improves with
+> experience E.
+
+The notes' example is checkers:
+
+| | checkers |
+| --- | --- |
+| E, experience | playing many games of checkers |
+| T, task | playing checkers |
+| P, performance | the probability of winning the next game |
+
+Mitchell's version is useful because it forces you to name P. Week 9 was about exactly that: a
+model only learns if you can measure it improving.
+
+## Supervised and unsupervised
+
+Slide 2 sorts machine-learning algorithms into **supervised** and **unsupervised** learning,
+with others such as reinforcement learning and recommender systems besides. This concept is
+about the first; the next is about the second.
+
+In **supervised learning**, you are given the "right answers": a data set where each example
+comes with the correct output. The algorithm learns the relationship between input and output
+so it can predict the output for new inputs.
+
+## Regression and classification
+
+Supervised problems split by the kind of output:
+
+| | regression | classification |
+| --- | --- | --- |
+| output | **continuous** value | **discrete** category |
+| slide example | house price from size (slide 4) | tumour malignant or benign from size (slide 5) |
+| other examples, from the notes | age from a photo | school, college or graduate age from a photo; loan or no loan |
+
+The notes make the point that the same data can pose either kind of problem. Predicting a
+house's price is regression; predicting whether it "sells for more or less than the asking
+price" is classification. The choice is in the question, not the data.
+
+## More than one feature
+
+Slide 5 plots tumour size alone, with malignant cases at 1 and benign at 0. Slide 6 adds age
+as a second axis, and lists further features: clump thickness, uniformity of cell size and
+shape. With more features, the two classes may separate cleanly where one feature could not.
+Linear regression with many features arrives later this week.
+
+> Supervised learning learns from examples with known answers. If the answer is a number, it
+> is regression; if it is a category, classification.

@@ -1,0 +1,84 @@
+---
+course: data-science
+section: w9-charts
+order: 1140
+title: Bars, Pies and Stacked Charts
+visuals:
+  - type: svg
+    src: data-science/w9-models/25.svg
+    caption: Slide 25 of 90 — bar plots against pie charts, and the stacked bar.
+  - type: svg
+    src: data-science/w9-models/26.svg
+    caption: Slide 26 of 90 — a flat pie against an exploded 3-D pie.
+  - type: svg
+    src: data-science/w9-models/30.svg
+    caption: Slide 30 of 90 — stacked area against line plots.
+  - type: svg
+    src: data-science/w9-models/31.svg
+    caption: Slide 31 of 90 — Titanic survival as counts and as proportions.
+notation: []
+questions:
+  - ask: "A stacked area chart shows monthly sales for six product lines. A manager asks whether the fourth line, in the middle of the stack, grew over the year. Why is that hard to read, and what is better?"
+    choices:
+      - text: "Its band sits on top of the moving lines below it, so you cannot see its own trend; separate lines on one plot show each series from a flat baseline"
+        correct: true
+        explains: >-
+          A middle band's top edge moves whenever anything beneath it moves. Only the bottom
+          band has a flat baseline. Slide 30 makes this point and redraws the data as lines.
+      - text: "Stacked areas cannot show more than three series"
+        explains: >-
+          They can show many. The problem is reading any band except the bottom one.
+      - text: "The colours are too similar; using a rainbow palette would fix it"
+        explains: >-
+          Colour is not the issue. Even perfectly distinct colours leave the middle band on a
+          moving baseline.
+      - text: "A pie chart for each month would show the trend more clearly"
+        explains: >-
+          Comparing slices across twelve pies is harder still, and pies show shares, not the
+          growth in sales the manager asked about.
+---
+
+Bars, pies and stacks all show categorical data: a count or proportion for each category.
+They differ in how easy they make the comparison.
+
+## Bar plots against pie charts
+
+From slide 25: bar plots "show the frequency or proportion of categorical variables". Pie
+charts "use more space and are harder to read and compare".
+
+The reason is perception. Bars put every value on one shared baseline, so comparing two is
+comparing two lengths. A pie encodes values as angles and areas, which people judge poorly,
+and two similar slices on opposite sides of the circle are nearly impossible to rank.
+
+The lecture is not absolutist. Pie charts "are arguably better for showing percentages of
+totality, and people do seem to like them, so they may be harmless in small amounts": a few
+slices, adding to a whole.
+
+Slide 26 asks *which pie chart is better?* The exploded 3-D pie distorts every slice: the
+ones at the front gain area from perspective. If you use a pie, keep it flat.
+
+## Stacked bars
+
+Partition each bar into pieces and you get a **stacked bar chart**, which shows a total and
+its parts at once. Slide 31 draws Titanic survival by class twice:
+
+| version | shows well | hides |
+| --- | --- | --- |
+| counts | how many passengers each class had, and how many died | the *rate* of survival per class |
+| proportions (each bar to 100%) | survival rate per class: far higher in first | the size of each class |
+
+Pick the version that answers your question; often you need both.
+
+## Stacked area against lines
+
+Slide 30 warns that in a stacked area chart it is "hard to see trends in middle areas of
+stack". Only the bottom band sits on a flat baseline. Every band above it rides on the ones
+below, so its edges move even when its own value does not. Redrawn as separate lines on one
+axis, each series has its own trend again.
+
+The same problem applies to the upper segments of a stacked bar, which is why stacking works
+best with few pieces, or when the bottom segment is the one that matters.
+
+> Compare categories with bars on a shared baseline. Use pies only for a few parts of one
+> whole, and flat. Stack only when the total matters, knowing that every layer above the
+> first is hard to read.

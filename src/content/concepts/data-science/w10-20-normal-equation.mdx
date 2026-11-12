@@ -1,0 +1,126 @@
+---
+course: data-science
+section: w10-multi
+order: 1520
+title: The Normal Equation
+visuals:
+  - type: svg
+    src: data-science/w10-regression-2/33.svg
+    caption: Slide 33 of 48 (linear regression, part 2) — in 1-D, set the derivative to zero.
+  - type: svg
+    src: data-science/w10-regression-2/35.svg
+    caption: Slide 35 of 48 (linear regression, part 2) — building X and y, and θ = (XᵀX)⁻¹Xᵀy.
+notation:
+  - symbol: "θ = (XᵀX)⁻¹Xᵀy"
+    reads: theta equals X transpose X, inverse, times X transpose y
+    means: >-
+      The normal equation: the θ that minimises the squared-error cost, computed in one step.
+  - symbol: "X"
+    reads: capital X, the design matrix
+    means: >-
+      m × (n + 1): one row per training example, with a leading column of 1s for x₀.
+  - symbol: "y"
+    reads: y
+    means: >-
+      The m-vector of target values.
+questions:
+  - ask: "Training data (1, 2) and (2, 4). With X = [[1, 1], [1, 2]] and y = [2, 4], the normal equation gives XᵀX = [[2, 3], [3, 5]], whose inverse is [[5, −3], [−3, 2]], and Xᵀy = [6, 10]. What is θ?"
+    choices:
+      - text: "θ = [0, 2], the line y = 2x"
+        correct: true
+        explains: >-
+          (XᵀX)⁻¹Xᵀy = [5 × 6 − 3 × 10, −3 × 6 + 2 × 10] = [0, 2]. Both points lie on y = 2x,
+          so the exact fit is found in one step.
+      - text: "θ = [30, 20]"
+        explains: >-
+          This multiplies entries without the minus signs from the inverse.
+      - text: "θ = [0.3, 0.5]"
+        explains: >-
+          That is θ after one step of gradient descent from zero with α = 0.1, from the
+          gradient-descent concept. The normal equation goes straight to the minimum.
+      - text: "θ = [6, 10]"
+        explains: >-
+          That is Xᵀy alone. It still needs multiplying by (XᵀX)⁻¹.
+---
+
+Gradient descent walks to the minimum of `J`. The **normal equation** jumps there: "a method to
+solve for θ analytically" (slide 31).
+
+## The idea, in one dimension
+
+Slide 33 starts with θ a single number and `J(θ) = aθ² + bθ + c`, a parabola. At its lowest point
+the slope is flat, so you solve
+
+```
+dJ/dθ = 0
+```
+
+for θ. No iterations, no α.
+
+With many parameters, `J(θ₀, …, θₙ)` is a bowl in n + 1 dimensions. Its minimum is where every
+partial derivative is zero at once:
+
+```
+∂J/∂θⱼ = 0        for every j
+```
+
+and you solve that system for θ₀, θ₁, …, θₙ.
+
+## The result
+
+Solving it for linear regression gives a closed form (slide 35):
+
+```
+θ = (XᵀX)⁻¹ Xᵀ y
+```
+
+The course notes say the proof is involved and you do not need the details. Slide 32 states the
+same result in other letters, for a system `Aw = b`, and adds:
+
+> Thus least squares optimisation reduces to inversion and multiplying matrices.
+
+## Building X and y
+
+Slide 35 uses the four-house table with `m = 4` and adds the `x₀ = 1` column:
+
+```
+     ⎡ 1  2104  5  1  45 ⎤          ⎡ 460 ⎤
+X =  ⎢ 1  1416  3  2  40 ⎥     y =  ⎢ 232 ⎥
+     ⎢ 1  1534  3  2  30 ⎥          ⎢ 315 ⎥
+     ⎣ 1   852  2  1  36 ⎦          ⎣ 178 ⎦
+```
+
+`X` is `m × (n + 1)`, here 4 × 5, and `y` is `m × 1`. Check the dimensions of the formula, as slide
+32 does:
+
+| piece | size |
+| --- | --- |
+| `XᵀX` | `(n+1) × m` times `m × (n+1)` = `(n+1) × (n+1)` |
+| `(XᵀX)⁻¹` | `(n+1) × (n+1)`: square, so it can have an inverse |
+| `Xᵀy` | `(n+1) × m` times `m × 1` = `(n+1) × 1` |
+| `θ` | `(n+1) × (n+1)` times `(n+1) × 1` = `(n+1) × 1` |
+
+One parameter per column of `X`, as it should be.
+
+## A worked example
+
+Two points, (1, 2) and (2, 4):
+
+```
+X = ⎡ 1  1 ⎤     y = ⎡ 2 ⎤     XᵀX = ⎡ 2  3 ⎤     Xᵀy = ⎡  6 ⎤
+    ⎣ 1  2 ⎦         ⎣ 4 ⎦           ⎣ 3  5 ⎦           ⎣ 10 ⎦
+
+(XᵀX)⁻¹ = ⎡  5  −3 ⎤        θ = ⎡  5·6 − 3·10 ⎤ = ⎡ 0 ⎤
+          ⎣ −3   2 ⎦            ⎣ −3·6 + 2·10 ⎦   ⎣ 2 ⎦
+```
+
+`hθ(x) = 0 + 2x`, exactly through both points. In code, `np.linalg.pinv(X.T @ X) @ X.T @ y`.
+
+## No feature scaling needed
+
+The notes point out that the normal equation **does not need feature scaling**. Scaling helped
+gradient descent take a straight path down a round bowl. The normal equation takes no path; it
+computes the answer directly, whatever the units.
+
+> Setting every partial derivative of J to zero and solving gives θ = (XᵀX)⁻¹Xᵀy: the best
+> parameters in one step, with no α, no iterations and no scaling.

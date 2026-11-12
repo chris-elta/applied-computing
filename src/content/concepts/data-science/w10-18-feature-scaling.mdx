@@ -1,0 +1,137 @@
+---
+course: data-science
+section: w10-multi
+order: 1500
+title: Feature Scaling and Debugging Gradient Descent
+visuals:
+  - type: svg
+    src: data-science/w10-regression-2/27.svg
+    caption: Slide 27 of 48 (linear regression, part 2) — contours of J before and after scaling.
+  - type: svg
+    src: data-science/w10-regression-2/29.svg
+    caption: Slide 29 of 48 (linear regression, part 2) — mean normalisation.
+notation:
+  - symbol: "μᵢ"
+    reads: mu i
+    means: >-
+      The mean of feature i over the training set.
+  - symbol: "sᵢ"
+    reads: s i
+    means: >-
+      The spread of feature i: its range (max − min), or its standard deviation.
+  - symbol: "xᵢ := (xᵢ − μᵢ) / sᵢ"
+    reads: x i becomes x i minus mu i, over s i
+    means: >-
+      Mean normalisation: centre the feature on zero, then divide by its spread, so it lands in
+      roughly −0.5 to 0.5.
+questions:
+  - ask: "House prices in a training set range from 100 to 2000, with mean 1000. Using mean normalisation with the range, what does a price of 1600 become?"
+    choices:
+      - text: "About 0.32"
+        correct: true
+        explains: >-
+          (1600 − 1000) / (2000 − 100) = 600 / 1900 ≈ 0.32. This is the course notes' example
+          setup.
+      - text: "0.8"
+        explains: >-
+          That is 1600 / 2000, scaling by the maximum without subtracting the mean.
+      - text: "0.6"
+        explains: >-
+          That is 600 / 1000, dividing by the mean. Mean normalisation divides by the range (or
+          standard deviation).
+      - text: "About 0.84"
+        explains: >-
+          That is 1600 / 1900: divided by the range, but without subtracting the mean first.
+  - ask: "Why does feature scaling make gradient descent faster?"
+    choices:
+      - text: "With features on very different scales, J's contours are long thin ellipses, and gradient descent zig-zags across the valley; scaling makes them rounder so it heads more directly to the minimum"
+        correct: true
+        explains: >-
+          Slide 27 draws exactly this. The course notes: θ descends quickly on small ranges and
+          slowly on large ones, so it oscillates inefficiently when the variables are uneven.
+      - text: "It changes where the minimum is, moving it closer to zero"
+        explains: >-
+          Scaling changes the units of the parameters, but the fitted predictions are the same.
+          The point is the shape of the path, not where it ends.
+      - text: "It removes the need to choose α"
+        explains: >-
+          You still choose α. Scaling makes a single α suit every parameter.
+      - text: "It reduces the number of features"
+        explains: >-
+          Every feature is kept; only its units change.
+---
+
+Gradient descent works on any features, but it can be very slow when they are on different
+scales. Two lines of preprocessing fix that.
+
+## The problem
+
+Slide 27's example:
+
+| feature | range |
+| --- | --- |
+| `x₁` = size | 0 to 2000 feet² |
+| `x₂` = number of bedrooms | 0 to 5 |
+
+A small change in θ₁ shifts predictions by thousands (it multiplies sizes in the thousands); the
+same change in θ₂ barely moves them. So `J` is extremely sensitive to θ₁ and nearly flat in θ₂.
+Its contours, the left of slide 27, are **long, thin ellipses**.
+
+Gradient descent steps straight downhill, which on a narrow valley means mostly *across* it. It
+bounces from wall to wall and creeps along the floor. The course notes put it this way: "θ will
+descend quickly on small ranges and slowly on large ranges, and so will oscillate inefficiently
+down to the optimum when the variables are very uneven."
+
+## Feature scaling
+
+Make sure features are on a similar scale. Divide each by its range:
+
+```
+x₁ = size / 2000           x₂ = bedrooms / 5
+```
+
+Both now run from 0 to 1. The contours on the right of slide 27 become nearly **circles**, and
+downhill points nearly at the centre.
+
+The target (slide 28) is roughly `−1 ≤ xᵢ ≤ 1`. The notes stress "roughly": these are not exact
+requirements. 0 to 3 is fine; −100 to 100 or 0 to 0.0001 is not.
+
+## Mean normalisation
+
+Slide 29 also centres each feature near zero. Replace `xᵢ` with `xᵢ − μᵢ`, where `μᵢ` is the
+feature's mean, then divide:
+
+```
+xᵢ := (xᵢ − μᵢ) / sᵢ
+```
+
+`sᵢ` is the range, max − min, or the standard deviation. The two give different numbers; the
+notes say the quizzes use the range and the programming exercises the standard deviation. With
+mean size 1000 and 2 bedrooms on average:
+
+```
+x₁ = (size − 1000) / 2000          x₂ = (bedrooms − 2) / 5
+```
+
+and both land in about −0.5 to 0.5.
+
+**Do not apply it to x₀.** That feature is the constant 1; centring it would make it 0 and remove
+the intercept.
+
+Remember to apply the *same* μ and s to new data at prediction time. A new house must be scaled
+with the training set's numbers, not its own.
+
+## Debugging gradient descent
+
+The notes add how to tell whether gradient descent is working. **Plot J(θ) against the number of
+iterations.** It should fall on every iteration and flatten out.
+
+- **J increases** at any point: α is probably too large (the learning-rate concept). Decrease it.
+- **J falls very slowly**: α may be too small, or the features need scaling.
+- **Automatic convergence test**: declare convergence when J falls by less than some small amount,
+  such as 10⁻³, in one iteration. The notes warn that choosing that threshold is hard in practice,
+  which is why the plot is the better check.
+
+> Put features on similar scales, ideally centred on zero, before running gradient descent. Then
+> J's contours are round, not narrow, and descent goes straight to the minimum. Plot J against
+> iterations to check it is falling.

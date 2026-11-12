@@ -1,0 +1,78 @@
+---
+course: data-science
+section: w9-modeling
+order: 1220
+title: First-Principle and Data-Driven Models
+visuals:
+  - type: svg
+    src: data-science/w9-models/65.svg
+    caption: Slide 65 of 90 — the two modelling methodologies.
+notation:
+  - symbol: "F = G·m₁·m₂ / r²"
+    reads: F equals G m one m two over r squared
+    means: >-
+      Newton's law of gravity: the force between two masses. G is a fixed constant, m₁ and m₂
+      are the masses, r is the distance between them. The lecture notes' example of a
+      first-principles model.
+questions:
+  - ask: "A team models how long a delivery takes. Which approach is a sensible mixture of first principles and data?"
+    choices:
+      - text: "Compute travel time as distance over road speed, then learn from past deliveries a correction for traffic, time of day and weather"
+        correct: true
+        explains: >-
+          The physics of distance and speed gives the model's backbone, which will not overfit.
+          The data fills in what the theory leaves out. Slide 65 says good models are typically a
+          mixture of both.
+      - text: "Use distance over speed only, since a formula cannot overfit"
+        explains: >-
+          It cannot overfit, but it will be biased: it ignores traffic and stops, so it will be
+          consistently wrong.
+      - text: "Feed raw GPS logs into a large model and let it find everything"
+        explains: >-
+          Possible with enough data, but it throws away known structure and runs a greater risk
+          of overfitting, the danger the bias-variance slide attaches to data-driven models.
+      - text: "Average the delivery times of the last ten orders"
+        explains: >-
+          That is a baseline, not a mixture. It uses neither the theory of distance and speed
+          nor the features that explain the variation.
+---
+
+Slide 65 sorts models by where their structure comes from.
+
+## Two methodologies
+
+| | first-principles model | data-driven model |
+| --- | --- | --- |
+| built from | a theoretical explanation of how the system works | observed correlations between inputs and outcome |
+| examples | simulations, scientific formulae | regression, classifiers learned from data |
+| strength | explains *why*; works outside the range of past data | needs no theory; captures effects nobody wrote down |
+| typical failure | **bias**: the theory leaves something out | **overfitting**: finds patterns in noise |
+
+The lecture notes' first-principles example is Newton's law of gravity,
+`F = G·m₁·m₂ / r²`. Nobody fitted it to a scatter plot of apples. It comes from a theory, and
+it predicts the orbit of a planet nobody has measured before.
+
+A data-driven model learns the shape of the relationship from examples, "without prior
+assumptions". It will happily find that ice-cream sales predict drownings. That correlation
+is real in the data, and useful for prediction while summers stay summers, but it says
+nothing about cause.
+
+The failure column links back to the bias-variance concept: theory constrains a model, which
+protects against variance and risks bias; data frees it, which does the reverse.
+
+## Good models mix both
+
+The slide's conclusion, in blue: **"Good models are typically a mixture of both."**
+
+In practice that means using theory to choose the model's form and features, then letting
+data set the parameters and correct what the theory misses. A delivery-time model might start
+from *distance ÷ road speed* and learn adjustments for traffic and time of day. A model of
+house prices starts from the knowledge that bigger houses cost more, and uses data to find
+out how much more.
+
+Google Flu Trends, from the previous concept, is the warning for the purely data-driven case:
+with no theory of why searches tracked flu, nothing in the model could notice when they
+stopped.
+
+> Theory gives a model structure that does not overfit; data fills in what theory misses. Use
+> both.

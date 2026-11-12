@@ -1,0 +1,126 @@
+---
+course: data-science
+section: w10-regularisation
+order: 1550
+title: The Regularised Cost and Choosing λ
+visuals:
+  - type: svg
+    src: data-science/w10-regression-2/42.svg
+    caption: Slide 42 of 48 (linear regression, part 2) — penalising θ₃ and θ₄ turns a quartic into a near-quadratic.
+  - type: svg
+    src: data-science/w10-regression-2/44.svg
+    caption: Slide 44 of 48 (linear regression, part 2) — the regularised cost function.
+  - type: svg
+    src: data-science/w10-regression-2/45.svg
+    caption: Slide 45 of 48 (linear regression, part 2) — what happens when λ is far too large.
+notation:
+  - symbol: "λ"
+    reads: lambda
+    means: >-
+      The regularisation parameter: how heavily large parameters are penalised. 0 means no
+      penalty; very large means almost all θⱼ are forced to 0.
+  - symbol: "Σⱼ₌₁ⁿ θⱼ²"
+    reads: sum from j equals 1 to n of theta j squared
+    means: >-
+      The penalty: the squares of every parameter added up, starting from θ₁. θ₀ is left out.
+questions:
+  - ask: "In regularised linear regression, λ is set to 10¹⁰. What does the fitted hypothesis look like?"
+    choices:
+      - text: "Nearly a flat line at θ₀: every θⱼ for j ≥ 1 is pushed almost to zero, so the model underfits"
+        correct: true
+        explains: >-
+          The penalty dwarfs the fit term, so the cheapest solution sets θ₁, …, θₙ ≈ 0. θ₀ is not
+          penalised, leaving hθ(x) ≈ θ₀. That is slide 45's answer.
+      - text: "A wiggly curve through every training point"
+        explains: >-
+          That is the λ = 0 case for a high-order polynomial. A huge λ does the opposite.
+      - text: "The same as with λ = 0, because λ only affects the speed of gradient descent"
+        explains: >-
+          λ changes the cost function itself, so it changes where the minimum is. α is the one
+          that affects speed.
+      - text: "Every parameter including θ₀ becomes 0, so the model predicts 0"
+        explains: >-
+          The penalty sum starts at j = 1. θ₀ is free, so it settles at about the average price.
+  - ask: "Why does the penalty sum start at θ₁ rather than θ₀?"
+    choices:
+      - text: "θ₀ is the intercept: it sets the overall level of predictions, not how sharply they respond to any feature, so shrinking it buys no simplicity"
+        correct: true
+        explains: >-
+          Penalising θ₀ would just drag every prediction toward zero. Overfitting comes from large
+          weights on features, which is what the penalty targets.
+      - text: "θ₀ is always zero"
+        explains: >-
+          θ₀ is usually far from zero; for house prices it is roughly the average price when the
+          features are mean-normalised.
+      - text: "θ₀ has no derivative"
+        explains: >-
+          It has one; it appears in every gradient-descent update. It is simply left out of the
+          penalty by choice.
+      - text: "It is arbitrary; starting at θ₀ gives the same results"
+        explains: >-
+          It does not: penalising θ₀ biases every prediction toward zero.
+---
+
+Regularisation keeps every feature but makes the cost function charge for large parameters.
+
+## The intuition
+
+Slide 42 compares a quadratic and a quartic fit to the same house prices. The quartic overfits.
+Suppose you change the cost to
+
+```
+min over θ:   (1/2m) Σ (hθ(x⁽ⁱ⁾) − y⁽ⁱ⁾)²  +  1000·θ₃²  +  1000·θ₄²
+```
+
+Now any non-zero θ₃ or θ₄ is very expensive. The cheapest solution makes θ₃ and θ₄ really small,
+and the quartic becomes, in effect, the quadratic: still technically four terms, but the two that
+caused the wiggles barely contribute.
+
+## Small parameters, simpler hypothesis
+
+Slide 43 generalises. Small values for the parameters θ₀, θ₁, …, θₙ give
+
+- a **"simpler" hypothesis**: smoother, with fewer sharp turns;
+- one **less prone to overfitting**.
+
+With 100 features you do not know in advance which parameters to shrink. So shrink them all.
+
+## The regularised cost
+
+Slide 44:
+
+```
+J(θ) = (1/2m) [ Σᵢ₌₁ᵐ (hθ(x⁽ⁱ⁾) − y⁽ⁱ⁾)²  +  λ Σⱼ₌₁ⁿ θⱼ² ]
+```
+
+and the goal is still `minimise J(θ)`.
+
+| term | job |
+| --- | --- |
+| `Σ (hθ(x⁽ⁱ⁾) − y⁽ⁱ⁾)²` | fit the training data |
+| `λ Σ θⱼ²` | keep the parameters small |
+| `λ` | how much to care about the second goal relative to the first |
+
+Note that the penalty sum starts at **j = 1**. θ₀ is not penalised. It sets the overall level of
+predictions, which has nothing to do with how wiggly the curve is.
+
+## Choosing λ
+
+λ trades off the two terms, so it is a dial between week 9's two failures:
+
+| λ | effect | result |
+| --- | --- | --- |
+| 0 | no penalty | ordinary regression; the quartic overfits |
+| moderate | large θs cost something | a smoother curve that still fits |
+| far too large, such as 10¹⁰ | every θⱼ forced to ≈ 0 | `hθ(x) ≈ θ₀`, a flat line: underfit |
+
+Slide 45 asks the last case directly. With an enormous λ, the penalty swamps the fit, so θ₁ to θ₄
+all go to nearly zero. Only θ₀ survives, and the hypothesis is a horizontal line at about the average
+price, which misses the trend completely.
+
+So λ must be chosen, and the training cost cannot choose it: λ = 0 always gives the lowest training
+cost. Choose λ by performance on held-out data: the testing set or cross-validation from week 9.
+
+> Regularisation adds λ times the sum of squared parameters (from θ₁) to the cost. It shrinks the
+> parameters toward zero, smoothing the fit. λ = 0 risks overfitting; λ huge flattens the model; pick
+> it on held-out data.

@@ -1,0 +1,122 @@
+---
+course: data-science
+section: w10-univariate
+order: 1410
+title: Training Sets and the Hypothesis
+visuals:
+  - type: svg
+    src: data-science/w10-regression-1/13.svg
+    caption: Slide 13 of 37 (linear regression, part 1) — the training set and its notation.
+  - type: svg
+    src: data-science/w10-regression-1/14.svg
+    caption: Slide 14 of 37 (linear regression, part 1) — training set, learning algorithm, hypothesis.
+notation:
+  - symbol: "m"
+    reads: m
+    means: >-
+      The number of training examples: how many rows of data you have.
+  - symbol: "x, y"
+    reads: x, y
+    means: >-
+      x is the input variable, or feature (house size); y is the output, or target (price).
+  - symbol: "(x⁽ⁱ⁾, y⁽ⁱ⁾)"
+    reads: x i, y i, or "the i-th training example"
+    means: >-
+      The i-th row of the training set. The superscript in brackets is an index, never a
+      power: x⁽²⁾ is the second house's size, not x squared.
+  - symbol: "hθ(x) = θ₀ + θ₁x"
+    reads: h theta of x equals theta nought plus theta one x
+    means: >-
+      The hypothesis: the model's predicted y for input x. θ₀ is the intercept and θ₁ the
+      slope.
+  - symbol: "θ"
+    reads: theta
+    means: >-
+      The parameters: the numbers the learning algorithm chooses. θ₀ and θ₁ here.
+questions:
+  - ask: "With hθ(x) = 2 + 2x and the training example (x⁽²⁾, y⁽²⁾) = (1, 7), what does the hypothesis predict, and how far off is it?"
+    choices:
+      - text: "It predicts 4, which is 3 below the actual 7"
+        correct: true
+        explains: >-
+          hθ(1) = 2 + 2 × 1 = 4. The true value is 7, so the prediction is off by 3. This is the
+          course notes' example.
+      - text: "It predicts 7, exactly right"
+        explains: >-
+          7 is y⁽²⁾, the true value. The hypothesis computes its own prediction from x.
+      - text: "It predicts 6, because x⁽²⁾ means x squared"
+        explains: >-
+          The bracketed superscript is an index, not a power. x⁽²⁾ is the second example's x,
+          which is 1.
+      - text: "It predicts 16, using 2 × 7 + 2"
+        explains: >-
+          The hypothesis takes the input x, not the target y.
+---
+
+Regression's first job is to fix the notation, which the rest of the week uses on every slide.
+
+## The training set
+
+Slide 13's data, house prices in Portland, Oregon:
+
+| size in feet² (x) | price in $1000s (y) |
+| --- | --- |
+| 2104 | 460 |
+| 1416 | 232 |
+| 1534 | 315 |
+| 852 | 178 |
+| … | … |
+
+The notation:
+
+| symbol | meaning | here |
+| --- | --- | --- |
+| `m` | number of training examples | the number of rows |
+| `x` | input variable, or feature | size |
+| `y` | output, or target variable | price |
+| `(x, y)` | one training example | one row |
+| `(x⁽ⁱ⁾, y⁽ⁱ⁾)` | the i-th training example | `x⁽¹⁾ = 2104`, `y⁽¹⁾ = 460` |
+
+The superscript `⁽ⁱ⁾` is an **index**: which row. It is not a power. `x⁽²⁾` is 1416, not 2104
+squared. The brackets are there to keep the two apart.
+
+## The pipeline
+
+Slide 14 draws the process:
+
+```
+training set  →  learning algorithm  →  h
+                                        ↓
+                    size of house  →  h  →  estimated price
+```
+
+The learning algorithm takes the training set and outputs a function `h`, the **hypothesis**
+(the name is historical). You then feed `h` a new house's size and it returns a predicted price.
+
+## Representing h
+
+For **linear regression with one variable**, also called **univariate linear regression**:
+
+```
+hθ(x) = θ₀ + θ₁x
+```
+
+It is the equation of a straight line: `θ₀` is the intercept and `θ₁` the slope. The `θ`s are
+the **parameters**, the two numbers the learning algorithm has to choose.
+
+The course notes give a small example. Training data:
+
+| x | y |
+| --- | --- |
+| 0 | 4 |
+| 1 | 7 |
+| 2 | 7 |
+| 3 | 8 |
+
+Guess `θ₀ = 2` and `θ₁ = 2`, so `hθ(x) = 2 + 2x`. For `x = 1` it predicts 4, and the real
+answer is 7: off by 3. Other choices of `θ₀` and `θ₁` give other lines, some closer to the data,
+some further. Learning means finding the line that fits best, and the next concept defines
+"best".
+
+> A training set is m examples (x⁽ⁱ⁾, y⁽ⁱ⁾), with the superscript an index. The hypothesis
+> hθ(x) = θ₀ + θ₁x is a line, and learning means choosing θ₀ and θ₁.

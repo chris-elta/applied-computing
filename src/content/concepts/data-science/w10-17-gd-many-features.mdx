@@ -1,0 +1,107 @@
+---
+course: data-science
+section: w10-multi
+order: 1490
+title: Gradient Descent for n Features
+visuals:
+  - type: svg
+    src: data-science/w10-regression-2/24.svg
+    caption: Slide 24 of 48 (linear regression, part 2) — hypothesis, parameters, cost and gradient descent for n features.
+  - type: svg
+    src: data-science/w10-regression-2/25.svg
+    caption: Slide 25 of 48 (linear regression, part 2) — the one-feature rules next to the general rule.
+notation:
+  - symbol: "∇J(θ)"
+    reads: nabla J of theta, or "the gradient of J"
+    means: >-
+      The vector of all the partial derivatives, one per parameter. It points uphill; gradient
+      descent steps the other way.
+  - symbol: "X"
+    reads: capital X
+    means: >-
+      The design matrix: one row per training example, one column per feature, starting with
+      the column of 1s for x₀. Size m × (n + 1).
+questions:
+  - ask: "In the general update θⱼ := θⱼ − α (1/m) Σ (hθ(x⁽ⁱ⁾) − y⁽ⁱ⁾) · xⱼ⁽ⁱ⁾, why does the rule for θ₀ have no visible x at the end, in the one-feature version?"
+    choices:
+      - text: "Because x₀⁽ⁱ⁾ = 1 for every example, so multiplying by it changes nothing"
+        correct: true
+        explains: >-
+          The general rule does multiply by x₀⁽ⁱ⁾. Since that is always 1, the one-feature version
+          just leaves it out. The two forms are the same rule.
+      - text: "Because the intercept does not affect the cost"
+        explains: >-
+          It does: changing θ₀ raises or lowers every prediction. It has its own non-zero slope.
+      - text: "Because θ₀ is updated after the other parameters"
+        explains: >-
+          All parameters are updated simultaneously, from the same old values.
+      - text: "It is a typo; the θ₀ rule should multiply by x₁"
+        explains: >-
+          θ₀ is attached to x₀, not x₁. Multiplying by x₁ would give the θ₁ rule.
+---
+
+Nothing new is needed to fit many features. The cost and the algorithm are the same; there are
+just more parameters.
+
+## The pieces
+
+Slide 24:
+
+```
+hypothesis:      hθ(x) = θᵀx = θ₀x₀ + θ₁x₁ + … + θₙxₙ
+parameters:      θ₀, θ₁, …, θₙ
+cost:            J(θ) = (1/2m) Σᵢ₌₁ᵐ (hθ(x⁽ⁱ⁾) − y⁽ⁱ⁾)²
+gradient descent:
+    repeat {
+        θⱼ := θⱼ − α ∂J(θ)/∂θⱼ
+    }                (simultaneously update for every j = 0, …, n)
+```
+
+The parameters are now collected into one vector θ, so the cost is written `J(θ)`.
+
+## The update rule
+
+Working out the derivative gives (slide 25):
+
+```
+repeat {
+    θⱼ := θⱼ − α (1/m) Σᵢ₌₁ᵐ (hθ(x⁽ⁱ⁾) − y⁽ⁱ⁾) · xⱼ⁽ⁱ⁾          for j = 0, …, n
+}
+```
+
+Slide 25 sets it next to the one-feature version:
+
+| one feature (n = 1) | general (n ≥ 1) |
+| --- | --- |
+| `θ₀ := θ₀ − α (1/m) Σ (hθ(x⁽ⁱ⁾) − y⁽ⁱ⁾)` | `θ₀ := θ₀ − α (1/m) Σ (hθ(x⁽ⁱ⁾) − y⁽ⁱ⁾) · x₀⁽ⁱ⁾` |
+| `θ₁ := θ₁ − α (1/m) Σ (hθ(x⁽ⁱ⁾) − y⁽ⁱ⁾) · x⁽ⁱ⁾` | `θ₁ := θ₁ − α (1/m) Σ (hθ(x⁽ⁱ⁾) − y⁽ⁱ⁾) · x₁⁽ⁱ⁾` |
+| | `θ₂ := θ₂ − α (1/m) Σ (hθ(x⁽ⁱ⁾) − y⁽ⁱ⁾) · x₂⁽ⁱ⁾` |
+| | … |
+
+They agree. The general θ₀ rule multiplies by `x₀⁽ⁱ⁾`, which is always 1, so the one-feature
+rule simply omits it. This is the payoff of the x₀ trick: one rule for every parameter, with no
+special case.
+
+Each parameter moves by the average error weighted by its own feature. A feature that is large
+whenever the model over-predicts gets its coefficient pushed down.
+
+## The vectorised form
+
+The course notes go one step further. Put all the training examples into a matrix `X`, one row per
+example, and the targets into a vector `y`. Then every prediction is `Xθ`, every error is `Xθ − y`,
+and all the sums become one matrix product:
+
+```
+∇J(θ) = (1/m) Xᵀ(Xθ − y)
+θ := θ − (α/m) Xᵀ(Xθ − y)
+```
+
+`∇J(θ)` is the **gradient**, the vector of all n + 1 partial derivatives. The whole simultaneous
+update is now one line, and it is simultaneous automatically: the right-hand side is computed from
+the old θ before anything is overwritten.
+
+In NumPy that is `theta = theta - (alpha/m) * X.T @ (X @ theta - y)`.
+
+> For n features, every parameter follows the same rule: subtract α times the average error
+> weighted by that parameter's feature. With x₀ = 1, θ₀ needs no special case, and the whole update
+> is θ := θ − (α/m) Xᵀ(Xθ − y).

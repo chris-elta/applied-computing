@@ -1,0 +1,121 @@
+---
+course: data-science
+section: w10-linalg
+order: 1340
+title: Matrix Addition and Scalar Multiplication
+visuals:
+  - type: svg
+    src: data-science/w10-linalg/06.svg
+    caption: Slide 6 of 25 (linear algebra review) — matrix addition, and a sum that is undefined.
+  - type: svg
+    src: data-science/w10-linalg/07.svg
+    caption: Slide 7 of 25 (linear algebra review) — scalar multiplication and division.
+  - type: svg
+    src: data-science/w10-linalg/08.svg
+    caption: Slide 8 of 25 (linear algebra review) — combining the operations.
+notation:
+  - symbol: "scalar"
+    reads: scalar
+    means: >-
+      A single ordinary number, as opposed to a vector or matrix. It "scales" every entry.
+questions:
+  - ask: "A is a 3 × 2 matrix and B is a 2 × 2 matrix. What is A + B?"
+    choices:
+      - text: "Undefined, because addition needs both matrices to have the same dimension"
+        correct: true
+        explains: >-
+          Addition pairs entries in matching positions. A's third row has nothing in B to pair
+          with, so the sum does not exist. This is slide 6's second example.
+      - text: "A 3 × 2 matrix, with B's missing third row treated as zeros"
+        explains: >-
+          Matrices are never padded automatically in this algebra. (NumPy's broadcasting does
+          stretch some shapes to fit, but not these two, and it is a programming convenience,
+          not matrix addition.)
+      - text: "A 2 × 2 matrix, using only the first two rows of A"
+        explains: >-
+          Nothing is dropped either. Mismatched dimensions make the sum undefined.
+      - text: "A 5 × 2 matrix, stacking A on top of B"
+        explains: >-
+          That is concatenation, a different operation. Addition combines matching entries.
+  - ask: "What is 2 × [[1, 0], [3, 4]] − [[2, 2], [2, 2]] / 2, written row by row?"
+    choices:
+      - text: "[[1, −1], [5, 7]]"
+        correct: true
+        explains: >-
+          2 × the first matrix is [[2, 0], [6, 8]]. The second divided by 2 is [[1, 1], [1, 1]].
+          Subtracting entry by entry gives [[1, −1], [5, 7]].
+      - text: "[[0, −2], [4, 6]]"
+        explains: >-
+          This subtracts the second matrix before dividing it by 2. Division comes first.
+      - text: "[[3, 1], [7, 9]]"
+        explains: >-
+          This adds the halved matrix instead of subtracting it: 2 + 1 = 3 rather than
+          2 − 1 = 1.
+      - text: "[[0, −1], [2, 3]]"
+        explains: >-
+          This is (2A − B) / 2: the division applied to the whole difference. Division binds
+          only to the second matrix.
+---
+
+Two operations work entry by entry, with nothing new to learn.
+
+## Addition
+
+To add two matrices, add the entries in matching positions (slide 6):
+
+```
+⎡ 1  0 ⎤   ⎡ 4  0.5 ⎤   ⎡ 5  0.5 ⎤
+⎢ 2  5 ⎥ + ⎢ 2  5   ⎥ = ⎢ 4  10  ⎥
+⎣ 3  1 ⎦   ⎣ 0  1   ⎦   ⎣ 3  2   ⎦
+```
+
+This only works when the two matrices have **the same dimension**. Slide 6's second example
+adds a 3 × 2 matrix to a 2 × 2 one: there is no entry to pair with the third row, so the sum is
+**undefined**. Not zero, not padded: it does not exist.
+
+## Scalar multiplication
+
+A **scalar** is a single number. Multiplying a matrix by a scalar multiplies **every entry**
+(slide 7):
+
+```
+    ⎡ 1  0 ⎤   ⎡ 3   0 ⎤
+3 × ⎢ 2  5 ⎥ = ⎢ 6  15 ⎥
+    ⎣ 3  1 ⎦   ⎣ 9   3 ⎦
+```
+
+Dividing by a scalar is multiplying by its reciprocal:
+
+```
+⎡ 4  0 ⎤          ⎡ 1    0   ⎤
+⎣ 6  3 ⎦ / 4  =   ⎣ 1.5  0.75⎦
+```
+
+Order does not matter: `3 × A` is the same as `A × 3`.
+
+## Combining them
+
+Slide 8 chains the operations on column vectors. The usual order of operations applies:
+multiplications and divisions first, then additions and subtractions.
+
+```
+3 × [1, 4, 2] + [0, 0, 5] − [3, 0, 2] / 3
+  = [3, 12, 6] + [0, 0, 5] − [1, 0, 2/3]
+  = [2, 12, 31/3]
+```
+
+(Vectors written across the page here to save space; on the slide they are columns.)
+
+## Why it matters for regression
+
+Gradient descent, later this week, updates all the parameters at once with a line of the form
+
+```
+θ := θ − α × (a vector of slopes)
+```
+
+That is a scalar multiplication followed by a subtraction of two vectors of the same length,
+exactly the operations on this page.
+
+> Add or subtract matrices entry by entry, only when their dimensions match. Multiply by a
+> scalar by multiplying every entry.

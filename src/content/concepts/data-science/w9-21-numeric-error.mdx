@@ -1,0 +1,102 @@
+---
+course: data-science
+section: w9-validation
+order: 1290
+title: Error for Numeric Predictions
+visuals:
+  - type: svg
+    src: data-science/w9-models/79.svg
+    caption: Slide 79 of 90 — absolute and relative error, MSE and RMSE.
+notation:
+  - symbol: "f, o"
+    reads: f for forecast, o for observation
+    means: >-
+      The predicted value and the value that actually happened.
+  - symbol: "MSE"
+    reads: M S E, mean squared error
+    means: >-
+      The average of the squared errors: (1/n) Σ (f − o)². Its units are the square of the
+      data's units.
+  - symbol: "RMSE"
+    reads: R M S E, root mean squared error
+    means: >-
+      The square root of the MSE, which brings the units back to the data's.
+  - symbol: "Σ"
+    reads: sigma, "the sum of"
+    means: >-
+      Add up the expression for every case.
+questions:
+  - ask: "A model predicts four house prices (in $1000s) with errors of +10, −10, +10 and −30. What are its MSE and RMSE?"
+    choices:
+      - text: "MSE 300, RMSE about 17.3"
+        correct: true
+        explains: >-
+          Squares are 100, 100, 100 and 900, summing to 1,200. Divided by 4, MSE = 300. RMSE =
+          √300 ≈ 17.3, in thousands of dollars.
+      - text: "MSE −5, RMSE undefined"
+        explains: >-
+          −5 is the average of the raw errors, where positive and negative cancel. Squaring
+          first is what stops that.
+      - text: "MSE 15, RMSE about 3.9"
+        explains: >-
+          15 is the mean absolute error, (10 + 10 + 10 + 30) / 4. MSE squares before averaging.
+      - text: "MSE 1,200, RMSE about 34.6"
+        explains: >-
+          1,200 is the sum of squares. The M in MSE means you divide by the number of cases.
+---
+
+Classifiers are right or wrong. **Regression models**, which predict numbers, are always off
+by something. The question is how far, and how to add that up.
+
+## Error for one prediction
+
+For a forecast `f` and the observation `o` that actually happened (slide 79):
+
+| measure | formula | example: forecast 110, actual 100 |
+| --- | --- | --- |
+| absolute error | `f − o` | 10 |
+| relative error | `(f − o) / o` | 0.10, or 10% |
+
+The lecture notes write absolute error as `|f − o|`, the size of the miss regardless of sign.
+The slide keeps the sign, which tells you whether you over- or under-predicted.
+
+The slide says relative error is "typically better". An error of $10,000 is huge on a $50,000
+house and trivial on a $5 million one. Relative error puts both on the same scale. The notes
+add a related trick for outcomes spanning many magnitudes, such as movie revenues: compare
+the logarithms of forecast and outcome.
+
+## Aggregating over many predictions
+
+You need one number for a whole test set. Simply averaging the signed errors fails, because
+over- and under-predictions cancel: errors of +50 and −50 average to zero. So square first:
+
+```
+MSE  = (1/n) Σ (f − o)²
+RMSE = √MSE
+```
+
+Worked example, four predictions with errors +10, −10, +10 and −30:
+
+| error | squared |
+| --- | --- |
+| +10 | 100 |
+| −10 | 100 |
+| +10 | 100 |
+| −30 | 900 |
+| **mean** | **300** |
+
+So MSE = 300 and RMSE = √300 ≈ 17.3.
+
+Two properties matter:
+
+- **squaring penalises large errors heavily.** The single miss of 30 contributes 900 of the
+  1,200 total. MSE prefers a model that is often slightly wrong to one that is usually right
+  and occasionally way off.
+- **RMSE restores the units.** MSE is in squared dollars, which means nothing to anyone;
+  RMSE is in dollars again, so you can say "typically off by about $17,000".
+
+The slide also lists **median** squared error, which is less sensitive to a few wild misses.
+
+> Measure one numeric error as the difference, or better the relative difference. Aggregate by
+> squaring and averaging (MSE), then take the root (RMSE) to get back to the data's units,
+> remembering that squaring makes large misses dominate.

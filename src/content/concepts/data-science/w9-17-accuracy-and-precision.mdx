@@ -1,0 +1,128 @@
+---
+course: data-science
+section: w9-classifiers
+order: 1250
+title: Accuracy and Precision When Classes Are Unbalanced
+visuals:
+  - type: svg
+    src: data-science/w9-models/71.svg
+    caption: Slide 71 of 90 — accuracy, and the monkey.
+  - type: svg
+    src: data-science/w9-models/72.svg
+    caption: Slide 72 of 90 — precision.
+notation:
+  - symbol: "|P|, |N|"
+    reads: size of P, size of N
+    means: >-
+      The number of actual positives and actual negatives. The vertical bars mean "how many
+      in", not absolute value. |P| ≪ |N| reads "far fewer positives than negatives".
+  - symbol: "≪"
+    reads: much less than
+    means: >-
+      Not just smaller but smaller by a large factor, such as 50 against 950.
+questions:
+  - ask: "In the screening example, 50 of 1,000 patients have cancer. A model flags 100 patients, 40 of whom have cancer. What are its accuracy and precision?"
+    choices:
+      - text: "Accuracy 93%, precision 40%"
+        correct: true
+        explains: >-
+          TP = 40, FP = 60, FN = 10, TN = 890. Accuracy is (40 + 890) / 1,000 = 0.93.
+          Precision is 40 / (40 + 60) = 0.40.
+      - text: "Accuracy 93%, precision 80%"
+        explains: >-
+          80% is 40 / 50, which divides by the actual positives. That is recall, the next
+          concept. Precision divides by the predicted positives.
+      - text: "Accuracy 40%, precision 93%"
+        explains: >-
+          The two are swapped. Accuracy counts every correct prediction, including the 890
+          true negatives.
+      - text: "Accuracy 4%, precision 40%"
+        explains: >-
+          Accuracy counts correct predictions of both kinds, not only the true positives.
+  - ask: "On the same 1,000 patients, a 'model' that always says no cancer gets 95% accuracy. Why does that not make it better than the 93% model?"
+    choices:
+      - text: "With unbalanced classes accuracy is dominated by the large negative class; the always-no model finds none of the 50 cancers"
+        correct: true
+        explains: >-
+          It gets 950 true negatives and 50 false negatives. Accuracy rewards it for the easy
+          majority while it fails at the whole purpose. Precision is undefined for it, since it
+          never predicts positive, and its recall is 0.
+      - text: "It is better: 95% is higher than 93%"
+        explains: >-
+          This is the trap the slide warns about. When |P| ≪ |N|, accuracy is a silly measure.
+      - text: "Accuracy cannot be computed for a model that only says one label"
+        explains: >-
+          It can: 950 correct out of 1,000. The problem is that the number is misleading, not
+          that it is undefined.
+---
+
+Using the four counts from the previous concept, the obvious score is the fraction you got
+right. This concept shows why it fails exactly when it matters most.
+
+## Accuracy
+
+```
+accuracy = (TP + TN) / (TP + TN + FP + FN)
+```
+
+Correct predictions over all predictions. In the screening example:
+
+```
+accuracy = (40 + 890) / 1,000 = 0.93
+```
+
+93% sounds good. Now meet the baselines.
+
+## The monkey and the sharp
+
+Slide 71 imagines a **monkey** that guesses positive with probability 0.5. Whatever the data,
+it gets about half right: 50% accuracy. Slide 71 also notes that **picking the biggest class
+always yields at least 50%**.
+
+In the screening example, the biggest class is "no cancer". A model that always says *no*
+gets 950 of 1,000 right:
+
+```
+accuracy(always no) = 950 / 1,000 = 0.95
+```
+
+It beats the 93% model on accuracy while finding **none** of the 50 cancers. This is the
+slide's warning:
+
+> When |P| ≪ |N|, accuracy is a silly measure.
+
+With unbalanced classes, accuracy is dominated by the large class, so a model can score highly
+by ignoring the small one, which is usually the one you care about.
+
+## Precision
+
+Precision asks a narrower question: **of the cases the model called positive, how many
+were?**
+
+```
+precision = TP / (TP + FP)
+```
+
+In the example:
+
+```
+precision = 40 / (40 + 60) = 0.40
+```
+
+Six out of ten patients the model flags are false alarms.
+
+Slide 72 points out how hard precision is with unbalanced classes. If only 5% of patients
+have cancer, the monkey's flags are a random half of the population, so 5% of them are real:
+**5% precision**. So is a "sharp" who always says cancer. Precision exposes them both. But
+getting precision *high* needs the model to be very selective, because each positive is
+surrounded by nineteen negatives that could become false alarms.
+
+## What precision misses
+
+Precision ignores the cancers the model failed to flag. A model that flags just one patient,
+correctly, has 100% precision and misses 49 cancers. The FN count needs its own measure:
+recall, next.
+
+> Accuracy rewards getting the big class right, so with unbalanced classes it can be high for
+> a useless model. Precision asks how many of your positives were real, which is the first
+> step toward a fair score.

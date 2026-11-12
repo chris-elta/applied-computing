@@ -1,0 +1,128 @@
+---
+course: data-science
+section: w10-multi
+order: 1480
+title: Multiple Features and θᵀx
+visuals:
+  - type: svg
+    src: data-science/w10-regression-2/20.svg
+    caption: Slide 20 of 48 (linear regression, part 2) — four features and their notation.
+  - type: svg
+    src: data-science/w10-regression-2/22.svg
+    caption: Slide 22 of 48 (linear regression, part 2) — the multivariate hypothesis, with x₀ = 1.
+notation:
+  - symbol: "n"
+    reads: n
+    means: >-
+      The number of features. Not to be confused with m, the number of training examples.
+  - symbol: "x⁽ⁱ⁾"
+    reads: x i
+    means: >-
+      The whole input of the i-th training example: a vector of all its features.
+  - symbol: "xⱼ⁽ⁱ⁾"
+    reads: x j i, or "feature j of example i"
+    means: >-
+      One number: the value of feature j in the i-th training example. The superscript picks
+      the row, the subscript the column.
+  - symbol: "x₀ = 1"
+    reads: x nought equals one
+    means: >-
+      An extra feature, always 1, added so the intercept θ₀ can be treated like every other
+      parameter.
+  - symbol: "θᵀx"
+    reads: theta transpose x
+    means: >-
+      θ as a row times x as a column: θ₀x₀ + θ₁x₁ + … + θₙxₙ, a single number.
+questions:
+  - ask: "In slide 20's table, the second row is 1416 ft², 3 bedrooms, 2 floors, 40 years, $232k. What are x⁽²⁾₃ and n?"
+    choices:
+      - text: "x⁽²⁾₃ = 2 and n = 4"
+        correct: true
+        explains: >-
+          x⁽²⁾ is the second row, and subscript 3 is its third feature, the number of floors: 2.
+          There are four features; price is the target y, not a feature.
+      - text: "x⁽²⁾₃ = 3 and n = 4"
+        explains: >-
+          3 is x⁽²⁾₂, the bedrooms. Feature 3 is floors.
+      - text: "x⁽²⁾₃ = 2 and n = 5"
+        explains: >-
+          The price column is y, the target. Only the first four columns are features.
+      - text: "x⁽²⁾₃ = 1534 and n = 4"
+        explains: >-
+          That reads the superscript and subscript the wrong way round: 1534 is x⁽³⁾₁, the third
+          house's size.
+---
+
+A house's price depends on more than its size. Slide 20 adds three more features:
+
+| size (feet²) | bedrooms | floors | age (years) | price ($1000) |
+| --- | --- | --- | --- | --- |
+| 2104 | 5 | 1 | 45 | 460 |
+| 1416 | 3 | 2 | 40 | 232 |
+| 1534 | 3 | 2 | 30 | 315 |
+| 852 | 2 | 1 | 36 | 178 |
+
+## Notation
+
+| symbol | meaning | example |
+| --- | --- | --- |
+| `n` | number of features | 4 |
+| `m` | number of training examples | the number of rows |
+| `x⁽ⁱ⁾` | all the features of example i, as a vector | `x⁽²⁾ = [1416, 3, 2, 40]` |
+| `xⱼ⁽ⁱ⁾` | feature j of example i | `x⁽²⁾₃ = 2` (floors in row 2) |
+
+The superscript picks the **row** (which house), the subscript the **column** (which feature).
+The price is `y`, not a feature.
+
+## The hypothesis
+
+With one feature, `hθ(x) = θ₀ + θ₁x`. With n (slide 22):
+
+```
+hθ(x) = θ₀ + θ₁x₁ + θ₂x₂ + … + θₙxₙ
+```
+
+The course notes suggest reading it as a price: θ₀ is a base price, θ₁ the price per square foot,
+θ₂ the price per bedroom, and so on. For example,
+
+```
+hθ(x) = 80 + 0.1x₁ + 0.01x₂ + 3x₃ − 2x₄
+```
+
+says each extra floor adds $3k and each year of age takes $2k off.
+
+## The x₀ trick
+
+The intercept θ₀ has no feature attached, which makes it a special case in every formula. Slide
+22's fix: **define x₀ = 1** for every example. Then
+
+```
+hθ(x) = θ₀x₀ + θ₁x₁ + … + θₙxₙ
+```
+
+and every parameter has a feature. Now both `x` and `θ` are vectors of length n + 1:
+
+```
+     ⎡ x₀ ⎤          ⎡ θ₀ ⎤
+x =  ⎢ x₁ ⎥     θ =  ⎢ θ₁ ⎥
+     ⎢ ⋮  ⎥          ⎢ ⋮  ⎥
+     ⎣ xₙ ⎦          ⎣ θₙ ⎦
+```
+
+## The vectorised form
+
+The sum `θ₀x₀ + θ₁x₁ + … + θₙxₙ` is a row times a column, so (from the linear-algebra review):
+
+```
+hθ(x) = θᵀx
+```
+
+`θᵀ` is 1 × (n + 1), `x` is (n + 1) × 1, and the product is a single number. This is **multivariate
+linear regression**.
+
+The x₀ = 1 is the same column of 1s as in the matrix–vector concept, where it let one product
+predict four house prices. Stacking every example's `x` as a row of a matrix `X`, the notes write
+all `m` predictions as `Xθ`.
+
+> With n features, the hypothesis is θ₀ + θ₁x₁ + … + θₙxₙ. Adding x₀ = 1 makes it θᵀx, one product,
+> with superscripts for examples and subscripts for features.

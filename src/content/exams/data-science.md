@@ -1,7 +1,7 @@
 ---
 course: data-science
 title: "Data Science · Final Exam"
-minutes: 110
+minutes: 140
 passMark: 60
 questions:
   - topic: "Week 1 · Thinking about data"
@@ -1548,8 +1548,461 @@ questions:
       Return the first outcome whose CDF reaches p.
       0.35 > 0.3 = F(2) and 0.35 ≤ 0.6 = F(3), so return 3.
       Each outcome's band has width equal to its probability, so a uniform p picks it at the right rate.
+  - topic: "Week 9 · Visualisation and model evaluation"
+    ask: "A company's revenue doubled. An infographic shows it as a money-bag icon whose height and width are both doubled. Using the change in area, what is the graphic's lie factor?"
+    choices:
+      - text: "1, because the height doubled exactly as the revenue did"
+        explains: "Readers judge an icon by its area, not its height. Doubling both dimensions quadruples the area."
+      - text: "2, because the icon is twice as large"
+        explains: "Twice as tall and twice as wide is four times the area. The effect shown is a 300% increase, not 100%."
+      - text: "3: the area grows by 300% while the revenue grows by 100%"
+        correct: true
+        explains: "Right. Area ×4 is a 300% increase in the graphic, against a 100% increase in the data. 300 / 100 = 3."
+      - text: "4, the ratio of the two areas"
+        explains: "4 is the area ratio. The lie factor compares the size of the effect: the 300% increase shown against the 100% increase in the data."
+    work: |-
+      Lie factor = size of effect in graphic / size of effect in data.
+      Data: revenue ×2, an increase of 100%.
+      Graphic: height ×2 and width ×2, so area ×4, an increase of 300%.
+      Lie factor = 300 / 100 = 3. Scaling one dimension, as a bar does, would give 1.
+  - topic: "Week 9 · Visualisation and model evaluation"
+    ask: "A choropleth map colours regions by median household income using a rainbow scale from violet (low) to red (high). Readers report a sharp divide between two neighbouring regions whose incomes differ by only 2%. What is the most likely cause, and the fix?"
+    choices:
+      - text: "The rainbow is perceptually non-linear, so a small step across a hue boundary such as green to yellow looks like a jump; use a single-hue light-to-dark scale"
+        correct: true
+        explains: "Right. Hue is not perceived as ordered, and the rainbow's bright bands create boundaries that are not in the data. Income is ordered with no special midpoint, so a sequential scale fits."
+      - text: "The map should be replaced by a pie chart of income by region"
+        explains: "A pie of many regions is hard to read and throws away geography. The problem is the colour scale, not the map."
+      - text: "Use a diverging scale centred on zero"
+        explains: "A diverging scale suits data with a meaningful centre. Income has no natural zero point to diverge from here."
+      - text: "Add more colours so each region gets its own"
+        explains: "That turns an ordered quantity into unordered categories. Readers would need the legend for every region."
+    work: |-
+      Brightness and saturation are seen as ordered; hue is not.
+      A rainbow puts perceptual boundaries (such as the bright yellow band) at arbitrary points in the data.
+      Two regions just either side of such a boundary look very different although their values are close.
+      For ordered data without a centre, use a sequential single-hue scale.
+  - topic: "Week 9 · Visualisation and model evaluation"
+    ask: "You draw a histogram of 150 exam scores using 200 bins. It shows a jagged row of spikes separated by empty bins. What is going on?"
+    choices:
+      - text: "The scores must be bimodal"
+        explains: "Spikes with gaps between them are not peaks of the distribution. They are what too many bins do to a small sample."
+      - text: "The data is fine; the gaps show which scores nobody got"
+        explains: "With 150 points and 200 bins, most bins are empty by chance. The gaps are sampling noise, not structure."
+      - text: "A histogram is the wrong chart for exam scores"
+        explains: "A histogram suits a continuous variable like scores. The bin count is the problem."
+      - text: "There are too many bins for the amount of data, so each bin holds a handful of points and the shape is noise; use fewer bins, or check a CDF"
+        correct: true
+        explains: "Right. Bin size matters: too many bins for the data makes the histogram mostly sampling luck. A CDF has no bins at all."
+    work: |-
+      150 points across 200 bins is fewer than one point per bin on average.
+      So most bins hold 0 or 1 points, and the shape is driven by chance.
+      Reduce the number of bins until a stable shape appears, and compare with the CDF.
+  - topic: "Week 9 · Visualisation and model evaluation"
+    ask: "A sentiment classifier reaches 85% accuracy on a test set where 85% of the reviews are positive. What should you conclude?"
+    choices:
+      - text: "It is a strong model, since 85% is well above 50%"
+        explains: "50% is the wrong comparison. A model that always says positive also gets 85% here."
+      - text: "It has not yet shown any skill: it only matches the majority-class baseline"
+        correct: true
+        explains: "Right. A model is effective only once it decisively beats its baselines. Always predicting the most common label scores 85% on this data."
+      - text: "It is overfitting"
+        explains: "Nothing here compares training with test performance. The issue is that 85% is what a trivial model scores."
+      - text: "Its precision must be 85%"
+        explains: "Accuracy and precision are different measures. Precision cannot be read from accuracy alone."
+    work: |-
+      Majority-class baseline: always predict positive.
+      Its accuracy = share of positives = 85%.
+      The model's 85% equals the baseline, so it has demonstrated nothing yet.
+      Report precision, recall and F for the minority class, and compare against the baseline.
+  - topic: "Week 9 · Visualisation and model evaluation"
+    ask: "A model scores 71% on its training data and 70% on held-out data. The best single-variable baseline scores 68%. Which diagnosis fits best?"
+    choices:
+      - text: "High variance: it is overfitting"
+        explains: "Overfitting shows as a large gap between training and held-out scores. Here the two are almost equal."
+      - text: "It is perfectly balanced and cannot be improved"
+        explains: "Equal scores rule out overfitting, but being only slightly better than a baseline suggests the model is missing real structure."
+      - text: "High bias: it is too simple to capture the pattern, so it underfits"
+        correct: true
+        explains: "Right. Poor performance on the training data itself, barely above a baseline, is the signature of bias. A more flexible model or better features may help."
+      - text: "The held-out set must have leaked into training"
+        explains: "Leakage usually makes held-out scores suspiciously good. These are mediocre, and close to the baseline."
+    work: |-
+      Bias: error from assumptions too simple for the data. Shows as weak training performance.
+      Variance: sensitivity to the training sample. Shows as a big train-test gap.
+      Train 71%, test 70%: no gap, so not variance.
+      Only 2–3 points above a simple baseline even on training data: underfitting, high bias.
+  - topic: "Week 9 · Visualisation and model evaluation"
+    ask: "A fault detector is tested on 1,000 parts, 100 of them faulty. It flags 80 parts, 60 of which are faulty. What are its precision, recall and F-score?"
+    choices:
+      - text: "Precision 0.60, recall 0.75, F ≈ 0.67"
+        explains: "Precision and recall are swapped. Precision divides by the 80 flagged; recall by the 100 faulty."
+      - text: "Precision 0.75, recall 0.60, F = 0.45"
+        explains: "0.45 is precision × recall. The F-score doubles that and divides by their sum: 0.90 / 1.35 ≈ 0.67."
+      - text: "Precision 0.75, recall 0.60, F ≈ 0.67"
+        correct: true
+        explains: "Right. TP = 60, FP = 20, FN = 40. Precision = 60/80 = 0.75, recall = 60/100 = 0.60, F = 2 × 0.75 × 0.60 / 1.35 ≈ 0.67."
+      - text: "Precision 0.75, recall 0.60, F = 0.675"
+        explains: "0.675 is the ordinary average of 0.75 and 0.60. The F-score is the harmonic mean, which is lower."
+    work: |-
+      TP = 60 (flagged and faulty), FP = 80 − 60 = 20, FN = 100 − 60 = 40.
+      Precision = TP / (TP + FP) = 60 / 80 = 0.75.
+      Recall = TP / (TP + FN) = 60 / 100 = 0.60.
+      F = 2 × 0.75 × 0.60 / (0.75 + 0.60) = 0.90 / 1.35 ≈ 0.667.
+  - topic: "Week 9 · Visualisation and model evaluation"
+    ask: "An email provider tunes its spam filter. Users rarely check the spam folder, so a real email sent there is effectively lost. Which measure should the provider keep high when choosing the threshold?"
+    choices:
+      - text: "Precision for the spam class: of the emails it sends to spam, nearly all should really be spam"
+        correct: true
+        explains: "Right. A false positive here loses a real email, so the provider wants few of them among the emails it flags, which is precision. It accepts lower recall: some spam reaches the inbox."
+      - text: "Recall for the spam class"
+        explains: "High recall catches nearly all spam, typically by flagging more aggressively, which sends more real emails to the spam folder."
+      - text: "Accuracy, because most email is legitimate"
+        explains: "With unbalanced classes accuracy is dominated by the big class and does not tell you about the costly error."
+      - text: "None: the threshold should always be 0.5"
+        explains: "The threshold is a choice about which error costs more. Here false positives cost more, so the threshold should be high."
+    work: |-
+      Costly error: a real email flagged as spam (a false positive).
+      Precision = TP / (TP + FP) falls as false positives rise.
+      Raise the threshold so only confident cases are flagged: precision up, recall down.
+      Some spam gets through, which is the cheaper error.
+  - topic: "Week 9 · Visualisation and model evaluation"
+    ask: "A classifier's ROC curve passes through the point (0.1, 0.8). What does that point mean?"
+    choices:
+      - text: "At some threshold the model is 80% accurate and 10% wrong"
+        explains: "The axes are rates within each class, not accuracy. Accuracy depends on how many of each class there are."
+      - text: "At some threshold the model catches 80% of the actual positives while wrongly flagging 10% of the actual negatives"
+        correct: true
+        explains: "Right. The x-axis is the false positive rate, FP / (FP + TN), and the y-axis the true positive rate, TP / (TP + FN)."
+      - text: "The model's AUC is 0.8"
+        explains: "AUC is the area under the whole curve, not the height at one point."
+      - text: "80% of the model's positive predictions are correct"
+        explains: "That would be precision. The ROC curve plots recall (TPR) against the false positive rate."
+    work: |-
+      Each point on an ROC curve is one threshold.
+      x = FPR = FP / (FP + TN) = 0.1: 10% of negatives flagged.
+      y = TPR = TP / (TP + FN) = 0.8: 80% of positives caught.
+      Points near the top-left corner are good; the diagonal is chance.
+  - topic: "Week 9 · Visualisation and model evaluation"
+    ask: "An animal classifier's confusion matrix has actual classes as rows and predictions as columns, in the order cat, dog, fox. Cat: 40, 8, 2. Dog: 5, 45, 0. Fox: 10, 1, 39. Which single mistake does the model make most often?"
+    choices:
+      - text: "Cats predicted as dogs"
+        explains: "That cell is 8. The fox row has a larger off-diagonal entry."
+      - text: "Dogs predicted as cats"
+        explains: "That cell is 5."
+      - text: "Cats predicted as foxes"
+        explains: "That cell is 2. Read rows as the truth: row cat, column fox."
+      - text: "Foxes predicted as cats"
+        correct: true
+        explains: "Right. Row fox, column cat holds 10, the largest off-diagonal cell. Fox recall is only 39/50 = 0.78."
+    work: |-
+      Diagonal (correct): cat 40, dog 45, fox 39.
+      Off-diagonal (errors): cat→dog 8, cat→fox 2, dog→cat 5, dog→fox 0, fox→cat 10, fox→dog 1.
+      Largest error: fox→cat, 10. More fox examples that look like cats would help most.
+  - topic: "Week 9 · Visualisation and model evaluation"
+    ask: "A delivery-time model's errors on five orders are 1, −1, 1, −1 and 6 minutes. What is its RMSE?"
+    choices:
+      - text: "About 2.83 minutes"
+        correct: true
+        explains: "Right. Squares 1, 1, 1, 1, 36 sum to 40. MSE = 40 / 5 = 8, and RMSE = √8 ≈ 2.83."
+      - text: "2 minutes"
+        explains: "2 is the mean absolute error, (1 + 1 + 1 + 1 + 6) / 5. RMSE squares first, so the 6-minute miss counts for more."
+      - text: "1.2 minutes"
+        explains: "1.2 is the mean of the signed errors, where the ±1s cancel. Squaring stops that."
+      - text: "8 minutes"
+        explains: "8 is the MSE, in squared minutes. RMSE takes the square root to return to minutes."
+    work: |-
+      Squared errors: 1, 1, 1, 1, 36. Sum = 40.
+      MSE = 40 / 5 = 8 (squared minutes).
+      RMSE = √8 ≈ 2.83 minutes.
+      The single large miss supplies 36 of the 40, which is how squaring weights big errors.
+  - topic: "Week 9 · Visualisation and model evaluation"
+    ask: "A team forecasts daily sales for a corner shop (about $500 a day) and a superstore (about $50,000 a day). Both forecasts are typically off by $400. Which statement is fair?"
+    choices:
+      - text: "Both forecasts are equally good, since the absolute errors are the same"
+        explains: "$400 means very different things at the two scales. Absolute error ignores the size of the thing being forecast."
+      - text: "Relative error shows the superstore forecast is far better: about 0.8% against 80%"
+        correct: true
+        explains: "Right. $400 / $50,000 = 0.8% and $400 / $500 = 80%. This is why relative error is typically the better measure."
+      - text: "The corner-shop forecast is better, since its errors are smaller in dollars"
+        explains: "They are the same in dollars. Relative to the shop's sales, they are enormous."
+      - text: "Neither can be judged without an MSE"
+        explains: "MSE would still be in squared dollars and still ignore scale. Relative error answers the question directly."
+    work: |-
+      Relative error = (f − o) / o.
+      Corner shop: 400 / 500 = 0.8, an 80% miss.
+      Superstore: 400 / 50,000 = 0.008, a 0.8% miss.
+      Same absolute error, a hundredfold difference in quality.
+  - topic: "Week 9 · Visualisation and model evaluation"
+    ask: "A model predicting next-day stock movement scores 78% in 10-fold cross-validation with the rows shuffled at random, then barely beats chance when used live. What is the most likely flaw in the evaluation?"
+    choices:
+      - text: "10 folds is too few; 20 would have been accurate"
+        explains: "The number of folds is not the problem. Any random split of a time series has the same flaw."
+      - text: "Cross-validation always overestimates performance"
+        explains: "Done correctly, it gives an honest out-of-sample estimate. Here the split itself leaked information."
+      - text: "The market changed on the day the model went live"
+        explains: "Possible, but a drop from 78% to chance is the classic sign of leakage in the evaluation, which should be ruled out first."
+      - text: "Shuffling let the model train on days after the ones it was tested on, so future information leaked into training"
+        correct: true
+        explains: "Right. For time series, out-of-sample means data that did not exist yet. Train on the past and test on the later period."
+    work: |-
+      Random shuffling puts days from the future into the training folds.
+      Patterns around a test day (the days just after it) are then available to the model.
+      That is mixing training and evaluation data, one of the sins in evaluation.
+      Fix: split by time, so every test day comes after every training day.
+  - topic: "Week 9 · Visualisation and model evaluation"
+    ask: "You run 10-fold cross-validation on 2,000 labelled examples and get accuracies with mean 0.81 and standard deviation 0.02. What does this tell you?"
+    choices:
+      - text: "Ten models were each trained on 1,800 examples; the true accuracy is about 0.81, and it varies little with which cases are held out"
+        correct: true
+        explains: "Right. Each fold of 200 is held out once. The small spread across folds says the estimate is stable, which is the bonus of cross-validation."
+      - text: "One model was trained on 2,000 examples and tested ten times on the same data"
+        explains: "Testing on training data is what cross-validation avoids. Each model is scored only on its held-out fold."
+      - text: "Ten models were trained on 200 examples each"
+        explains: "The wrong way round: each trains on (k − 1)/k = 9/10 of the data and is tested on 1/10."
+      - text: "The model is overfitting, because the accuracies differ between folds"
+        explains: "Some spread is expected. 0.02 is small; it says the estimate barely depends on the split."
+    work: |-
+      k = 10, so folds of 2,000 / 10 = 200.
+      Each model trains on 1,800 examples and is evaluated on the remaining 200.
+      Mean 0.81 is the estimate; standard deviation 0.02 measures its stability across folds.
+  - topic: "Week 10 · Linear regression"
+    ask: "X is a 50 × 4 matrix and θ is a 4 × 1 vector. Which products are defined, and what shape is Xθ?"
+    choices:
+      - text: "Both Xθ and θX are defined, and Xθ is 4 × 4"
+        explains: "θX would need θ's 1 column to match X's 50 rows. And Xθ takes the outer sizes, 50 and 1."
+      - text: "Only Xθ is defined, and it is 50 × 1"
+        correct: true
+        explains: "Right. (50 × 4)(4 × 1): the inner 4s match and the result is 50 × 1, one prediction per row. θX fails the inner check, 1 against 50."
+      - text: "Only θX is defined, and it is 4 × 4"
+        explains: "θX is (4 × 1)(50 × 4): the inner sizes 1 and 50 differ, so it is undefined."
+      - text: "Neither is defined, because X is not square"
+        explains: "Multiplication does not need square matrices. It needs the first's columns to match the second's rows."
+    work: |-
+      (m × n)(n × o) = (m × o), with the inner n required to match.
+      Xθ: (50 × 4)(4 × 1) → inner 4 = 4, result 50 × 1.
+      θX: (4 × 1)(50 × 4) → inner 1 ≠ 50, undefined.
+      Matrix products cannot be reordered freely.
+  - topic: "Week 10 · Linear regression"
+    ask: "What is [[2, 1], [0, 3]] × [4, −1], with the matrix written row by row?"
+    choices:
+      - text: "[8, −3]"
+        explains: "This multiplies only the diagonal entries. Each row must be multiplied with the whole vector and summed."
+      - text: "[[8, −1], [0, −3]]"
+        explains: "This multiplies entry by entry without summing each row. The result should be a vector."
+      - text: "[7, −3]"
+        correct: true
+        explains: "Right. Row 1: 2 × 4 + 1 × (−1) = 7. Row 2: 0 × 4 + 3 × (−1) = −3."
+      - text: "[8, 2]"
+        explains: "This sums down the columns rather than along the rows."
+    work: |-
+      To get yᵢ, multiply row i of the matrix with the vector and add.
+      Row 1: 2 × 4 + 1 × (−1) = 8 − 1 = 7.
+      Row 2: 0 × 4 + 3 × (−1) = −3.
+      (2 × 2)(2 × 1) = 2 × 1.
+  - topic: "Week 10 · Linear regression"
+    ask: "Does the matrix [[2, 4], [1, 2]] have an inverse?"
+    choices:
+      - text: "Yes, because it is square"
+        explains: "Being square is necessary, not sufficient. Some square matrices are singular."
+      - text: "Yes, because none of its entries is zero"
+        explains: "Zero entries are not the test. A matrix whose rows are multiples of each other has no inverse."
+      - text: "No: its first row is twice its second, so it is singular"
+        correct: true
+        explains: "Right. Rows that are multiples of each other make a matrix singular, or degenerate. No matrix multiplies it to give the identity."
+      - text: "No, because only the identity matrix has an inverse"
+        explains: "Many square matrices have inverses. This one does not, because its rows are linearly dependent."
+    work: |-
+      Row 1 = [2, 4] = 2 × [1, 2] = 2 × row 2.
+      Linearly dependent rows make a square matrix singular.
+      The same thing happens to XᵀX when one feature is a multiple of another.
+  - topic: "Week 10 · Linear regression"
+    ask: "A subscription service has records of past customers, including how many days each stayed before cancelling. It wants to predict, for each new customer, the number of days until they cancel. What kind of problem is this?"
+    choices:
+      - text: "Supervised classification, because cancelling is a yes-or-no event"
+        explains: "The question asks for the number of days, which is continuous. Predicting whether they cancel this month would be classification."
+      - text: "Unsupervised clustering, because customers fall into groups"
+        explains: "The past records include the right answer, days until cancellation. Learning from known answers is supervised."
+      - text: "Supervised regression: there are known answers, and the output is a continuous number"
+        correct: true
+        explains: "Right. The data provides the right answer for each past customer, and the target is a quantity, not a category."
+      - text: "Not a machine-learning problem"
+        explains: "In Mitchell's terms, the task is predicting churn time, experience is the past records, and performance is the prediction error."
+    work: |-
+      Labelled examples with a correct output → supervised.
+      Output is a number of days → continuous → regression.
+      The same data could pose a classification problem: will this customer cancel within 30 days?
+  - topic: "Week 10 · Linear regression"
+    ask: "Training data (1, 3), (2, 5), (3, 7). For the hypothesis hθ(x) = 2x, what is J(θ₀, θ₁)?"
+    choices:
+      - text: "0.5"
+        correct: true
+        explains: "Right. Predictions 2, 4, 6. Each error is −1, squared 1. Sum 3, and J = 3 / (2 × 3) = 0.5."
+      - text: "1"
+        explains: "That is 3 / 3, the plain mean of the squared errors. J divides by 2m."
+      - text: "−0.5"
+        explains: "That averages the signed errors. They must be squared first."
+      - text: "0"
+        explains: "J is 0 only when the line passes through every point. y = 1 + 2x does; y = 2x misses each by 1."
+    work: |-
+      hθ(x) = 2x, so θ₀ = 0 and θ₁ = 2.
+      Predictions: 2, 4, 6. Actual: 3, 5, 7. Errors: −1, −1, −1.
+      Squared errors sum to 3. m = 3.
+      J = (1 / 2m) × 3 = 3 / 6 = 0.5.
+  - topic: "Week 10 · Linear regression"
+    ask: "With hθ(x) = θ₁x and training data (1, 2) and (2, 4), gradient descent is at θ₁ = 3 with α = 0.1. What is θ₁ after one step?"
+    choices:
+      - text: "3.25"
+        explains: "The slope is positive, so the minus sign in the update moves θ₁ down, not up."
+      - text: "2.5"
+        explains: "That forgets to divide the sum by m = 2, using a slope of 5 instead of 2.5."
+      - text: "2.75"
+        correct: true
+        explains: "Right. Errors are 3 − 2 = 1 and 6 − 4 = 2. Slope = (1/2)(1 × 1 + 2 × 2) = 2.5, so θ₁ := 3 − 0.1 × 2.5 = 2.75."
+      - text: "2.85"
+        explains: "That uses the average error, 1.5, without weighting each error by its x. The θ₁ rule multiplies by x⁽ⁱ⁾."
+    work: |-
+      Predictions at θ₁ = 3: 3 and 6. Errors: 1 and 2.
+      ∂J/∂θ₁ = (1/m) Σ (hθ(x⁽ⁱ⁾) − y⁽ⁱ⁾) · x⁽ⁱ⁾ = (1/2)(1 × 1 + 2 × 2) = 2.5.
+      θ₁ := 3 − 0.1 × 2.5 = 2.75.
+      Moving toward the best value θ₁ = 2.
+  - topic: "Week 10 · Linear regression"
+    ask: "You run gradient descent on house data with size (0 to 4,000 ft²) and bedrooms (1 to 5) as features. J falls on every iteration but extremely slowly. What is the best first fix?"
+    choices:
+      - text: "Increase α tenfold immediately"
+        explains: "A big jump in α risks divergence on the steep size direction while the bedrooms direction still crawls. Scaling addresses the cause."
+      - text: "Scale the features to similar ranges, for example with mean normalisation"
+        correct: true
+        explains: "Right. Very uneven ranges make J's contours long and thin, so gradient descent zig-zags and creeps. Scaled features give round contours and a direct path."
+      - text: "Switch to the simultaneous update"
+        explains: "An incorrect update order is a bug, but it does not produce this slow-but-steady pattern. The feature ranges do."
+      - text: "Add polynomial features"
+        explains: "That adds features with even wider ranges and makes the problem worse."
+    work: |-
+      Size spans thousands, bedrooms span a handful.
+      J is very sensitive to θ₁ and nearly flat in θ₂: long, thin elliptical contours.
+      Gradient descent bounces across the narrow valley and creeps along it.
+      Scaling, e.g. x₁ = (size − μ₁) / s₁, makes the contours round so descent heads to the minimum.
+  - topic: "Week 10 · Linear regression"
+    ask: "Home ages in a training set range from 10 to 70 years, with mean 40. Using mean normalisation with the range, what does an age of 55 become?"
+    choices:
+      - text: "0.375"
+        explains: "That is 15 / 40, dividing by the mean. Mean normalisation divides by the range (or standard deviation)."
+      - text: "About 0.79"
+        explains: "That is 55 / 70, dividing by the maximum without centring."
+      - text: "About 0.92"
+        explains: "That is 55 / 60: divided by the range, but without subtracting the mean first."
+      - text: "0.25"
+        correct: true
+        explains: "Right. (55 − 40) / (70 − 10) = 15 / 60 = 0.25."
+    work: |-
+      xᵢ := (xᵢ − μᵢ) / sᵢ, with sᵢ = max − min.
+      μ = 40, s = 70 − 10 = 60.
+      (55 − 40) / 60 = 15 / 60 = 0.25.
+      The same μ and s must be used for new houses at prediction time.
+  - topic: "Week 10 · Linear regression"
+    ask: "You fit linear regression with the normal equation on m = 500 examples and n = 20 features, with x₀ = 1 added. What size is the matrix XᵀX that has to be inverted?"
+    choices:
+      - text: "21 × 21"
+        correct: true
+        explains: "Right. X is 500 × 21, so XᵀX is (21 × 500)(500 × 21) = 21 × 21. Its size depends on the number of features, not examples."
+      - text: "500 × 500"
+        explains: "That would be XXᵀ. XᵀX has one row and column per parameter."
+      - text: "20 × 20"
+        explains: "This forgets the x₀ = 1 column, which gives the intercept its own parameter."
+      - text: "500 × 21"
+        explains: "That is X itself. XᵀX is square, which it must be to have an inverse."
+    work: |-
+      X is m × (n + 1) = 500 × 21.
+      Xᵀ is 21 × 500.
+      XᵀX = (21 × 500)(500 × 21) = 21 × 21.
+      Inverting costs O(n³) in this size, which is small here.
+  - topic: "Week 10 · Linear regression"
+    ask: "A data set has 2 million training examples and 30 features. Which method is the sensible way to fit linear regression?"
+    choices:
+      - text: "Gradient descent, because m is very large"
+        explains: "Large m does not rule out the normal equation; it is the size of n that drives its O(n³) inversion. With n = 30, that is tiny."
+      - text: "The normal equation: XᵀX is only 31 × 31, so inverting it is cheap, and there is no α to choose or iterations to run"
+        correct: true
+        explains: "Right. The slow part of the normal equation grows with n, and the notes suggest switching only when n exceeds about 10,000."
+      - text: "Neither; linear regression cannot handle that many examples"
+        explains: "Both methods handle millions of examples. The question is which costs less."
+      - text: "The normal equation, but only after feature scaling"
+        explains: "The normal equation does not need feature scaling. That is a gradient-descent concern."
+    work: |-
+      Normal equation cost: dominated by inverting the (n + 1) × (n + 1) matrix XᵀX.
+      n = 30 → 31 × 31, trivial to invert.
+      Forming XᵀX takes one pass over the 2 million rows, which is fine.
+      Gradient descent would need α, scaling and many passes. Prefer it when n is large (≳ 10,000).
+  - topic: "Week 10 · Linear regression"
+    ask: "A genetics study has 30 patients and 200 gene-expression features. The normal equation fails because XᵀX cannot be inverted. Why, and what are the fixes?"
+    choices:
+      - text: "The features need scaling first"
+        explains: "Scaling does not change whether XᵀX is invertible, and the normal equation does not need it."
+      - text: "There are more features than examples (m ≤ n), so infinitely many θ fit equally well; delete features or use regularisation"
+        correct: true
+        explains: "Right. This is the notes' second cause of a non-invertible XᵀX. pinv gives an answer, but the underlying fix is fewer features or regularisation."
+      - text: "The data must contain a bug; XᵀX is always invertible"
+        explains: "XᵀX is often singular, through redundant features or too few examples."
+      - text: "Add more features until n is larger still"
+        explains: "That makes the problem worse."
+    work: |-
+      X is 30 × 201, so XᵀX is 201 × 201 but built from only 30 rows of information.
+      With m ≤ n, many different θ give exactly the same predictions on the training set.
+      So XᵀX is singular: no unique solution.
+      Fixes: remove features, or regularise. pinv returns one solution.
+  - topic: "Week 10 · Linear regression"
+    ask: "Is hθ(x) = θ₀ + θ₁x + θ₂x² still linear regression?"
+    choices:
+      - text: "No, because the curve is not a straight line"
+        explains: "Linear regression needs the model to be linear in the parameters θ, not in x."
+      - text: "No, it needs a separate non-linear algorithm"
+        explains: "The same cost, gradient descent and normal equation apply. x² is just another column of X."
+      - text: "Only if x is between 0 and 1"
+        explains: "The range of x matters for feature scaling, not for whether the model is linear regression."
+      - text: "Yes: it is linear in θ, with x² treated as an extra feature; feature scaling becomes important"
+        correct: true
+        explains: "Right. Define x₂ = x² and it is ordinary multivariate regression. Since x² spreads the range dramatically, scale it."
+    work: |-
+      Let x₁ = x and x₂ = x². Then hθ(x) = θ₀ + θ₁x₁ + θ₂x₂.
+      Each θ multiplies a feature and the products are added: linear in θ.
+      If x runs from 1 to 1,000, x² runs from 1 to 1,000,000, so scale each feature separately.
+  - topic: "Week 10 · Linear regression"
+    ask: "You increase the regularisation parameter λ steadily from 0 to a very large value. What happens to the error on the training set?"
+    choices:
+      - text: "It rises: the penalty forces the parameters away from the best training fit, eventually toward a flat line at θ₀"
+        correct: true
+        explains: "Right. λ = 0 gives the lowest possible training cost. Every increase trades training fit for smaller parameters, which is why λ is chosen on held-out data, not training data."
+      - text: "It falls, because regularisation prevents overfitting"
+        explains: "Regularisation can lower the error on new data. On the training data, constraining the parameters can only make the fit worse."
+      - text: "It stays the same, because λ only affects the speed of gradient descent"
+        explains: "λ changes the cost function and therefore where its minimum is. α is the setting that affects speed."
+      - text: "It falls to zero"
+        explains: "A very large λ pushes θ₁ to θₙ to about zero, leaving a flat line that fits the training data badly."
+    work: |-
+      J(θ) = (1/2m)[Σ (hθ(x⁽ⁱ⁾) − y⁽ⁱ⁾)² + λ Σⱼ₌₁ⁿ θⱼ²].
+      λ = 0: pure least squares, lowest training error.
+      Larger λ: parameters shrink, the fit to training data loosens.
+      λ → ∞: θ₁…θₙ → 0, hθ(x) ≈ θ₀, underfit.
+      Held-out error typically falls then rises; pick λ at its minimum.
+  - topic: "Week 10 · Linear regression"
+    ask: "You have 500 candidate features and suspect most are irrelevant. You want a regularised model that drops the useless ones entirely. Which penalty fits?"
+    choices:
+      - text: "Ridge, because it penalises squared coefficients"
+        explains: "Ridge shrinks every coefficient but rarely to exactly zero, so all 500 features stay in the model."
+      - text: "LASSO, because penalising absolute values tends to push the least useful coefficients to exactly zero"
+        correct: true
+        explains: "Right. The L₁ penalty keeps charging small coefficients at full rate, so it removes features as part of fitting."
+      - text: "No penalty, then delete features with small coefficients"
+        explains: "Without a penalty, coefficients on unscaled or correlated features are unreliable guides. LASSO does the selection in the fit."
+      - text: "Either; they always give the same model"
+        explains: "They penalise differently. Ridge spreads weight across correlated features; LASSO tends to pick some and zero the rest."
+    work: |-
+      Ridge (L₂): λ Σ θⱼ². Small coefficients cost almost nothing, so they shrink but stay non-zero.
+      LASSO (L₁): λ Σ abs(θⱼ). Small coefficients still cost their full size, so many go to exactly 0.
+      Standardise features first so coefficient sizes are comparable.
 ---
-91 multiple-choice questions across all seven weeks. The paper is divided into sections, and nothing is revealed until you
+118 multiple-choice questions across weeks 1–7, 9 and 10. The paper is divided into sections, and nothing is revealed until you
 submit: pick an answer for each question (you can change it as often as you like), then submit a
 section to see your score for it, the correct answers, an explanation for each one you chose, and a
 worked solution. You can submit one section at a time, in any order, or the whole exam at once.

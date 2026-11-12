@@ -159,4 +159,48 @@ sections:
     title: Week 7 · Randomness done right
     summary: >-
       Shuffling fairly, and drawing random samples from a circle or any distribution.
+  - id: w9-viz
+    title: Week 9 · Visualising data honestly
+    summary: >-
+      Tufte's principles: the data-ink ratio, the lie factor, and removing chartjunk.
+  - id: w9-charts
+    title: Week 9 · Choosing a chart
+    summary: >-
+      Tables, lines, scatters, bars, pies, histograms and colour scales, and what great graphics do.
+  - id: w9-modeling
+    title: Week 9 · Philosophies of modelling
+    summary: >-
+      Occam's razor, bias against variance, thinking probabilistically, and beating a baseline.
+  - id: w9-classifiers
+    title: Week 9 · Evaluating classifiers
+    summary: >-
+      The four outcomes, accuracy, precision, recall, the F-score, ROC curves and confusion matrices.
+  - id: w9-validation
+    title: Week 9 · Evaluating honestly
+    summary: >-
+      Error for numeric predictions, out-of-sample testing, error distributions and cross-validation.
+  - id: w10-linalg
+    title: Week 10 · Linear algebra review
+    summary: >-
+      Matrices and vectors, multiplying them, and the identity, inverse and transpose.
+  - id: w10-ml
+    title: Week 10 · What machine learning is
+    summary: >-
+      Learning from experience, and the split between supervised and unsupervised problems.
+  - id: w10-univariate
+    title: Week 10 · Regression with one variable
+    summary: >-
+      The hypothesis, the squared-error cost function, and what the cost looks like as a surface.
+  - id: w10-gd
+    title: Week 10 · Gradient descent
+    summary: >-
+      Walking downhill on the cost, the learning rate, and the update rules for linear regression.
+  - id: w10-multi
+    title: Week 10 · Many features
+    summary: >-
+      Vectorised hypotheses, feature scaling, polynomial features and the normal equation.
+  - id: w10-regularisation
+    title: Week 10 · Regularisation
+    summary: >-
+      Overfitting, penalising large parameters, and the difference between ridge and LASSO.
 ---

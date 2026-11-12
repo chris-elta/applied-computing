@@ -1,0 +1,75 @@
+---
+course: data-science
+section: w9-viz
+order: 1110
+title: Chartjunk and "Less Is More"
+visuals:
+  - type: svg
+    src: data-science/w9-models/08.svg
+    caption: Slide 8 of 90 — the three kinds of chartjunk.
+  - type: svg
+    src: data-science/w9-models/09.svg
+    caption: Slides 9–13 of 90 — the same bar chart, simplified one step at a time.
+notation: []
+questions:
+  - ask: "Which of these changes to a monthly bar chart removes chartjunk without losing information?"
+    choices:
+      - text: "Removing the shaded background and the vertical gridlines between bars"
+        correct: true
+        explains: >-
+          Neither carries data. The background colours nothing in particular, and the bars
+          already separate the months, so the gridlines between them add nothing.
+      - text: "Removing the y-axis labels, since the bars show the pattern"
+        explains: >-
+          The labels are how a reader decodes the heights. Removing them loses information;
+          it is the over-correction the data-ink concept warns about.
+      - text: "Colouring each month a different colour to make it livelier"
+        explains: >-
+          This adds chartjunk: uninformative colouring. The colour would encode the month,
+          which the x-axis already does.
+      - text: "Adding a 3-D effect so the bars stand out"
+        explains: >-
+          Extra dimensionality is the first item on the slide's list. It adds ink and makes the
+          heights harder to read.
+---
+
+**Chartjunk** is the slide's name for "extraneous visual elements [that] distract from the
+message the data is trying to tell". It is the data-ink ratio seen from the other side: the
+ink you should remove.
+
+## Three kinds
+
+| kind | example | why it hurts |
+| --- | --- | --- |
+| extra dimensionality | 3-D bars, perspective pies | depth distorts sizes and hides values behind each other |
+| uninformative colouring | every bar a different colour for no reason | colour suggests a category that does not exist |
+| excessive grids and decoration | heavy gridlines, clip art, textured backgrounds | competes with the data for attention |
+
+> In an exciting graphic, the data tells the story, not the chartjunk.
+
+## A simplification in five steps
+
+Slides 9–13 take one bar chart of monthly percentages and keep asking *can you simplify
+further?*
+
+1. **Start:** dark bars on a pale-blue shaded panel with a full grid.
+2. **Drop the shading.** The colour behind the bars carried nothing.
+3. **Drop the vertical gridlines.** The bars already separate the months.
+4. **Thin the horizontal gridlines and remove the frame.** A reader still needs to judge
+   heights, so a faint reference remains.
+5. **"Less is more":** bars, axis labels, nothing else.
+
+At each step the question is the same one from the data-ink concept: *would the reader lose
+anything if this went?* The data itself is never touched. Slide 14 makes the practical point
+that Matplotlib can produce these clean plots; the defaults are a starting point, not the
+finished chart.
+
+## Where the limit is
+
+Simplifying does not mean removing context. Axis labels, units, a title that says what the
+chart shows, and a legend when colour does encode something are all information. Later in
+the week, slide 41 shows an election graphic that uses colour and a winding shape to tell a
+story in one view: decoration that carries meaning is not junk.
+
+> Chartjunk is anything that draws the eye without telling it something. Remove it in steps,
+> asking each time what the reader would lose, and stop before you remove the labels.

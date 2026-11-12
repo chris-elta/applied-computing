@@ -1,0 +1,92 @@
+---
+course: data-science
+section: w9-classifiers
+order: 1240
+title: Four Outcomes and the Threshold
+visuals:
+  - type: svg
+    src: data-science/w9-models/69.svg
+    caption: Slide 69 of 90 — the four outcomes of a binary classifier.
+  - type: svg
+    src: data-science/w9-models/70.svg
+    caption: Slide 70 of 90 — two overlapping score distributions split by a threshold.
+notation:
+  - symbol: "TP, TN, FP, FN"
+    reads: true positive, true negative, false positive, false negative
+    means: >-
+      The four cells of a binary classifier's results. The second word is what the model
+      said; the first is whether it was right. A false positive is a "yes" that should have
+      been "no".
+questions:
+  - ask: "A spam filter scores each email from 0 to 1 and flags anything above a threshold. You raise the threshold from 0.5 to 0.9. What happens?"
+    choices:
+      - text: "Fewer false positives and more false negatives: fewer real emails are flagged, but more spam gets through"
+        correct: true
+        explains: >-
+          A higher threshold means fewer emails are called positive. Some of those were wrong
+          (FP falls) and some were right (TP falls, so FN rises). The threshold trades one
+          error for the other.
+      - text: "Both false positives and false negatives fall"
+        explains: >-
+          Moving the threshold cannot reduce both while the two distributions overlap. To
+          reduce both you need a better score, not a different cut-off.
+      - text: "More false positives and fewer false negatives"
+        explains: >-
+          That is what lowering the threshold does: more emails are called spam.
+      - text: "Nothing changes, since the model itself has not changed"
+        explains: >-
+          The scores are unchanged but the decisions are not. Every email whose score lies
+          between 0.5 and 0.9 flips from positive to negative.
+---
+
+To evaluate a model you compare its predictions with the truth on test data. For a
+**classifier**, which outputs labels, the comparison starts with counting.
+
+## Four outcomes
+
+A binary classifier says *positive* or *negative*, and each case actually is one or the
+other. That gives four possible outcomes (slide 69):
+
+| | predicted + | predicted − |
+| --- | --- | --- |
+| **actually +** | true positive (TP) | false negative (FN) |
+| **actually −** | false positive (FP) | true negative (TN) |
+
+Read the names in two parts: the second word is what the model *said*, the first is whether
+that was *right*. A **false negative** is a "no" that should have been "yes": a missed cancer.
+A **false positive** is a "yes" that should have been "no": a scare.
+
+Every metric in this section is built from these four counts. To make them concrete, one
+example runs through the section:
+
+> 1,000 patients are screened. 50 have cancer. The model flags 100, of whom 40 have cancer.
+
+| | flagged | not flagged | total |
+| --- | --- | --- | --- |
+| **cancer** | TP = 40 | FN = 10 | 50 |
+| **no cancer** | FP = 60 | TN = 890 | 950 |
+| **total** | 100 | 900 | 1,000 |
+
+## The threshold
+
+Most classifiers do not produce a label directly. They produce a **score**, and a
+**threshold** turns it into a label: above the line is positive.
+
+Slide 70 shows why choosing it is hard. It draws the score distributions of the actual
+negatives (red) and actual positives (blue). They overlap. Wherever you put the line, some
+red lies to its right (FP) and some blue to its left (FN).
+
+- **Move the threshold up**, and fewer cases are called positive: FP falls, FN rises.
+- **Move it down**, and more are called positive: FN falls, FP rises.
+
+There is no setting that removes both kinds of error while the distributions overlap. To do
+better on both you need a better score, one that separates the two groups more.
+
+So the threshold is a decision about which error costs more. Missing a cancer is worse than
+a scare, so a cancer screen sets a low threshold. A spam filter that hides real email is
+worse than one that lets some spam through, so it sets a high one. As slide 70 says,
+identifying the best threshold requires deciding on an appropriate evaluation metric, which
+is where the next concepts begin.
+
+> Every binary prediction is a TP, TN, FP or FN. The threshold trades false positives for
+> false negatives, and choosing it is choosing which mistake you would rather make.

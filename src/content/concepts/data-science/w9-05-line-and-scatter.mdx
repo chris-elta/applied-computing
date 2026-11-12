@@ -1,0 +1,79 @@
+---
+course: data-science
+section: w9-charts
+order: 1130
+title: Line Charts, Scatter Plots and Overplotting
+visuals:
+  - type: svg
+    src: data-science/w9-models/20.svg
+    caption: Slide 20 of 90 — line charts, with and without the data points.
+  - type: svg
+    src: data-science/w9-models/22.svg
+    caption: Slides 22–23 of 90 — overplotting, smaller points, and a frequency heatmap.
+  - type: svg
+    src: data-science/w9-models/24.svg
+    caption: Slide 24 of 90 — a bubble chart of health against wealth.
+notation: []
+questions:
+  - ask: "You scatter-plot the height and weight of 200,000 people and the middle of the plot is a solid blob. What do the slides suggest?"
+    choices:
+      - text: "Use smaller points, or colour by how many points fall in each region, as in a heatmap"
+        correct: true
+        explains: >-
+          A solid blob is overplotting: points stacked on points, hiding the density. Slide 22
+          shrinks the points; slide 23 colours by frequency, which reveals the dense core.
+      - text: "Connect the points with lines so the trend is visible"
+        explains: >-
+          Lines join points in order. Here there is no meaningful order, so lines would be
+          chartjunk, and they would not reveal density.
+      - text: "Switch to a pie chart of weight categories"
+        explains: >-
+          That throws away the relationship between the two variables, which was the point of
+          the scatter plot.
+      - text: "Use bigger points so each person is easier to see"
+        explains: >-
+          Bigger points make the overlap worse. The fix goes the other way.
+---
+
+Line charts and scatter plots are both made of points on two axes. They differ in what the
+points mean, and that decides what you are allowed to draw between them.
+
+## Line charts
+
+From slide 20:
+
+- **Show data points, not just fits.** A smooth line alone hides how much data supports it.
+- **Line segments show connections**, so do not use them for categorical data. A line from
+  "apples" to "oranges" implies something in between.
+- **Connecting points by lines is often chartjunk.** For noisy data, better is usually a
+  trend line or fit *with* the data points visible.
+
+A line says "these values are ordered and continuous". Time series qualify; categories do not.
+
+## Scatter plots
+
+A scatter plot shows the value of every point, and is "a great way to present 2D data sets"
+(slide 21). For more than two dimensions you have choices:
+
+- **project to 2D**, for example with principal component analysis;
+- **encode extra dimensions in the dots**: colour, shape, size and shading. That is a
+  **bubble chart**. Slide 24 shows Hans Rosling's health-against-wealth chart, where position
+  gives two variables, bubble size gives population and colour gives region.
+
+## Overplotting
+
+With many points, they land on top of each other, and the dense middle becomes a solid
+patch. You can no longer see where most of the data is, which is often the most important
+thing.
+
+| fix | slide | what it does |
+| --- | --- | --- |
+| smaller points | 22 | lets gaps show between points, so density becomes visible as darkness |
+| colour by frequency | 23 | a heatmap: bins the plane and colours each bin by its count |
+
+Slide 23's height-and-weight data shows why this matters. Drawn plainly it is a blue
+rectangle; coloured by frequency, a clear dense core appears, along with the direction of the
+relationship.
+
+> Draw lines only between points that are genuinely ordered. When points pile up, shrink them
+> or colour by count, because a solid blob hides the density you most need to see.
