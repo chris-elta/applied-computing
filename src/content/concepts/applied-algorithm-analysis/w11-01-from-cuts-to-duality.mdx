@@ -1,0 +1,100 @@
+---
+course: applied-algorithm-analysis
+section: w11-certificate
+order: 2100
+title: From Cuts to Duality
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week11.html?hash=true#/1
+    caption: Slides 2–4 of 24 — flows against cuts, the broader principle behind them, and the primal and dual named.
+notation:
+  - symbol: primal
+    reads: PRY-mul
+    means: >-
+      The linear program you started with. This week it is always written as a maximisation.
+  - symbol: dual
+    reads: DEW-ul
+    means: >-
+      A second linear program built from the primal. It minimises an upper bound on the
+      primal's objective.
+  - symbol: finite optimum
+    reads: finite optimum
+    means: >-
+      A best value that exists and is an ordinary number. It rules out the two failure modes
+      from week 10, an infeasible LP and an unbounded one.
+questions:
+  - ask: >-
+      In the max-flow min-cut theorem, which side plays the part that the dual will play
+      for a general linear program?
+    choices:
+      - text: The cuts, because each cut's capacity is an upper bound on every flow, and the smallest one is sought
+        correct: true
+        explains: >-
+          The dual is "the associated LP: minimise an upper bound". A cut is an upper bound
+          on the flow, and the minimum cut is the tightest one.
+      - text: The flows, because they are the thing being optimised
+        explains: >-
+          Both sides are optimised, one up and one down. The flow is the original
+          maximisation, which makes it the primal.
+      - text: The residual graph, because it is built from the flow
+        explains: >-
+          The residual graph is a tool of the algorithm. Duality pairs two *problems*, the
+          maximisation and the minimisation that bounds it.
+      - text: Neither, since duality only applies to problems without a graph
+        explains: >-
+          The slides say the opposite: max-flow min-cut is a special case of LP duality.
+          Maximum flow was written as an LP in week 10.
+---
+
+Last week ended with a way to prove a flow is maximum without trusting the algorithm that
+found it. Two facts did the work:
+
+```
+any feasible flow value  ≤  any cut capacity
+maximum flow value       =  minimum cut capacity
+```
+
+The first line means a cut is a ceiling. The second means the lowest ceiling touches the
+highest flow. So a flow and a cut with equal values prove each other optimal: the flow cannot
+go higher, and the cut cannot go lower.
+
+## The pattern is not about graphs
+
+Nothing in that argument needed vertices or edges. It needed a maximisation, a family of
+upper bounds, and a guarantee that the best bound meets the best answer. This week's claim is
+that **every** linear maximisation comes with such a family.
+
+| | network flow | any linear program |
+| --- | --- | --- |
+| the maximisation | a flow | the **primal**: the original LP, maximise the objective |
+| the upper bounds | cuts | the **dual**: the associated LP, minimise an upper bound |
+| when they meet | max flow = min cut | the two optimal values are equal |
+
+The max-flow min-cut theorem is a special case of **linear programming duality**.
+
+## Primal and dual
+
+The words name the two partners:
+
+- The **primal** is the LP you were given. Here it maximises.
+- The **dual** is a second LP constructed from it. It minimises, and every one of its
+  feasible answers is an upper bound on every feasible answer of the primal.
+
+The headline result, proved later in the week on the bakery example and stated in general
+as the duality theorem:
+
+> If the primal has a finite optimum, the two optimal values are equal.
+
+The condition matters. An LP with no feasible plan, or one whose objective can grow without
+limit, has no finite optimum, and the statement promises nothing about it.
+
+## What is still missing
+
+For flows, the upper bounds were easy to see: split the vertices and add the capacities that
+cross. For a general LP there is no picture to cut. The question the next several concepts
+answer is the one the slide ends on: **how do we construct this second LP?** The answer comes
+from the constraints themselves, by multiplying them by well-chosen numbers and adding them up.
+
+> A maximisation is proved optimal by a matching upper bound. For flows the bounds are cuts.
+> For any linear program the bounds are the feasible answers of a second linear program, the
+> dual.

@@ -1,0 +1,119 @@
+---
+course: applied-algorithm-analysis
+section: w11-rules
+order: 2170
+title: The Primal–Dual Transformation Rules
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week11.html?hash=true#/16
+    caption: Slides 17–18 of 24 — the general case with equality rows and free variables, and the transformation rules as two tables.
+notation:
+  - symbol: free
+    reads: free
+    means: >-
+      Allowed to take any real value: positive, negative or zero. A free variable has no
+      sign condition.
+  - symbol: "(Aᵀy)ⱼ"
+    reads: the j-th entry of A transpose y
+    means: >-
+      The collected coefficient of `xⱼ` in the weighted sum. Read down column `j` of the
+      constraints, multiplying each entry by its row's `y`.
+  - symbol: "cⱼ, bᵢ"
+    reads: c sub j, b sub i
+    means: >-
+      The objective coefficient of variable `xⱼ`, and the right-hand side of constraint `i`.
+  - symbol: "I, E, N"
+    reads: I, E and N
+    means: >-
+      The slide's names for three groups: the `≤` rows, the equality rows, and the
+      non-negative variables. `i ∈ I` reads "row i is one of the `≤` rows".
+  - symbol: "∑"
+    reads: sigma, or "the sum of"
+    means: >-
+      Add up the terms that follow, one for each value of the index written underneath.
+questions:
+  - ask: >-
+      In a maximisation primal, the variable `x₂` is free. Why must its dual constraint be an
+      equation, `(Aᵀy)₂ = c₂`, and not `(Aᵀy)₂ ≥ c₂`?
+    choices:
+      - text: "Because `x₂` may be negative, and then a larger coefficient makes its term smaller, so only an exact match keeps the bound valid"
+        correct: true
+        explains: >-
+          The step "objective ≤ weighted expression" used `xⱼ ≥ 0`. Without a sign, the
+          coefficients must agree exactly so that the two terms are equal whatever `x₂` is.
+      - text: Because the constraint containing x₂ is an equation
+        explains: >-
+          The form of a primal *row* decides the sign of a dual *variable*. The sign condition
+          on a primal *variable* decides the form of a dual *row*. This crosses the two.
+      - text: Because free variables make the multipliers free too
+        explains: >-
+          A multiplier's sign comes from its own constraint being `≤`, `=` or `≥`. Whether
+          some `x` is free does not affect it.
+      - text: Because an equation is a tighter condition and so gives a better bound
+        explains: >-
+          It is a tighter condition, but the reason is validity, not quality. With `≥` the
+          bound could be false for plans where `x₂` is negative.
+---
+
+The matrix form assumed every constraint was a `≤` and every variable was `≥ 0`. Real LPs
+have equality constraints, `≥` constraints, and variables that are **free**, meaning they
+may take any real value. The dual still exists. Two things change, and both follow from
+re-asking what each requirement was for.
+
+The primal is a maximisation and the dual a minimisation throughout.
+
+## Each primal row gives a dual variable
+
+The multiplier's job is to turn its row into a valid `≤` statement that can join the sum.
+Choose its sign so the weighted row gives an upper bound.
+
+| primal constraint | dual variable | why |
+| --- | --- | --- |
+| `≤` | `yᵢ ≥ 0` | a negative number would reverse it |
+| `=` | `yᵢ` free | an equation stays true when multiplied by anything |
+| `≥` | `yᵢ ≤ 0` | a negative number reverses it into a `≤` |
+
+For example, `x₁ ≥ 4` times `−2` is `−2x₁ ≤ −8`, a `≤` statement, which is what the sum
+needs.
+
+## Each primal variable gives a dual row
+
+The dual row's job is to guarantee "objective term ≤ weighted term" for that variable.
+
+| primal variable | dual constraint | why |
+| --- | --- | --- |
+| `xⱼ ≥ 0` | `(Aᵀy)ⱼ ≥ cⱼ` | with `xⱼ ≥ 0`, a larger coefficient gives a larger term |
+| `xⱼ` free | `(Aᵀy)ⱼ = cⱼ` | `xⱼ` can be positive or negative, so the coefficients must match |
+
+## What does not change
+
+- Objective coefficients and right-hand sides trade places: `c` becomes the dual's limits and
+  `b` its objective.
+- The coefficient matrix is transposed.
+- One dual variable per primal row, one dual row per primal variable.
+
+## The same thing in symbols
+
+The slide writes the general case with index sets. `I` is the set of `≤` rows, `E` the
+equality rows, and `N` the non-negative variables. There are `m = |I| + |E|` constraints and
+`n` variables. It covers `≤` and `=` rows. The `≥` case is in the rules table above.
+
+| primal (max `∑ cⱼxⱼ`) | dual (min `∑ bᵢyᵢ`) |
+| --- | --- |
+| `∑ⱼ aᵢⱼxⱼ ≤ bᵢ` for `i ∈ I` | `yᵢ ≥ 0` for `i ∈ I` |
+| `∑ⱼ aᵢⱼxⱼ = bᵢ` for `i ∈ E` | `yᵢ` free for `i ∈ E` |
+| `xⱼ ≥ 0` for `j ∈ N` | `∑ᵢ aᵢⱼyᵢ ≥ cⱼ` for `j ∈ N` |
+| `xⱼ` free for `j ∉ N` | `∑ᵢ aᵢⱼyᵢ = cⱼ` for `j ∉ N` |
+
+Each line pairs one feature of the primal with one feature of the dual. The dual sums run
+over `i`, down a column of the coefficients, which is the transpose again.
+
+## The common slip
+
+Rows pair with variables, and variables pair with rows. An equality **row** makes a
+**multiplier** free. A free **variable** makes a dual **row** an equation. The two "free ↔
+equals" pairings look alike and are easy to cross.
+
+> For a max primal: a `≤`, `=` or `≥` row gives a multiplier that is `≥ 0`, free or `≤ 0`.
+> A non-negative or free variable gives a dual row that is `≥` or `=`. Each rule is whatever
+> keeps the weighted sum a valid upper bound.

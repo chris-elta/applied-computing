@@ -1,0 +1,109 @@
+---
+course: applied-algorithm-analysis
+section: w11-dual
+order: 2140
+title: The Tightest Bound Is a Linear Program
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week11.html?hash=true#/11
+    caption: Slides 12–13 of 24 — two valid sets of multipliers with very different bounds, and the dual problem written out.
+notation:
+  - symbol: "W"
+    reads: double-u
+    means: >-
+      The dual's objective, `200y₁ + 300y₂ + 400y₃`. It is the upper bound that a choice of
+      multipliers proves, and the dual makes it as small as possible.
+  - symbol: tight
+    reads: tight
+    means: >-
+      Close to the true value. A bound of 1900 on a maximum of 1900 is as tight as a bound
+      can be. A bound of 4300 is valid but loose.
+  - symbol: min
+    reads: minimise
+    means: >-
+      Find the feasible choice that makes the objective smallest.
+questions:
+  - ask: >-
+      In the bakery's dual, where do the constraint limits 200, 300 and 400 from the primal
+      end up?
+    choices:
+      - text: "As the coefficients of the dual objective, `W = 200y₁ + 300y₂ + 400y₃`"
+        correct: true
+        explains: >-
+          Each limit is multiplied by its constraint's multiplier, and the total is the bound
+          being minimised. The primal's right-hand sides become the dual's objective.
+      - text: As the right-hand sides of the dual constraints
+        explains: >-
+          Those are 1 and 6, the primal's *objective* coefficients. The two sets of numbers
+          swap roles, which makes them easy to cross.
+      - text: As upper limits on the multipliers, such as `y₁ ≤ 200`
+        explains: >-
+          The multipliers have no upper limits. They are bounded below by 0, and the
+          coefficient requirements push them up, not down.
+      - text: They do not appear, since the dual only uses the objective
+        explains: >-
+          Without them there would be nothing to minimise. The bound a set of multipliers
+          proves is built entirely from those limits.
+---
+
+Two requirements are in place. Multipliers must be non-negative, and their collected
+coefficients must be at least 1 and 6. Many choices pass both:
+
+| multipliers `(y₁, y₂, y₃)` | coefficient checks | upper bound |
+| --- | --- | --- |
+| `(5, 3, 6)` | `5 + 6 ≥ 1`, `3 + 6 ≥ 6` | `200(5) + 300(3) + 400(6) = 4300` |
+| `(0, 5, 1)` | `0 + 1 ≥ 1`, `5 + 1 ≥ 6` | `200(0) + 300(5) + 400(1) = 1900` |
+
+Both statements are true. Profit is at most $4300, and profit is at most $1900. But the
+first tells the bakery almost nothing, and the second settles the question. A bound is worth
+more the lower it is.
+
+## Requirement 3: the tightest bound
+
+So among all multipliers that pass the first two requirements, look for the ones with the
+**smallest** value of
+
+```
+200y₁ + 300y₂ + 400y₃
+```
+
+Now read that sentence again as a problem statement. There are unknowns `y₁, y₂, y₃`. There
+is a linear expression in them to minimise. There are linear conditions they must meet. That
+is a linear program.
+
+## The dual problem
+
+```
+min   W = 200y₁ + 300y₂ + 400y₃
+s.t.  y₁        + y₃   ≥ 1
+            y₂  + y₃   ≥ 6
+      y₁, y₂, y₃       ≥ 0
+```
+
+This new LP is the **dual**. The original cookie LP is the **primal**. Each line of the dual
+is one of the three requirements:
+
+| line of the dual | the requirement it encodes |
+| --- | --- |
+| `y₁, y₂, y₃ ≥ 0` | 1 · keep the direction of the `≤` constraints |
+| `y₁ + y₃ ≥ 1`, `y₂ + y₃ ≥ 6` | 2 · collected coefficients at least the objective's |
+| `min W` | 3 · the tightest bound |
+
+## Where each number went
+
+Put the two programs side by side and the same numbers appear in different places.
+
+| number in the primal | its place in the dual |
+| --- | --- |
+| limits 200, 300, 400 | coefficients of the objective `W` |
+| objective coefficients 1, 6 | right-hand sides of the constraints |
+| 3 constraints | 3 variables, one multiplier each |
+| 2 variables | 2 constraints, one coefficient check each |
+
+The question at the start of the week was how to find multipliers without guessing. The
+answer is that finding the best multipliers is itself an LP, and any method that solves LPs
+solves it. The guess `(0, 5, 1)` is feasible for the dual with `W = 1900`. Whether anything
+does better is the next concept.
+
+> The search for the best upper bound on an LP is another LP, the dual: one variable per
+> primal constraint, one constraint per primal variable, minimising the bound.

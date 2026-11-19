@@ -200,4 +200,21 @@ sections:
       Pairing two sides off without sharing, solved by turning it into a unit-capacity flow.
   - id: w10-review
     title: Week 10 · Where we landed
+  - id: w11-certificate
+    title: Week 11 · Proving a plan is optimal
+    summary: >-
+      Max-flow min-cut was one case of a general pattern, and the bakery's constraints can
+      be added up into a proof that no plan beats $1900.
+  - id: w11-dual
+    title: Week 11 · Building the dual
+    summary: >-
+      Three requirements on the multipliers, and the search for the best ones turns out to be
+      a linear program of its own.
+  - id: w11-rules
+    title: Week 11 · The dual of any LP
+    summary: >-
+      Rows become variables and variables become rows, with the sign rules for `≤`, `=` and
+      `≥` constraints and for free variables.
+  - id: w11-review
+    title: Week 11 · Where we landed
 ---

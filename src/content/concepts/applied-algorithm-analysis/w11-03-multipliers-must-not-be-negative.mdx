@@ -1,0 +1,111 @@
+---
+course: applied-algorithm-analysis
+section: w11-dual
+order: 2120
+title: Multipliers Must Not Be Negative
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week11.html?hash=true#/7
+    caption: Slides 8–9 of 24 — one multiplier per constraint, and the first requirement on them.
+notation:
+  - symbol: "y₁, y₂, y₃"
+    reads: y one, y two, y three
+    means: >-
+      The multipliers, one for each constraint, in the order the constraints are written.
+      Subscripts number them. They never multiply.
+  - symbol: "yᵢ"
+    reads: y sub i, or y i
+    means: >-
+      "The multiplier of constraint number `i`", when talking about all of them at once.
+  - symbol: "y₁, y₂, y₃ ≥ 0"
+    reads: y one, y two and y three are all at least zero
+    means: >-
+      Shorthand for three separate conditions. Zero is allowed, and it means that
+      constraint is left out of the sum.
+questions:
+  - ask: >-
+      The multipliers `(−1, 4, 2)` give a weighted sum with left-hand side `x₁ + 6x₂` and
+      right-hand side `−200 + 1200 + 800 = 1800`. Yet the plan `(100, 300)` earns 1900. Which
+      step of the argument failed?
+    choices:
+      - text: "Multiplying `x₁ ≤ 200` by −1 gives `−x₁ ≥ −200`, not `−x₁ ≤ −200`, so the three lines cannot be added as `≤` inequalities"
+        correct: true
+        explains: >-
+          A negative multiplier reverses the inequality. The line `−x₁ ≤ −200` is false for
+          the plan `(100, 300)`, since `−100` is not at most `−200`, and a sum that includes
+          a false line proves nothing.
+      - text: The left-hand side does not really equal the objective
+        explains: >-
+          It does: `(−1 + 2)x₁ + (4 + 2)x₂ = x₁ + 6x₂`. Matching the objective is not
+          enough when one of the weighted lines is false.
+      - text: The plan (100, 300) must be infeasible
+        explains: >-
+          It satisfies all three constraints: `100 ≤ 200`, `300 ≤ 300`, `400 ≤ 400`. The
+          plan is fine and the "bound" is what is wrong.
+      - text: The arithmetic on the right-hand side is wrong
+        explains: >-
+          `−200 + 1200 + 800` is 1800. The numbers were added correctly. The inequalities
+          should not have been.
+---
+
+The multipliers 0, 5 and 1 were a guess that worked. To search for multipliers on purpose,
+give each constraint an unknown one:
+
+| multiplier | constraint |
+| --- | --- |
+| `y₁` | `x₁ ≤ 200` |
+| `y₂` | `x₂ ≤ 300` |
+| `y₃` | `x₁ + x₂ ≤ 400` |
+
+The guess is the particular choice `(y₁, y₂, y₃) = (0, 5, 1)`. What must *any* choice
+satisfy for the argument to go through? There are three requirements. This is the first.
+
+## Multiplying an inequality
+
+Take a true statement, `3 ≤ 5`.
+
+| multiply both sides by | result | still true with `≤`? |
+| --- | --- | --- |
+| 2 | `6 ≤ 10` | yes |
+| 0 | `0 ≤ 0` | yes |
+| −1 | `−3 ≤ −5` | **no**. The true statement is `−3 ≥ −5` |
+
+Multiplying by a negative number flips the order. So a negative multiplier turns a `≤`
+constraint into a `≥` statement, and a `≥` statement cannot be added into a sum of `≤`
+statements.
+
+On the bakery: the plan with `x₁ = 50` satisfies `x₁ ≤ 200`. Multiply by −1 and keep the
+`≤`, and you would be claiming `−50 ≤ −200`, which is false.
+
+## Requirement 1
+
+To keep the direction of all three `≤` inequalities when multiplying:
+
+```
+y₁, y₂, y₃ ≥ 0
+```
+
+With that, each weighted constraint is true of every feasible plan:
+
+```
+y₁·x₁          ≤ 200y₁
+y₂·x₂          ≤ 300y₂
+y₃·(x₁ + x₂)   ≤ 400y₃
+```
+
+and so is their sum. Zero is allowed. A multiplier of 0 turns its line into `0 ≤ 0`, which
+is true and contributes nothing, so that constraint is not used. The guess `(0, 5, 1)` did
+exactly that with the first constraint.
+
+## What goes wrong without it
+
+The damage is not a weaker bound. It is a **false** one. A negative multiplier can produce a
+number below what a real plan earns, which is then not a bound at all. The knowledge check
+below works one such case through.
+
+Notice also what this requirement depends on: every constraint here is a `≤`. For a
+constraint written with `=` or `≥`, the allowed sign of its multiplier is different. That is
+the subject of the transformation rules later this week.
+
+> A multiplier on a `≤` constraint must be non-negative, because a negative number reverses
+> the inequality and the weighted lines could no longer be added.

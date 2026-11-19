@@ -1,0 +1,118 @@
+---
+course: applied-algorithm-analysis
+section: w11-review
+order: 2200
+title: Where We Landed
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week11.html?hash=true#/14
+    caption: Slide 15 of 24 — the duality theorem, which the week builds to. The reading is on slide 22 and the optional simplex videos on slide 24.
+notation:
+  - symbol: "max Z = min W"
+    reads: the maximum of zed equals the minimum of double-u
+    means: >-
+      The primal's best value equals the dual's best value, when a finite optimum exists.
+  - symbol: "y"
+    reads: y
+    means: >-
+      The dual variables: one multiplier per primal constraint.
+  - symbol: free
+    reads: free
+    means: >-
+      Not restricted in sign. Any real value is allowed.
+  - symbol: zero-sum game
+    reads: zero-sum game
+    means: >-
+      A two-player game in which one player's gain is exactly the other's loss. The subject
+      of the assigned reading, not of this page.
+questions:
+  - ask: >-
+      A maximisation primal has three rows, of types `≤`, `=` and `≥` in that order, and two
+      variables, `x₁ ≥ 0` and `x₂` free. Which describes its dual?
+    choices:
+      - text: "Three variables with `y₁ ≥ 0`, `y₂` free, `y₃ ≤ 0`, and two rows, a `≥` then an `=`"
+        correct: true
+        explains: >-
+          Rows give variables: `≤`, `=`, `≥` become `≥ 0`, free, `≤ 0`. Variables give rows:
+          `≥ 0` becomes a `≥` row and free becomes an equation.
+      - text: "Two variables with `y₁ ≥ 0`, `y₂` free, and three rows of types `≥`, `=`, `≤`"
+        explains: >-
+          This keeps the primal's shape and pairs rows with rows. The counts swap: three
+          primal rows mean three dual variables.
+      - text: "Three variables, all `≥ 0`, and two `≥` rows"
+        explains: >-
+          That is the rule for the special case where every row is `≤` and every variable is
+          `≥ 0`. The `=` and `≥` rows and the free variable each change one line.
+      - text: "Three variables with `y₁ ≥ 0`, `y₂` free, `y₃ ≤ 0`, and two rows, an `=` then a `≥`"
+        explains: >-
+          The variable signs are right. The rows are in the wrong order: `x₁ ≥ 0` gives the
+          first dual row, a `≥`, and free `x₂` gives the second, an `=`.
+---
+
+## The week in one argument
+
+| step | on the bakery | in general |
+| --- | --- | --- |
+| a plan shows what is possible | `(100, 300)` earns 1900 | any feasible `x` |
+| weighted constraints show what is impossible | multipliers `(0, 5, 1)` give `Z ≤ 1900` | any feasible `y` gives `Z ≤ W` |
+| the best multipliers are an LP | min `200y₁ + 300y₂ + 400y₃` | the dual |
+| the two meet | `1900 = 1900` | `max Z = min W` |
+
+## Why the dual looks the way it does
+
+Each line of the dual is a requirement for the weighted sum to be a valid upper bound.
+
+1. **Sign of each multiplier.** The weighted row must be a true `≤` statement, so a `≤` row
+   needs `y ≥ 0`.
+2. **Coefficient checks.** The weighted expression must be at least the objective. With
+   `x ≥ 0`, each collected coefficient need only be at least the objective's.
+3. **Minimise.** Among valid bounds, the smallest is the most informative.
+
+## The rules
+
+For a **maximisation** primal and its **minimisation** dual:
+
+| primal row | dual variable | | primal variable | dual row |
+| --- | --- | --- | --- | --- |
+| `≤` | `yᵢ ≥ 0` | | `xⱼ ≥ 0` | `≥ cⱼ` |
+| `=` | `yᵢ` free | | `xⱼ` free | `= cⱼ` |
+| `≥` | `yᵢ ≤ 0` | | | |
+
+Right-hand sides become objective coefficients, objective coefficients become right-hand
+sides, and the coefficient matrix is transposed. In matrix form, for the all-`≤`,
+all-non-negative case: max `cᵀx`, `Ax ≤ b`, `x ≥ 0` pairs with min `bᵀy`, `Aᵀy ≥ c`,
+`y ≥ 0`.
+
+## The theorem
+
+> If a linear program has a finite optimum, then so does its dual, and the two optimal values
+> are equal.
+
+Max-flow min-cut is the special case where the primal is the flow LP and the bounds are cuts.
+
+## The mistakes worth checking for
+
+| mistake | correction |
+| --- | --- |
+| a negative multiplier on a `≤` row | it reverses the row, and the "bound" can be false |
+| "the weighted sum must equal the objective" | at least the objective is enough when `x ≥ 0` |
+| "a looser bound is a wrong bound" | 4300 is valid for the bakery. It is only less useful |
+| dual with the primal's shape | `m` rows and `n` variables become `m` variables and `n` rows |
+| equality row → equality dual row | equality row → free *multiplier*. Free variable → equality row |
+| `y ≥ 0` for a `≥` row | `y ≤ 0` |
+| "the optimal `x` and `y` are equal" | the *values* `Z` and `W` are equal. `x` and `y` differ even in length |
+
+## Reading and optional material
+
+- **Reading:** Dasgupta, Papadimitriou and Vazirani, *Algorithms*, §7.5, on zero-sum games.
+  It is another application of linear programming and an introduction to game theory.
+- **Optional, the simplex algorithm:** the deck closes with two videos on how the simplex
+  method works, to be watched in order before reading notes or books:
+  [first video](https://www.youtube.com/watch?v=E72DWgKP_1Y), then
+  [second video](https://www.youtube.com/watch?v=FYqg62rYxhs). Week 10 covered the idea,
+  walking between neighbouring vertices. The mechanics are not part of this week's material.
+
+> Every linear maximisation has a partner minimisation whose feasible answers are upper
+> bounds. Build it by giving each constraint a multiplier and each variable a coefficient
+> check. When a finite optimum exists the two optimal values coincide, and a solution to each
+> is a checkable proof that the other is optimal.

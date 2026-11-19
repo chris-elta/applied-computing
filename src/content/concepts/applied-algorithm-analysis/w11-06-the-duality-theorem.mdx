@@ -1,0 +1,122 @@
+---
+course: applied-algorithm-analysis
+section: w11-dual
+order: 2150
+title: The Duality Theorem
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week11.html?hash=true#/13
+    caption: Slides 14–15 of 24 — primal and dual side by side on one number line, and the duality theorem with the cookie problem's two optimal solutions.
+notation:
+  - symbol: "max Z = min W"
+    reads: the maximum of zed equals the minimum of double-u
+    means: >-
+      The best primal value and the best dual value are the same number. It compares two
+      values, not the two solutions that produce them.
+  - symbol: "x = (100, 300)"
+    reads: x is the plan one hundred, three hundred
+    means: >-
+      A primal solution, listing `x₁` then `x₂`. It has one entry per primal variable.
+  - symbol: "y = (0, 5, 1)"
+    reads: y is zero, five, one
+    means: >-
+      A dual solution, listing `y₁`, `y₂`, `y₃`. It has one entry per primal *constraint*,
+      so it need not be the same length as `x`.
+  - symbol: strong duality
+    reads: strong duality
+    means: >-
+      The name for the two optimal values being equal, as opposed to the weaker fact that
+      every dual value is at least every primal value.
+questions:
+  - ask: >-
+      A classmate claims to have found non-negative multipliers for the bakery that satisfy
+      both coefficient checks and give `W = 1800`. Without seeing them, what can you say?
+    choices:
+      - text: "They have made an error, because the feasible plan (100, 300) earns 1900 and every dual feasible value is at least every primal feasible value"
+        correct: true
+        explains: >-
+          A feasible `y` proves that no plan earns more than `W`. A plan earning 1900 exists,
+          so no feasible `y` can have `W` below 1900.
+      - text: They have found a better bound than (0, 5, 1), so the maximum profit is at most 1800
+        explains: >-
+          That would contradict a plan you can check by hand. `(100, 300)` meets all three
+          constraints and earns 1900.
+      - text: It is possible, since the dual is a minimisation and 1800 is smaller than 1900
+        explains: >-
+          The dual minimises, but only down to the primal optimum. Its feasible values all sit
+          at or above 1900.
+      - text: Nothing, until the dual is solved by simplex
+        explains: >-
+          No algorithm is needed. One feasible plan worth 1900 already rules out every bound
+          below 1900.
+---
+
+Here are the two programs for the bakery.
+
+**Primal: maximise profit**
+
+```
+max   Z = x₁ + 6x₂
+s.t.  x₁ ≤ 200,   x₂ ≤ 300,   x₁ + x₂ ≤ 400
+      x₁, x₂ ≥ 0
+```
+
+**Dual: minimise the upper bound**
+
+```
+min   W = 200y₁ + 300y₂ + 400y₃
+s.t.  y₁ + y₃ ≥ 1,   y₂ + y₃ ≥ 6
+      y₁, y₂, y₃ ≥ 0
+```
+
+## One number line
+
+Every feasible `y` proves "no plan earns more than `W`". That was the chain of two
+inequalities. So any feasible primal value and any feasible dual value are in a fixed order:
+
+```
+Z of any feasible plan   ≤   W of any feasible multipliers
+```
+
+Mark the values on a line. Primal values pile up from the left, dual values from the right,
+and neither side can cross the other.
+
+| side | examples | where they sit |
+| --- | --- | --- |
+| primal feasible values | `(0, 0)` gives 0, `(200, 200)` gives 1400, `(100, 300)` gives 1900 | at or below 1900 |
+| dual feasible values | `(5, 3, 6)` gives 4300, `(0, 5, 1)` gives 1900 | at or above 1900 |
+
+The plan `(100, 300)` and the multipliers `(0, 5, 1)` both land on 1900. Nothing on the
+primal side can be higher, since the dual value 1900 is a bound. Nothing on the dual side can
+be lower, since a plan worth 1900 exists. Both are optimal.
+
+## The theorem
+
+For the bakery the two sides met. Did that have to happen, or could there have been a gap,
+with the best plan at 1900 and the best bound stuck at 1950? The theorem says no gap:
+
+> **Duality theorem.** If a linear program has a finite optimum, then so does its dual, and
+> the two optimal values are equal: `max Z = min W`.
+
+| | optimal primal solution | optimal dual solution |
+| --- | --- | --- |
+| solution | `x = (100, 300)` | `y = (0, 5, 1)` |
+| value | `Z = 100 + 6(300) = 1900` | `W = 200(0) + 300(5) + 400(1) = 1900` |
+
+The equality is between the two **values**. The solutions are different objects: `x` has two
+entries and `y` has three.
+
+## Two facts, of different strength
+
+| fact | what it says | how hard |
+| --- | --- | --- |
+| every dual value ≥ every primal value | bounds are valid | follows from the three requirements |
+| the best values are equal (**strong duality**) | a perfect bound always exists | the theorem. The slides state it without proof |
+
+The practical consequence is the one from max-flow min-cut. An optimal plan always comes with
+a short certificate, an optimal `y`, that anyone can verify by checking feasibility and
+comparing two numbers.
+
+> Every feasible dual value bounds every feasible primal value, and when a finite optimum
+> exists the best of each are equal. A plan and a set of multipliers with the same value
+> prove each other optimal.

@@ -1,0 +1,107 @@
+---
+course: applied-algorithm-analysis
+section: w11-certificate
+order: 2110
+title: A Bound from the Constraints
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week11.html?hash=true#/4
+    caption: Slides 5–7 of 24 — the cookie LP and its optimal plan, the question of proving it, and the multipliers 0, 5 and 1.
+notation:
+  - symbol: "Z = x₁ + 6x₂"
+    reads: zed equals x one plus six x two
+    means: >-
+      Daily profit: $1 per Classic cookie and $6 per Deluxe. The quantity being maximised.
+  - symbol: multiplier
+    reads: multiplier
+    means: >-
+      A number each side of a constraint is multiplied by before the constraints are added
+      together. One multiplier per constraint.
+  - symbol: weighted constraint
+    reads: weighted constraint
+    means: >-
+      A constraint after multiplying both sides by its multiplier. `x₂ ≤ 300` with
+      multiplier 5 becomes `5x₂ ≤ 1500`.
+  - symbol: attains
+    reads: attains
+    means: >-
+      Reaches exactly. A plan attains a bound when its value equals the bound.
+questions:
+  - ask: >-
+      Adding the weighted constraints gives `x₁ + 6x₂ ≤ 1900`. Why is that not yet enough to
+      say the maximum profit *is* $1900?
+    choices:
+      - text: It shows no plan earns more than 1900, but a feasible plan that earns exactly 1900 is still needed
+        correct: true
+        explains: >-
+          A bound is a ceiling. The plan `(100, 300)` is what shows the ceiling is reached.
+          The proof needs both halves, as with a flow and a cut.
+      - text: The inequality holds only for the plan (100, 300)
+        explains: >-
+          It holds for every feasible plan, because every feasible plan satisfies all three
+          constraints and so satisfies their weighted sum. That is what makes it a bound.
+      - text: The first constraint was multiplied by 0, so it was ignored and the bound may be wrong
+        explains: >-
+          Leaving a constraint out cannot make the bound wrong. The sum of the other two
+          weighted constraints is still true of every feasible plan.
+      - text: Simplex has to be run to confirm it
+        explains: >-
+          The point of the argument is that it needs no algorithm. Anyone can check it by
+          multiplying and adding three lines.
+---
+
+The bakery from week 10 makes Classic cookies (`x₁` per day) and Deluxe cookies (`x₂` per
+day):
+
+```
+max   Z = x₁ + 6x₂
+s.t.  x₁        ≤ 200
+           x₂   ≤ 300
+      x₁ + x₂   ≤ 400
+      x₁, x₂    ≥ 0
+```
+
+The optimal plan found there was `(x₁, x₂) = (100, 300)`, earning `100 + 6(300) = $1900`.
+
+Suppose someone doubts that. Showing them the plan proves $1900 is *possible*. It does not
+prove nothing better exists. Last week the reply was "compare every vertex" or "trust
+simplex". Is there a proof that uses only the constraints?
+
+## Multiply and add
+
+Every feasible plan obeys all three constraints. So it also obeys any constraint you can
+derive from them. Take the three constraints, multiply them by 0, 5 and 1, and add:
+
+| multiplier | constraint | weighted constraint |
+| --- | --- | --- |
+| 0 | `x₁ ≤ 200` | `0x₁ ≤ 0` |
+| 5 | `x₂ ≤ 300` | `5x₂ ≤ 1500` |
+| 1 | `x₁ + x₂ ≤ 400` | `x₁ + x₂ ≤ 400` |
+| | **sum** | `x₁ + 6x₂ ≤ 1900` |
+
+The left-hand side of the sum is the profit, exactly. So the last line reads: **every
+feasible plan earns at most $1900.**
+
+Why is adding allowed? If one quantity is at most 1500 and another is at most 400, their
+total is at most 1900. Each weighted line is true of every feasible plan, so the sum is too.
+
+## The two halves
+
+| what you show | what it proves |
+| --- | --- |
+| the plan `(100, 300)` is feasible and earns 1900 | the maximum is **at least** 1900 |
+| the weighted sum `x₁ + 6x₂ ≤ 1900` | the maximum is **at most** 1900 |
+
+Together: the maximum is $1900. The plan attains the bound, and the argument is the flow and
+cut argument again with the multipliers `(0, 5, 1)` standing where the cut stood. Nobody has
+to rerun an algorithm to check it. They multiply three lines and add.
+
+## The obvious question
+
+The numbers 0, 5 and 1 appeared from nowhere. They work, but a proof that depends on a lucky
+guess is not a method. The next concepts work out which multipliers are allowed, and then
+how to find the best ones systematically.
+
+> The constraints of an LP can be multiplied by numbers and added to give a new inequality
+> that every feasible plan obeys. If its left-hand side is the objective, its right-hand side
+> is an upper bound on the optimum, and a plan that attains it is proved optimal.

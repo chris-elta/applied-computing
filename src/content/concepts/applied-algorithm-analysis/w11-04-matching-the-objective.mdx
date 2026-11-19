@@ -1,0 +1,114 @@
+---
+course: applied-algorithm-analysis
+section: w11-dual
+order: 2130
+title: Matching the Objective, or Exceeding It
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week11.html?hash=true#/9
+    caption: Slides 10–11 of 24 — collecting the weighted sum by variable, matching its coefficients to the objective, and why larger coefficients also work.
+notation:
+  - symbol: coefficient
+    reads: co-eh-FISH-ent
+    means: >-
+      The fixed number multiplying a variable. In `x₁ + 6x₂` the coefficient of `x₂` is 6
+      and the coefficient of `x₁` is 1.
+  - symbol: "(y₁ + y₃)x₁"
+    reads: y one plus y three, times x one
+    means: >-
+      Everything multiplying `x₁` after the weighted constraints are added. `x₁` appears in
+      constraints 1 and 3, so those two multipliers are collected.
+  - symbol: "a ≤ b ≤ c"
+    reads: a is at most b, which is at most c
+    means: >-
+      A chain of two inequalities. Together they give `a ≤ c`.
+questions:
+  - ask: >-
+      The multipliers `(2, 6, 0)` are non-negative. Their weighted sum is
+      `2x₁ + 6x₂ ≤ 400 + 1800 = 2200`. Does this prove that every feasible plan earns at
+      most $2200?
+    choices:
+      - text: "Yes. Since `x₁ ≥ 0`, profit `x₁ + 6x₂` is at most `2x₁ + 6x₂`, which is at most 2200"
+        correct: true
+        explains: >-
+          The coefficients satisfy `2 ≥ 1` and `6 ≥ 6`, so the weighted expression is at
+          least the profit for any non-negative plan. The bound is valid, though looser than
+          1900.
+      - text: "No. The left-hand side is `2x₁ + 6x₂`, which is not the objective"
+        explains: >-
+          It does not have to equal the objective. It has to be at least as large, and with
+          `x₁ ≥ 0` a coefficient of 2 in place of 1 only makes it larger.
+      - text: No. Only the multipliers (0, 5, 1) give a valid bound
+        explains: >-
+          Many choices give valid bounds. `(0, 5, 1)` gives the *smallest* one, which is a
+          separate matter from validity.
+      - text: Yes, and it shows the maximum profit is $2200
+        explains: >-
+          It shows the maximum is at most 2200. No feasible plan earns 2200, so this bound is
+          not attained.
+---
+
+With non-negative multipliers, the three weighted constraints can be added. Collect the
+result by variable. `x₁` appears in constraints 1 and 3, and `x₂` in constraints 2 and 3:
+
+```
+(y₁ + y₃)x₁ + (y₂ + y₃)x₂  ≤  200y₁ + 300y₂ + 400y₃
+```
+
+This is true of every feasible plan, whatever non-negative `y` you pick. To turn it into a
+statement about profit, the left-hand side has to relate to `x₁ + 6x₂`.
+
+## Requirement 2, first version: equal coefficients
+
+The direct way is to make the left-hand side *be* the objective:
+
+```
+y₁ + y₃ = 1      (coefficient of x₁)
+y₂ + y₃ = 6      (coefficient of x₂)
+```
+
+The earlier guess `(0, 5, 1)` satisfies both: `0 + 1 = 1` and `5 + 1 = 6`. That is why it
+worked.
+
+## Requirement 2, as actually needed: larger also works
+
+Equality is more than the argument needs. Try the multipliers `(5, 3, 6)`. The collected sum
+is `11x₁ + 9x₂ ≤ 4300`. Is profit at most 4300?
+
+Compare term by term. Nobody bakes a negative number of cookies, so `x₁ ≥ 0`, and then
+`1·x₁ ≤ 11·x₁`. Likewise `6x₂ ≤ 9x₂`. So
+
+```
+x₁ + 6x₂   ≤   11x₁ + 9x₂   ≤   4300
+```
+
+In general, it is enough to require
+
+```
+y₁ + y₃ ≥ 1      y₂ + y₃ ≥ 6
+```
+
+and then every feasible plan satisfies a chain of two inequalities:
+
+| step | inequality | why it holds |
+| --- | --- | --- |
+| first | profit `x₁ + 6x₂` ≤ weighted expression `(y₁ + y₃)x₁ + (y₂ + y₃)x₂` | the variables are non-negative and the coefficients are at least as large |
+| second | weighted expression ≤ upper bound `200y₁ + 300y₂ + 400y₃` | it is the sum of the weighted constraints |
+
+## The assumption doing the work
+
+The first step leans on `x₁, x₂ ≥ 0`. If a variable could be negative, a larger coefficient
+could make its term *smaller*: with `x₁ = −10`, `11x₁ = −110` is below `1·x₁ = −10`. So
+"at least" is allowed only because the primal's variables are non-negative. When a variable
+is free in sign, later this week, the coefficient will have to match exactly.
+
+Each requirement so far is tied to one feature of the primal:
+
+| primal feature | what it permits |
+| --- | --- |
+| constraints are `≤` | multipliers must be `≥ 0` |
+| variables are `≥ 0` | collected coefficients need only be `≥` the objective's |
+
+> Non-negative multipliers whose collected coefficients are at least the objective's give a
+> valid upper bound on profit: profit ≤ weighted expression ≤ right-hand side. The first
+> step is where the non-negativity of the variables is used.

@@ -1,0 +1,115 @@
+---
+course: applied-algorithm-analysis
+section: w11-rules
+order: 2180
+title: "Worked Dual: An Equality Row and a Free Variable"
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week11.html?hash=true#/18
+    caption: Slide 19 of 24 — Example 1, a primal with one ≤ row, one equality row and one free variable, beside its dual.
+notation:
+  - symbol: "x₂ free"
+    reads: x two is free
+    means: >-
+      `x₂` may be any real number. There is no `x₂ ≥ 0` condition.
+  - symbol: row
+    reads: row
+    means: >-
+      One constraint of an LP, not counting the sign conditions on the variables.
+  - symbol: column
+    reads: column
+    means: >-
+      Everything belonging to one variable: its coefficient in each row and in the
+      objective.
+questions:
+  - ask: >-
+      In Example 1 the dual variable `y₂` is free. Which feature of the primal causes that?
+    choices:
+      - text: "The second primal row, `x₁ + 3x₂ = 12`, is an equation"
+        correct: true
+        explains: >-
+          `y₂` is the multiplier of row 2. An equation can be multiplied by any number and
+          stay true, so its multiplier needs no sign condition.
+      - text: "The second primal variable, `x₂`, is free"
+        explains: >-
+          That is the tempting one, since both carry a 2. A free `x₂` makes the second dual
+          *row* an equation, `y₁ + 3y₂ = 4`. It says nothing about `y₂`'s sign.
+      - text: The coefficient of y₂ in the dual objective, 12, is the largest
+        explains: >-
+          The size of a coefficient never sets a sign condition. Only the row type does.
+      - text: The primal is a maximisation
+        explains: >-
+          Every primal this week is a maximisation, and most multipliers are still sign
+          constrained. `y₁` in this very example is `≥ 0`.
+---
+
+Here is a primal that breaks both assumptions of the matrix form: its second row is an
+equation and its second variable is free.
+
+```
+max   Z = 3x₁ + 4x₂
+s.t.  2x₁ +  x₂  ≤ 10
+       x₁ + 3x₂  = 12
+      x₁ ≥ 0,   x₂ free
+```
+
+## Building the dual in four passes
+
+**1 · Count.** Two rows give two dual variables, `y₁` and `y₂`. Two variables give two dual
+rows.
+
+**2 · Objective.** The right-hand sides 10 and 12 become the coefficients:
+`min W = 10y₁ + 12y₂`.
+
+**3 · Dual rows, one per primal column.** Read down each variable's column, and put its
+objective coefficient on the right.
+
+| primal variable | its column (row 1, row 2) | objective coefficient | sign of variable | dual row |
+| --- | --- | --- | --- | --- |
+| `x₁` | 2, 1 | 3 | `≥ 0` | `2y₁ + y₂ ≥ 3` |
+| `x₂` | 1, 3 | 4 | free | `y₁ + 3y₂ = 4` |
+
+**4 · Signs of the dual variables, one per primal row.**
+
+| primal row | type | dual variable |
+| --- | --- | --- |
+| `2x₁ + x₂ ≤ 10` | `≤` | `y₁ ≥ 0` |
+| `x₁ + 3x₂ = 12` | `=` | `y₂` free |
+
+## The result
+
+```
+min   W = 10y₁ + 12y₂
+s.t.  2y₁ +  y₂  ≥ 3
+       y₁ + 3y₂  = 4
+      y₁ ≥ 0,   y₂ free
+```
+
+| primal feature | dual consequence |
+| --- | --- |
+| row 1 is `≤`, row 2 is `=` | `y₁ ≥ 0`, `y₂` is free |
+| `x₁ ≥ 0`, `x₂` is free | dual row 1 is `≥`, dual row 2 is `=` |
+
+## Checking it against the theorem
+
+The slide stops at the dual. As a check, both programs are small enough to solve by
+substitution, and the duality theorem says the answers must agree.
+
+- **Primal.** The equation gives `x₂ = (12 − x₁)/3`. Then `Z = 16 + (5/3)x₁`, and row 1
+  becomes `x₁ ≤ 3.6`. Best plan: `x = (3.6, 2.8)` with `Z = 10.8 + 11.2 = 22`.
+- **Dual.** The equation gives `y₂ = (4 − y₁)/3`. Then `W = 16 + 6y₁`, and row 1 becomes
+  `y₁ ≥ 1`. Best multipliers: `y = (1, 1)` with `W = 10 + 12 = 22`.
+
+Both come to 22. You can also see the certificate directly: `1 × (row 1) + 1 × (row 2)` is
+`3x₁ + 4x₂ ≤ 22`, the objective on the left and the bound on the right.
+
+## A coincidence to ignore
+
+In this example the dual's coefficient grid looks the same as the primal's. That is only
+because the two off-diagonal coefficients, `x₂` in row 1 and `x₁` in row 2, are both 1, so
+swapping rows and columns changes nothing. Always read **columns**. The next example has a
+grid where reading rows by mistake does not even give the right number of constraints.
+
+> Work in a fixed order: count, write the objective from the right-hand sides, write one dual
+> row per primal column, then set each multiplier's sign from its primal row. Row types set
+> variable signs. Variable signs set row types.

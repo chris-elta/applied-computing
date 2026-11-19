@@ -1,7 +1,7 @@
 ---
 course: applied-algorithm-analysis
 title: "Applied Algorithm Analysis · Final Exam"
-minutes: 180
+minutes: 190
 passMark: 60
 questions:
   - topic: "Week 1 · Big-O and growth"
@@ -2123,6 +2123,139 @@ questions:
       At u ∈ L: inflow ≤ c(s → u) = 2, so up to two edges u → v carry flow.
       At v ∈ R: outflow ≤ c(v → t) = 1, so v is still used at most once.
       The flow finds the largest such assignment. The matching rule needs capacity 1 on s → u.
+  - topic: "Week 11 · Linear programming duality"
+    ask: "An LP is: maximise `2x₁ + 3x₂` subject to `x₁ + x₂ ≤ 4`, `x₁ + 3x₂ ≤ 6`, `x₁, x₂ ≥ 0`. Someone multiplies the constraints by `(2, 1)` and adds them, getting `3x₁ + 5x₂ ≤ 14`. What does this establish?"
+    choices:
+      - text: "Nothing, because `3x₁ + 5x₂` is not the objective"
+        explains: "The sum need not equal the objective. With `x₁, x₂ ≥ 0`, coefficients that are at least the objective's are enough."
+      - text: "Every feasible plan has objective value at most 14"
+        correct: true
+        explains: "Right. `3 ≥ 2` and `5 ≥ 3`, so `2x₁ + 3x₂ ≤ 3x₁ + 5x₂ ≤ 14` for any non-negative feasible plan. The bound is valid, though not tight."
+      - text: "The maximum of the LP is 14"
+        explains: "A bound is a ceiling, not the optimum. The optimum here is 9, so 14 is valid but loose."
+      - text: "Every feasible plan has objective value at least 14"
+        explains: "The weighted constraints are `≤` statements, so they bound the objective from above."
+    work: |-
+      Multipliers (2, 1) are non-negative, so both weighted rows keep their direction.
+      Collected coefficients: x₁ gets 2 + 1 = 3 ≥ 2, and x₂ gets 2 + 3 = 5 ≥ 3.
+      Right-hand side: 2(4) + 1(6) = 14.
+      Chain: 2x₁ + 3x₂ ≤ 3x₁ + 5x₂ ≤ 14, using x₁, x₂ ≥ 0 for the first step.
+      For comparison, multipliers (1.5, 0.5) give exactly 2x₁ + 3x₂ ≤ 9, and the plan (3, 1) earns 9.
+  - topic: "Week 11 · Linear programming duality"
+    ask: "An LP is: maximise `x₂` subject to `x₁ ≤ 5`, `x₁ + x₂ ≤ 8`, `x₁, x₂ ≥ 0`. A student multiplies the first constraint by `−1` and the second by `1`, adds them, and concludes `x₂ ≤ 3`. But the plan `(0, 8)` is feasible. What went wrong?"
+    choices:
+      - text: "The plan `(0, 8)` is not actually feasible"
+        explains: "It is: `0 ≤ 5`, `0 + 8 ≤ 8`, and both variables are non-negative."
+      - text: "The second constraint should have had a larger multiplier"
+        explains: "The multiplier 1 on the second constraint is fine. On its own it gives the valid bound `x₂ ≤ x₁ + x₂ ≤ 8`."
+      - text: "Multiplying `x₁ ≤ 5` by `−1` gives `−x₁ ≥ −5`, so it cannot be added as a `≤` row"
+        correct: true
+        explains: "Right. A negative multiplier reverses the inequality. The line `−x₁ ≤ −5` is false for the plan `(0, 8)`, and a sum containing a false line proves nothing."
+      - text: "The left-hand side must exceed the objective, and here it only equals it"
+        explains: "Equal is allowed. The trouble is that one of the lines being added is not true."
+    work: |-
+      Requirement 1: multipliers on ≤ rows must be ≥ 0.
+      −1 × (x₁ ≤ 5) is −x₁ ≥ −5. Written as −x₁ ≤ −5 it fails at x₁ = 0, since 0 ≤ −5 is false.
+      A valid choice is (0, 1): x₂ ≤ x₁ + x₂ ≤ 8, using x₁ ≥ 0.
+      The plan (0, 8) attains 8, so the maximum is 8.
+  - topic: "Week 11 · Linear programming duality"
+    ask: "Which is the dual of: maximise `7x₁ + 2x₂ + 5x₃` subject to `x₁ + 2x₂ ≤ 30`, `3x₁ + x₃ ≤ 45`, `x₁, x₂, x₃ ≥ 0`?"
+    choices:
+      - text: "minimise `30y₁ + 45y₂` subject to `y₁ + 3y₂ ≥ 7`, `2y₁ ≥ 2`, `y₂ ≥ 5`, `y₁, y₂ ≥ 0`"
+        correct: true
+        explains: "Right. Two rows give two multipliers. Each of the three variables gives one check, read down its column."
+      - text: "minimise `7y₁ + 2y₂ + 5y₃` subject to `y₁ + 2y₂ ≥ 30`, `3y₁ + y₃ ≥ 45`, `y ≥ 0`"
+        explains: "This copies the primal and renames `x` to `y`. The dual has one variable per primal *constraint*, so two, and the numbers 30 and 45 move into the objective."
+      - text: "minimise `30y₁ + 45y₂` subject to `y₁ + 3y₂ ≤ 7`, `2y₁ ≤ 2`, `y₂ ≤ 5`, `y₁, y₂ ≥ 0`"
+        explains: "The collected coefficients must be at least the objective's for the bound to hold. With `≤`, `y = (0, 0)` would be feasible and would 'prove' the profit is at most 0."
+      - text: "maximise `30y₁ + 45y₂` subject to `y₁ + 3y₂ ≥ 7`, `2y₁ ≥ 2`, `y₂ ≥ 5`, `y₁, y₂ ≥ 0`"
+        explains: "Every feasible `y` gives an upper bound, and the useful one is the smallest. Maximising would look for the worst bound, and here there is no largest."
+    work: |-
+      Objective: right-hand sides 30 and 45 become coefficients, min 30y₁ + 45y₂.
+      Column of x₁: (1, 3), objective coefficient 7, so y₁ + 3y₂ ≥ 7.
+      Column of x₂: (2, 0), objective coefficient 2, so 2y₁ ≥ 2.
+      Column of x₃: (0, 1), objective coefficient 5, so y₂ ≥ 5.
+      Both primal rows are ≤, so y₁, y₂ ≥ 0.
+  - topic: "Week 11 · Linear programming duality"
+    ask: "For a maximisation LP you hold a feasible plan worth 46 and a feasible dual solution worth 52. What can you conclude about the LP's optimal value `Z*`?"
+    choices:
+      - text: "`Z* = 49`, the midpoint"
+        explains: "Nothing places the optimum in the middle. It could be anywhere from 46 to 52."
+      - text: "The plan worth 46 is optimal"
+        explains: "That would need a dual solution worth 46. A bound of 52 leaves room for a better plan."
+      - text: "Nothing, because the two values differ"
+        explains: "They still say something. One is a floor and the other a ceiling."
+      - text: "`46 ≤ Z* ≤ 52`"
+        correct: true
+        explains: "Right. A feasible plan shows the optimum is at least its value, and a feasible dual solution shows no plan exceeds its value."
+    work: |-
+      Any feasible primal value ≤ Z* ≤ any feasible dual value.
+      So 46 ≤ Z* ≤ 52.
+      The gap of 6 means at least one of the two is not optimal. By the duality theorem a pair with equal values exists.
+  - topic: "Week 11 · Linear programming duality"
+    ask: "A maximisation LP with 5 variables and 3 constraints, all `≤` with non-negative variables, has a finite optimum of 120. What does the duality theorem guarantee about its dual?"
+    choices:
+      - text: "It has 5 variables and 3 constraints, and its minimum is 120"
+        explains: "The value is right, but the counts swap. Three primal constraints give three dual variables."
+      - text: "It has 3 variables and 5 constraints, and its minimum is 120"
+        correct: true
+        explains: "Right. One multiplier per primal constraint, one check per primal variable, and equal optimal values."
+      - text: "It has 3 variables and 5 constraints, and its optimal solution is the same vector as the primal's"
+        explains: "The optimal *values* are equal. The solutions cannot be the same vector: one has 5 entries and the other 3."
+      - text: "It has 3 variables and 5 constraints, and its minimum is at least 120 but may be larger"
+        explains: "That is only the bound property. The theorem is stronger: with a finite primal optimum there is no gap."
+    work: |-
+      Primal: n = 5 variables, m = 3 constraints.
+      Dual: m = 3 variables, n = 5 constraints.
+      Duality theorem: finite primal optimum ⇒ finite dual optimum, and max Z = min W = 120.
+  - topic: "Week 11 · Linear programming duality"
+    ask: "A maximisation primal contains the row `x₁ − x₂ ≥ 3`. What sign condition does that row's dual variable `y` carry?"
+    choices:
+      - text: "`y ≥ 0`"
+        explains: "That is the rule for a `≤` row. A non-negative multiple of a `≥` row is still a `≥` statement, which cannot be added into an upper bound."
+      - text: "`y ≤ 0`"
+        correct: true
+        explains: "Right. A negative multiplier reverses the `≥` into a `≤`, which is what the weighted sum needs."
+      - text: "`y` is free"
+        explains: "Free multipliers belong to equality rows, which stay true under any multiplier. An inequality keeps its usefulness only for one sign."
+      - text: "It has no dual variable, because only `≤` rows are used"
+        explains: "Every primal row gives a dual variable. The row type only decides the sign."
+    work: |-
+      Rules for a max primal: ≤ row → y ≥ 0, = row → y free, ≥ row → y ≤ 0.
+      Example: −2 × (x₁ − x₂ ≥ 3) is −2x₁ + 2x₂ ≤ −6, a valid ≤ statement.
+  - topic: "Week 11 · Linear programming duality"
+    ask: "Primal: maximise `2x₁ + 5x₂` subject to `x₁ + x₂ ≤ 6`, `3x₁ − 2x₂ = 1`, with `x₁ ≥ 0` and `x₂` free. Which is the dual constraint that belongs to `x₂`?"
+    choices:
+      - text: "`y₁ − 2y₂ ≥ 5`"
+        explains: "Right expression, wrong relation. `≥` is safe only when the variable is non-negative. `x₂` is free, so the coefficients must match exactly."
+      - text: "`3y₁ − 2y₂ = 5`"
+        explains: "This reads across the second primal row. A dual row is read down a column: `x₂` has coefficient 1 in row 1 and −2 in row 2."
+      - text: "`y₁ − 2y₂ = 5`"
+        correct: true
+        explains: "Right. Column of `x₂` is `(1, −2)`, its objective coefficient is 5, and a free variable gives an equation."
+      - text: "`y₁ − 2y₂ = 1`"
+        explains: "The 1 is the right-hand side of primal row 2, which goes into the dual objective. A dual row's right-hand side is the variable's objective coefficient, 5."
+    work: |-
+      Column of x₂: coefficient 1 in row 1 and −2 in row 2, so the left-hand side is y₁ − 2y₂.
+      Objective coefficient of x₂ is 5, so the right-hand side is 5.
+      x₂ is free, so the relation is =.
+      Full dual: min 6y₁ + y₂ subject to y₁ + 3y₂ ≥ 2, y₁ − 2y₂ = 5, y₁ ≥ 0, y₂ free.
+  - topic: "Week 11 · Linear programming duality"
+    ask: "Max-flow min-cut is described as a special case of LP duality. In that correspondence, what plays the role of a feasible dual solution?"
+    choices:
+      - text: "An augmenting path, because it improves the flow"
+        explains: "An augmenting path improves a primal solution. It bounds nothing."
+      - text: "A maximum flow, because it is optimal"
+        explains: "A flow is a solution of the maximisation, the primal side."
+      - text: "The residual graph at termination"
+        explains: "The final residual graph is where a minimum cut is read from, but the bound itself is the cut."
+      - text: "Any s–t cut, because its capacity is an upper bound on every flow"
+        correct: true
+        explains: "Right. Any feasible flow value is at most any cut capacity, as any primal value is at most any dual value. The minimum cut is the optimal dual solution."
+    work: |-
+      Primal: maximise flow. Dual: minimise an upper bound.
+      Any flow ≤ any cut ↔ any feasible Z ≤ any feasible W.
+      Max flow = min cut ↔ max Z = min W.
 written:
   - topic: "Week 1 · Big-O and growth"
     ask: |-
@@ -2459,14 +2592,58 @@ written:
       - "Marking order `a, c, e, b, d`, with a backward edge (`b → c`) named"
       - "Case 1: nested call finishes first"
       - "Case 2: `w` cannot reach `v` without a cycle; the DAG assumption is used here and only here"
+  - topic: "Week 11 · Linear programming duality"
+    ask: |-
+      Consider the LP: maximise `Z = 4x₁ + 3x₂` subject to `x₁ ≤ 3`, `x₁ + x₂ ≤ 5`, `x₁, x₂ ≥ 0`.
+      (a) Write its dual.
+      (b) Show that `y = (1, 3)` is feasible for the dual, and write out the weighted sum of the primal constraints it stands for.
+      (c) Show that the plan `x = (3, 2)` is optimal.
+      (d) The multipliers `y = (4, 3)` are also dual feasible. What do they prove, and why are they less useful?
+    answer: |-
+      (a) One multiplier per constraint: `y₁` for `x₁ ≤ 3`, `y₂` for `x₁ + x₂ ≤ 5`.
+      Dual: minimise `W = 3y₁ + 5y₂` subject to `y₁ + y₂ ≥ 4` (column of `x₁`), `y₂ ≥ 3` (column of `x₂`), `y₁, y₂ ≥ 0`.
+      (b) `1 + 3 = 4 ≥ 4`, `3 ≥ 3`, and both are non-negative, so `y = (1, 3)` is feasible. `W = 3(1) + 5(3) = 18`.
+      Weighted sum: `1·(x₁ ≤ 3)` plus `3·(x₁ + x₂ ≤ 5)` gives `4x₁ + 3x₂ ≤ 18`.
+      (c) `x = (3, 2)` is feasible: `3 ≤ 3`, `3 + 2 ≤ 5`, both non-negative. `Z = 4(3) + 3(2) = 18`.
+      Every feasible plan has `Z ≤ 18` by (b), and this plan attains 18, so it is optimal. `y = (1, 3)` is optimal for the dual for the same reason.
+      (d) `4 + 3 = 7 ≥ 4` and `3 ≥ 3`, so it is feasible, with `W = 3(4) + 5(3) = 27`. It proves `Z ≤ 27`.
+      That is true but loose: it leaves open whether a plan worth more than 18 exists. The dual minimises `W` to find the tightest bound.
+    rubric:
+      - "Dual objective `min 3y₁ + 5y₂`, from the right-hand sides"
+      - "Dual constraints `y₁ + y₂ ≥ 4` and `y₂ ≥ 3`, with `y ≥ 0`"
+      - "`y = (1, 3)` checked against both constraints, with `W = 18` or the sum `4x₁ + 3x₂ ≤ 18`"
+      - "`x = (3, 2)` checked feasible with `Z = 18`, and optimality concluded from the equal values"
+      - "`y = (4, 3)` gives the valid but looser bound 27"
+  - topic: "Week 11 · Linear programming duality"
+    ask: |-
+      Write the dual of the following LP, and give the reason for each sign condition and each relation (`≥` or `=`).
+      maximise `Z = 2x₁ − 3x₂ + x₃`
+      subject to `x₁ + 2x₂ − x₃ ≤ 7`, `4x₁ + x₃ = 5`, `x₂ + 3x₃ ≥ 2`
+      with `x₁ ≥ 0`, `x₂` free, `x₃ ≥ 0`.
+    answer: |-
+      Three rows give three dual variables `y₁, y₂, y₃`. Three variables give three dual rows.
+      Objective, from the right-hand sides: minimise `W = 7y₁ + 5y₂ + 2y₃`.
+      Column of `x₁` is `(1, 4, 0)`, objective coefficient 2, `x₁ ≥ 0`: `y₁ + 4y₂ ≥ 2`.
+      Column of `x₂` is `(2, 0, 1)`, objective coefficient −3, `x₂` free: `2y₁ + y₃ = −3`.
+      Column of `x₃` is `(−1, 1, 3)`, objective coefficient 1, `x₃ ≥ 0`: `−y₁ + y₂ + 3y₃ ≥ 1`.
+      Signs: row 1 is `≤`, so `y₁ ≥ 0`. Row 2 is `=`, so `y₂` is free. Row 3 is `≥`, so `y₃ ≤ 0`.
+      Reasons. A `≤` row keeps its direction only under a non-negative multiplier. An equation stays true under any multiplier. A `≥` row becomes a `≤` statement only under a non-positive multiplier.
+      For `x ≥ 0`, a collected coefficient at least the objective's makes the weighted term at least the objective's term. For free `x₂`, which may be negative, the coefficients must be equal.
+    rubric:
+      - "Objective `min 7y₁ + 5y₂ + 2y₃`"
+      - "Three dual rows read down the columns: `y₁ + 4y₂`, `2y₁ + y₃`, `−y₁ + y₂ + 3y₃`"
+      - "Right-hand sides 2, −3, 1 with relations `≥`, `=`, `≥`"
+      - "Signs `y₁ ≥ 0`, `y₂` free, `y₃ ≤ 0`"
+      - "A reason given for the multiplier signs (keeping each weighted row a valid `≤`)"
+      - "A reason given for the equation on the free variable's row"
 ---
-130 multiple-choice questions across all nine weeks. The paper is divided into sections, and nothing is revealed until you
+138 multiple-choice questions across all ten weeks. The paper is divided into sections, and nothing is revealed until you
 submit: pick an answer for each question (you can change it as often as you like), then submit a
 section to see your score for it, the correct answers, an explanation for each one you chose, and a
 worked solution. You can submit one section at a time, in any order, or the whole exam at once.
 
 There is no penalty for a wrong answer. Questions you leave blank in a section you submit count as wrong.
 
-Part 2, below the multiple-choice paper, has 20 short-answer questions in the style of the
+Part 2, below the multiple-choice paper, has 22 short-answer questions in the style of the
 assignments: write out the working, then check it against a model answer and mark yourself with the
 rubric. On the real midterm you may bring one handwritten, double-sided reference sheet for this part.

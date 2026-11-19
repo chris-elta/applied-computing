@@ -1,0 +1,121 @@
+---
+course: applied-algorithm-analysis
+section: w11-rules
+order: 2160
+title: The Dual in Matrix Form
+visuals:
+  - type: html
+    src: /slides/applied-algorithm-analysis/week11.html?hash=true#/15
+    caption: Slide 16 of 24 — primal and dual in matrix-vector form, for ≤ constraints and non-negative variables.
+notation:
+  - symbol: "A ∈ ℝᵐˣⁿ"
+    reads: A is an m by n real matrix
+    means: >-
+      A grid of numbers with `m` rows and `n` columns holding the constraint coefficients.
+      Row `i` is constraint `i`. Column `j` belongs to variable `xⱼ`.
+  - symbol: "b, c"
+    reads: b and c
+    means: >-
+      Two lists of numbers. `b` holds the `m` constraint limits. `c` holds the `n` objective
+      coefficients.
+  - symbol: "cᵀx"
+    reads: c transpose x
+    means: >-
+      Multiply matching entries of `c` and `x` and add them up. For `c = (1, 6)` it is
+      `x₁ + 6x₂`.
+  - symbol: "Aᵀ"
+    reads: A transpose
+    means: >-
+      `A` with rows and columns swapped. The first row of `Aᵀ` is the first column of `A`.
+  - symbol: "Ax ≤ b"
+    reads: A x is at most b
+    means: >-
+      All `m` constraints at once, compared entry by entry. So is `x ≥ 0`: every entry of
+      `x` is at least zero.
+questions:
+  - ask: >-
+      A primal in this form has 4 constraints and 7 variables. What does its dual have?
+    choices:
+      - text: 4 variables and 7 constraints
+        correct: true
+        explains: >-
+          One multiplier per primal constraint gives `y` four entries. One coefficient check
+          per primal variable gives `Aᵀy ≥ c` seven rows.
+      - text: 7 variables and 4 constraints
+        explains: >-
+          That is the primal's own shape. The dual swaps the counts, because `Aᵀ` has the rows
+          and columns of `A` exchanged.
+      - text: 4 variables and 4 constraints
+        explains: >-
+          The number of dual constraints comes from the number of primal variables, since
+          each variable's coefficient must be checked. Here that is 7.
+      - text: 7 variables and 7 constraints
+        explains: >-
+          The dual variables are multipliers on the primal's constraints, and there are only
+          4 constraints to multiply.
+---
+
+The bakery's dual was built by hand: collect what multiplies `x₁`, collect what multiplies
+`x₂`, compare each to the objective. That procedure is the same for any LP of the same kind,
+and matrix notation writes it once for all of them.
+
+## Packing the bakery into `A`, `b`, `c`
+
+Write the constraint coefficients as a grid, one row per constraint and one column per
+variable. A variable missing from a constraint gets a 0.
+
+```
+          x₁  x₂
+     A = [ 1   0 ]      b = (200, 300, 400)      c = (1, 6)
+         [ 0   1 ]
+         [ 1   1 ]
+```
+
+Then `Ax ≤ b` says all three constraints at once, and `cᵀx` is the objective `x₁ + 6x₂`.
+
+## The general pair
+
+For `≤` constraints and non-negative primal variables:
+
+| | primal | dual |
+| --- | --- | --- |
+| objective | max `cᵀx` | min `bᵀy` |
+| constraints | `Ax ≤ b` | `Aᵀy ≥ c` |
+| variables | `x ≥ 0` | `y ≥ 0` |
+
+Here `A` has `m` rows and `n` columns, `b` has `m` entries and `c` has `n`. So `x` has `n`
+variables and `y` has `m`.
+
+## Why the transpose appears
+
+To find what multiplies `x₁` in the weighted sum, you read *down* the `x₁` column of `A`,
+taking each entry times its row's multiplier: `1·y₁ + 0·y₂ + 1·y₃ = y₁ + y₃`. A column of `A`
+is a row of `Aᵀ`, so the collected coefficients are the entries of `Aᵀy`:
+
+```
+          y₁  y₂  y₃
+    Aᵀ = [ 1   0   1 ]       Aᵀy = (y₁ + y₃,  y₂ + y₃)  ≥  (1, 6) = c
+         [ 0   1   1 ]
+```
+
+Those are the bakery's two dual constraints. And `bᵀy = 200y₁ + 300y₂ + 400y₃` is its
+objective. The slide notes that `Aᵀy ≥ c` is the column-vector way of writing `yᵀA ≥ cᵀ`.
+Both say the same `n` inequalities.
+
+## What to read off
+
+| in the primal | in the dual |
+| --- | --- |
+| `m` constraints | `m` variables |
+| `n` variables | `n` constraints |
+| limits `b` | objective coefficients |
+| objective coefficients `c` | limits |
+| `A` | `Aᵀ` |
+| max, `≤` | min, `≥` |
+
+This table is valid only under the form's two assumptions, every constraint a `≤` and every
+variable `≥ 0`. Those are the features the three requirements relied on. The next concept
+relaxes both.
+
+> For max `cᵀx` with `Ax ≤ b`, `x ≥ 0`, the dual is min `bᵀy` with `Aᵀy ≥ c`, `y ≥ 0`.
+> The matrix is transposed and `b` and `c` trade places.
