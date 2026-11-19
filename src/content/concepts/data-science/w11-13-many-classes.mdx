@@ -1,0 +1,99 @@
+---
+course: data-science
+section: w11-classes
+order: 1690
+title: Many Classes and Hierarchical Classification
+visuals:
+  - type: svg
+    src: data-science/w11-logistic-2/20.svg
+    caption: Slide 20 of 23 (logistic regression, part 2) — why classification gets harder as classes multiply.
+  - type: svg
+    src: data-science/w11-logistic-2/21.svg
+    caption: Slide 21 of 23 (logistic regression, part 2) — a taxonomy reduces the effective number of classes.
+notation:
+  - symbol: "k"
+    reads: k
+    means: >-
+      The number of classes.
+  - symbol: "1/k"
+    reads: one over k
+    means: >-
+      The accuracy of guessing at random among k equally likely classes. With 4 classes, 25%.
+questions:
+  - ask: "A classifier labels images into 1,000 equally common categories and is right 10% of the time. Is that a poor result?"
+    choices:
+      - text: "No: random guessing would score 0.1%, so the model is 100 times better than the baseline"
+        correct: true
+        explains: >-
+          The monkey is right `1/k = 1/1000` of the time. Accuracy only means something next to
+          that baseline, which falls as the number of classes grows.
+      - text: "Yes: any accuracy below 50% is worse than chance"
+        explains: >-
+          50% is chance for two classes only. With 1,000 classes chance is 0.1%.
+      - text: "Yes: it gets 90% of images wrong"
+        explains: >-
+          True, and it may not be good enough to use. But it is strong evidence the model has
+          learned something, and many of its errors may be near misses.
+      - text: "It cannot be judged without knowing the training set size"
+        explains: >-
+          The baseline comparison depends on the number of classes and their frequencies, not on
+          how much training data there was.
+---
+
+One-vs-all works for three classes. Nothing stops you using it for three thousand, and slide
+20 explains why that is much harder than it sounds.
+
+## The monkey baseline
+
+Week 9 introduced the monkey: a classifier that guesses at random. With `k` equally likely
+classes it is right `1/k` of the time.
+
+| classes `k` | random accuracy |
+| --- | --- |
+| 2 | 50% |
+| 10 | 10% |
+| 1,000 | 0.1% |
+
+Every added class lowers the floor and gives the model more ways to be wrong. An accuracy
+figure means nothing until you know `k`: 60% is weak for two classes and remarkable for a
+thousand.
+
+The slide adds two further difficulties.
+
+**Some mistakes are more acceptable than others.** With many classes, some are near
+neighbours. Calling a husky a wolf is a smaller error than calling it a toaster, yet plain
+accuracy counts both as equally wrong.
+
+**Rare classes become vanishingly small.** Split a fixed data set among more classes and
+some will have a handful of examples, or one. Each one-vs-all classifier for a rare class is
+then the grossly unbalanced problem from earlier in this section.
+
+## Grouping the classes
+
+Slide 21 offers a structural fix. Group the classes by similarity and build a **taxonomy**:
+a tree with broad categories at the top and specific ones beneath.
+
+The slide's example is ImageNet, which places 27 high-level categories (animal, appliance,
+food, furniture and so on) above 21,841 subcategories.
+
+Then **classify from the top down**. First decide which broad category the input belongs to.
+Then, within that category only, decide which subcategory. Continue until you reach a leaf.
+
+This is what the slide means by reducing the *effective* number of classes. No single
+decision chooses among 21,841 options. The first chooses among 27, and each later one chooses
+among the children of one node.
+
+It also addresses both extra difficulties. Mistakes made low in the tree are the acceptable
+kind, since the broad category is still right. And the upper-level classifiers pool the
+examples of all their descendants, so they are not starved of data even when individual
+leaves are rare.
+
+## The cost
+
+An error at the top cannot be repaired lower down. If the first classifier says "furniture",
+no second-level classifier will ever answer "husky". The taxonomy also has to exist and has
+to match what the features can distinguish, which takes knowledge of the domain.
+
+> With `k` classes, chance is `1/k`, errors differ in seriousness, and rare classes run out
+> of data. A taxonomy classified from the top down replaces one enormous decision with a
+> chain of small ones.

@@ -1,7 +1,7 @@
 ---
 course: data-science
 title: "Data Science · Final Exam"
-minutes: 140
+minutes: 160
 passMark: 60
 questions:
   - topic: "Week 1 · Thinking about data"
@@ -2001,8 +2001,273 @@ questions:
       Ridge (L₂): λ Σ θⱼ². Small coefficients cost almost nothing, so they shrink but stay non-zero.
       LASSO (L₁): λ Σ abs(θⱼ). Small coefficients still cost their full size, so many go to exactly 0.
       Standardise features first so coefficient sizes are comparable.
+  - topic: "Week 11 · Logistic regression and scale"
+    ask: "A model predicting whether a student passes has θ₀ = −6 and θ₁ = 2, where x₁ is hours studied. What does it output for a student who studied 4 hours?"
+    choices:
+      - text: "About 0.88"
+        correct: true
+        explains: "Right. θᵀx = −6 + 2 × 4 = 2, and g(2) = 1 / (1 + e⁻²) ≈ 0.88: an 88% estimated chance of passing."
+      - text: "2"
+        explains: "2 is θᵀx, the score before the sigmoid. Logistic regression's output is g(θᵀx), which is always between 0 and 1."
+      - text: "About 0.12"
+        explains: "That is g(−2), or equivalently the probability of failing. The score here is +2."
+      - text: "0.5"
+        explains: "g gives 0.5 only when θᵀx = 0, which happens at 3 hours. At 4 hours the score is positive."
+    work: |-
+      θᵀx = θ₀ + θ₁x₁ = −6 + 2 × 4 = 2.
+      e⁻² ≈ 0.135.
+      hθ(x) = 1 / (1 + 0.135) ≈ 0.88.
+      Read as P(pass given 4 hours) ≈ 88%.
+  - topic: "Week 11 · Logistic regression and scale"
+    ask: "A fitted logistic model has θ₀ = −8, θ₁ = 2, θ₂ = 1. Which of these points (x₁, x₂) does it classify as y = 1?"
+    choices:
+      - text: "(3, 1)"
+        explains: "−8 + 6 + 1 = −1, which is negative, so the prediction is y = 0."
+      - text: "(3, 3)"
+        correct: true
+        explains: "Right. −8 + 6 + 3 = 1 ≥ 0, so hθ(x) ≥ 0.5. The point is on the positive side of the line 2x₁ + x₂ = 8."
+      - text: "(1, 5)"
+        explains: "−8 + 2 + 5 = −1, negative. A large x₂ does not help enough because its weight is only 1."
+      - text: "(2, 3)"
+        explains: "−8 + 4 + 3 = −1, negative, so y = 0."
+    work: |-
+      Predict y = 1 when θᵀx ≥ 0, that is 2x₁ + x₂ ≥ 8.
+      (3, 1): 7. (3, 3): 9. (1, 5): 7. (2, 3): 7.
+      Only (3, 3) reaches 8.
+  - topic: "Week 11 · Logistic regression and scale"
+    ask: "A lender fits a straight line to past loans (1 = defaulted, 0 = repaid) and reads the output as a probability of default. For one applicant the line gives 1.3. What does this show?"
+    choices:
+      - text: "The applicant is certain to default"
+        explains: "Certainty would be exactly 1. A value of 1.3 is not a probability at all, so it cannot be read that way."
+      - text: "The line was fitted incorrectly"
+        explains: "A correctly fitted straight line still keeps rising or falling without limit. The fault is in using a line for this job."
+      - text: "A straight-line hypothesis is unbounded, so it cannot serve as a probability; passing θᵀx through the sigmoid keeps the output between 0 and 1"
+        correct: true
+        explains: "Right. This is one of the two reasons linear regression is the wrong tool for classification. The other is that extreme but easy examples tilt the line and move the threshold."
+      - text: "The threshold should be raised from 0.5 to 1.3"
+        explains: "Moving the threshold does not make 1.3 a meaningful probability, and other applicants will get negative values."
+    work: |-
+      Linear: hθ(x) = θᵀx, any real number, so it can be > 1 or < 0.
+      Logistic: hθ(x) = 1 / (1 + e^(−θᵀx)), always strictly between 0 and 1.
+      Only the second can be read as P(y = 1 given x).
+  - topic: "Week 11 · Logistic regression and scale"
+    ask: "A spam model is scored on three emails: spam with predicted probability 0.8, not spam with 0.1, and not spam with 0.9. Using natural logs, what is the logistic cost J(θ)?"
+    choices:
+      - text: "About 0.88"
+        correct: true
+        explains: "Right. The per-example costs are 0.223, 0.105 and 2.303, and their mean is 0.877. The one confident mistake supplies most of it."
+      - text: "About 0.11"
+        explains: "That averages only the two good predictions over three. The third email, called 90% spam when it was not, costs 2.303."
+      - text: "About 2.63"
+        explains: "That is the sum of the three costs. J(θ) is the average, so divide by m = 3."
+      - text: "About 0.33"
+        explains: "That is the error rate, one wrong out of three. The logistic cost uses the probabilities, not the thresholded answers."
+    work: |-
+      y = 1, h = 0.8: −log(0.8) = 0.223.
+      y = 0, h = 0.1: −log(1 − 0.1) = −log(0.9) = 0.105.
+      y = 0, h = 0.9: −log(1 − 0.9) = −log(0.1) = 2.303.
+      J(θ) = (0.223 + 0.105 + 2.303) / 3 = 2.631 / 3 ≈ 0.877.
+  - topic: "Week 11 · Logistic regression and scale"
+    ask: "A colleague trains logistic regression by gradient descent on squared error and gets different parameters from different starting points. What is the explanation?"
+    choices:
+      - text: "The learning rate is too large"
+        explains: "A large α causes overshooting or divergence. Settling at different places from different starts points to several minima."
+      - text: "Squared error with a sigmoid hypothesis is non-convex, so gradient descent stops in whichever local minimum is nearest; the log cost is convex and avoids this"
+        correct: true
+        explains: "Right. Convexity depends on the cost and the hypothesis together. The same squared error that was a bowl for linear regression has several dips here."
+      - text: "Logistic regression has no unique best parameters under any cost"
+        explains: "Under the log cost J(θ) is convex, and gradient descent reaches its minimum from any start."
+      - text: "The features were not scaled"
+        explains: "Unscaled features slow convergence. They do not create separate minima."
+    work: |-
+      Squared error: Cost = ½ (g(θᵀx) − y)². The sigmoid inside makes J(θ) non-convex.
+      Log cost: Cost = −y log h − (1 − y) log(1 − h). J(θ) is convex.
+      Convex: one minimum, reached from any starting point.
+  - topic: "Week 11 · Logistic regression and scale"
+    ask: "In one gradient descent step using a single training example, hθ(x) = 0.9, the true label is y = 0, the feature is xⱼ = 2 and α = 0.1. How does θⱼ change?"
+    choices:
+      - text: "It decreases by 0.18"
+        correct: true
+        explains: "Right. The step is −α (h − y) xⱼ = −0.1 × 0.9 × 2 = −0.18. The model was too confident of the positive class, so the weight on a positive feature is reduced."
+      - text: "It increases by 0.18"
+        explains: "The update subtracts α times the error times the feature. The error 0.9 − 0 is positive, so θⱼ goes down."
+      - text: "It decreases by 0.09"
+        explains: "That leaves out the feature value xⱼ = 2. The error is multiplied by the feature."
+      - text: "It does not change, because the prediction was wrong"
+        explains: "Wrong predictions are exactly the ones that move the parameters most."
+    work: |-
+      θⱼ := θⱼ − α (hθ(x) − y) xⱼ.
+      Error = 0.9 − 0 = 0.9.
+      Step = 0.1 × 0.9 × 2 = 0.18, subtracted.
+      Same form as linear regression, with hθ(x) = g(θᵀx).
+  - topic: "Week 11 · Logistic regression and scale"
+    ask: "A rare-disease data set has 200 positive and 100,000 negative patients. To balance it, an analyst copies each positive patient 500 times exactly. What is the main risk?"
+    choices:
+      - text: "The data set becomes too large to train on"
+        explains: "200,000 rows is small. Size is not the concern."
+      - text: "The model overfits: it sees the same 200 points repeatedly and can fit their particular quirks, since copies add weight but no new information"
+        correct: true
+        explains: "Right. The lecture attaches this warning to weighting and replication. Perturbing the copies, or generating points between neighbours as SMOTE does, reduces it; finding more real positives is better still."
+      - text: "The negatives are now under-represented"
+        explains: "The classes are now equal in size, which was the goal."
+      - text: "Logistic regression cannot handle duplicate rows"
+        explains: "Duplicates are handled without error. Each simply counts again in the cost."
+    work: |-
+      Before: 200 against 100,000, so the cost is dominated by negatives.
+      After copying: 100,000 against 100,000, but still only 200 distinct positives.
+      Options in order of information added: find more positives, then perturbed copies or SMOTE, then exact copies or weights.
+  - topic: "Week 11 · Logistic regression and scale"
+    ask: "SMOTE selects minority point p = (10, 4) and its minority neighbour n = (6, 8), and draws c = 0.75. Where is the synthetic point?"
+    choices:
+      - text: "(7, 7)"
+        correct: true
+        explains: "Right. n − p = (−4, 4); three quarters of that is (−3, 3); added to p gives (7, 7), three quarters of the way from p to n."
+      - text: "(8, 6)"
+        explains: "That is the midpoint, which needs c = 0.5."
+      - text: "(9, 5)"
+        explains: "That is a quarter of the way, c = 0.25. The fraction c is measured from p toward n."
+      - text: "(4.5, 6)"
+        explains: "That multiplies n by c. The formula is p + c(n − p), a step from p toward n."
+    work: |-
+      New point = p + c (n − p).
+      n − p = (6 − 10, 8 − 4) = (−4, 4).
+      c (n − p) = 0.75 × (−4, 4) = (−3, 3).
+      p + (−3, 3) = (7, 7).
+  - topic: "Week 11 · Logistic regression and scale"
+    ask: "A support desk sorts tickets into Billing, Technical, Account and Other using one-vs-all logistic regression. A new ticket scores 0.35, 0.45, 0.20 and 0.30 respectively. How many classifiers were trained, and what is predicted?"
+    choices:
+      - text: "Four classifiers; Technical"
+        correct: true
+        explains: "Right. One classifier per class, each against the rest, and the prediction is the class with the largest output, even though none exceeds 0.5 and the four sum to 1.30."
+      - text: "Three classifiers; Technical"
+        explains: "One-vs-all trains one classifier for every class, so four. No class is left as a default."
+      - text: "Four classifiers; no prediction, because no score reaches 0.5"
+        explains: "The rule is to take the maximum. The 0.5 threshold belongs to a single binary classifier."
+      - text: "One classifier with classes coded 1 to 4; Technical"
+        explains: "Numbering unordered categories invents an order among them. One-vs-all keeps each class separate."
+    work: |-
+      k = 4 classes, so 4 binary classifiers.
+      Outputs: 0.35, 0.45, 0.20, 0.30. Maximum is 0.45: Technical.
+      Sum = 1.30, not 1, because the classifiers are independent.
+  - topic: "Week 11 · Logistic regression and scale"
+    ask: "A classifier produces scores 3 and 1 for two classes. What probability does softmax give the first class, and how does that compare with dividing each score by the total?"
+    choices:
+      - text: "About 0.88 with softmax, against 0.75 by dividing by the total"
+        correct: true
+        explains: "Right. e³ ≈ 20.09 and e¹ ≈ 2.72, so softmax gives 20.09 / 22.80 ≈ 0.88. Standard normalisation gives 3 / 4. Softmax widens the gap."
+      - text: "0.75 with both"
+        explains: "0.75 is the standard normalisation. Softmax exponentiates the scores first, which favours the larger one."
+      - text: "About 0.67 with softmax, against 0.75"
+        explains: "Softmax sharpens differences and does not flatten them. The larger score gets more than its plain share."
+      - text: "About 0.95 with softmax, against 0.75"
+        explains: "0.95 would need a gap of 3 between the scores. The gap here is 2."
+    work: |-
+      Softmax: e³ = 20.09, e¹ = 2.72, total 22.80.
+      P(first) = 20.09 / 22.80 ≈ 0.88.
+      Standard: 3 / (3 + 1) = 0.75.
+      Softmax depends on the difference 3 − 1 = 2; standard on the ratio 3 : 1.
+  - topic: "Week 11 · Logistic regression and scale"
+    ask: "A retailer builds a demand model from four years of search-term data. It was accurate for a year and now overestimates badly, though the data volume has kept growing. Which weakness of big data is the most likely cause?"
+    choices:
+      - text: "Too little data"
+        explains: "The volume has grown. Shortage of data is not the issue."
+      - text: "Temporal bias: the link between searches and purchases held for the period it was learned in and has since shifted"
+        correct: true
+        explains: "Right. This is the Google Flu Trends pattern. Data gathered by opportunity reflects behaviour at the time, and more of it does not correct for behaviour changing."
+      - text: "Power-law redundancy"
+        explains: "Redundancy limits how much information the volume holds. It does not explain a model that worked and then drifted."
+      - text: "The algorithm is not linear in the number of records"
+        explains: "That would make training slow. It would not make the predictions wrong."
+    work: |-
+      Four problems of found data: unrepresentative participation, spam and machine content, power-law redundancy, temporal bias.
+      Accurate then drifting, with volume intact, points to temporal bias.
+      Remedy: retrain and re-validate on recent data, not collect more of the old kind.
+  - topic: "Week 11 · Logistic regression and scale"
+    ask: "A customer file of 40 million rows is sorted by sign-up date. An analyst loads the first 100,000 rows to study typical spending. What is wrong, and what is a simple fix?"
+    choices:
+      - text: "Nothing: 100,000 rows is plenty"
+        explains: "The count is plenty. Which rows they are is the problem."
+      - text: "Truncation gives only the earliest customers, a temporal bias; taking every 400th row gives the same number spread across the whole file"
+        correct: true
+        explains: "Right. Uniform sampling by position mod 400 yields exactly 100,000 rows, is reproducible without a seed, and covers every sign-up period."
+      - text: "The sample is too small; load 10 million rows"
+        explains: "The first 10 million are still the earliest quarter of customers. A bigger biased sample is still biased."
+      - text: "Truncation is not reproducible"
+        explains: "It is perfectly reproducible. Its fault is that record order carries meaning."
+    work: |-
+      Sorted by date: the first n rows are the oldest sign-ups.
+      40,000,000 / 100,000 = 400, so keep rows whose position mod 400 equals some fixed i.
+      Exact size, reproducible, and a different i gives a disjoint sample.
+  - topic: "Week 11 · Logistic regression and scale"
+    ask: "A university has 60% undergraduates, 30% master's students and 10% doctoral students. A stratified sample of 500 is drawn for a survey. How many doctoral students does it contain?"
+    choices:
+      - text: "Exactly 50"
+        correct: true
+        explains: "Right. Stratified sampling takes the same fraction of every group, so the sample mirrors the population: 300, 150 and 50."
+      - text: "About 50, give or take several"
+        explains: "That describes a simple random sample. Stratifying removes the chance variation in group sizes."
+      - text: "About 167, one third of the sample"
+        explains: "Equal group sizes would over-represent doctoral students threefold. The lecture's version samples proportionally."
+      - text: "It cannot be known before sampling"
+        explains: "With stratification the group counts are fixed in advance. That is the purpose, and why group membership must be known beforehand."
+    work: |-
+      500 × 0.60 = 300 undergraduates.
+      500 × 0.30 = 150 master's.
+      500 × 0.10 = 50 doctoral.
+      Requirement: each student's group must be identified before sampling.
+  - topic: "Week 11 · Logistic regression and scale"
+    ask: "A stream sampler holds k = 5 items. The 50th item arrives. What is the probability that one particular item currently in the sample is evicted by this arrival?"
+    choices:
+      - text: "2%"
+        correct: true
+        explains: "Right. The newcomer is admitted with probability k/n = 5/50 = 10%, and then replaces one of the 5 positions at random, so a given item goes with probability 0.10 × 1/5 = 0.02."
+      - text: "10%"
+        explains: "10% is the chance the newcomer is admitted at all. It then displaces only one of five items."
+      - text: "20%"
+        explains: "20% is the chance of being the one chosen once the newcomer is admitted. Admission itself happens only a tenth of the time."
+      - text: "90%"
+        explains: "90% is the chance the newcomer is rejected, in which case nobody is evicted."
+    work: |-
+      P(50th admitted) = k/n = 5/50 = 0.10.
+      P(particular slot chosen, given admitted) = 1/k = 1/5.
+      P(evicted) = 0.10 × 0.20 = 0.02.
+      P(survives) = 0.98 = (n − 1)/n = 49/50.
+  - topic: "Week 11 · Logistic regression and scale"
+    ask: "You have billions of weather readings, each with a city and a temperature, and want the highest temperature recorded in each city using MapReduce. What should map and reduce do?"
+    choices:
+      - text: "Map emits (city, temperature) for each reading; reduce takes one city with all its temperatures and emits the maximum"
+        correct: true
+        explains: "Right. The key is what you group by. The framework delivers every temperature for a city to the same reducer, which can then summarise them."
+      - text: "Map emits (temperature, city); reduce emits the largest key"
+        explains: "With temperature as the key, readings are grouped by temperature, and no reducer sees all of one city's readings."
+      - text: "Map finds the overall maximum; reduce splits it by city"
+        explains: "A mapper sees one record at a time and cannot find a maximum across records. Aggregation belongs in reduce."
+      - text: "Map emits (city, 1); reduce sums the values"
+        explains: "That counts readings per city, as in word count. The temperature has to travel as the value."
+    work: |-
+      map (id, reading) → [(city, temperature)].
+      Shuffle: all values with the same city go to the same reducer.
+      reduce (city, [temperatures]) → [(city, max)].
+      Taking a maximum of partial maxima is safe, so the same function can also serve as a combiner.
+  - topic: "Week 11 · Logistic regression and scale"
+    ask: "A job computes the average order value per store. One mapper holds orders of 10 and 20 for a store and another holds a single order of 60. A combiner replaces each mapper's values with their average. What does the reducer then report, and what is the true average?"
+    choices:
+      - text: "It reports 37.5; the true average is 30"
+        correct: true
+        explains: "Right. The combiners send 15 and 60, whose average is 37.5. The true figure is 90 / 3 = 30. An average of averages ignores how many values each stood for, so this combiner is unsafe."
+      - text: "It reports 30; the combiner makes no difference"
+        explains: "That holds for sums and counts. Averaging loses the group sizes, so early averaging changes the answer."
+      - text: "It reports 45; the true average is 30"
+        explains: "45 is 90 / 2, the total divided by the number of mappers. The combiners send averages, 15 and 60."
+      - text: "It reports 15; the true average is 30"
+        explains: "15 is only the first mapper's average."
+    work: |-
+      Mapper A: (10 + 20) / 2 = 15. Mapper B: 60.
+      Reducer: (15 + 60) / 2 = 37.5.
+      Truth: (10 + 20 + 60) / 3 = 30.
+      Fix: have the combiner emit (sum, count) pairs, here (30, 2) and (60, 1), and let reduce divide 90 by 3.
 ---
-118 multiple-choice questions across weeks 1–7, 9 and 10. The paper is divided into sections, and nothing is revealed until you
+134 multiple-choice questions across weeks 1–7 and 9–11. The paper is divided into sections, and nothing is revealed until you
 submit: pick an answer for each question (you can change it as often as you like), then submit a
 section to see your score for it, the correct answers, an explanation for each one you chose, and a
 worked solution. You can submit one section at a time, in any order, or the whole exam at once.

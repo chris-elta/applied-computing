@@ -1,0 +1,106 @@
+---
+course: data-science
+section: w11-logistic-fit
+order: 1630
+title: One Formula for the Cost
+visuals:
+  - type: svg
+    src: data-science/w11-logistic-2/02.svg
+    caption: Slide 2 of 23 (logistic regression, part 2) — the two-case cost, and the note that y is always 0 or 1.
+  - type: svg
+    src: data-science/w11-logistic-2/03.svg
+    caption: Slide 3 of 23 (logistic regression, part 2) — the single-line cost, fitting θ, and predicting.
+notation:
+  - symbol: "Σ"
+    reads: sigma, or "the sum of"
+    means: >-
+      Add up the expression that follows for every training example, i = 1 up to m.
+  - symbol: "min J(θ)"
+    reads: minimise J of theta, over theta
+    means: >-
+      Find the parameter values θ that make the cost as small as possible. This is what
+      training means.
+  - symbol: "y⁽ⁱ⁾"
+    reads: y i
+    means: >-
+      The true label of training example i, either 0 or 1. Used here as a switch that turns
+      one of two terms on.
+questions:
+  - ask: "In `−[y log(hθ(x)) + (1 − y) log(1 − hθ(x))]`, what happens for an example with `y = 0`?"
+    choices:
+      - text: "The first term is multiplied by 0 and vanishes, leaving `−log(1 − hθ(x))`"
+        correct: true
+        explains: >-
+          `y = 0` switches the first term off and `1 − y = 1` switches the second on. That is
+          exactly the `y = 0` case of the two-line definition.
+      - text: "Both terms contribute, half each"
+        explains: >-
+          The multipliers are `y` and `1 − y`, which are 0 and 1 for this example, never a half.
+          Exactly one term survives.
+      - text: "The whole cost is zero"
+        explains: >-
+          Only the first term is zeroed. The second term remains and can be large if `hθ(x)` is
+          close to 1.
+      - text: "The formula is undefined, because `log(0)` appears"
+        explains: >-
+          `y = 0` multiplies `log(hθ(x))`, and `hθ(x)` is never exactly 0, so nothing undefined
+          is computed.
+---
+
+The cost from the previous concept comes in two cases, one for `y = 1` and one for `y = 0`.
+A formula with an "if" in it is awkward to differentiate and to write as code. Slide 2 points
+out the fact that lets you remove the "if": `y` is always 0 or 1.
+
+## The trick
+
+Write both cases in one line and let `y` choose between them:
+
+```
+Cost(hθ(x), y) = −y log(hθ(x)) − (1 − y) log(1 − hθ(x))
+```
+
+Check it by substituting the only two values `y` can take.
+
+| `y` | first term | second term | what is left |
+| --- | --- | --- | --- |
+| 1 | `−1 · log(hθ(x))` | `−0 · log(1 − hθ(x))` = 0 | `−log(hθ(x))` |
+| 0 | `−0 · log(hθ(x))` = 0 | `−1 · log(1 − hθ(x))` | `−log(1 − hθ(x))` |
+
+Each row reproduces one case of the original definition. `y` and `1 − y` act as switches:
+exactly one is on for any example. Nothing new has been defined. It is the same cost written
+without a branch.
+
+## The full cost function
+
+Average that over the `m` training examples to get slide 3's formula:
+
+```
+J(θ) = −(1/m) Σ [ y⁽ⁱ⁾ log hθ(x⁽ⁱ⁾) + (1 − y⁽ⁱ⁾) log(1 − hθ(x⁽ⁱ⁾)) ]
+```
+
+The minus sign has been pulled out in front of the sum. Each log is of a number between 0 and
+1, so each is negative, and the leading minus makes `J(θ)` positive.
+
+A small worked example with three training examples:
+
+| true `y` | predicted `hθ(x)` | term that survives | value |
+| --- | --- | --- | --- |
+| 1 | 0.9 | `−log(0.9)` | 0.105 |
+| 0 | 0.2 | `−log(0.8)` | 0.223 |
+| 1 | 0.4 | `−log(0.4)` | 0.916 |
+
+`J(θ) = (0.105 + 0.223 + 0.916) / 3 ≈ 0.415`. The third example, where the model leaned the
+wrong way, contributes most of it.
+
+## The whole method on one slide
+
+Slide 3 then states logistic regression in two steps.
+
+1. **Fit.** Find the θ that minimises `J(θ)`.
+2. **Predict.** For a new `x`, output `hθ(x) = 1 / (1 + e^(−θᵀx))`, read as the probability
+   that `y = 1`.
+
+Step 1 is the next concept.
+
+> Because `y` is only ever 0 or 1, the two-case cost collapses into one line in which `y`
+> and `1 − y` switch the right term on. Averaged over the training set, that is `J(θ)`.

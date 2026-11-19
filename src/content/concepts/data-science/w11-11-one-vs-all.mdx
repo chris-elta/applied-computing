@@ -1,0 +1,114 @@
+---
+course: data-science
+section: w11-classes
+order: 1670
+title: One-vs-All Classification
+visuals:
+  - type: svg
+    src: data-science/w11-logistic-2/14.svg
+    caption: Slides 13–14 of 23 (logistic regression, part 2) — problems with more than two classes.
+  - type: svg
+    src: data-science/w11-logistic-2/15.svg
+    caption: Slide 15 of 23 (logistic regression, part 2) — binary against multi-class data.
+  - type: svg
+    src: data-science/w11-logistic-2/17.svg
+    caption: Slides 16–17 of 23 (logistic regression, part 2) — three binary problems built from one three-class problem.
+  - type: svg
+    src: data-science/w11-logistic-2/18.svg
+    caption: Slide 18 of 23 (logistic regression, part 2) — train one classifier per class and pick the largest output.
+notation:
+  - symbol: "hθ⁽ⁱ⁾(x)"
+    reads: h theta i of x
+    means: >-
+      The classifier trained for class i. Its output is the estimated probability that x
+      belongs to class i and not to any other. The superscript numbers the classifier.
+  - symbol: "P(y = i | x; θ)"
+    reads: the probability that y equals i, given x, parameterised by theta
+    means: >-
+      How likely class i is for this input, according to classifier i.
+  - symbol: "maxᵢ"
+    reads: max over i
+    means: >-
+      Try every class i and take the one that gives the largest value.
+questions:
+  - ask: "A one-vs-all weather model gives a new day the outputs sunny 0.30, cloudy 0.55, rain 0.40, snow 0.05. What does it predict, and what do you notice about the numbers?"
+    choices:
+      - text: "Cloudy, the largest output; the four numbers sum to 1.30, because each classifier was trained independently"
+        correct: true
+        explains: >-
+          The rule is to pick the class with the highest output. Nothing forces separate binary
+          classifiers to agree on a total of 1, which a later concept repairs.
+      - text: "Cloudy, because it is the only output above 0.5"
+        explains: >-
+          The answer is right for the wrong reason. The rule is the maximum, and it would still
+          apply if every output were below 0.5.
+      - text: "Nothing: the outputs sum to more than 1, so the model is broken"
+        explains: >-
+          Sums other than 1 are expected from independent classifiers. The prediction rule only
+          needs to know which output is largest.
+      - text: "Sunny, cloudy and rain, since all are reasonably likely"
+        explains: >-
+          One-vs-all returns a single label: the class whose classifier is most confident.
+---
+
+Logistic regression answers yes or no. Many questions have more than two answers. Slides 13
+and 14 give examples: is a movie a comedy, drama, action or documentary? Should an email go
+in Work, Friends, Family or Hobby? Is the patient not ill, or has a cold, or flu? Is the
+weather sunny, cloudy, rain or snow?
+
+Slide 15 draws the difference. Binary data has two kinds of point. Multi-class data has
+three or more, here triangles, squares and crosses.
+
+## Reusing the binary classifier
+
+You do not need a new algorithm. Slide 16 states the idea: build a multi-class classifier out
+of several independent binary ones. This is **one-vs-all**, also called one-vs-rest.
+
+With three classes, make three training sets from the same data (slide 17):
+
+| classifier | positive class | negative class |
+| --- | --- | --- |
+| `hθ⁽¹⁾(x)` | triangles | squares and crosses together |
+| `hθ⁽²⁾(x)` | squares | triangles and crosses together |
+| `hθ⁽³⁾(x)` | crosses | triangles and squares together |
+
+Each is an ordinary binary problem: "is it this class, or anything else?". Train logistic
+regression on each. Classifier `i` then estimates `P(y = i | x; θ)`, and each has its own
+decision boundary fencing its class off from the rest.
+
+For `k` classes you train `k` classifiers.
+
+## Predicting
+
+Slide 18 gives the rule. For a new input `x`, run all the classifiers and pick the class
+whose classifier gives the highest probability:
+
+```
+predicted class = the i that maximises hθ⁽ⁱ⁾(x)
+```
+
+Suppose a new point gets:
+
+| classifier | output |
+| --- | --- |
+| triangles | 0.15 |
+| squares | 0.72 |
+| crosses | 0.20 |
+
+The prediction is "square". Taking the maximum also settles the awkward regions: a point
+that two classifiers both claim, or that none claims with more than 0.5, still gets the label
+of the most confident one.
+
+## Two things to notice
+
+The outputs above sum to 1.07, not 1. Each classifier was trained separately and knows
+nothing of the others, so nothing makes them add up. That is harmless for choosing a label
+and a problem if you need true probabilities. The concept on partition functions deals with
+it.
+
+Each binary problem is also unbalanced by construction. With ten equal classes, every
+classifier sees one part positive to nine parts negative, so the previous two concepts on
+balancing apply.
+
+> One-vs-all turns a `k`-class problem into `k` yes-or-no problems, one per class against
+> the rest. Predict the class whose classifier is most confident.

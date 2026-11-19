@@ -1,0 +1,104 @@
+---
+course: data-science
+section: w11-logistic-fit
+order: 1610
+title: Why Squared Error Fails Here
+visuals:
+  - type: svg
+    src: data-science/w11-logistic-1/13.svg
+    caption: Slide 13 of 16 (logistic regression, part 1) — the training set and the question of choosing θ.
+  - type: svg
+    src: data-science/w11-logistic-1/14.svg
+    caption: Slide 14 of 16 (logistic regression, part 1) — squared error, and non-convex against convex cost.
+notation:
+  - symbol: "m"
+    reads: m
+    means: >-
+      The number of training examples.
+  - symbol: "(x⁽ⁱ⁾, y⁽ⁱ⁾)"
+    reads: x i, y i, or "the i-th training example"
+    means: >-
+      The features and label of example number i. The bracketed superscript is an index, not a
+      power.
+  - symbol: "J(θ)"
+    reads: J of theta
+    means: >-
+      The cost function: one number saying how badly parameters θ fit the whole training set.
+      Smaller is better.
+  - symbol: "Cost(hθ(x), y)"
+    reads: cost of h theta of x and y
+    means: >-
+      The penalty for a single example: how wrong the prediction hθ(x) is when the truth is y.
+      J(θ) is the average of these.
+questions:
+  - ask: "Squared error gave a convex cost for linear regression. Why does the same formula give a non-convex cost for logistic regression?"
+    choices:
+      - text: "`hθ(x)` now contains the sigmoid, so the cost is no longer a simple quadratic in θ and can have several dips"
+        correct: true
+        explains: >-
+          The formula for the cost is unchanged. What it is applied to changed. Squaring a
+          straight-line function of θ gives a bowl; squaring an S-shaped one does not.
+      - text: "The labels are 0 and 1 and not real numbers"
+        explains: >-
+          The labels are part of it, but squared error on 0/1 labels with a linear hypothesis is
+          still convex. The sigmoid inside the hypothesis is what bends the surface.
+      - text: "Classification data sets are too small"
+        explains: >-
+          Convexity is a property of the formula's shape and does not depend on how many
+          examples there are.
+      - text: "Gradient descent cannot be run on squared error"
+        explains: >-
+          It can be run. It may stop in a local minimum, which is the problem.
+---
+
+The hypothesis is settled: `hθ(x) = 1 / (1 + e^(−θᵀx))`. Slide 13 sets up what remains. There
+are `m` training examples, each a feature vector `x` with `x₀ = 1` and a label `y` that is 0
+or 1. How do we choose θ?
+
+In week 10 the answer was: define a cost `J(θ)` that measures how badly θ fits, then walk
+downhill with gradient descent. The plan is the same. The cost has to change.
+
+## The obvious cost
+
+Linear regression used squared error. Slide 14 writes it as an average of per-example
+penalties:
+
+```
+J(θ) = (1/m) Σ Cost(hθ(x⁽ⁱ⁾), y⁽ⁱ⁾)        with  Cost(hθ(x), y) = ½ (hθ(x) − y)²
+```
+
+Splitting it this way is useful. `Cost` is the penalty for one example, and `J` is the average
+over all of them. To change the cost function you only need to change `Cost`.
+
+## What goes wrong
+
+For linear regression `hθ(x) = θᵀx` is a straight-line function of θ. Square it and you get a
+bowl with one lowest point. Week 10 called this **convex**, and it is why gradient descent
+always found the global minimum there.
+
+For logistic regression `hθ(x)` has the sigmoid inside it. Squaring an S-shaped function of θ
+gives a surface with ripples: several dips at different heights. Slide 14 draws the two
+shapes side by side.
+
+| | linear regression | logistic regression |
+| --- | --- | --- |
+| hypothesis | `θᵀx` | `g(θᵀx)` |
+| squared-error cost | convex: one bowl | non-convex: many dips |
+| gradient descent | reaches the global minimum | can stop in a local minimum |
+
+A **local minimum** is a point lower than everything nearby that is not the lowest overall.
+Gradient descent only feels the slope under its feet, so it stops there. Which dip it ends in
+depends on where it started, as you saw on the bumpy surface in week 10.
+
+So the same formula that was safe last week is unsafe now, and the only thing that changed is
+the hypothesis it is applied to.
+
+## What we need
+
+A different `Cost` that, combined with the sigmoid, gives a convex `J(θ)`. It should still do
+the job a cost must do: be small when the prediction is right and large when it is wrong. The
+next concept builds one.
+
+> Whether a cost is convex depends on the cost and the hypothesis together. Squared error
+> with a sigmoid hypothesis is non-convex, so gradient descent could get stuck. Logistic
+> regression needs its own cost.

@@ -1,0 +1,82 @@
+---
+course: data-science
+section: w11-bigdata
+order: 1720
+title: Big Data as Bad Data
+visuals:
+  - type: svg
+    src: data-science/w11-scale/05.svg
+    caption: Slide 5 of 31 (achieving scale) — four problems of data gathered by opportunity.
+questions:
+  - ask: "A team analyses 200 million posts from a social network to estimate national opinion on a policy. A critic says a survey of 2,000 randomly chosen adults would be more trustworthy. What is the strongest form of the critic's argument?"
+    choices:
+      - text: "The posts come from whoever chose to use the network and post, so the sample is unrepresentative, and more posts do not reduce that bias"
+        correct: true
+        explains: >-
+          Size reduces random error only. A bias in who participates is repeated in every one
+          of the 200 million posts. The designed sample of 2,000 has no such bias.
+      - text: "200 million posts are too many to process"
+        explains: >-
+          Processing them is feasible, as the rest of the lecture shows. The objection is about
+          what the posts represent.
+      - text: "Smaller samples always give more accurate estimates"
+        explains: >-
+          Not in general. A larger sample is better when it is drawn the same way. The issue
+          here is how the data came to exist.
+      - text: "Social media posts cannot be turned into numbers"
+        explains: >-
+          They can, for example by classifying each post. The measurement may be noisy, but the
+          deeper problem is whose posts they are.
+---
+
+It is natural to assume that more data means better answers. Slide 5 challenges that with one
+sentence: massive data sets are the result of **opportunity instead of design**.
+
+A designed data set starts with a question. Someone decides who to measure, how and when,
+then collects accordingly. A massive data set usually exists because a system was running
+and recorded what passed through it. Nobody chose it to answer your question. The slide
+lists four problems that follow.
+
+## Unrepresentative participation
+
+The people in the data are whoever used the service. Users of a social network are not a
+cross-section of the population: they differ in age, country, income and how much they like
+to post. This is **bias**, and it does not shrink with size. A billion records from the wrong
+population answer a question about that population very precisely.
+
+## Spam and machine-generated content
+
+A large share of activity on any open platform is not human. Bots, advertising and automated
+reposts appear in the logs looking like everything else. Count "posts mentioning a product"
+and you may be counting one marketing script.
+
+## Power laws mean redundancy
+
+Activity is very unevenly spread. A few items (the most popular accounts, words, pages)
+account for most of the records, and most items appear only a handful of times. So a huge
+data set contains the same common things millions of times over and still has almost nothing
+on the rare things. The size is real but much of it is repetition.
+
+## Temporal bias
+
+Data collected over time reflects the system at the time: its features, users and fashions.
+The slide's example is **Google Flu Trends**, which estimated flu activity from what people
+searched for. The model was built on the search behaviour of one period. Search behaviour
+changed, and the estimates stopped matching reality even though the volume of data was
+never in question.
+
+## What to take from this
+
+| problem | what it damages |
+| --- | --- |
+| unrepresentative participation | who the conclusions apply to |
+| spam and machine content | whether records mean what they seem to |
+| power-law redundancy | how much information the volume really holds |
+| temporal bias | whether yesterday's pattern holds today |
+
+All four are failures of **veracity**, the fourth V. None is fixed by collecting more of the
+same. This is week 1's instruction to ask where the data came from, applied at a scale where
+it is tempting to skip.
+
+> Big data is found, not designed. Its size reduces random error only; bias, spam,
+> redundancy and drift remain however large it grows.

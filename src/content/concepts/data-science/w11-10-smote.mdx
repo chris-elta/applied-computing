@@ -1,0 +1,103 @@
+---
+course: data-science
+section: w11-classes
+order: 1660
+title: SMOTE
+visuals:
+  - type: svg
+    src: data-science/w11-logistic-2/11.svg
+    caption: Slide 11 of 23 (logistic regression, part 2) — synthetic minority examples placed between a point and its neighbour.
+notation:
+  - symbol: "p"
+    reads: p
+    means: >-
+      A real example from the minority (positive) class, written as a point: its list of
+      feature values.
+  - symbol: "n"
+    reads: n
+    means: >-
+      A near neighbour of p from the same minority class. Here n is a point, not a count.
+  - symbol: "c"
+    reads: c
+    means: >-
+      A random number between 0 and 1 choosing how far along the line from p to n the new
+      point is placed.
+  - symbol: "p + c·(n − p)"
+    reads: p plus c times n minus p
+    means: >-
+      Start at p and move a fraction c of the way toward n. c = 0 gives p, c = 1 gives n,
+      c = 0.5 the midpoint.
+questions:
+  - ask: "A minority point is `p = (2, 3)` and its chosen neighbour is `n = (4, 7)`. With `c = 0.25`, what synthetic point does SMOTE create?"
+    choices:
+      - text: "`(2.5, 4)`"
+        correct: true
+        explains: >-
+          `n − p = (2, 4)`. A quarter of that is `(0.5, 1)`. Added to p: `(2.5, 4)`, a quarter of
+          the way from p to n.
+      - text: "`(3, 5)`"
+        explains: >-
+          That is the midpoint, which needs `c = 0.5`.
+      - text: "`(1, 1.75)`"
+        explains: >-
+          That multiplies n by c. The formula moves from p toward n; it does not shrink n.
+      - text: "`(2, 3)`"
+        explains: >-
+          That is p itself, which needs `c = 0`. An exact copy is what SMOTE is designed to avoid.
+---
+
+The previous concept ended with replicating the minority class "ideally with random
+perturbation". **SMOTE**, the Synthetic Minority Over-sampling Technique, is a specific way of
+doing that. It does not copy rare examples. It invents new ones in plausible places.
+
+## Where to put a new example
+
+Suppose you have two real fraud cases that resemble each other. A transaction halfway between
+them, in every feature, would probably also be fraud. SMOTE generates points like that.
+
+The recipe on slide 11:
+
+1. Take a minority example `p`.
+2. Find a near neighbour `n` of `p` that is also in the minority class.
+3. Pick a random number `c` between 0 and 1.
+4. Create the new example at `p + c·(n − p)`.
+
+`n − p` is the step from `p` to `n`. Multiplying it by `c` takes part of that step, so the new
+point lies somewhere on the straight segment joining the two.
+
+## Worked example
+
+Let `p = (2, 3)` and `n = (4, 7)`. Then `n − p = (2, 4)`.
+
+| `c` | `c·(n − p)` | new point |
+| --- | --- | --- |
+| 0 | `(0, 0)` | `(2, 3)`, which is `p` |
+| 0.25 | `(0.5, 1)` | `(2.5, 4)` |
+| 0.5 | `(1, 2)` | `(3, 5)`, the midpoint |
+| 1 | `(2, 4)` | `(4, 7)`, which is `n` |
+
+Because `c` is random, repeating the recipe scatters new points along the segments between
+neighbouring minority examples. The slide's lower figure shows this: a selected minority
+sample, its nearest neighbours, and synthetic instances on the lines between them.
+
+## Why not plain copies
+
+Exact duplicates stack on top of the original. The model sees the same 50 points many times
+and can draw a tight boundary around each. SMOTE's points fill in the region the minority
+class occupies, so the model learns an area and not a handful of coordinates.
+
+The slide's phrase is "in the right places". Random noise in any direction could push a
+synthetic point into majority territory. Staying between two real minority examples keeps it
+where the minority class has actually been seen.
+
+## What SMOTE cannot do
+
+Synthetic points are interpolations. They contain no information that was not already in the
+real examples, and they assume the space between two minority points belongs to the minority
+class. If the classes interleave, that assumption is false and SMOTE manufactures mislabelled
+data. As with any balancing, apply it to the training set only, and evaluate on untouched
+data.
+
+> SMOTE balances classes by creating new minority examples at a random position on the
+> line between a minority point and one of its minority neighbours. It spreads the class out;
+> it does not add knowledge.

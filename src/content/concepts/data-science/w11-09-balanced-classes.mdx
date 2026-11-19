@@ -1,0 +1,82 @@
+---
+course: data-science
+section: w11-classes
+order: 1650
+title: Balanced Training Classes
+visuals:
+  - type: svg
+    src: data-science/w11-logistic-2/08.svg
+    caption: Slide 8 of 23 (logistic regression, part 2) — four issues in logistic classification.
+  - type: svg
+    src: data-science/w11-logistic-2/09.svg
+    caption: Slide 9 of 23 (logistic regression, part 2) — what a grossly unbalanced training set does to the separating line.
+  - type: svg
+    src: data-science/w11-logistic-2/10.svg
+    caption: Slide 10 of 23 (logistic regression, part 2) — four ways to balance classes.
+notation:
+  - symbol: "pos, neg"
+    reads: positive, negative
+    means: >-
+      The positive and negative training examples: those labelled 1 and those labelled 0.
+questions:
+  - ask: "A fraud model is trained on 1,000,000 legitimate transactions and 50 fraudulent ones. It reaches 99.995% training accuracy and flags nothing. What went wrong?"
+    choices:
+      - text: "The cost is a sum over examples, so the million negatives dominate it and the boundary is pushed far away from them, past the few positives"
+        correct: true
+        explains: >-
+          Getting every negative right and every positive wrong is nearly free under an averaged
+          cost. Balancing the classes makes the positives count.
+      - text: "Gradient descent got stuck in a local minimum"
+        explains: >-
+          The logistic cost is convex and has no local minima. Gradient descent found the true
+          minimum of a cost that barely notices the rare class.
+      - text: "Logistic regression cannot detect fraud"
+        explains: >-
+          The method is fine. The training set told it that fraud almost never matters.
+      - text: "The model needs more legitimate transactions"
+        explains: >-
+          That makes the imbalance worse. The shortage is in the minority class.
+---
+
+Logistic regression as described so far assumes a tidy problem: two classes of similar size.
+Slide 8 lists four ways real problems are less tidy. The first is class size, and the other
+three (multi-class, hierarchical classification and partition functions) follow in the next
+concepts.
+
+## What imbalance does
+
+Slide 9 asks you to consider an extreme case: 1 positive example and 1,000,000 negative ones.
+
+You might expect the separating line to sit at the midpoint between the lone positive and the
+cluster of negatives. It does not. The cost `J(θ)` is an average over all examples, so a
+million of its terms come from negatives and one from the positive. The cheapest way to lower
+that average is to make every negative very confidently negative, which means pushing the
+line **as far from the big cluster as possible**. The single positive has almost no say.
+
+The resulting model can score 99.9999% accuracy by predicting "negative" for everything, and
+it is useless for the purpose it was built for. Week 9's warning about accuracy on unbalanced
+classes applies here to training as well as to evaluation.
+
+The slide's advice is blunt: **use equal numbers of positive and negative examples.**
+
+## Four ways to get there
+
+From slide 10:
+
+| approach | how | cost |
+| --- | --- | --- |
+| Find more of the minority class | collect or label more rare cases | effort, sometimes impossible |
+| Discard from the bigger class | keep a sample of the majority | throws away real data |
+| Weigh the minority class more heavily | make each rare example count more in the cost | risk of overfitting |
+| Replicate the smaller class | copy rare examples, ideally with random perturbation | risk of overfitting if copies are exact |
+
+The first is the only one that adds information. Fifty fraud cases copied a thousand times
+are still fifty cases, and a model can memorise their quirks. That is why the slide attaches
+"beware of overfitting" to weighting and "ideally with random perturbation" to replication:
+small random changes to each copy stop the model from fixing on fifty exact points.
+
+Discarding looks wasteful, yet with a million negatives it is often the right call. A simple
+model does not need all of them, a point the lectures on scale return to.
+
+> A cost that sums over examples is ruled by the larger class. Balance the classes before
+> training, and prefer real minority examples to copies.

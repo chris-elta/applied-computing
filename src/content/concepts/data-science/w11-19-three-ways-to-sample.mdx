@@ -1,0 +1,113 @@
+---
+course: data-science
+section: w11-sampling
+order: 1750
+title: Truncation, Random and Uniform Sampling
+visuals:
+  - type: svg
+    src: data-science/w11-scale/10.svg
+    caption: Slide 10 of 31 (achieving scale) — taking the first n records, and the biases hiding in record order.
+  - type: svg
+    src: data-science/w11-scale/11.svg
+    caption: Slide 11 of 31 (achieving scale) — sampling each record with probability p.
+  - type: svg
+    src: data-science/w11-scale/12.svg
+    caption: Slide 12 of 31 (achieving scale) — keeping records congruent to i mod m.
+notation:
+  - symbol: "n"
+    reads: n
+    means: >-
+      The number of records you keep when truncating: the first n.
+  - symbol: "p"
+    reads: p
+    means: >-
+      The probability with which each record is independently kept. p = 0.01 keeps about one
+      record in a hundred.
+  - symbol: "i mod m"
+    reads: i mod m
+    means: >-
+      The remainder when a record's position is divided by m. "Congruent to i mod m" means
+      that remainder equals i. With m = 10 and i = 3: records 3, 13, 23, 33 and so on.
+questions:
+  - ask: "You need three samples of a 30-million-record file, each exactly 1 million records, sharing no records, that a colleague can reproduce exactly. Which method fits?"
+    choices:
+      - text: "Uniform sampling: keep records with position congruent to 0, 1 and 2 mod 30"
+        correct: true
+        explains: >-
+          Each remainder gives exactly every thirtieth record, a million of them. Different
+          remainders can never share a record, and the rule needs no random seed.
+      - text: "Random sampling with `p = 1/30`, run three times"
+        explains: >-
+          Each run gives about a million, not exactly; the runs will overlap; and reproducing
+          them needs the seed and the same generator.
+      - text: "Truncation: the first, second and third million records"
+        explains: >-
+          Exact, disjoint and reproducible, but record order usually has meaning, so each block
+          is a biased slice.
+      - text: "Random sampling with `p = 1/10`, then split the result in three"
+        explains: >-
+          The total is still only approximately 3 million, and it still depends on a seed.
+---
+
+You have decided to keep a fraction of the data. Which records? Slides 10 to 12 give three
+methods. Each fixes a weakness of the one before.
+
+## Truncation: the first n
+
+Take the first `n` records and stop. It is simple and anyone repeating it gets the same
+records. The weakness is that **record order often has meaning**. Slide 10 lists three ways.
+
+| if the file is ordered by | the first `n` records are | bias |
+| --- | --- | --- |
+| time | the oldest | temporal: you analyse only old data |
+| name | the A's | lexicographic: more Arabic names, fewer Chinese |
+| ID number | the lowest IDs | numerical: IDs can encode meaning, as social security numbers do |
+
+The lexicographic example shows how quietly this happens. Surnames beginning with A are not a
+random slice of people; some languages contribute many of them and others few. Nobody
+intended a sample skewed by origin, and the alphabet produced one.
+
+## Random sampling: each with probability p
+
+Go through the records and keep each one independently with probability `p`. Position in the
+file no longer matters, so there are no explicit biases. Slide 11 lists the costs.
+
+- **Statistical discrepancies.** Chance does not spread evenly. Some regions of the data
+  will be over-sampled and others under-sampled, and the sample size itself is only
+  approximately `p` times the total.
+- **Not reproducible** without the seed and the random generator. Someone re-running your
+  analysis gets different records unless they have both.
+- **Multiple samples will not be disjoint.** Draw two random samples and some records land
+  in both. That matters if one was meant for training and the other for testing.
+
+## Uniform sampling: every m-th record
+
+Keep the records whose position is congruent to `i mod m`. With `m = 100` and `i = 7` that
+is records 7, 107, 207 and so on: one in every hundred, evenly spaced through the file.
+
+Slide 12 says this balances many concerns:
+
+- you obtain an **exact number** of records;
+- it is **quick and reproducible**, with no seed to keep;
+- it **ensures disjoint samples**: choose a different `i` and you get entirely different
+  records.
+
+The slide gives a real use. Twitter governed its API services this way, offering streams of
+different sizes (spritzer, garden hose, fire hose) as different fractions of the full feed.
+
+The one thing to watch is a pattern in the file whose period matches `m`. If records
+alternate weekday, weekend in blocks of the same length as your step, every `m`-th record
+could come from one kind of day.
+
+## Side by side
+
+| | truncation | random | uniform |
+| --- | --- | --- | --- |
+| exact sample size | yes | no | yes |
+| reproducible | yes | only with seed and generator | yes |
+| disjoint samples | yes | no | yes |
+| free of order bias | no | yes | yes, barring a matching period |
+
+> Taking the first `n` records inherits whatever the ordering means. Random sampling
+> removes that bias at the cost of exactness and reproducibility. Taking every `m`-th record
+> gives exact, repeatable, non-overlapping samples.

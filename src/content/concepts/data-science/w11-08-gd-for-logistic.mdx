@@ -1,0 +1,116 @@
+---
+course: data-science
+section: w11-logistic-fit
+order: 1640
+title: Gradient Descent for Logistic Regression
+visuals:
+  - type: svg
+    src: data-science/w11-logistic-2/04.svg
+    caption: Slide 4 of 23 (logistic regression, part 2) — the loss is convex, so gradient descent finds the best fit.
+  - type: svg
+    src: data-science/w11-logistic-2/05.svg
+    caption: Slide 5 of 23 (logistic regression, part 2) — the general gradient descent loop.
+  - type: svg
+    src: data-science/w11-logistic-2/06.svg
+    caption: Slide 6 of 23 (logistic regression, part 2) — the update rule, identical in form to linear regression.
+  - type: svg
+    src: data-science/w11-logistic-2/07.svg
+    caption: Slide 7 of 23 (logistic regression, part 2) — separating men from women by height and weight.
+notation:
+  - symbol: ":="
+    reads: becomes, or is assigned
+    means: >-
+      Compute the right-hand side, then overwrite the left with it.
+  - symbol: "α"
+    reads: alpha
+    means: >-
+      The learning rate: how large a step each update takes.
+  - symbol: "∂J(θ)/∂θⱼ"
+    reads: partial J by partial theta j
+    means: >-
+      The slope of the cost in the θⱼ direction, with every other parameter held still.
+  - symbol: "xⱼ⁽ⁱ⁾"
+    reads: x j of example i
+    means: >-
+      Feature number j of training example number i. The subscript picks the feature; the
+      bracketed superscript picks the example.
+questions:
+  - ask: "Slide 6 notes that the update rule looks identical to linear regression's. What is actually different?"
+    choices:
+      - text: "`hθ(x)` is now the sigmoid of `θᵀx` and no longer `θᵀx` itself, so the same expression computes different numbers"
+        correct: true
+        explains: >-
+          The rule has the same shape: error times feature, summed. But the error is measured
+          against a probability between 0 and 1, so they are two different algorithms.
+      - text: "Nothing: logistic regression and linear regression are the same algorithm"
+        explains: >-
+          They share the form of the update. They differ in hypothesis and in cost, and they
+          produce different parameters from the same data.
+      - text: "Logistic regression does not need a learning rate"
+        explains: >-
+          α is still in the rule and still has to be chosen with the same care as in week 10.
+      - text: "The parameters no longer need a simultaneous update"
+        explains: >-
+          The slide says the opposite: simultaneously update all θⱼ, for the same reason as before.
+---
+
+The cost `J(θ)` is defined. Fitting the model means finding the θ that makes it smallest.
+Slide 4 gives the reason the familiar tool is safe: **this loss is convex**, so gradient
+descent will reach the best parameters and not a local dip.
+
+## The loop
+
+The outline from week 10 is unchanged (slide 5):
+
+```
+repeat {
+    θⱼ := θⱼ − α · ∂J(θ)/∂θⱼ        (simultaneously update all θⱼ)
+}
+```
+
+Work out the slope of the logistic cost and the rule on slide 6 becomes:
+
+```
+θⱼ := θⱼ − α Σ (hθ(x⁽ⁱ⁾) − y⁽ⁱ⁾) · xⱼ⁽ⁱ⁾
+```
+
+Read the sum piece by piece. `hθ(x⁽ⁱ⁾) − y⁽ⁱ⁾` is the error on example `i`: predicted
+probability minus true label. It is multiplied by feature `j` of that example and added up
+over the training set. Examples the model gets badly wrong push hardest.
+
+## "Identical" to linear regression
+
+Place it next to last week's rule and the two match symbol for symbol. The slide says so:
+*the algorithm looks identical to linear regression*.
+
+They are not the same algorithm, because `hθ(x)` means something different in each.
+
+| | linear regression | logistic regression |
+| --- | --- | --- |
+| `hθ(x)` | `θᵀx` | `1 / (1 + e^(−θᵀx))` |
+| error `hθ(x) − y` | any real number | between −1 and 1 |
+| cost being reduced | squared error | log cost |
+
+The practical habits carry over as well: update all θⱼ simultaneously, choose α with care,
+and scale the features so the descent is not slowed by a stretched cost surface.
+
+## What it finds
+
+Slide 4 describes the result as the best **linear separator** between two classes, linear in
+the possibly non-linear features. That is the decision boundary, now chosen by the data.
+
+Slide 7 shows a real one: people plotted by weight and height, with a line separating men
+from women.
+
+| side of the line | women | men |
+| --- | --- | --- |
+| red region (predicted women) | 229 | 63 |
+| blue region (predicted men) | 65 | 223 |
+
+`229 + 223 = 452` of 580 people are on the correct side, about 78%. The rest are not a failure
+of gradient descent. Heights and weights of men and women overlap, so no straight line can
+separate them perfectly. The best separator is still imperfect when the classes overlap.
+
+> Logistic regression is fitted by gradient descent on a convex cost. The update has the
+> same form as linear regression's with the sigmoid inside `hθ(x)`. The result is the best
+> separating boundary, which need not be a perfect one.

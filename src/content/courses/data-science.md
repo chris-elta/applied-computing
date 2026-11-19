@@ -203,4 +203,28 @@ sections:
     title: Week 10 · Regularisation
     summary: >-
       Overfitting, penalising large parameters, and the difference between ridge and LASSO.
+  - id: w11-logistic
+    title: Week 11 · Logistic regression
+    summary: >-
+      Classification as a yes-or-no prediction, the sigmoid hypothesis, and the decision boundary.
+  - id: w11-logistic-fit
+    title: Week 11 · Fitting logistic regression
+    summary: >-
+      Why squared error fails, the log loss that replaces it, and gradient descent on the new cost.
+  - id: w11-classes
+    title: Week 11 · Unbalanced and multiple classes
+    summary: >-
+      Balancing training classes, SMOTE, one-vs-all, hierarchies of classes and softmax.
+  - id: w11-bigdata
+    title: Week 11 · Big data
+    summary: >-
+      What makes data big, why big data is often bad data, and which models can use it.
+  - id: w11-sampling
+    title: Week 11 · Filtering and sampling
+    summary: >-
+      Throwing data away on purpose: truncation, random, uniform, stratified and stream sampling.
+  - id: w11-mapreduce
+    title: Week 11 · Distributed computing and MapReduce
+    summary: >-
+      Parallel against distributed processing, the cost of coordination, and the map and reduce functions.
 ---

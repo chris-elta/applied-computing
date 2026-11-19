@@ -1,0 +1,120 @@
+---
+course: data-science
+section: w11-classes
+order: 1700
+title: Partition Functions and Softmax
+visuals:
+  - type: svg
+    src: data-science/w11-logistic-2/22.svg
+    caption: Slide 22 of 23 (logistic regression, part 2) — dividing by the total, and the softmax alternative.
+  - type: svg
+    src: data-science/w11-logistic-2/23.svg
+    caption: Slide 23 of 23 (logistic regression, part 2) — softmax against standard normalisation on small and large scores.
+notation:
+  - symbol: "F_c(x)"
+    reads: F c of x
+    means: >-
+      The output of the binary classifier for class c on input x. The same quantity one-vs-all
+      wrote as hθ⁽ᶜ⁾(x).
+  - symbol: "T"
+    reads: T
+    means: >-
+      The partition function: the total of all the classifiers' outputs for this input.
+      Dividing by it makes the results sum to 1.
+  - symbol: "P(c)"
+    reads: P of c
+    means: >-
+      The probability assigned to class c after normalising.
+  - symbol: "e^zᵢ"
+    reads: e to the z i
+    means: >-
+      e, about 2.718, raised to the score for class i. Always positive, and it grows very
+      quickly as the score grows.
+questions:
+  - ask: "Scores `[1, 2]` and `[10, 20]` both give `[0.33, 0.67]` under standard normalisation. Under softmax the first gives about `[0.27, 0.73]` and the second about `[0.00005, 0.99995]`. Why does softmax differ so much between them?"
+    choices:
+      - text: "Softmax depends on the difference between scores, 1 against 10, while dividing by the total depends only on their ratio, 1:2 in both cases"
+        correct: true
+        explains: >-
+          `e²/e¹ = e ≈ 2.7` but `e²⁰/e¹⁰ = e¹⁰ ≈ 22,000`. Standard normalisation cannot tell
+          the two inputs apart; softmax treats a bigger gap as more confidence.
+      - text: "Softmax made an arithmetic error on large numbers"
+        explains: >-
+          The outputs are correct. The exponential turns a gap of 10 into a factor of about
+          22,000.
+      - text: "Softmax outputs do not sum to 1 for large inputs"
+        explains: >-
+          They always sum to 1: `0.00005 + 0.99995 = 1`. Both methods produce valid
+          probabilities.
+      - text: "Standard normalisation ignores the larger score"
+        explains: >-
+          It uses both scores, as a ratio. `20/30` equals `2/3`, which is why the answer is
+          unchanged.
+---
+
+One-vs-all left a loose end. Its classifiers are trained independently, and slide 22 says it
+plainly: there is no reason why independent binary classifiers yield probabilities which sum
+to 1. If you need real probabilities, for instance to combine with other evidence through
+Bayes' theorem, the outputs have to be repaired.
+
+## Dividing by the total
+
+The direct fix is to add up all the outputs and divide each by the sum:
+
+```
+T = Σ F_i(x)  over all classes i          P(c) = F_c(x) / T
+```
+
+`T` is called the **partition function**. Take three classifiers with outputs 0.9, 0.6 and
+0.3:
+
+| class | `F_c(x)` | `P(c) = F_c(x) / 1.8` |
+| --- | --- | --- |
+| A | 0.9 | 0.50 |
+| B | 0.6 | 0.33 |
+| C | 0.3 | 0.17 |
+
+`T = 1.8`, and the right-hand column sums to 1. The order of the classes is unchanged, so the
+predicted label is the same as before. Only the scale moved. Slide 23 calls this **standard
+normalisation**.
+
+## Softmax
+
+The slide's alternative is **softmax**. Raise `e` to each score first, then normalise:
+
+```
+softmax(z)ᵢ = e^zᵢ / Σ e^zⱼ
+```
+
+The exponential makes every term positive, so softmax accepts any scores, including negative
+ones. It also exaggerates gaps. For the scores `[1, 2]`:
+
+```
+e¹ ≈ 2.718    e² ≈ 7.389    total ≈ 10.107
+softmax = [2.718 / 10.107, 7.389 / 10.107] ≈ [0.27, 0.73]
+```
+
+## The comparison on slide 23
+
+The slide runs both methods on two inputs. The first is described as a blurry image of a
+ferret, where the network is barely activated. The second is a crisp image of a cat with
+scores ten times larger.
+
+| scores | standard normalisation | softmax |
+| --- | --- | --- |
+| `[1, 2]` | `[0.33, 0.67]` | `[0.27, 0.73]` |
+| `[10, 20]` | `[0.33, 0.67]` | `[0.00005, 0.99995]` |
+
+Standard normalisation gives the same answer both times, "it is a cat perhaps", because
+`1:2` and `10:20` are the same ratio. Softmax tells them apart. A gap of 1 between scores
+gives mild confidence, and a gap of 10 gives near certainty: "it is definitely a cat".
+
+Softmax responds to **differences** between scores and standard normalisation to **ratios**.
+When stronger evidence shows up as larger scores, softmax is the one that reflects it.
+
+The same property is a hazard. Softmax will report 99.995% from any sufficiently large gap,
+whether or not the scores deserve that trust.
+
+> Independent classifiers' outputs must be normalised to act as probabilities. Dividing by
+> the total preserves ratios. Softmax exponentiates first, so larger gaps between scores
+> become sharper confidence.

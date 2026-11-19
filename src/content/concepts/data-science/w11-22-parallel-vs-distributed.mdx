@@ -1,0 +1,95 @@
+---
+course: data-science
+section: w11-mapreduce
+order: 1780
+title: Parallel and Distributed Processing
+visuals:
+  - type: svg
+    src: data-science/w11-scale/17.svg
+    caption: Slide 17 of 31 (achieving scale) — how tightly coupled the machines are.
+  - type: svg
+    src: data-science/w11-scale/18.svg
+    caption: Slide 18 of 31 (achieving scale) — partitioning the data and training independent models.
+questions:
+  - ask: "A team splits five years of sales data by year, trains one model per year on five machines at once, and then wants a single model for all five years. Which step is the hard one?"
+    choices:
+      - text: "Combining the five trained models into one, since independently trained models have no straightforward way to be merged"
+        correct: true
+        explains: >-
+          The slide's warning about data parallelism: it is typically hard to combine the
+          results of these runs later. Averaging five sets of parameters is not the model
+          you would have got from all the data.
+      - text: "Splitting the data, because years are not a natural partition"
+        explains: >-
+          Time is the first natural partition the slide lists. The split is the easy part.
+      - text: "Running five machines at once, because they must constantly exchange results"
+        explains: >-
+          They do not communicate at all while training, which is exactly what makes this
+          kind of job easy to run.
+      - text: "Training each model, because a year of data is too large for one machine"
+        explains: >-
+          The scenario is set up so each piece fits on one machine. That is the purpose of
+          partitioning.
+---
+
+When one processor is too slow, use several. There are two ways of doing that, and slide 17
+separates them by **how tightly coupled the machines are**.
+
+| | parallel processing | distributed processing |
+| --- | --- | --- |
+| where | one machine | many machines |
+| how the workers are made | threads and operating-system processes | separate computers |
+| how they talk | shared memory, fast | network communication, slow and unreliable |
+
+On one machine, the cores share the same memory, so passing data between them is nearly
+free, and they fail together. Across many machines, every exchange travels over a network,
+taking time and sometimes not arriving, and any machine can die while the others carry on.
+
+## What makes a job easy
+
+The slide gives the rule: **easy parallel jobs do not communicate much.**
+
+If each worker can take its share and finish without asking the others anything, adding
+workers just divides the time. Converting a million images to thumbnails is like this. If
+the workers must keep exchanging partial results, they spend their time waiting for one
+another, and more workers can make things slower.
+
+So the first question to ask of any big job is how much its pieces need to talk.
+
+The slide adds that training huge models on arrays of GPUs is a mix of both: many
+processors inside each machine, and many machines connected by a network.
+
+## Data parallelism
+
+Slide 18 describes the easiest way to exploit parallelism: **partition the data among
+multiple machines and train independent models**, one per piece.
+
+Each machine has its own data and builds its own model. Nothing is communicated during
+training, so this is an easy parallel job by the rule above.
+
+Where to cut? The slide lists natural partitions:
+
+- by **time**, such as one piece per month or year;
+- by **clustering algorithms**, which group similar records together;
+- by **given categories**, such as region or product line.
+
+The idea connects to an earlier one. Many small models, each on its own slice, is what
+personalisation looked like, and it parallelises perfectly because the slices never
+interact.
+
+## The catch
+
+The slide ends: it is **typically hard to combine the results of these runs together
+later**.
+
+If what you wanted was five separate models, you are done. If you wanted one model of
+everything, you now hold five models that never saw each other's data. Averaging their
+parameters does not in general give the model that training on all the data would have
+produced. The communication you avoided during training comes due at the end.
+
+That is the reason for the systems in the rest of this section. They are designed around a
+combining step that is defined in advance.
+
+> Parallel means many workers in one machine, and distributed means many machines on a
+> network. The less the workers must communicate, the easier the job. Splitting the data
+> and training separately is easy; merging the results afterwards is the hard part.

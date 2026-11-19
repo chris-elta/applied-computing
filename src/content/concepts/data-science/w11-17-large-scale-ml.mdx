@@ -1,0 +1,101 @@
+---
+course: data-science
+section: w11-bigdata
+order: 1730
+title: Which Models Can Use Big Data
+visuals:
+  - type: svg
+    src: data-science/w11-scale/06.svg
+    caption: Slide 6 of 31 (achieving scale) — why machine learning historically scaled poorly.
+  - type: svg
+    src: data-science/w11-scale/07.svg
+    caption: Slide 7 of 31 (achieving scale) — big data overall is modest data per individual.
+notation:
+  - symbol: "n"
+    reads: n
+    means: >-
+      The number of records. An algorithm that is "linear in n" does a fixed amount of work per
+      record, so doubling the data doubles the time.
+  - symbol: "n²"
+    reads: n squared
+    means: >-
+      n times n. An algorithm with this running time compares every record with every other,
+      so doubling the data quadruples the time.
+questions:
+  - ask: "A linear regression with 5 features is trained on 10,000 rows, then on 10 billion rows. Why is the second model barely better?"
+    choices:
+      - text: "Five parameters are pinned down well by thousands of examples; a model that simple has nothing more to learn from the rest"
+        correct: true
+        explains: >-
+          The slide's point: models with few parameters cannot really benefit from large numbers
+          of examples. Extra data only narrows estimates that are already tight.
+      - text: "Gradient descent cannot run on 10 billion rows"
+        explains: >-
+          It can, slowly, and its cost per pass is linear in the number of rows. The limit is
+          what the model is able to represent.
+      - text: "Large data sets always contain more errors"
+        explains: >-
+          They may, but that is not why the model stops improving. Even perfectly clean extra
+          data would add little.
+      - text: "The model overfits the larger data set"
+        explains: >-
+          Overfitting is a risk with too little data for the model's flexibility. Here there is
+          vastly more data than the model can use.
+---
+
+If you have a billion records, the obvious thing to do is train on all of them. Slide 6
+explains why that has historically not worked well, in three points.
+
+## Few parameters, nothing to gain
+
+A model's parameters are what it learns. A linear regression on five features has six
+numbers to choose. A few thousand examples pin those down closely, and the next billion only
+tighten estimates that were already tight. The slide: models with few parameters cannot
+really benefit from large numbers of examples.
+
+To gain from more data a model needs room to learn something more, which means more
+parameters.
+
+## The running time must be near linear
+
+Week 10's normal equation was slow once the number of features grew. The same arithmetic
+applies to the number of records `n`.
+
+| running time | 1,000 records | 1 billion records |
+| --- | --- | --- |
+| linear in `n` | 1,000 steps | 1 billion steps: seconds |
+| `n²` | 1 million steps | 10¹⁸ steps: decades |
+
+Any method that compares each record with every other is off the table. On big data the
+slide's rule holds: algorithmic complexity must be near linear.
+
+## Big matrices had better be sparse
+
+A table of 100 million users by 1 million products has 10¹⁴ cells, far beyond any memory.
+It is workable only because nearly every cell is empty, since each user has touched a few
+products. A **sparse** matrix stores the non-empty cells only. If the matrix were dense, it
+could not even be written down.
+
+## The exception
+
+The slide ends: huge foundation neural network models are the exception here. They have
+billions of parameters, so they do keep improving with more data, and they are trained with
+methods whose cost is linear in the data. They meet the first two conditions by design.
+
+## Many small models
+
+Slide 7 gives another way to spend big data. Big data on all your customers translates to
+**modest data on each of many individuals**.
+
+A retailer with 500 million purchase records and 10 million customers has, on average, 50
+purchases per person. That is a small data set, 10 million times over. **Personalisation**
+means training a small model for each individual, and the slide notes it is only possible
+with big data: you need the enormous total to have even a little on each person.
+
+So the same data supports two different uses. One huge model can describe everyone, or many
+small models can each describe someone. A simple model fitted to everybody uses neither
+well.
+
+> Data only helps a model with room to learn from it. On big data, favour algorithms that
+> are near linear, representations that are sparse, and either a very large model or very
+> many small ones.

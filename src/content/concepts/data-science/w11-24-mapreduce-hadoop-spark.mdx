@@ -1,0 +1,110 @@
+---
+course: data-science
+section: w11-mapreduce
+order: 1800
+title: MapReduce, Hadoop and Spark
+visuals:
+  - type: svg
+    src: data-science/w11-scale/22.svg
+    caption: Slide 22 of 31 (achieving scale) — what MapReduce and Hadoop offer.
+  - type: svg
+    src: data-science/w11-scale/23.svg
+    caption: Slide 23 of 31 (achieving scale) — Spark against Hadoop.
+  - type: svg
+    src: data-science/w11-scale/24.svg
+    caption: Slide 24 of 31 (achieving scale) — the shape of a typical big data problem.
+  - type: svg
+    src: data-science/w11-scale/25.svg
+    caption: Slide 25 of 31 (achieving scale) — six questions any parallel system must answer.
+questions:
+  - ask: "A bank wants to flag suspicious card transactions within a second of each one happening. Going by the lecture's comparison, which system suits this better?"
+    choices:
+      - text: "Spark, because it keeps intermediate data in memory and is designed for low-latency, real-time processing"
+        correct: true
+        explains: >-
+          The slide: Spark is RAM-based and better suited to online processing. Hadoop MapReduce
+          reads and writes disk and works in batch mode only.
+      - text: "Hadoop, because it is cheaper"
+        explains: >-
+          It is the cheaper option, since Spark needs a lot of RAM. But a batch system cannot
+          meet a one-second deadline at any price.
+      - text: "Hadoop, because it is more fault tolerant"
+        explains: >-
+          Both tolerate faults, by different means. Fault tolerance does not decide a question
+          about response time.
+      - text: "Either; they differ only in name"
+        explains: >-
+          They differ in where intermediate data lives, and that determines speed, latency and
+          cost.
+---
+
+The previous concepts built up a requirement: software that coordinates many machines and
+survives their failures. Slide 22 introduces the best-known answer. **MapReduce** is
+Google's paradigm for distributed computing. **Hadoop** is the open-source implementation
+through which it spread widely.
+
+The slide lists what they offer:
+
+- a **simple parallel programming model**;
+- **straightforward scaling** to hundreds or thousands of machines;
+- **fault tolerance through redundancy**.
+
+## The problems it was built for
+
+Slide 24 describes a typical big data problem as five steps.
+
+1. Iterate over a large number of records.
+2. Extract something of interest from each.
+3. Shuffle and sort intermediate results.
+4. Aggregate intermediate results.
+5. Generate final output.
+
+The slide's examples are word counting and k-means clustering. A great many analyses have
+this outline: do something small to every record, group what comes out, and summarise each
+group.
+
+Steps 1 and 2 treat each record independently, so they are the easy kind of parallel job.
+Steps 3 and 4 bring together results that belong with each other. This is the combining step
+that plain data parallelism left unsolved.
+
+## What the system takes off your hands
+
+Slide 25 lists the challenges of parallelising such a job.
+
+- How do we assign work units to workers?
+- What if we have more work units than workers?
+- What if workers need to share partial results?
+- How do we aggregate partial results?
+- How do we know all the workers have finished?
+- What if workers die?
+
+None of these is about your analysis. They are the same for every job, and they are hard.
+A framework answers them once. You supply the part specific to your problem (what to extract
+from a record, and how to summarise a group), and the framework does the assigning,
+shuffling, waiting and retrying. That is the sense in which the programming model is
+"simple". The next concept shows the two functions you write.
+
+## Spark against Hadoop
+
+Slide 23 summarises the difference in one line: Spark is **RAM-based** where Hadoop is
+**disk-based**, and better suited to **online** than to **batch** processing. Its table
+fills that out.
+
+| | Hadoop | Spark |
+| --- | --- | --- |
+| speed | reads and writes from disk, which slows processing | keeps intermediate data in memory, so is faster |
+| usage | built for batch processing | built to handle real-time data |
+| latency | high; no interactive mode | low; can process data interactively |
+| cost | the cheaper option | needs a lot of RAM, which raises cost |
+| fault tolerance | replicates blocks of data; if a node goes down the data is on another | stores the chain of transformations and recomputes lost data from the original |
+
+The trade is speed against cost. Memory is fast and expensive, and disk is slow and cheap. A
+nightly report over a year of logs can wait and suits batch on disk. A response needed in a
+second cannot.
+
+Both tolerate failure, in different ways. Hadoop keeps copies of the data. Spark remembers
+the recipe that produced the data and runs it again.
+
+> MapReduce reduces a common shape of problem (process every record, group, summarise) to
+> two functions, and the framework handles distribution and failure. Hadoop does it on disk
+> in batches, and Spark does it in memory, faster and at higher cost.

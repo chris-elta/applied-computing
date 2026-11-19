@@ -1,0 +1,128 @@
+---
+course: data-science
+section: w11-mapreduce
+order: 1810
+title: Map and Reduce
+visuals:
+  - type: svg
+    src: data-science/w11-scale/26.svg
+    caption: Slide 26 of 31 (achieving scale) — the two functions a programmer specifies.
+  - type: svg
+    src: data-science/w11-scale/27.svg
+    caption: Slide 27 of 31 (achieving scale) — word count as a map and a reduce.
+  - type: svg
+    src: data-science/w11-scale/28.svg
+    caption: Slide 28 of 31 (achieving scale) — word count executing on three documents.
+notation:
+  - symbol: "(k, v)"
+    reads: k v, or "a key-value pair"
+    means: >-
+      Two items travelling together: a key that says what the item is about, and a value
+      attached to it. For word count, (fox, 1).
+  - symbol: "k′, v′"
+    reads: k prime, v prime
+    means: >-
+      The key and value that come out of a function, as distinct from the ones that went in.
+      The prime mark means "the new one"; it is not a power or a derivative.
+  - symbol: "[ … ]"
+    reads: a list of
+    means: >-
+      Zero or more of whatever is inside. [(k′, v′)] is a list of key-value pairs; [v′] is a
+      list of values.
+  - symbol: "→"
+    reads: produces, or maps to
+    means: >-
+      The function takes what is on the left and returns what is on the right.
+questions:
+  - ask: "In word count over the three documents on slide 28, the word `the` appears once in the first document and twice in the second. What does the reducer for `the` receive?"
+    choices:
+      - text: "The key `the` with the list `[1, 1, 1]`, gathered from two different mappers"
+        correct: true
+        explains: >-
+          Each occurrence was emitted separately as `(the, 1)`. The shuffle groups all values
+          with the same key and delivers them to one reducer, which sums them to 3.
+      - text: "The pairs `(the, 1)` and `(the, 2)`, one per document"
+        explains: >-
+          Map as written on slide 27 emits a 1 for every occurrence and does no adding. Per-document totals
+          appear only when a combiner is added, in the next concept.
+      - text: "The three original documents"
+        explains: >-
+          Reducers never see the input records. They see only the keys and values the mappers
+          emitted.
+      - text: "The pair `(the, 3)`"
+        explains: >-
+          That is what the reducer outputs. Producing it is the reducer's job.
+---
+
+MapReduce asks the programmer for two functions. Slide 26 gives their shapes.
+
+```
+map    (k, v)      →  [(k′, v′)]
+reduce (k′, [v′])  →  [(k′, v′)]
+```
+
+**map** takes one input record, as a key and a value, and emits a list of new key-value
+pairs. It sees one record at a time and knows nothing about any other.
+
+**reduce** takes one key together with the list of *all* values emitted under that key, and
+emits a result.
+
+Between them the framework does the work that connects the two, and the slide states its
+guarantee: **all values with the same key are sent to the same reducer**. This grouping is
+the shuffle and sort from the previous concept.
+
+## Word count
+
+Slide 27 is the standard example: count how often each word appears across many documents.
+
+```
+Map(String docid, String text):
+    for each word w in text:
+        Emit(w, 1)
+
+Reduce(String term, Iterator<Int> values):
+    int sum = 0
+    for each v in values:
+        sum += v
+    Emit(term, sum)
+```
+
+Map receives a document. For every word it emits the word as key and the number 1 as value,
+meaning "I saw this word once". It does not count anything.
+
+Reduce receives one word and all the 1s emitted for it, adds them up, and emits the total.
+
+## Following it through
+
+Slide 28 runs this on three documents with three mappers and two reducers.
+
+| document | map emits |
+| --- | --- |
+| the quick brown fox | `(the, 1)` `(quick, 1)` `(brown, 1)` `(fox, 1)` |
+| the fox ate the mouse | `(the, 1)` `(fox, 1)` `(ate, 1)` `(the, 1)` `(mouse, 1)` |
+| how now brown cow | `(how, 1)` `(now, 1)` `(brown, 1)` `(cow, 1)` |
+
+The framework then groups by key and sends each key to one reducer.
+
+| reducer | receives | emits |
+| --- | --- | --- |
+| first | `brown [1, 1]`, `fox [1, 1]`, `how [1]`, `now [1]`, `the [1, 1, 1]` | `brown 2`, `fox 2`, `how 1`, `now 1`, `the 3` |
+| second | `ate [1]`, `cow [1]`, `mouse [1]`, `quick [1]` | `ate 1`, `cow 1`, `mouse 1`, `quick 1` |
+
+Look at `the`. Its three 1s came from two different mappers, and all three arrived at the
+same reducer. Without that guarantee two reducers might each report a partial count and
+neither would be right.
+
+## Why this shape
+
+Each mapper works on its own document with no communication, so the map phase is the easy
+kind of parallelism and can spread across as many machines as there are. The only
+coordination is the grouping by key, which is identical for every job, so the framework
+does it. If a machine dies, its map or reduce task is run again elsewhere. That is safe
+because each task depends only on its own input.
+
+You wrote about ten lines, none of them mentioning machines, networks or failures.
+
+> A MapReduce program is two functions. Map turns each record into key-value pairs,
+> independently. Reduce receives every value for one key and summarises them. The framework
+> guarantees that equal keys meet at the same reducer.

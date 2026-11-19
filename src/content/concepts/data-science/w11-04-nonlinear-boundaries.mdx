@@ -1,0 +1,90 @@
+---
+course: data-science
+section: w11-logistic
+order: 1600
+title: Non-linear Decision Boundaries
+visuals:
+  - type: svg
+    src: data-science/w11-logistic-1/11.svg
+    caption: Slide 11 of 16 (logistic regression, part 1) — a circular boundary from squared features.
+notation:
+  - symbol: "x₁²"
+    reads: x one squared
+    means: >-
+      The first feature multiplied by itself. Here the subscript names the feature and the
+      superscript is a real power.
+  - symbol: "θ₃, θ₄"
+    reads: theta three, theta four
+    means: >-
+      The parameters attached to the new features x₁² and x₂². Adding a feature always adds a
+      parameter.
+questions:
+  - ask: "A logistic regression model uses features `x₁`, `x₂`, `x₁²`, `x₂²` and produces a circular boundary. In what sense is it still a linear model?"
+    choices:
+      - text: "`θᵀx` is still a weighted sum of the features; the curve comes from the features being squares, not from how θ is used"
+        correct: true
+        explains: >-
+          Treat `x₁²` and `x₂²` as two more columns of data. The model is a straight boundary in
+          that four-feature space, which looks like a circle when drawn against `x₁` and `x₂`.
+      - text: "It is not; adding squared terms makes it a different algorithm"
+        explains: >-
+          The hypothesis, cost and training procedure are unchanged. Only the list of features
+          grew, exactly as with polynomial regression in week 10.
+      - text: "A circle is a kind of straight line"
+        explains: >-
+          It is not, in the `x₁, x₂` plane. The boundary is flat only in the larger feature space.
+      - text: "The sigmoid function is linear"
+        explains: >-
+          The sigmoid is an S-shaped curve. Linearity refers to `θᵀx`, the quantity inside it.
+---
+
+A straight line cannot separate every pair of classes. Slide 11 shows blue circles clustered
+around the origin with red crosses in a ring around them. No line puts all the circles on one
+side.
+
+Week 10 met the same limitation with curved data and solved it by adding polynomial features.
+The same move works here.
+
+## Adding squared features
+
+Give the model two more features, `x₁²` and `x₂²`:
+
+```
+hθ(x) = g(θ₀ + θ₁x₁ + θ₂x₂ + θ₃x₁² + θ₄x₂²)
+```
+
+Suppose training gives `θ₀ = −1`, `θ₁ = 0`, `θ₂ = 0`, `θ₃ = 1`, `θ₄ = 1`. The rule from the
+previous concept says predict `y = 1` when the sum inside `g` is at least zero:
+
+```
+−1 + x₁² + x₂² ≥ 0      that is,      x₁² + x₂² ≥ 1
+```
+
+`x₁² + x₂² = 1` is a circle of radius 1 centred on the origin. Points outside the circle are
+predicted positive, points inside negative.
+
+| point | `x₁² + x₂²` | prediction |
+| --- | --- | --- |
+| `(0, 0)` | 0 | `y = 0` (inside) |
+| `(0.5, 0.5)` | 0.5 | `y = 0` (inside) |
+| `(1, 1)` | 2 | `y = 1` (outside) |
+
+## Still a linear model
+
+Nothing about the method changed. `θᵀx` is still "multiply each feature by its parameter and
+add". The model draws a flat boundary in a space with four features, and that flat boundary
+appears as a circle when you plot only `x₁` and `x₂`. This is what the lecturer's later slide
+means by a separator that is "linear in the possibly non-linear features".
+
+## Going further, with care
+
+The second half of slide 11 adds higher-order terms such as `x₁²x₂`, `x₁²x₂²` and `x₁³x₂`.
+With enough of them the boundary can bend into almost any shape.
+
+That power has a price you have already paid once. A boundary flexible enough to wrap around
+every training point will also wrap around the noise. This is the overfitting from week 10,
+and the same remedy, regularisation, applies.
+
+> Logistic regression draws curved boundaries when you hand it curved features. The model
+> stays linear in θ, so everything about fitting it stays the same. More features mean more
+> flexibility and more risk of overfitting.

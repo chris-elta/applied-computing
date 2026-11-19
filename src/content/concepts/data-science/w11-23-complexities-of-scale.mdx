@@ -1,0 +1,109 @@
+---
+course: data-science
+section: w11-mapreduce
+order: 1790
+title: One, Two, Many
+visuals:
+  - type: svg
+    src: data-science/w11-scale/19.svg
+    caption: Slide 19 of 31 (achieving scale) — one machine, a few machines, many machines.
+  - type: svg
+    src: data-science/w11-scale/20.svg
+    caption: Slide 20 of 31 (achieving scale) — how social gatherings change with size.
+  - type: svg
+    src: data-science/w11-scale/21.svg
+    caption: Slide 21 of 31 (achieving scale) — the scale of training GPT-4.
+notation:
+  - symbol: "GWh"
+    reads: gigawatt-hour
+    means: >-
+      A unit of energy: a million kilowatt-hours.
+  - symbol: "2.15e25"
+    reads: two point one five times ten to the twenty-five
+    means: >-
+      Scientific notation for 2.15 followed by 25 more digits' worth of size. The "e25" means
+      "times 10²⁵".
+questions:
+  - ask: "A job runs on 25,000 machines for 90 days. Each machine fails, on average, once every three years. Roughly how often should the system expect a failure?"
+    choices:
+      - text: "About 23 times a day, so recovery from failure must be designed in from the start"
+        correct: true
+        explains: >-
+          One machine fails about once in 1,095 days, so 25,000 machines produce about
+          `25,000 / 1,095 ≈ 23` failures a day. Something that is rare for one machine becomes
+          routine for many.
+      - text: "Once every three years, the same as a single machine"
+        explains: >-
+          That is the rate for each machine. With 25,000 of them the failures add up.
+      - text: "Probably never during a 90-day run"
+        explains: >-
+          For one machine, a failure in 90 days is unlikely. Across 25,000 the expected number
+          over the run is about 2,000.
+      - text: "About once in the 90 days"
+        explains: >-
+          That would be the figure for about a dozen machines, not 25,000.
+---
+
+The previous concept said distributed work is harder than parallel work. Slide 19 says how
+the difficulty grows: **rapidly, with the number of machines**.
+
+| machines | what the work is |
+| --- | --- |
+| One | keep the cores of your box busy |
+| Two | manually run programs on a few boxes |
+| Many | employ a system like MapReduce to manage the machines efficiently |
+
+With one machine the problem is using it fully. With a few, you can log in to each, start a
+program and copy the results back by hand. With hundreds, doing it by hand is impossible, and
+you need software whose whole purpose is to hand out work, track it and collect results.
+These are three different kinds of work.
+
+## The gathering analogy
+
+Slide 20 makes the same point with people.
+
+| size of gathering | what changes |
+| --- | --- |
+| 1 person | easy to arrange |
+| more than 2 | coordination |
+| more than 10 | requires a leader in charge |
+| more than 100 | requires a fixed menu |
+| more than 1,000 | no one knows many people |
+| more than 10,000 | too few hotels for most cities |
+| more than 100,000 | someone will die that day |
+
+Each row brings a problem the previous size did not have. Past 10 you need a coordinator.
+Past 100 you can no longer treat individuals differently, hence the fixed menu: standardise
+the work. Past 1,000 no participant knows the whole. Past 10,000 you hit the limits of the
+infrastructure.
+
+The last row matters most. Among 100,000 people on an ordinary day, a death is a statistical
+expectation. Nobody did anything wrong. An event that is vanishingly rare for one person
+becomes near-certain when there are enough people.
+
+Replace people with machines and "die" with "fail". A disk that fails once in several years
+is reliable. Ten thousand of them produce failures daily. At scale, **failure is a normal
+operating condition**.
+
+## A real case
+
+Slide 21 gives figures for training GPT-4.
+
+| | |
+| --- | --- |
+| GPUs | 25,000 NVIDIA A100 |
+| training time | 90–100 days |
+| training cost | $63 million, not including researcher salaries |
+| energy | an estimated 50 GWh |
+| data set | 13 trillion tokens |
+| floating point operations | 2.15e25 |
+| batch size | increased over time, eventually reaching 60 million tokens |
+
+The slide's closing remark ties it to the analogy: **recovering from machines dying had to
+be an important aspect of the training architecture**. A run on 25,000 GPUs for three months
+will lose machines. If one failure meant starting again, the job would never finish. The
+architecture has to notice a dead machine, redo its share and continue.
+
+> Scale changes the kind of problem you have, not only its size. Beyond a few machines you
+> need a system to coordinate them, and beyond many, something is always broken, so the
+> system must expect failure and recover.

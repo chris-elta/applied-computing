@@ -1,0 +1,113 @@
+---
+course: data-science
+section: w11-sampling
+order: 1770
+title: Stream Sampling
+visuals:
+  - type: svg
+    src: data-science/w11-scale/15.svg
+    caption: Slide 15 of 31 (achieving scale) — keeping a uniform sample of size k from a stream of unknown length.
+  - type: svg
+    src: data-science/w11-scale/16.svg
+    caption: Slide 16 of 31 (achieving scale) — why every element ends up in the sample with probability k/n.
+notation:
+  - symbol: "k"
+    reads: k
+    means: >-
+      The size of the sample you want to hold at all times. Fixed in advance.
+  - symbol: "n"
+    reads: n
+    means: >-
+      The number of elements seen so far. It grows by one with each arrival, and its final
+      value is not known in advance.
+  - symbol: "k/n"
+    reads: k over n
+    means: >-
+      The probability that the n-th element is admitted to the sample. It is also the
+      probability that any earlier element is still in the sample after n arrivals.
+  - symbol: "P(…)"
+    reads: the probability that
+    means: >-
+      A number from 0 to 1 saying how likely the event in the brackets is.
+questions:
+  - ask: "You keep a sample of `k = 10` from a stream. The 1,000th element arrives. What is the chance it enters the sample, and what is the chance that the very first element is still in the sample afterwards?"
+    choices:
+      - text: "Both are 10/1,000 = 1%"
+        correct: true
+        explains: >-
+          The newcomer is admitted with probability `k/n`. The algorithm is built so that every
+          earlier element also has probability `k/n` of being present, which is what makes the
+          sample uniform.
+      - text: "1% for the new element, and far less for the first, which has had 990 chances to be evicted"
+        explains: >-
+          The first element faced many evictions, but each was unlikely, and it began with
+          probability 1 of being in the sample. The two effects cancel exactly to `k/n`.
+      - text: "1% for the new element and 100% for the first, since early elements fill the array"
+        explains: >-
+          Early elements do fill the array at first, but any of them can be replaced by a later
+          arrival.
+      - text: "10% for both, because one of ten slots is chosen"
+        explains: >-
+          One in ten is the chance that a particular slot is the one replaced, once the
+          newcomer has been admitted. Admission itself has probability `k/n`.
+---
+
+Every sampling method so far assumed you could see the whole data set: you knew how many
+records there were and could visit any of them. A **stream** takes that away. Records arrive
+one at a time, you cannot store them all, and you do not know how many are coming.
+
+Slide 15 poses the problem: keep a **uniform sample of size `k`** from a stream when `n` is
+not known in advance. Uniform means that whenever the stream stops, every element seen so
+far had the same chance of being in the sample.
+
+Random sampling with a fixed probability `p` will not do. To end with `k` records you would
+need `p = k/n`, and you do not know `n`.
+
+## The algorithm
+
+Keep an array of `k` elements.
+
+1. The first `k` arrivals fill the array.
+2. When element number `n` arrives (with `n` greater than `k`), admit it with probability
+   `k/n`.
+3. If it is admitted, choose one of the `k` positions at random and replace what is there.
+
+Later arrivals are admitted less and less often: `k/n` shrinks as `n` grows. That is correct.
+Once a million elements have passed, a newcomer deserves only a `k`-in-a-million chance.
+
+Memory use is `k` slots however long the stream runs, and each element is handled once.
+
+## Why it is uniform
+
+Slide 16 gives the argument by following element 1.
+
+Assume the method is correct after `n − 1` arrivals, so element 1 is in the sample with
+probability `k/(n−1)`. Now element `n` arrives. Element 1 survives in two ways:
+
+| what happens | probability |
+| --- | --- |
+| `n` is not admitted | `(n − k)/n` |
+| `n` is admitted but replaces someone else | `(k/n) × (k−1)/k = (k−1)/n` |
+| **total chance of surviving** | `(n − k)/n + (k − 1)/n = (n − 1)/n` |
+
+So:
+
+```
+P(1 in sample after n) = k/(n−1) × (n−1)/n = k/n
+```
+
+The `(n−1)` cancels. Element 1 has probability `k/n`, exactly the probability with which
+the newcomer was admitted. The same reasoning applies to every earlier element, so all `n`
+elements are equally likely to be in the sample. Since that holds at each step given that it
+held at the step before, it holds for the whole stream.
+
+## A small case
+
+Take `k = 2`. After the first two arrivals both are in the sample with probability 1, which
+is `2/2`. Element 3 is admitted with probability `2/3`. Element 1 survives if 3 is rejected
+(`1/3`) or if 3 is admitted and evicts element 2 (`2/3 × 1/2 = 1/3`). Total `2/3`, the same
+as element 3's chance. All three stand at `2/3 = k/n`.
+
+> To sample `k` items uniformly from a stream of unknown length, admit the `n`-th item with
+> probability `k/n` and have it replace a random current member. Every item seen then has
+> the same `k/n` chance of being held.

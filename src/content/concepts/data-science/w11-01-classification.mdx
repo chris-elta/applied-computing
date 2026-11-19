@@ -1,0 +1,90 @@
+---
+course: data-science
+section: w11-logistic
+order: 1570
+title: Classification, and Why a Straight Line Fails
+visuals:
+  - type: svg
+    src: data-science/w11-logistic-1/02.svg
+    caption: Slide 2 of 16 (logistic regression, part 1) — three yes-or-no problems and the two classes.
+  - type: svg
+    src: data-science/w11-logistic-1/03.svg
+    caption: Slide 3 of 16 (logistic regression, part 1) — thresholding a fitted line at 0.5.
+  - type: svg
+    src: data-science/w11-logistic-1/04.svg
+    caption: Slide 4 of 16 (logistic regression, part 1) — the output we want stays between 0 and 1.
+notation:
+  - symbol: "y ∈ {0, 1}"
+    reads: y is in the set zero, one
+    means: >-
+      The label takes exactly one of two values. 0 is the negative class (benign), 1 is the
+      positive class (malignant). Nothing in between is allowed.
+  - symbol: "hθ(x)"
+    reads: h theta of x, or "the hypothesis"
+    means: >-
+      The model's output for input x, using parameters θ. Same symbol as in week 10, about to
+      get a new formula.
+questions:
+  - ask: "A straight line fitted to tumour data is thresholded at 0.5 and classifies every training example correctly. One very large malignant tumour is added. Why can the classifier get worse?"
+    choices:
+      - text: "The new point pulls the line flatter, so the place where it crosses 0.5 moves right and smaller malignant tumours fall below the threshold"
+        correct: true
+        explains: >-
+          Least squares tries to pass close to every point, including the far one. That tilts the
+          line and shifts the crossing, even though the new example was never in doubt.
+      - text: "The new tumour is mislabelled"
+        explains: >-
+          It is correctly labelled and obviously malignant. The trouble is that an easy example
+          still moves a least-squares line.
+      - text: "A threshold of 0.5 is wrong for medical data"
+        explains: >-
+          The threshold is fine. What moved is the line underneath it, so the same threshold now
+          cuts in a different place.
+      - text: "Linear regression cannot be fitted to labels of 0 and 1"
+        explains: >-
+          It can be fitted. It produces numbers, some above 1 and some below 0. The problem is
+          that those numbers behave badly as a classifier.
+---
+
+Week 10 predicted a number: a house price, a profit. This week the answer is a category. Is
+this email spam? Is this transaction fraudulent? Is this tumour malignant? Each has two
+possible answers, so the label `y` is either 0 or 1.
+
+| value | name | example |
+| --- | --- | --- |
+| `y = 0` | negative class | benign tumour |
+| `y = 1` | positive class | malignant tumour |
+
+"Positive" means "the thing we are looking for is present". It is not a judgement about
+whether that is good news.
+
+## Trying linear regression anyway
+
+Slide 3 plots tumour size against the label. The benign tumours sit on the bottom line at 0
+and the malignant ones on the top line at 1. You already know how to fit a line `hθ(x) = θᵀx`
+through points, so fit one and add a rule:
+
+- if `hθ(x) ≥ 0.5`, predict `y = 1`
+- if `hθ(x) < 0.5`, predict `y = 0`
+
+On the first eight points this works. The line crosses 0.5 somewhere between the two groups.
+
+Now add the ninth point on the slide: one very large malignant tumour far to the right. It is
+an easy case. But least squares wants the line close to *every* point, so the line tilts
+flatter to reach it. The crossing at 0.5 slides to the right, and malignant tumours that were
+correctly flagged now sit below the threshold.
+
+An example that should have changed nothing made the classifier worse.
+
+## The second problem
+
+A straight line keeps going. For a large enough tumour `hθ(x)` is above 1, and for a small
+enough one it is below 0. Slide 4 states this directly: the labels are 0 or 1, yet `hθ(x)`
+can be `> 1` or `< 0`. An output of 1.4 has no sensible reading when the only answers are 0
+and 1.
+
+**Logistic regression** fixes this by guaranteeing `0 ≤ hθ(x) ≤ 1`. Despite its name it is a
+classification method. The "regression" is historical.
+
+> Classification predicts a category, not a quantity. A thresholded straight line is the
+> wrong tool: easy far-away examples drag it around, and its outputs escape the range 0 to 1.

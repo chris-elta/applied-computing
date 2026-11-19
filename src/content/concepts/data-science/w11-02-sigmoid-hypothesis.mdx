@@ -1,0 +1,133 @@
+---
+course: data-science
+section: w11-logistic
+order: 1580
+title: The Sigmoid Hypothesis
+visuals:
+  - type: svg
+    src: data-science/w11-logistic-1/06.svg
+    caption: Slide 6 of 16 (logistic regression, part 1) — the logistic regression model and the sigmoid curve.
+  - type: svg
+    src: data-science/w11-logistic-1/07.svg
+    caption: Slide 7 of 16 (logistic regression, part 1) — reading the output as a probability.
+notation:
+  - symbol: "g(z)"
+    reads: g of z
+    means: >-
+      The sigmoid function, 1 / (1 + e⁻ᶻ). Takes any number and returns one between 0 and 1.
+      Also called the logistic function, which is where the method's name comes from.
+  - symbol: "z"
+    reads: zed, or zee
+    means: >-
+      Shorthand for the number fed into the sigmoid. Here z = θᵀx, the same weighted sum that
+      linear regression used as its final answer.
+  - symbol: "e"
+    reads: e
+    means: >-
+      A fixed number, about 2.718. e⁻ᶻ is huge when z is very negative and almost zero when z
+      is very positive.
+  - symbol: "θᵀx"
+    reads: theta transpose x
+    means: >-
+      θ₀x₀ + θ₁x₁ + … + θₙxₙ with x₀ = 1. Multiply each feature by its parameter and add.
+  - symbol: "P(y = 1 | x; θ)"
+    reads: the probability that y equals one, given x, parameterised by theta
+    means: >-
+      How likely the positive class is for this particular input, according to the model with
+      these parameters. The bar reads "given"; the semicolon separates data from settings.
+questions:
+  - ask: "For one patient the model outputs `hθ(x) = 0.7`. What does the model say about `y = 0`?"
+    choices:
+      - text: "`P(y = 0 | x; θ) = 0.3`"
+        correct: true
+        explains: >-
+          There are only two outcomes, so their probabilities add to 1. A 70% chance of malignant
+          leaves a 30% chance of benign.
+      - text: "`P(y = 0 | x; θ) = 0.7`"
+        explains: >-
+          0.7 is the probability of the positive class, `y = 1`. The hypothesis always reports
+          that one.
+      - text: "Nothing: the model only describes `y = 1`"
+        explains: >-
+          With two classes, knowing one probability fixes the other. Slide 7 writes it out:
+          `P(y = 0) = 1 − P(y = 1)`.
+      - text: "70% of the tumour is malignant"
+        explains: >-
+          The output is a degree of belief about the whole label, not a fraction of the tumour.
+  - ask: "What is `g(0)`?"
+    choices:
+      - text: "0.5"
+        correct: true
+        explains: >-
+          `e⁰ = 1`, so `g(0) = 1 / (1 + 1) = 0.5`. The curve crosses the vertical axis exactly
+          halfway up, which the next concept relies on.
+      - text: "0"
+        explains: >-
+          The sigmoid only approaches 0 as z becomes very negative. At z = 0 it is in the middle.
+      - text: "1"
+        explains: >-
+          The sigmoid only approaches 1 as z becomes very positive.
+      - text: "Undefined"
+        explains: >-
+          The denominator is `1 + e⁰ = 2`, never zero, so g is defined everywhere.
+---
+
+We want a hypothesis that never leaves the range 0 to 1. The move on slide 6 is small: keep
+the weighted sum from linear regression, then pass it through a function that squashes any
+number into that range.
+
+```
+hθ(x) = g(θᵀx)        where  g(z) = 1 / (1 + e⁻ᶻ)
+```
+
+`g` is the **sigmoid function**, also called the **logistic function**. Put together:
+
+```
+hθ(x) = 1 / (1 + e^(−θᵀx))
+```
+
+## What the sigmoid does
+
+Try a few values of `z`:
+
+| `z` | `e⁻ᶻ` | `g(z)` |
+| --- | --- | --- |
+| −5 | 148.4 | 0.007 |
+| −2 | 7.39 | 0.119 |
+| 0 | 1 | 0.5 |
+| 2 | 0.135 | 0.881 |
+| 5 | 0.007 | 0.993 |
+
+Very negative `z` makes `e⁻ᶻ` enormous, so the fraction is near 0. Very positive `z` makes
+`e⁻ᶻ` vanish, so the fraction is near 1. In between, the curve rises smoothly in an S shape
+through 0.5 at `z = 0`. It gets close to 0 and 1 and never reaches either.
+
+This repairs both failures of the straight line. The output cannot escape the range, and a
+very large tumour only pushes `z` further right, where the curve is already flat at 1. Easy
+examples stop dragging the model around.
+
+## Reading the output
+
+Slide 7 gives the number a meaning: `hθ(x)` is the **estimated probability that `y = 1`** for
+input `x`.
+
+The slide's example has features `x₀ = 1` and `x₁ = tumorSize`. If `hθ(x) = 0.7`, you tell
+the patient there is a 70% chance the tumour is malignant. Formally:
+
+```
+hθ(x) = P(y = 1 | x; θ)
+```
+
+Because `y` must be 0 or 1, the two probabilities sum to 1:
+
+```
+P(y = 0 | x; θ) = 1 − P(y = 1 | x; θ)
+```
+
+So a single output covers both classes.
+
+Linear regression's `θᵀx` has not gone anywhere. It is now an intermediate score, and the
+sigmoid converts that score to a probability.
+
+> Logistic regression is linear regression's weighted sum passed through the sigmoid. The
+> result is always between 0 and 1 and is read as the probability of the positive class.

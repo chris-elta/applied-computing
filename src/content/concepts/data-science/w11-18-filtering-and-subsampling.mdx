@@ -1,0 +1,82 @@
+---
+course: data-science
+section: w11-sampling
+order: 1740
+title: Filtering and Subsampling
+visuals:
+  - type: svg
+    src: data-science/w11-scale/08.svg
+    caption: Slide 8 of 31 (achieving scale) — discarding data to make analysis cleaner.
+  - type: svg
+    src: data-science/w11-scale/09.svg
+    caption: Slide 9 of 31 (achieving scale) — three reasons to subsample good data.
+questions:
+  - ask: "What is the difference between filtering a data set and subsampling it?"
+    choices:
+      - text: "Filtering removes records that are irrelevant or hard to interpret; subsampling keeps a smaller portion of records that are all good"
+        correct: true
+        explains: >-
+          Filtering changes what the data is about and needs knowledge of the application.
+          Subsampling aims to keep the data the same in character, only smaller.
+      - text: "Filtering is random and subsampling is not"
+        explains: >-
+          The reverse is closer. Filtering applies a rule, such as "English only". Subsampling
+          is often random.
+      - text: "They are two names for the same thing"
+        explains: >-
+          Both discard records, for different reasons: one because the records are unwanted,
+          the other because there are more than you need.
+      - text: "Filtering reduces bias and subsampling introduces it"
+        explains: >-
+          Either can introduce bias if done carelessly. A filter chosen badly removes a group
+          you needed; a sample taken badly over-represents one.
+---
+
+The last concept said a simple model cannot use a billion records. Slides 8 and 9 turn that
+into advice: with big data, one of your most useful options is to **throw much of it away**.
+There are two different reasons to discard a record.
+
+## Filtering: removing what you do not want
+
+Slide 8 calls this an important benefit of big data: you can discard much of it to make
+analysis cleaner.
+
+The slide's example: English accounts for only 34% of all tweets on Twitter, but you can
+exclude the rest and still have enough for meaningful analysis. If your method understands
+English text, tweets in other languages are noise to it. With a small data set, dropping 66%
+would be ruinous. With 500 million tweets a day, the remaining third is about 170 million a
+day.
+
+Filtering is a decision about what is relevant, and the slide says it **requires
+application-specific knowledge**. Someone has to know that language matters for this
+analysis, that machine-generated accounts should go, that a particular field is unreliable
+before a certain date. A filter changes which population your conclusions describe.
+Excluding non-English tweets means your findings are about English-language tweeters, and
+you should say so.
+
+## Subsampling: keeping less of what is good
+
+Subsampling is different. The records are all relevant, and you keep a fraction anyway.
+Slide 9 gives three reasons it can pay.
+
+| reason | why it helps |
+| --- | --- |
+| Cleanly separate training, testing and evaluation data | with data to spare, you can set aside distinct portions that never mix |
+| Simple, robust models have few parameters | big data is overkill for them, so a sample trains the same model in a fraction of the time |
+| Spreadsheet-sized data sets are fast and easy to explore | you can look at the rows, plot them and try an idea in seconds |
+
+The third is easy to undervalue. Exploration depends on quick feedback: try something,
+look, try something else. If every question takes an hour on a cluster you will ask few
+questions. A sample that fits in a spreadsheet lets you ask hundreds, and once you know which
+are worth asking you can run those on the full data.
+
+## The catch
+
+Both operations assume that what you keep still looks like what you had, or like what you
+meant to study. A filter can quietly remove a group you needed. A subsample can
+over-represent one corner of the data. How you choose the records matters as much as how
+many you keep, and the next three concepts are about how to choose.
+
+> With big data you can afford to discard. Filter out what is irrelevant, using knowledge
+> of the application. Subsample what is good, to separate your data cleanly and work
+> quickly.

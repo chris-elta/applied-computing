@@ -1,0 +1,108 @@
+---
+course: data-science
+section: w11-logistic-fit
+order: 1620
+title: The Logistic Cost
+visuals:
+  - type: svg
+    src: data-science/w11-logistic-1/15.svg
+    caption: Slide 15 of 16 (logistic regression, part 1) — the cost when the true label is 1.
+  - type: svg
+    src: data-science/w11-logistic-1/16.svg
+    caption: Slide 16 of 16 (logistic regression, part 1) — the cost when the true label is 0.
+notation:
+  - symbol: "log"
+    reads: log, or "the natural logarithm"
+    means: >-
+      The power e must be raised to in order to get a number. log(1) = 0. For numbers between
+      0 and 1 it is negative, and it heads to minus infinity as the number approaches 0.
+  - symbol: "−log(hθ(x))"
+    reads: minus log of h theta of x
+    means: >-
+      The penalty when the true label is 1. The minus sign flips the negative log into a
+      positive cost.
+  - symbol: "→ ∞"
+    reads: tends to infinity
+    means: >-
+      Grows without limit. The cost has no ceiling as the prediction approaches the wrong
+      extreme.
+questions:
+  - ask: "A tumour is malignant (`y = 1`). Model A predicts `hθ(x) = 0.5` and model B predicts `hθ(x) = 0.01`. How do their costs on this example compare?"
+    choices:
+      - text: "A pays about 0.69 and B about 4.6: being confidently wrong costs far more than being unsure"
+        correct: true
+        explains: >-
+          `−log(0.5) ≈ 0.69` and `−log(0.01) ≈ 4.6`. The cost keeps growing as the prediction
+          approaches 0, with no upper limit.
+      - text: "They pay the same, because both would be thresholded to a wrong or borderline answer"
+        explains: >-
+          The cost looks at the probability itself, not the thresholded label. That is how it
+          can tell an unsure model from a confidently wrong one.
+      - text: "B pays less, because 0.01 is a smaller number"
+        explains: >-
+          For `y = 1` the cost is `−log(hθ(x))`, which grows as the prediction shrinks.
+      - text: "A pays 0.25 and B pays 0.98"
+        explains: >-
+          Those are squared errors, the cost the previous concept ruled out. The log cost
+          punishes B much harder than that.
+---
+
+The cost for one example should be small when the prediction is right and large when it is
+wrong. Slides 15 and 16 define one that does this with a logarithm, in two cases:
+
+```
+Cost(hθ(x), y) = −log(hθ(x))          if y = 1
+Cost(hθ(x), y) = −log(1 − hθ(x))      if y = 0
+```
+
+## When the truth is 1
+
+The model outputs `hθ(x)`, its probability that `y = 1`. If the truth is 1, a good model says
+something close to 1.
+
+| prediction `hθ(x)` | cost `−log(hθ(x))` |
+| --- | --- |
+| 1.0 | 0 |
+| 0.9 | 0.105 |
+| 0.5 | 0.693 |
+| 0.1 | 2.303 |
+| 0.01 | 4.605 |
+
+A perfect prediction costs nothing. A hesitant one costs a little. As the prediction heads
+toward 0 the cost rises without limit, which the slide writes as `Cost → ∞`.
+
+The slide spells out the intuition. If the model says `P(y = 1 | x; θ) = 0`, it is claiming
+the positive class is impossible. If the positive class then happens, the learning algorithm
+is penalised by a very large cost.
+
+## When the truth is 0
+
+The curve is the mirror image. `1 − hθ(x)` is the model's probability that `y = 0`, so the
+cost is the same idea applied to the other class.
+
+| prediction `hθ(x)` | cost `−log(1 − hθ(x))` |
+| --- | --- |
+| 0.0 | 0 |
+| 0.1 | 0.105 |
+| 0.5 | 0.693 |
+| 0.9 | 2.303 |
+| 0.99 | 4.605 |
+
+In both cases the rule is: take the probability the model gave to what actually happened, and
+charge minus its log.
+
+## How this differs from squared error
+
+Squared error for a prediction of 0.01 when the truth is 1 would be `½(0.99)² ≈ 0.49`, and it
+can never exceed 0.5. The log cost for the same mistake is 4.6 and would be 6.9 at 0.001.
+**Confident wrong answers are punished far more than unsure ones.**
+
+This matters because the output is read as a probability. A model that says "1% chance of
+malignant" about a malignant tumour has done more damage than one that says "50%".
+
+The other gain is the one the previous concept asked for: with this `Cost`, `J(θ)` is convex.
+There is one bowl, and gradient descent can find its bottom.
+
+> The logistic cost is minus the log of the probability the model assigned to the true
+> label. Right and confident costs nothing, unsure costs a little, and wrong and confident
+> costs without limit.

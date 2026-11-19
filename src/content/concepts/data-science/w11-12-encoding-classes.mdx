@@ -1,0 +1,84 @@
+---
+course: data-science
+section: w11-classes
+order: 1680
+title: Numbering Classes Is a Bad Idea
+visuals:
+  - type: svg
+    src: data-science/w11-logistic-2/19.svg
+    caption: Slide 19 of 23 (logistic regression, part 2) — hair colours as numbers, and when an ordering is real.
+notation:
+  - symbol: "blond = 0, brown = 1, red = 2"
+    reads: blond is zero, brown is one, red is two
+    means: >-
+      An arbitrary code assigning a number to each class. The numbers are names only. Nothing
+      about hair colour makes red twice brown.
+questions:
+  - ask: "Which of these targets could reasonably be coded as the numbers 1, 2, 3, 4 and predicted as a single quantity?"
+    choices:
+      - text: "A product review of 1 to 4 stars"
+        correct: true
+        explains: >-
+          Star ratings are ordinal: 4 is better than 3, which is better than 2. The numbers
+          reflect an increasing scale, which is the slide's condition.
+      - text: "A movie's genre: comedy, drama, action, documentary"
+        explains: >-
+          Genres have no order. Any numbering would claim that one genre lies between two
+          others, which means nothing.
+      - text: "An email's folder: Work, Friends, Family, Hobby"
+        explains: >-
+          Folders are unordered names. Coding Hobby as 4 does not make it twice Friends.
+      - text: "A person's hair colour: blond, brown, red, black"
+        explains: >-
+          This is the slide's own counter-example. The classes are categories with no
+          increasing scale.
+---
+
+One-vs-all needed `k` classifiers for `k` classes. There is a tempting shortcut: give each
+class a number and fit one model that predicts the number. Slide 19 names the shortcut in
+its title: a bad idea.
+
+## What a number claims
+
+Code hair colour as blond = 0, brown = 1, red = 2. To a model those are quantities, and
+quantities carry claims:
+
+| the coding implies | which would mean |
+| --- | --- |
+| an order | blond < brown < red |
+| equal spacing | brown is exactly as far from blond as red is from brown |
+| meaningful averages | halfway between blond and red is brown |
+
+None of that is true of hair. A model fitted to these numbers will treat a prediction of 1.1
+as "roughly brown" and regard mistaking blond for red as twice as bad as mistaking blond for
+brown. Relabel the classes as red = 0, blond = 1, brown = 2 and you would fit a different
+model to identical data. When the answer depends on an arbitrary choice of labels, the
+labels are carrying meaning they should not.
+
+The slide's wording: unless the ordering of the classes reflects an increasing scale, the
+numbering is meaningless.
+
+## When the order is real
+
+Some classes do sit on a scale. These are **ordinal**. The slide gives two examples:
+
+- star ratings: 4 stars, 3 stars, 2 stars, 1 star;
+- a Likert scale: Completely Agree, Mostly Agree, Slightly Agree, Slightly Disagree, Mostly
+  Disagree, Completely Disagree.
+
+Here the order is part of what the classes mean. Predicting 3 stars for a 4-star review is a
+smaller mistake than predicting 1 star, and a numeric code captures that. Even so the spacing
+is an assumption: nothing guarantees the gap from "Slightly Agree" to "Mostly Agree" equals
+the gap from "Mostly Agree" to "Completely Agree".
+
+## What to do with unordered classes
+
+Keep them as separate categories. One-vs-all does this: each class gets its own yes-or-no
+question, and no class is placed between two others. The numbers 1, 2, 3 on the one-vs-all
+slides are only names for the classifiers.
+
+A quick test for any coded variable: would the result change if you shuffled which class got
+which number? If it would and the classes have no natural order, the coding is wrong.
+
+> A number says "more" or "less". Use numeric codes only for ordinal classes, where that is
+> true. For unordered categories, give each class its own classifier.

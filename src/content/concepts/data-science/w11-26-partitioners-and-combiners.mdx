@@ -1,0 +1,133 @@
+---
+course: data-science
+section: w11-mapreduce
+order: 1820
+title: Partitioners and Combiners
+visuals:
+  - type: svg
+    src: data-science/w11-scale/29.svg
+    caption: Slide 29 of 31 (achieving scale) — partition and combine, with keys hashed to reducers.
+  - type: svg
+    src: data-science/w11-scale/30.svg
+    caption: Slide 30 of 31 (achieving scale) — word count with a combiner.
+notation:
+  - symbol: "hash(k′)"
+    reads: hash of k prime
+    means: >-
+      A function that turns a key into a whole number, the same number every time for the same
+      key. Different keys get numbers that look unrelated.
+  - symbol: "mod n"
+    reads: mod n
+    means: >-
+      The remainder after dividing by n. 145 mod 3 is 1, because 145 = 48 × 3 + 1. The result
+      is always one of 0, 1, …, n − 1.
+  - symbol: "v″"
+    reads: v double prime
+    means: >-
+      A value produced by the combiner: a partial summary of several v′ values from one
+      mapper.
+questions:
+  - ask: "A mapper processes `the fox ate the mouse`. With a combiner that sums counts, what does it send over the network for the word `the`?"
+    choices:
+      - text: "One pair, `(the, 2)`, in place of two separate `(the, 1)` pairs"
+        correct: true
+        explains: >-
+          The combiner runs in memory on that mapper's own output and adds the two 1s before
+          anything is sent. The reducer still arrives at a final total of 3.
+      - text: "`(the, 3)`, the complete count"
+        explains: >-
+          A combiner sees one mapper's output only. The third `the` is in another document, on
+          another mapper.
+      - text: "Two pairs, `(the, 1)` and `(the, 1)`, as before"
+        explains: >-
+          That is the behaviour without a combiner. Merging them locally is the entire purpose.
+      - text: "Nothing; the combiner removes repeated words"
+        explains: >-
+          It sums them. Dropping them would lose counts and give the wrong total.
+  - ask: "With 3 reducers and partition `hash(key) mod 3`, the key `apple` hashes to 145. Which reducer gets it, and what happens the next time `apple` is emitted by a different mapper?"
+    choices:
+      - text: "Reducer 1, both times, because the hash of a key is always the same"
+        correct: true
+        explains: >-
+          `145 mod 3 = 1`. Every mapper computes the same hash for the same key, which is how
+          equal keys are guaranteed to meet at one reducer without the mappers talking.
+      - text: "Reducer 1 the first time, then whichever reducer is least busy"
+        explains: >-
+          Routing by load would split one key's values across reducers and break the count.
+      - text: "Reducer 0, because 145 divides by 3"
+        explains: >-
+          It does not: `48 × 3 = 144`, leaving a remainder of 1.
+      - text: "Reducer 145"
+        explains: >-
+          There are only three reducers, numbered 0 to 2. Taking the remainder brings the hash
+          into that range.
+---
+
+Map and reduce are the two functions you must write. Slide 29 adds two more primitives.
+They explain how the framework keeps its promise and how to make a job cheaper.
+
+## Partition: which reducer gets a key?
+
+The promise was that all values with the same key reach the same reducer. With several
+reducers and many mappers on different machines, how does each mapper know where to send a
+key without asking anyone?
+
+```
+partition (k′, number of partitions)  →  partition for k′
+```
+
+The slide says it is often a simple hash of the key: `hash(k′) mod n`. A hash turns the key
+into a number, and the remainder after dividing by the number of reducers `n` picks one.
+The slide's table uses three reducers.
+
+| key | `hash(key)` | `hash(key) mod 3` | goes to |
+| --- | --- | --- | --- |
+| apple | 145 | 1 | Reducer 1 |
+| banana | 211 | 1 | Reducer 1 |
+| pear | 84 | 0 | Reducer 0 |
+
+Check one: `145 = 48 × 3 + 1`, so the remainder is 1.
+
+Every mapper computes the same hash for `apple`, so every mapper sends `apple` to Reducer 1,
+with no coordination. That is the mechanism behind the guarantee. Different keys may share a
+reducer, as apple and banana do here, and that is fine. What must never happen is one key
+going to two reducers.
+
+The slide gives the purpose: partitioning divides up the key space for parallel reduce
+operations.
+
+## Combine: summarise before sending
+
+In word count, a mapper that sees `the` a thousand times emits a thousand copies of
+`(the, 1)`, and every one crosses the network. The network is the slow, expensive part of a
+distributed system.
+
+```
+combine (k′, [v′])  →  [(k′, v″)]
+```
+
+The slide describes combiners as **mini-reducers that run in memory after the map phase**,
+used as an optimisation to **reduce network traffic**. A combiner does on one mapper's
+output what the reducer will later do on everyone's.
+
+Slide 30 reruns word count with one. The second document is "the fox ate the mouse".
+
+| | this mapper sends for `the` |
+| --- | --- |
+| without combiner | `(the, 1)` and `(the, 1)` |
+| with combiner | `(the, 2)` |
+
+The reducer for `the` now receives `[1, 2]` where before it received `[1, 1, 1]`. The sum is
+3 either way, and the final output on the slide is unchanged.
+
+## When a combiner is safe
+
+A combiner only sees one mapper's share. The final answer must come out the same whether
+values are summarised early in pieces or all at once. Addition has that property: adding
+some numbers first and the rest later gives the same total. An average does not, since the
+average of several averages is generally not the overall average. For word count, the
+combiner can be the same summing function as the reducer.
+
+> The partitioner sends each key to a reducer chosen by `hash(key) mod n`, which is how
+> equal keys always meet. A combiner summarises a mapper's output locally to cut network
+> traffic, and is safe when early partial summaries do not change the final result.

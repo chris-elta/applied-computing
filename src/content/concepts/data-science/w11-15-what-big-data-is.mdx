@@ -1,0 +1,98 @@
+---
+course: data-science
+section: w11-bigdata
+order: 1710
+title: What Makes Data Big
+visuals:
+  - type: svg
+    src: data-science/w11-scale/02.svg
+    caption: Slide 2 of 31 (achieving scale) — what "Big Data" presumes.
+  - type: svg
+    src: data-science/w11-scale/03.svg
+    caption: Slide 3 of 31 (achieving scale) — daily volumes at six services in 2025.
+  - type: svg
+    src: data-science/w11-scale/04.svg
+    caption: Slide 4 of 31 (achieving scale) — volume, velocity and variety, with veracity as a fourth.
+notation:
+  - symbol: "PB"
+    reads: petabyte
+    means: >-
+      A million gigabytes. 4 PB is 4 million GB.
+  - symbol: "MB"
+    reads: megabyte
+    means: >-
+      A thousandth of a gigabyte. A CSV file of this size opens comfortably on a laptop.
+questions:
+  - ask: "A sensor network sends 2 GB a day of well-structured readings that must each be acted on within a second. Which V makes this a big-data problem?"
+    choices:
+      - text: "Velocity: the data arrives continuously and has to be handled in real time, although the total is modest"
+        correct: true
+        explains: >-
+          2 GB a day is small and the readings are uniform. The difficulty is that the work
+          cannot wait for a batch job.
+      - text: "Volume: 2 GB a day is too much to store"
+        explains: >-
+          That is under a terabyte a year. Compare 4 million GB a day on slide 3.
+      - text: "Variety: sensor data is unstructured"
+        explains: >-
+          The readings are described as well structured. Variety is about mixed forms such as
+          text, photos and video.
+      - text: "None: it is too small to count as big data"
+        explains: >-
+          Size is only one of the three axes. A real-time requirement changes the tools you
+          need even for small volumes.
+---
+
+Everything in this course so far has assumed the data fits in a table on your laptop. Slide
+2 names the other case. The buzzword "Big Data" presumes analysis of truly massive data sets:
+all of Twitter or Facebook, the web logs of a major site, the genome sequences of thousands
+of people, every image on Instagram.
+
+The slide closes with the theme of the lecture: **working with data generally gets harder
+with size.**
+
+## How big
+
+Slide 3 gives 2025 figures, all per day:
+
+| service | per day |
+| --- | --- |
+| X | 500 million tweets |
+| Facebook | 4 petabytes of incoming data (4 million GB) |
+| Google | 8.5 billion search queries |
+| Instagram | 95 million photos |
+| Apple | 250 million app downloads |
+| Email | 333 billion messages |
+
+For scale: a laptop with a 1,000 GB disk would hold Facebook's incoming data for about 22
+seconds of the day. No single machine holds this, and that is what forces the techniques
+later in the lecture.
+
+## Three Vs
+
+Size is one of three axes on slide 4.
+
+| V | the question | at the small end | at the big end |
+| --- | --- | --- | --- |
+| **Volume** | how much? | megabytes | petabytes and beyond |
+| **Velocity** | how fast does it arrive? | batch: collected, then analysed | real time: analysed as it arrives |
+| **Variety** | how many forms? | tidy tables | text, photos, video, unstructured data |
+
+Data can be "big" on any one of them. A modest stream that needs a response within a second
+is a velocity problem. A small archive of mixed scans, emails and spreadsheets is a variety
+problem. Each needs different tools, so say which V you mean.
+
+The slide places student work on this picture: projects are typically **batch problems on
+megabyte-scale CSV-type data**. That is the small, slow, uniform corner. The habits it builds
+(load everything, try an idea, look at the result) are the ones that stop working as you move
+outward.
+
+## A fourth V
+
+The slide adds **veracity**: can the data be trusted? Volume, velocity and variety describe
+how hard the data is to handle. Veracity describes whether handling it is worth anything.
+More data of doubtful accuracy is not better data, and the next concept is about exactly
+that.
+
+> "Big" has three axes: volume, velocity and variety. Most coursework sits at the easy
+> corner of all three. Veracity, whether the data is true, matters at any size.

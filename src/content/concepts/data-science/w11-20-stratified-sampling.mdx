@@ -1,0 +1,93 @@
+---
+course: data-science
+section: w11-sampling
+order: 1760
+title: Stratified Sampling
+visuals:
+  - type: svg
+    src: data-science/w11-scale/13.svg
+    caption: Slide 13 of 31 (achieving scale) — sampling proportionally from each group.
+  - type: svg
+    src: data-science/w11-scale/14.svg
+    caption: Slide 14 of 31 (achieving scale) — why to stratify, and what it requires.
+notation:
+  - symbol: "strata"
+    reads: strah-ta (singular stratum)
+    means: >-
+      The groups the population is divided into before sampling, such as age bands or regions.
+      Each record belongs to exactly one.
+questions:
+  - ask: "A population is 90% urban and 10% rural, and rural opinions differ sharply. You will sample 200 people. How does a stratified sample differ from a simple random one?"
+    choices:
+      - text: "It draws exactly 180 urban and 20 rural people, where a random sample would give 20 rural only on average and could easily give 15 or 25"
+        correct: true
+        explains: >-
+          Stratifying fixes each group's share at its true proportion. That removes the chance
+          variation in group sizes, which matters most when a small group is distinctive.
+      - text: "It draws 100 urban and 100 rural people so both groups are equal"
+        explains: >-
+          That is deliberate balancing, as used for training classifiers. Stratifying as on the
+          slide samples proportionally, so the sample mirrors the population.
+      - text: "It samples only the rural group, since that is where opinions differ"
+        explains: >-
+          Every stratum is sampled. Leaving out the urban 90% would say nothing about the
+          population as a whole.
+      - text: "There is no difference with a sample of 200"
+        explains: >-
+          A random sample of 200 has a real chance of drawing noticeably too few or too many
+          rural people, and with distinct opinions that moves the result.
+---
+
+Random sampling is unbiased on average. Any one random sample can still be unlucky. Slide 13
+gives the remedy: to ensure no group is statistically over- or under-sampled, **explicitly
+sample proportionally from each group**.
+
+## How it works
+
+Divide the population into groups, called **strata**. Then sample within each stratum
+separately, taking the same fraction from each. The slide's picture shows a population
+sorted into strata and a sample drawn from every one.
+
+Suppose a population of 10,000 is 90% urban and 10% rural, and you want 200 people, a 2%
+sample.
+
+| stratum | population | stratified sample (2% of each) |
+| --- | --- | --- |
+| urban | 9,000 | 180 |
+| rural | 1,000 | 20 |
+
+A simple random sample of 200 would contain 20 rural people on average. In practice it might
+contain 15, or 25. A stratified sample contains exactly 20, every time.
+
+## Why that matters
+
+Slide 14 gives the reasoning.
+
+**When small groups have distinct opinions or attributes, sample variance can dominate
+signal.** Say 80% of rural people support a policy and 30% of urban people do. The true
+overall figure is `0.9 × 30% + 0.1 × 80% = 35%`. If chance gives you 25 rural people in
+place of 20, your estimate rises through nothing but luck in who was drawn. A small and
+distinctive group makes the whole estimate jumpy. Fixing the group sizes removes that source
+of noise.
+
+**Bias comes from sample over- or under-representation.** If a group's share of the sample
+differs from its share of the population, the result leans toward or away from that group.
+Stratifying sets every share to the correct value by construction.
+
+## The requirement
+
+The slide states the problem: **you must identify group members prior to sampling**. To take
+2% of rural people you need to know who is rural before you draw anyone. That information is
+often missing or unreliable. You also have to decide which grouping matters, and stratifying
+on one attribute does nothing for an attribute you did not think of.
+
+## When there are no predefined groups
+
+The slide's last point: **cluster sampling** is an unsupervised variant with no predefined
+groups. If nobody has labelled the records, a clustering algorithm can discover groups of
+similar records from the data, and those discovered groups can then be sampled from.
+"Unsupervised" has the meaning it had in week 10: the groups are found, not given.
+
+> Stratified sampling takes the same fraction from every group, so each group's share is
+> exactly right and not right only on average. It needs the groups to be known before you
+> sample.

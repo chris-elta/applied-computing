@@ -1,0 +1,95 @@
+---
+course: data-science
+section: w11-logistic
+order: 1590
+title: The Decision Boundary
+visuals:
+  - type: svg
+    src: data-science/w11-logistic-1/09.svg
+    caption: Slide 9 of 16 (logistic regression, part 1) — when the sigmoid is at least 0.5.
+  - type: svg
+    src: data-science/w11-logistic-1/10.svg
+    caption: Slide 10 of 16 (logistic regression, part 1) — the line x₁ + x₂ = 3 separating two classes.
+notation:
+  - symbol: "θᵀx ≥ 0"
+    reads: theta transpose x is at least zero
+    means: >-
+      The weighted sum of the features is zero or positive. This is exactly the condition under
+      which the model predicts the positive class.
+  - symbol: "x₁, x₂"
+    reads: x one, x two
+    means: >-
+      The two features, drawn as the horizontal and vertical axes. The subscripts number the
+      features; they are not powers.
+questions:
+  - ask: "With `θ₀ = −3`, `θ₁ = 1`, `θ₂ = 1`, what does the model predict for the point `x₁ = 1`, `x₂ = 1`?"
+    choices:
+      - text: "`y = 0`, because `−3 + 1 + 1 = −1` is negative"
+        correct: true
+        explains: >-
+          `θᵀx = −1 < 0`, so `g(−1) ≈ 0.27 < 0.5`. The point lies below the line `x₁ + x₂ = 3`.
+      - text: "`y = 1`, because both features are positive"
+        explains: >-
+          The sign of the features is not what matters. The sign of the whole sum `θᵀx`,
+          including θ₀, decides.
+      - text: "`y = 1`, because `g(z)` is always positive"
+        explains: >-
+          `g(z)` is always positive, but the rule compares it with 0.5, not with 0.
+      - text: "It cannot be decided without the training data"
+        explains: >-
+          The boundary is a property of θ alone. Once θ is fixed, the training data is no longer
+          needed to classify a point.
+---
+
+The model outputs a probability. To act on it you need a yes or a no, so pick a cut-off:
+predict `y = 1` when `hθ(x) ≥ 0.5` and `y = 0` otherwise. Slide 9 asks what that rule means
+in terms of the inputs.
+
+## From a probability to a sign
+
+Look at the sigmoid curve. `g(z) ≥ 0.5` happens exactly when `z ≥ 0`: the curve crosses 0.5
+at `z = 0` and only goes up from there. Since `z = θᵀx`:
+
+| the model predicts | when | which means |
+| --- | --- | --- |
+| `y = 1` | `hθ(x) ≥ 0.5` | `θᵀx ≥ 0` |
+| `y = 0` | `hθ(x) < 0.5` | `θᵀx < 0` |
+
+The exponential has dropped out. To classify a point you compute the weighted sum and check
+its sign.
+
+## The example on slide 10
+
+Two features, so `hθ(x) = g(θ₀ + θ₁x₁ + θ₂x₂)`. Suppose training has produced `θ₀ = −3`,
+`θ₁ = 1`, `θ₂ = 1`. Then the model predicts `y = 1` if
+
+```
+−3 + x₁ + x₂ ≥ 0      that is,      x₁ + x₂ ≥ 3
+```
+
+The equation `x₁ + x₂ = 3` is a straight line through `(3, 0)` and `(0, 3)`. Every point on
+or above it is predicted positive, and every point below it negative. On the slide the red
+crosses sit above the line and the blue circles below.
+
+That line is the **decision boundary**: the set of points where `θᵀx = 0`, so `hθ(x)` is
+exactly 0.5 and the model is undecided.
+
+Check two points:
+
+| point | `−3 + x₁ + x₂` | prediction |
+| --- | --- | --- |
+| `(1, 1)` | −1 | `y = 0` |
+| `(2, 2)` | 1 | `y = 1` |
+
+## What the boundary belongs to
+
+The boundary is a property of the **parameters**, not of the data. The training set is used
+to choose θ. Once θ is chosen, you could delete every training example and the line would
+stay where it is.
+
+Distance from the boundary still carries information. A point far on the positive side has a
+large `θᵀx` and a probability near 1. A point just across it has a probability near 0.5. The
+yes-or-no answer hides that difference, so keep the probability when confidence matters.
+
+> Thresholding the sigmoid at 0.5 is the same as checking the sign of `θᵀx`. The points
+> where `θᵀx = 0` form the decision boundary, and it is fixed by θ alone.
